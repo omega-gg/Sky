@@ -77,9 +77,12 @@ bool WBackendNetQuery::isValid() const
 void WBackendNetQuery::init(Type type, const QString & url)
 {
     this->type = type;
-    this->url  = url;
 
     target = TargetDefault;
+
+    this->url = url;
+
+    currentTime = -1;
 
     id = 0;
 
@@ -114,12 +117,13 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
 {
     type   = other.type;
     target = other.target;
-    scope  = other.scope;
 
     backend = other.backend;
 
     url         = other.url;
     urlRedirect = other.urlRedirect;
+
+    currentTime = other.currentTime;
 
     id = other.id;
 
@@ -131,6 +135,8 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
     mode = other.mode;
 
     data = other.data;
+
+    scope = other.scope;
 
     header = other.header;
     body   = other.body;

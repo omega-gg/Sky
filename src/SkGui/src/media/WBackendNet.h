@@ -91,6 +91,8 @@ public: // Variables
     QString url;
     QString urlRedirect;
 
+    int currentTime;
+
     int id;
 
     int indexNext;

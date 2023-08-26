@@ -408,6 +408,23 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         return;
     }
 
+    if (currentTime != -1)
+    {
+        const WYamlNode * node = reader.at("source");
+
+        if (node)
+        {
+            origin = extractSource(node->children);
+
+            if (origin.isEmpty() == false)
+            {
+                type = WControllerPlaylist::Redirect;
+
+                return;
+            }
+        }
+    }
+
     origin = reader.extractString("related");
 
     if (origin.isEmpty() == false)
@@ -995,6 +1012,37 @@ bool WControllerPlaylistData::addUrl(QStringList * urls, const QString & url) co
     else return false;
 }
 
+//-------------------------------------------------------------------------------------------------
+
+QString WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
+{
+    foreach (const WYamlNode & child, children)
+    {
+        int durationSource = WControllerPlaylist::vbmlDuration(child, child.extractMsecs("start"));
+
+        currentTime -= durationSource;
+
+        if (currentTime >= 0) continue;
+
+        // NOTE: The media is prioritized over the source.
+        QString media = child.extractString("media");
+
+        if (media.isEmpty() == false) return media;
+
+        const WYamlNode * node = child.at("source");
+
+        const QList<WYamlNode> & nodes = node->children;
+
+        if (nodes.isEmpty())
+        {
+            return node->value;
+        }
+        else return extractSource(nodes);
+    }
+
+    return QString();
+}
+
 //=================================================================================================
 // WControllerPlaylistReply
 //=================================================================================================
@@ -1007,7 +1055,7 @@ public: // Interface
     Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url, const QString & urlBase);
 
     Q_INVOKABLE void extractRelated(QIODevice * device, const QString & url,
-                                                        const QString & urlBase);
+                                                        const QString & urlBase, int currentTime);
 
     Q_INVOKABLE void extractHtml  (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractM3u   (QIODevice * device, const QString & url);
@@ -1039,9 +1087,12 @@ signals:
 
 /* Q_INVOKABLE */ void WControllerPlaylistReply::extractRelated(QIODevice     * device,
                                                                 const QString & url,
-                                                                const QString & urlBase)
+                                                                const QString & urlBase,
+                                                                int             currentTime)
 {
     WControllerPlaylistData data;
+
+    data.currentTime = currentTime;
 
     data.applyRelated(WControllerFile::readAll(device), url, urlBase);
 
@@ -1160,7 +1211,7 @@ void WControllerPlaylistPrivate::init()
     methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString)"));
 
     methodRelated
-        = meta->method(meta->indexOfMethod("extractRelated(QIODevice*,QString,QString)"));
+        = meta->method(meta->indexOfMethod("extractRelated(QIODevice*,QString,QString,int)"));
 
     methodHtml   = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
     methodM3u    = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
@@ -2307,8 +2358,10 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     }
     else if (target == WBackendNetQuery::TargetRelated)
     {
-        methodRelated.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url),
-                                                                Q_ARG(const QString &, url));
+        methodRelated.invoke(reply, Q_ARG(QIODevice     *, device),
+                                    Q_ARG(const QString &, query.url),
+                                    Q_ARG(const QString &, url),
+                                    Q_ARG(int,             query.currentTime));
 
         return;
     }
@@ -2475,7 +2528,17 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
     QString q = WControllerNetwork::decodeUrl(urlQuery.queryItemValue("q"));
 #endif
 
-    if (WControllerNetwork::urlIsFile(q))
+    if (WControllerPlaylist::urlIsVbml(q))
+    {
+        WBackendNetQuery query(q);
+
+        query.target = WBackendNetQuery::TargetRelated;
+
+        query.currentTime = WControllerPlaylist::extractTime(q);
+
+        return query;
+    }
+    else if (WControllerNetwork::urlIsFile(q))
     {
         QFileInfo info(WControllerFile::filePath(q));
 
@@ -2485,18 +2548,20 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
         return query;
     }
-    else if (WControllerNetwork::urlIsHttp(q) == false)
+    else if (WControllerNetwork::urlIsHttp(q))
     {
-        return WBackendNetQuery();
+        WBackendNetQuery query(q);
+
+        query.target = WBackendNetQuery::TargetRelated;
+
+        // NOTE: The url might be a large media file so we scope it to text.
+        query.scope = WAbstractLoader::ScopeText;
+
+        query.currentTime = WControllerPlaylist::extractTime(q);
+
+        return query;
     }
-
-    WBackendNetQuery query(q);
-
-    // NOTE: The url might be a large media file so we scope it to text.
-    query.target = WBackendNetQuery::TargetRelated;
-    query.scope  = WAbstractLoader::ScopeText;
-
-    return query;
+    else return WBackendNetQuery();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3615,7 +3680,11 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         return;
     }
 
-    QString feed = query->backendQuery.url;
+    const WBackendNetQuery & backendQuery = query->backendQuery;
+
+    QString feed = backendQuery.url;
+
+    int currentTime = backendQuery.currentTime;
 
     deleteQuery(query);
 
@@ -3636,7 +3705,12 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             playlist->applySource(source);
         }
 
-        applySourcePlaylist(playlist, origin);
+        if (currentTime == -1)
+        {
+            applySourcePlaylist(playlist, origin);
+
+            return;
+        }
 
         return;
     }
@@ -4751,9 +4825,10 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 
         WBackendNetQuery query(url);
 
-        // NOTE: The url might be a large media file so we scope it to text.
         query.target = WBackendNetQuery::TargetRelated;
-        query.scope  = WAbstractLoader::ScopeText;
+
+        // NOTE: The url might be a large media file so we scope it to text.
+        query.scope = WAbstractLoader::ScopeText;
 
         return query;
     }
@@ -5012,6 +5087,16 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
                                                               const QString & urlB)
 {
     return (cleanSource(urlA) == cleanSource(urlB));
+}
+
+/* Q_INVOKABLE static */ int WControllerPlaylist::extractTime(const QString & string)
+{
+    QString time = WControllerNetwork::extractFragmentValue(string, "t");
+
+    if (time.isEmpty()) return -1;
+
+    // NOTE: We want the time in milliseconds.
+    return time.toInt() * 1000;
 }
 
 //-------------------------------------------------------------------------------------------------

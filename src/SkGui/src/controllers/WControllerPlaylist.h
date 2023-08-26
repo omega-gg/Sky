@@ -226,6 +226,9 @@ public: // Static functions
     // NOTE: A source match with both fragments cleaned up.
     Q_INVOKABLE static bool cleanMatch(const QString & urlA, const QString & urlB);
 
+    // NOTE: Extract a millisecond fragment value with the '#t=value' format.
+    Q_INVOKABLE static int extractTime(const QString & string);
+
     Q_INVOKABLE static WControllerFileReply * copyBackends(const QString & path,
                                                            const QString & newPath);
 
@@ -389,7 +392,12 @@ private:
 class SK_GUI_EXPORT WControllerPlaylistData
 {
 public:
-    WControllerPlaylistData() { type = WControllerPlaylist::Unknown; }
+    WControllerPlaylistData()
+    {
+        currentTime = -1;
+
+        type = WControllerPlaylist::Unknown;
+    }
 
 public: // Interface
     void applyVbml   (const QByteArray & array, const QString & url, const QString & urlBase);
@@ -425,8 +433,12 @@ private: // Functions
 
     bool addUrl(QStringList * urls, const QString & url) const;
 
+    QString extractSource(const QList<WYamlNode> & children);
+
 public: // Variables
     QString url;
+
+    int currentTime;
 
     WControllerPlaylist::Type type;
 
