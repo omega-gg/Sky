@@ -828,7 +828,11 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
     if (duration != -1) media->duration = duration;
 
     media->timeA = data.timeA;
-    media->timeB = timeB;
+
+    if (media->timeB == -1 || timeB < media->timeB)
+    {
+        media->timeB = timeB;
+    }
 
     media->start = data.start;
 }

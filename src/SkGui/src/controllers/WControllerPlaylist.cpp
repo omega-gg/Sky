@@ -414,14 +414,20 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
     {
         const QList<WYamlNode> & children = node->children;
 
-        if (children.isEmpty() == false && extractSource(node->children)) return;
+        if (children.isEmpty())
+        {
+            applySource(reader.node(), node->value);
+        }
+        else extractSource(node->children);
     }
-
-    origin = reader.extractString("related");
-
-    if (origin.isEmpty() == false)
+    else
     {
-        type = WControllerPlaylist::Redirect;
+        origin = reader.extractString("related");
+
+        if (origin.isEmpty() == false)
+        {
+            type = WControllerPlaylist::Redirect;
+        }
     }
 }
 
@@ -1006,7 +1012,7 @@ bool WControllerPlaylistData::addUrl(QStringList * urls, const QString & url) co
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
+void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
 {
     foreach (const WYamlNode & child, children)
     {
@@ -1017,15 +1023,15 @@ bool WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
         if (currentTime > 0) continue;
 
         // NOTE: The related is prioritized over the source.
-        QString media = child.extractString("related");
+        QString related = child.extractString("related");
 
-        if (media.isEmpty() == false)
+        if (related.isEmpty() == false)
         {
             type = WControllerPlaylist::Redirect;
 
-            origin = media;
+            origin = related;
 
-            return true;
+            return;
         }
 
         const WYamlNode * node = child.at("source");
@@ -1037,13 +1043,38 @@ bool WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
             type = WControllerPlaylist::Source;
 
             origin = node->value;
-
-            return true;
         }
-        else return extractSource(nodes);
+        else extractSource(nodes);
+
+        return;
+    }
+}
+
+void WControllerPlaylistData::applySource(const WYamlNodeBase & node, const QString & url)
+{
+    int durationSource = WControllerPlaylist::vbmlDuration(node, node.extractMsecs("start"));
+
+    currentTime -= durationSource;
+
+    if (currentTime > 0) return;
+
+    // NOTE: The related is prioritized over the source.
+    QString related = node.extractString("related");
+
+    if (related.isEmpty() == false)
+    {
+        type = WControllerPlaylist::Redirect;
+
+        origin = related;
+
+        return;
     }
 
-    return false;
+    if (url.isEmpty()) return;
+
+    type = WControllerPlaylist::Source;
+
+    origin = url;
 }
 
 //=================================================================================================

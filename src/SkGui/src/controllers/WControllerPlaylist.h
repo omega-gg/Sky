@@ -433,7 +433,9 @@ private: // Functions
 
     bool addUrl(QStringList * urls, const QString & url) const;
 
-    bool extractSource(const QList<WYamlNode> & children);
+    void extractSource(const QList<WYamlNode> & children);
+
+    void applySource(const WYamlNodeBase & node, const QString & url);
 
 public: // Variables
     QString url;
