@@ -394,6 +394,10 @@ void WBackendManagerPrivate::connectBackend()
 
     q->setProgress(p->progress);
 
+    q->setOutputActive(p->outputActive);
+
+    q->setQualityActive(p->qualityActive);
+
     //---------------------------------------------------------------------------------------------
 
     QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
