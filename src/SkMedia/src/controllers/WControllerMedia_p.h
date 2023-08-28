@@ -142,8 +142,7 @@ public: // Functions
 
     void applySource(WPrivateMediaData            * media,
                      const WBackendNetSource      & source,
-                     WAbstractBackend::SourceMode   mode,
-                     int                            duration, int timeA, int timeB, int start);
+                     WAbstractBackend::SourceMode   mode);
 
     void appendSlice(const WPrivateMediaSlice     & slice,
                      const QString                & url,

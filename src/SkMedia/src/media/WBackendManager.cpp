@@ -231,6 +231,8 @@ void WBackendManagerPrivate::applySources(bool play)
             time.restart();
 
             timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+
+            q->setStateLoad(WAbstractBackend::StateLoadDefault);
         }
     }
 }

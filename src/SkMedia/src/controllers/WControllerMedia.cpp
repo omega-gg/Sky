@@ -839,13 +839,11 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
 void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
                                           const WBackendNetSource      & source,
-                                          WAbstractBackend::SourceMode   mode,
-                                          int                            duration,
-                                          int                            timeA,
-                                          int                            timeB,
-                                          int                            start)
+                                          WAbstractBackend::SourceMode   mode)
 {
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
+
+    int timeB = media->timeB;
 
     if (timeB == -1)
     {
@@ -904,6 +902,13 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         WTrack::Type type       = media->type;
         WTrack::Type typeSource = media->typeSource;
+
+        int duration = media->duration;
+
+        int timeA = media->timeA;
+        int timeB = media->timeB;
+
+        int start = media->start;
 
         slice.type       = type;
         slice.typeSource = typeSource;
@@ -1364,14 +1369,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         media->type = WTrack::Track;
     }
 
-    int timeB = media->timeB;
-
-    if (timeB == -1)
-    {
-         applySource(media, source, backendQuery.mode, -1, -1, -1, -1);
-    }
-    else applySource(media, source, backendQuery.mode, media->duration, media->timeA, timeB,
-                     media->start);
+    applySource(media, source, backendQuery.mode);
 
     this->medias.removeOne(media);
 
@@ -1505,7 +1503,9 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
     }
     else backendSource.medias = data.medias;
 
-    applySource(media, backendSource, mode, data.duration, data.timeA, data.timeB, data.start);
+    applyData(media, data);
+
+    applySource(media, backendSource, mode);
 
     medias.removeOne(media);
 
