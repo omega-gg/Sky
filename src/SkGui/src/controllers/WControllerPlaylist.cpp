@@ -1018,9 +1018,12 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
     {
         int durationSource = WControllerPlaylist::vbmlDuration(child, child.extractMsecs("start"));
 
-        currentTime -= durationSource;
+        if (currentTime > durationSource)
+        {
+            currentTime -= durationSource;
 
-        if (currentTime > 0) continue;
+            continue;
+        }
 
         // NOTE: The related is prioritized over the source.
         QString related = child.extractString("related");
@@ -1054,9 +1057,12 @@ void WControllerPlaylistData::applySource(const WYamlNodeBase & node, const QStr
 {
     int durationSource = WControllerPlaylist::vbmlDuration(node, node.extractMsecs("start"));
 
-    currentTime -= durationSource;
+    if (currentTime > durationSource)
+    {
+        currentTime -= durationSource;
 
-    if (currentTime > 0) return;
+        return;
+    }
 
     // NOTE: The related is prioritized over the source.
     QString related = node.extractString("related");
@@ -3758,9 +3764,10 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
         else
         {
+            QString time = QString::number(data.currentTime / 1000);
+
             // NOTE: We want the currentTime in seconds.
-            WControllerNetwork::applyFragmentValue(origin, "t",
-                                                   QString::number(data.currentTime / 1000));
+            origin = WControllerNetwork::applyFragmentValue(origin, "t", time);
 
             origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin);
 
