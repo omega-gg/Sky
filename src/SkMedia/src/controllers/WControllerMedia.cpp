@@ -123,6 +123,11 @@ QString WMediaReply::url() const
     return _url;
 }
 
+QString WMediaReply::urlSource() const
+{
+    return _urlSource;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WTrack::Type WMediaReply::type() const
@@ -758,7 +763,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     media->type       = WTrack::Unknown;
     media->typeSource = WTrack::Track;
 
-    media->url = url;
+    media->url       = url;
+    media->urlSource = url;
 
     media->currentTime = currentTime;
     media->duration    = -1;
@@ -861,8 +867,12 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         WPrivateMediaSlice slice;
 
+        QString urlSource = media->urlSource;
+
         WTrack::Type type       = media->type;
         WTrack::Type typeSource = media->typeSource;
+
+        slice.urlSource = urlSource;
 
         slice.type       = type;
         slice.typeSource = typeSource;
@@ -885,6 +895,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         {
             reply->_loaded = true;
 
+            reply->_urlSource = urlSource;
+
             reply->_type       = type;
             reply->_typeSource = typeSource;
 
@@ -900,6 +912,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         WPrivateMediaSlice slice;
 
+        QString urlSource = media->urlSource;
+
         WTrack::Type type       = media->type;
         WTrack::Type typeSource = media->typeSource;
 
@@ -909,6 +923,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         int timeB = media->timeB;
 
         int start = media->start;
+
+        slice.urlSource = urlSource;
 
         slice.type       = type;
         slice.typeSource = typeSource;
@@ -930,6 +946,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         foreach (WMediaReply * reply, media->replies)
         {
             reply->_loaded = true;
+
+            reply->_urlSource = urlSource;
 
             reply->_type       = type;
             reply->_typeSource = typeSource;
@@ -1442,6 +1460,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
                 // NOTE: We propagate the compatibility mode.
                 query.mode = mode;
 
+                media->urlSource = source;
+
                 applyData(media, data);
 
                 getData(media, &query);
@@ -1469,6 +1489,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
             // NOTE: We propagate the compatibility mode.
             query.mode = mode;
 
+            media->urlSource = source;
+
             applyData(media, data);
 
             getData(media, &query);
@@ -1490,6 +1512,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
             // NOTE: We want to avoid large binary files.
             query.scope = WAbstractLoader::ScopeText;
+
+            media->urlSource = source;
 
             applyData(media, data);
 
@@ -1601,6 +1625,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
             d->urls.removeOne(url);
             d->urls.append   (url);
+
+            reply->_urlSource = slice->urlSource;
 
             reply->_type       = slice->type;
             reply->_typeSource = slice->typeSource;

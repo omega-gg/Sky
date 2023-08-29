@@ -74,7 +74,8 @@ signals:
     void loaded(WMediaReply * reply);
 
 public: // Properties
-    QString url() const;
+    QString url      () const;
+    QString urlSource() const;
 
     WTrack::Type type      () const;
     WTrack::Type typeSource() const;
@@ -98,6 +99,7 @@ public: // Properties
 
 private: // Variables
     QString _url;
+    QString _urlSource;
 
     WAbstractBackend::SourceMode _mode;
 

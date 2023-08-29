@@ -141,6 +141,11 @@ public: // Variables
 
     WMediaReply * reply;
 
+    bool loaded;
+    bool connected;
+    bool clock;
+    bool loop;
+
     Type type;
 
     int timeA;
@@ -151,11 +156,6 @@ public: // Variables
     QHash<WAbstractBackend::Quality, QString> medias;
 
     QString currentMedia;
-
-    bool loaded;
-    bool connected;
-    bool clock;
-    bool loop;
 
     int timer;
 

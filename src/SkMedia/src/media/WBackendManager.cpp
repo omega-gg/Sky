@@ -77,17 +77,17 @@ void WBackendManagerPrivate::init()
 
     reply = NULL;
 
+    loaded    = false;
+    connected = false;
+    clock     = false;
+    loop      = false;
+
     type = Track;
 
     timeA = -1;
     timeB = -1;
 
     start = -1;
-
-    loaded    = false;
-    connected = false;
-    clock     = false;
-    loop      = false;
 
     timer = -1;
 
@@ -121,6 +121,8 @@ void WBackendManagerPrivate::loadSources(bool play)
         if (hook->check(source))
         {
             setBackendInterface(hook);
+
+            loaded = true;
 
             type = Track;
 
@@ -218,7 +220,7 @@ void WBackendManagerPrivate::applySources(bool play)
 
         if (currentMedia.isEmpty() == false)
         {
-            loadSource(source, currentMedia, currentTime - timeA + start);
+            loadSource(reply->urlSource(), currentMedia, currentTime - timeA + start);
 
             if (play == false) return;
 
@@ -815,17 +817,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false) return true;
 
-    if (d->clock)
-    {
-        d->stopTimer();
-
-        d->backendInterface->stop();
-    }
-    else if (d->currentMedia.isEmpty())
+    if (d->currentMedia.isEmpty())
     {
         d->stopTimer();
     }
-    else d->backendInterface->stop();
+    else d->stopBackend();
 
     d->clearActive();
 

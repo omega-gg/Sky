@@ -57,6 +57,7 @@ struct WPrivateMediaData
     WTrack::Type typeSource;
 
     QString url;
+    QString urlSource;
 
     int currentTime;
     int duration;
@@ -81,6 +82,8 @@ struct WPrivateMediaData
 
 struct WPrivateMediaSlice
 {
+    QString urlSource;
+
     WTrack::Type type;
     WTrack::Type typeSource;
 
