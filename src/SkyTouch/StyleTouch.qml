@@ -91,7 +91,6 @@ Style
 
     property int buttonTouchTrack_size: dp14
 
-    property color buttonTouchTrack_color      : "red"
     property color buttonTouchTrack_colorBorder: "#161616"
 //#END
 
