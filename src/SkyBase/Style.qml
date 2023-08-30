@@ -734,6 +734,11 @@ Item
         else                                       return qsTr("Folder");
     }
 
+    function getTrackActive(type)
+    {
+        return (type == Playlist.TrackLive || type == Playlist.TrackHub);
+    }
+
     function getTrackColor(type)
     {
         if (type == Playlist.TrackLive) return "#ff0000";

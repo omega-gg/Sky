@@ -116,7 +116,7 @@ public: // Enums
     //---------------------------------------------------------------------------------------------
     // NOTE: These enums are useful in QML because WTrack is not a QObject.
 
-    enum TrackType { TrackUnknown, TrackMedia, TrackLive, TrackHub };
+    enum TrackType { TrackUnknown, TrackMedia, TrackLive, TrackHub, TrackChannel };
 
     enum TrackState { TrackDefault, TrackLoading, TrackLoaded, TrackLoadCover };
 

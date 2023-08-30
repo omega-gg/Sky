@@ -127,7 +127,20 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
 
 public: // Enums
-    enum Type { Unknown, Redirect, Source, Track, Live, Hub, Playlist, Feed, Index, Backend };
+    enum Type
+    {
+        Unknown,
+        Redirect,
+        Source,
+        Track,
+        Live,
+        Hub,
+        Channel,
+        Playlist,
+        Feed,
+        Index,
+        Backend
+    };
 
 private:
     WControllerPlaylist();

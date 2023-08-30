@@ -272,6 +272,6 @@ ComponentWall
 
         anchors.leftMargin: iconWidth - width
 
-        visible: (item.type == Playlist.TrackLive)
+        trackType: item.type
     }
 }

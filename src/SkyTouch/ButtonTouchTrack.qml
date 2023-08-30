@@ -55,7 +55,7 @@ ButtonTouchIcon
         height: width
         radius: width
 
-        visible: (trackType == Playlist.TrackLive || trackType == Playlist.TrackHub)
+        visible: st.getTrackActive(trackType)
 
         color: st.getTrackColor(trackType)
 

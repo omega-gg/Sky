@@ -26,6 +26,12 @@ import Sky     1.0
 Rectangle
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int trackType: Playlist.TrackMedia
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -34,7 +40,9 @@ Rectangle
     height: width
     radius: width
 
-    color: st.rectangleLive_color
+    visible: st.getTrackActive(trackType)
+
+    color: st.getTrackColor(trackType)
 
     border.width: st.border_size
     border.color: st.rectangleLive_colorBorder

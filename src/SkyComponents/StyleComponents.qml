@@ -41,7 +41,6 @@ Style
 
     property int rectangleLive_size: dp10
 
-    property color rectangleLive_color      : "red"
     property color rectangleLive_colorBorder: "#161616"
 //#END
 
