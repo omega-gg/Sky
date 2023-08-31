@@ -128,6 +128,8 @@ void WBackendManagerPrivate::loadSources(bool play)
 
             backendInterface->loadSource(source, duration, currentTime, NULL);
 
+            if (play == false) return;
+
             backendInterface->play();
 
             connectBackend();
@@ -773,8 +775,20 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         d->loadSources(true);
 
         d->updateLoading();
+
+        return true;
     }
-    else if (d->currentMedia.isEmpty())
+
+    if (d->type == WBackendManagerPrivate::Track)
+    {
+        d->backendInterface->play();
+
+        d->connectBackend();
+
+        return true;
+    }
+
+    if (d->currentMedia.isEmpty())
     {
         d->time.restart();
 
@@ -796,6 +810,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false) return true;
 
+    if (d->type == WBackendManagerPrivate::Track)
+    {
+        d->backendInterface->pause();
+
+        return true;
+    }
+
     if (d->clock)
     {
         d->stopTimer();
@@ -816,6 +837,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     Q_D(WBackendManager);
 
     if (d->loaded == false) return true;
+
+    if (d->type == WBackendManagerPrivate::Track)
+    {
+        d->stopBackend();
+
+        return true;
+    }
 
     if (d->currentMedia.isEmpty())
     {
