@@ -103,6 +103,14 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
+    bool applyNextTrack(WPlaylist * playlist, WTrack * track, const QString & url, int index);
+
+    bool applyNextPlaylist(WPlaylist      * playlist, const QString & url, int index);
+    bool applyNextFolder  (WLibraryFolder * folder,   const QString & url, int index);
+    bool applyNextItem    (WLibraryItem   * item,     const QString & url, int index);
+
+    //---------------------------------------------------------------------------------------------
+
     bool abortQueryTrack   (WTrack    * track);
     bool abortQueriesTracks(WPlaylist * playlist);
 
@@ -188,17 +196,41 @@ public: // Functions
     void getDataLibraryItem(WLibraryItem           * item,
                             const WBackendNetQuery & query, WControllerPlaylistQuery::Type type);
 
-    bool getNextTrack(const QString & backendId, WPlaylist * playlist, WTrack * track,
-                      const QList<WBackendNetQuery> & queries, int index);
+    //---------------------------------------------------------------------------------------------
 
-    bool getNextPlaylist(const QString & backendId, WPlaylist * playlist,
-                         const QList<WBackendNetQuery> & queries, int index);
-
-    bool getNextFolder(const QString & backendId, WLibraryFolder * folder,
+    bool getNextTracks(const QString                 & backendId,
+                       WPlaylist                     * playlist,
+                       WTrack                        * track,
                        const QList<WBackendNetQuery> & queries, int index);
 
-    bool getNextItem(const QString & backendId, WLibraryItem * item,
-                     const QList<WBackendNetQuery> & queries, int index);
+    bool getNextPlaylists(const QString                 & backendId,
+                          WPlaylist                     * playlist,
+                          const QList<WBackendNetQuery> & queries, int index);
+
+    bool getNextFolders(const QString                 & backendId,
+                        WLibraryFolder                * folder,
+                        const QList<WBackendNetQuery> & queries, int index);
+
+    bool getNextItems(const QString                 & backendId,
+                      WLibraryItem                  * item,
+                      const QList<WBackendNetQuery> & queries, int index);
+
+    bool getNextTrack(const QString          & backendId,
+                      WPlaylist              * playlist,
+                      WTrack                 * track,
+                      const WBackendNetQuery & query, int index);
+
+    bool getNextPlaylist(const QString          & backendId,
+                         WPlaylist              * playlist,
+                         const WBackendNetQuery & query, int index);
+
+    bool getNextFolder(const QString          & backendId,
+                       WLibraryFolder         * folder,
+                       const WBackendNetQuery & query, int index);
+
+    bool getNextItem(const QString          & backendId,
+                     WLibraryItem           * item,
+                     const WBackendNetQuery & query, int index);
 
     //---------------------------------------------------------------------------------------------
 

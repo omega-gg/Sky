@@ -51,14 +51,14 @@
 // WBackendNetQuery
 //=================================================================================================
 
-/* explicit */ WBackendNetQuery::WBackendNetQuery(const QString & url)
+/* explicit */ WBackendNetQuery::WBackendNetQuery(const QString & url, int indexNext)
 {
-    init(WBackendNetQuery::TypeDefault, url);
+    init(WBackendNetQuery::TypeDefault, url, indexNext);
 }
 
-/* explicit */ WBackendNetQuery::WBackendNetQuery(Type type, const QString & url)
+/* explicit */ WBackendNetQuery::WBackendNetQuery(Type type, const QString & url, int indexNext)
 {
-    init(type, url);
+    init(type, url, indexNext);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ bool WBackendNetQuery::isValid() const
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendNetQuery::init(Type type, const QString & url)
+void WBackendNetQuery::init(Type type, const QString & url, int indexNext)
 {
     this->type = type;
 
@@ -86,7 +86,8 @@ void WBackendNetQuery::init(Type type, const QString & url)
 
     id = 0;
 
-    indexNext   = 0;
+    this->indexNext = indexNext;
+
     indexReload = 0;
 
     priority = QNetworkRequest::NormalPriority;

@@ -67,15 +67,15 @@ public: // Enums
     };
 
 public:
-    explicit WBackendNetQuery(const QString & url = QString());
+    explicit WBackendNetQuery(const QString & url = QString(), int indexNext = 0);
 
-    explicit WBackendNetQuery(Type type, const QString & url = QString());
+    explicit WBackendNetQuery(Type type, const QString & url = QString(), int indexNext = 0);
 
 public: // Interface
     bool isValid() const;
 
 private: // Functions
-    void init(Type type, const QString & url);
+    void init(Type type, const QString & url, int indexNext);
 
 public: // Operators
     WBackendNetQuery(const WBackendNetQuery & other);
