@@ -785,7 +785,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->connectBackend();
 
-        return true;
+        return d->backend->isPlaying();
     }
 
     if (d->currentMedia.isEmpty())
@@ -814,7 +814,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         d->backendInterface->pause();
 
-        return true;
+        return d->backend->isPaused();
     }
 
     if (d->clock)
@@ -842,7 +842,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         d->stopBackend();
 
-        return true;
+        return d->backend->isStopped();
     }
 
     if (d->currentMedia.isEmpty())
