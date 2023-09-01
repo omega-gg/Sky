@@ -318,12 +318,12 @@ void WBookmarkTrack::save()
     {
         if (currentTime > 0)
         {
-            Sk::bmlPair(vbml, "start", QString::number(currentTime), "\n\n");
+            Sk::bmlPair(vbml, "currentTime", QString::number(currentTime), "\n\n");
         }
     }
     else if (d->currentTime > 0)
     {
-        Sk::bmlPair(vbml, "start", QString::number(d->currentTime), "\n\n");
+        Sk::bmlPair(vbml, "currentTime", QString::number(d->currentTime), "\n\n");
     }
 
     if (d->date.isValid())

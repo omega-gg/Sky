@@ -803,9 +803,9 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
-    int start = reader.extractMsecs("start");
+    int at = reader.extractMsecs("at");
 
-    int duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
+    int duration = WControllerPlaylist::vbmlDuration(reader.node(), at);
 
     WTrack track;
 
@@ -838,7 +838,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
 
             if (duration == 0)
             {
-                duration = WControllerPlaylist::vbmlDurationSource(*node, start);
+                duration = WControllerPlaylist::vbmlDurationSource(*node, at);
             }
         }
     }
@@ -1016,7 +1016,7 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
 {
     foreach (const WYamlNode & child, children)
     {
-        int durationSource = WControllerPlaylist::vbmlDuration(child, child.extractMsecs("start"));
+        int durationSource = WControllerPlaylist::vbmlDuration(child, child.extractMsecs("at"));
 
         if (currentTime > durationSource)
         {
@@ -1055,7 +1055,7 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
 
 void WControllerPlaylistData::applySource(const WYamlNodeBase & node, const QString & url)
 {
-    int durationSource = WControllerPlaylist::vbmlDuration(node, node.extractMsecs("start"));
+    int durationSource = WControllerPlaylist::vbmlDuration(node, node.extractMsecs("at"));
 
     if (currentTime > durationSource)
     {
@@ -5838,7 +5838,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 }
 
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node,
-                                                               int start)
+                                                               int at)
 {
     int duration = node.extractMsecs("duration", -1);
 
@@ -5850,11 +5850,11 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     {
         return 0;
     }
-    else return duration - start;
+    else return duration - at;
 }
 
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDurationSource(const WYamlNode & node,
-                                                                     int start)
+                                                                     int at)
 {
     const QList<WYamlNode> & children = node.children;
 
@@ -5864,7 +5864,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 
     foreach (const WYamlNode & child, children)
     {
-        int durationSource = vbmlDuration(child, child.extractMsecs("start"));
+        int durationSource = vbmlDuration(child, child.extractMsecs("at"));
 
         duration += durationSource;
     }
@@ -5873,7 +5873,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     {
         return 0;
     }
-    else return duration - start;
+    else return duration - at;
 }
 
 /* Q_INVOKABLE static */

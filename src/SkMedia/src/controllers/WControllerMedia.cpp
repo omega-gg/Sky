@@ -293,7 +293,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
         return;
     }
 
-    start += reader.extractMsecs("start");
+    start += reader.extractMsecs("at");
 
     if (duration == -1)
     {
@@ -310,7 +310,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
             foreach (const WYamlNode & child, children)
             {
-                startSource += child.extractMsecs("start");
+                startSource += child.extractMsecs("at");
 
                 starts.append(startSource);
 
@@ -440,7 +440,7 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 {
     foreach (const WYamlNode & child, children)
     {
-        start += child.extractMsecs("start");
+        start += child.extractMsecs("at");
 
         int durationSource = WControllerPlaylist::vbmlDuration(child, start);
 
@@ -486,7 +486,7 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url)
 {
-    start += node.extractMsecs("start");
+    start += node.extractMsecs("at");
 
     int durationSource = WControllerPlaylist::vbmlDuration(node, start);
 
