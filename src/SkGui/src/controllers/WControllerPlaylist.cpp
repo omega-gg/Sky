@@ -103,6 +103,8 @@ static const int CONTROLLERPLAYLIST_MAX_ITEMS  = 500;
 static const int CONTROLLERPLAYLIST_MAX_QUERY  = 100;
 static const int CONTROLLERPLAYLIST_MAX_RELOAD =  10;
 
+static const int CONTROLLERPLAYLIST_CHANNEL_DURATION = 604800000; // 7 days in milliseconds
+
 //=================================================================================================
 // WControllerPlaylistLoader
 //=================================================================================================
@@ -803,13 +805,27 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
-    int at = reader.extractMsecs("at");
+    WTrack::Type typeTrack = WTrack::typeFromString(type);
 
-    int duration = WControllerPlaylist::vbmlDuration(reader.node(), at);
+    int at;
+    int duration;
+
+    if (typeTrack == WTrack::Channel)
+    {
+        at = 0;
+
+        duration = CONTROLLERPLAYLIST_CHANNEL_DURATION;
+    }
+    else
+    {
+        at = reader.extractMsecs("at");
+
+        duration = WControllerPlaylist::vbmlDuration(reader.node(), at);
+    }
 
     WTrack track;
 
-    track.setType(WTrack::typeFromString(type));
+    track.setType(typeTrack);
 
     track.setState(WTrack::Default);
 
@@ -887,9 +903,10 @@ void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
         {
             QString key = child.key;
 
-            if      (key == "track") parsePlaylistTrack(child, WTrack::Track);
-            else if (key == "live")  parsePlaylistTrack(child, WTrack::Live);
-            else if (key == "hub")   parsePlaylistTrack(child, WTrack::Hub);
+            if      (key == "track")   parsePlaylistTrack(child, WTrack::Track);
+            else if (key == "live")    parsePlaylistTrack(child, WTrack::Live);
+            else if (key == "hub")     parsePlaylistTrack(child, WTrack::Hub);
+            else if (key == "channel") parsePlaylistTrack(child, WTrack::Channel);
         }
     }
 }
@@ -1038,6 +1055,8 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
         }
 
         const WYamlNode * node = child.at("source");
+
+        if (node == NULL) return;
 
         const QList<WYamlNode> & nodes = node->children;
 
@@ -5882,6 +5901,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     if      (string == "track")    return Track;
     else if (string == "live")     return Live;
     else if (string == "hub")      return Hub;
+    else if (string == "channel")  return Channel;
     else if (string == "playlist") return Playlist;
     else if (string == "feed")     return Feed;
     else if (string == "index")    return Index;
@@ -5891,7 +5911,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypeTrack(Type type)
 {
-    return (type == Track || type == Live || type == Hub);
+    return (type == Track || type == Live || type == Hub || type == Channel);
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypePlaylist(Type type)

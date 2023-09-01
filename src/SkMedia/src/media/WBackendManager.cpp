@@ -201,13 +201,24 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         Q_Q(WBackendManager);
 
+        WTrack::Type typeRoot = reply->type();
+
         loaded = true;
 
         clock = (reply->typeSource() == WTrack::Hub);
 
-        loop = (reply->type() == WTrack::Hub);
+        if (typeRoot == WTrack::Channel)
+        {
+            type = Channel;
 
-        type = MultiTrack;
+            loop = true;
+        }
+        else
+        {
+            type = MultiTrack;
+
+            loop = (typeRoot == WTrack::Hub);
+        }
 
         this->timeA = timeA;
 
@@ -217,8 +228,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setDuration(reply->duration());
 
-        qDebug("Current source: timeA %d timeB %d start %d duration %d clock %d", timeA, timeB,
-               start, duration, clock);
+        qDebug("Current source: %s timeA %d timeB %d start %d duration %d clock %d", source.C_STR,
+               timeA, timeB, start, duration, clock);
 
         if (currentMedia.isEmpty() == false)
         {

@@ -736,12 +736,15 @@ Item
 
     function getTrackActive(type)
     {
-        return (type == Playlist.TrackLive || type == Playlist.TrackHub);
+        return (type == Playlist.TrackLive
+                ||
+                type == Playlist.TrackHub || type == Playlist.TrackChannel);
     }
 
     function getTrackColor(type)
     {
-        if (type == Playlist.TrackLive) return "#ff0000";
-        else                            return "#00ff00";
+        if      (type == Playlist.TrackLive) return "#ff0000";
+        else if (type == Playlist.TrackHub)  return "#00ff00";
+        else                                 return "#ff00ff";
     }
 }

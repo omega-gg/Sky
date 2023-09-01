@@ -51,6 +51,8 @@ static const int CONTROLLERMEDIA_MAX_SLICES =  64;
 static const int CONTROLLERMEDIA_MAX_QUERY  = 100;
 static const int CONTROLLERMEDIA_MAX_RELOAD =  10;
 
+static const int CONTROLLERMEDIA_CHANNEL_DURATION = 604800000; // 7 days in milliseconds
+
 //=================================================================================================
 // WMediaReply
 //=================================================================================================
@@ -297,7 +299,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
     if (duration == -1)
     {
-        duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
+        if (type == WTrack::Channel)
+        {
+            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
+        }
+        else duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
 
         if (duration == 0)
         {
@@ -372,6 +378,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
                 }
 
                 const WYamlNode * node = child.at("source");
+
+                if (node == NULL) return;
 
                 const QList<WYamlNode> & nodes = node->children;
 
@@ -472,6 +480,8 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
         const WYamlNode * node = child.at("source");
 
+        if (node == NULL) return;
+
         const QList<WYamlNode> & nodes = node->children;
 
         if (nodes.isEmpty())
@@ -492,7 +502,14 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
 
     if (durationSource <= 0) return;
 
-    if (duration == -1) duration = durationSource;
+    if (duration == -1)
+    {
+        if (type == WTrack::Channel)
+        {
+            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
+        }
+        else duration = durationSource;
+    }
 
     source = url;
 
