@@ -308,7 +308,7 @@ void WDeclarativeScannerPrivate::onClearCover()
             d->clearTimer();
         }
     }
-    else if (id == d->timerIdB)
+    else // if (id == d->timerIdB)
     {
         d->clearTimer();
         d->clearCount();

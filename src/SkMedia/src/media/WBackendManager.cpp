@@ -37,7 +37,8 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int BACKENDMANAGER_TIMEOUT = 200;
+static const int BACKENDMANAGER_TIMEOUT_CLOCK       =  200;
+static const int BACKENDMANAGER_TIMEOUT_SYNCHRONIZE = 3000;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -90,7 +91,8 @@ void WBackendManagerPrivate::init()
 
     start = -1;
 
-    timerClock = -1;
+    timerClock       = -1;
+    timerSynchronize = -1;
 
 #ifndef SK_NO_QML
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
@@ -214,9 +216,7 @@ void WBackendManagerPrivate::applySources(bool play)
 
             loop = true;
 
-            QDateTime date = QDateTime::currentDateTimeUtc();
-
-            q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
+            q->setCurrentTime(WControllerApplication::currentDateToMSecsWeek());
         }
         else
         {
@@ -249,6 +249,11 @@ void WBackendManagerPrivate::applySources(bool play)
         else if (play)
         {
             startClock();
+
+            if (type == Channel)
+            {
+                timerSynchronize = q_func()->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
+            }
 
             q->setStateLoad(WAbstractBackend::StateLoadDefault);
         }
@@ -341,41 +346,11 @@ void WBackendManagerPrivate::updateLoading()
     else q->setStateLoad(WAbstractBackend::StateLoadResuming);
 }
 
-void WBackendManagerPrivate::clearActive()
-{
-    Q_Q(WBackendManager);
-
-    q->setOutputActive (WAbstractBackend::OutputNone);
-    q->setQualityActive(WAbstractBackend::QualityDefault);
-}
-
-void WBackendManagerPrivate::clearReply()
-{
-    if (reply == NULL) return;
-
-    delete reply;
-
-    reply = NULL;
-}
-
-void WBackendManagerPrivate::clearMedia()
-{
-    stopClock();
-
-    clearReply();
-
-    loaded = false;
-    clock  = false;
-    loop   = false;
-
-    currentMedia = QString();
-}
-
 void WBackendManagerPrivate::startClock()
 {
     time.restart();
 
-    timerClock = q_func()->startTimer(BACKENDMANAGER_TIMEOUT);
+    timerClock = q_func()->startTimer(BACKENDMANAGER_TIMEOUT_CLOCK);
 }
 
 void WBackendManagerPrivate::stopClock()
@@ -385,6 +360,24 @@ void WBackendManagerPrivate::stopClock()
     q_func()->killTimer(timerClock);
 
     timerClock = -1;
+}
+
+void WBackendManagerPrivate::startSynchronize()
+{
+    QDateTime date = QDateTime::currentDateTimeUtc();
+
+    q_func()->setCurrentTime(WControllerApplication::getMsecsWeek(date));
+
+    timerSynchronize = q_func()->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
+}
+
+void WBackendManagerPrivate::stopSynchronize()
+{
+    if (timerSynchronize == -1) return;
+
+    q_func()->killTimer(timerSynchronize);
+
+    timerSynchronize = -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -482,6 +475,41 @@ void WBackendManagerPrivate::disconnectBackend()
     backend->setSize(size);
 }*/
 
+//-------------------------------------------------------------------------------------------------
+
+void WBackendManagerPrivate::clearActive()
+{
+    Q_Q(WBackendManager);
+
+    q->setOutputActive (WAbstractBackend::OutputNone);
+    q->setQualityActive(WAbstractBackend::QualityDefault);
+}
+
+void WBackendManagerPrivate::clearReply()
+{
+    if (reply == NULL) return;
+
+    delete reply;
+
+    reply = NULL;
+}
+
+void WBackendManagerPrivate::clearMedia()
+{
+    stopClock      ();
+    stopSynchronize();
+
+    clearReply();
+
+    loaded = false;
+    clock  = false;
+    loop   = false;
+
+    currentMedia = QString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backendNew)
 {
     if (backendInterface == backendNew) return;
@@ -556,8 +584,14 @@ void WBackendManagerPrivate::onStateLoad()
         qDebug("CLOCK");
 
         startClock();
+
+        if (type == Channel) startSynchronize();
     }
-    else stopClock();
+    else
+    {
+        stopClock      ();
+        stopSynchronize();
+    }
 }
 
 void WBackendManagerPrivate::onLive()
@@ -813,6 +847,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     }
     else d->startClock();
 
+    if (d->type == WBackendManagerPrivate::Channel)
+    {
+        d->startSynchronize();
+    }
+
     return true;
 }
 
@@ -829,13 +868,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         return d->backend->isPaused();
     }
 
+    d->stopClock      ();
+    d->stopSynchronize();
+
     if (d->currentMedia.isEmpty() == false)
     {
-        if (d->clock) d->stopClock();
-
         d->backendInterface->pause();
     }
-    else d->stopClock();
 
     return true;
 }
@@ -855,7 +894,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->currentMedia.isEmpty())
     {
-        d->stopClock();
+        d->stopClock      ();
+        d->stopSynchronize();
     }
     else d->stopBackend();
 
@@ -1085,15 +1125,26 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 // Protected events
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WBackendManager::timerEvent(QTimerEvent *)
+/* virtual */ void WBackendManager::timerEvent(QTimerEvent * event)
 {
     Q_D(WBackendManager);
 
-    int currentTime = d->currentTime + d->time.elapsed();
+    int id = event->timerId();
 
-    d->time.restart();
+    if (id == d->timerClock)
+    {
+        int currentTime = d->currentTime + d->time.elapsed();
 
-    d->applyTime(currentTime);
+        d->time.restart();
+
+        d->applyTime(currentTime);
+    }
+    else // if (id == d->timerSynchronize)
+    {
+        int gap = qAbs(WControllerApplication::currentDateToMSecsWeek() - d->currentTime);
+
+        qDebug("SYNCHRONIZE %d", gap);
+    }
 }
 
 #endif // SK_NO_BACKENDMANAGER

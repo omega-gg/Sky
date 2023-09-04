@@ -87,16 +87,19 @@ public: // Functions
 
     void updateLoading();
 
+    void startClock();
+    void stopClock ();
+
+    void startSynchronize();
+    void stopSynchronize ();
+
+    void connectBackend   ();
+    void disconnectBackend();
+
     void clearActive();
 
     void clearReply();
     void clearMedia();
-
-    void startClock();
-    void stopClock ();
-
-    void connectBackend   ();
-    void disconnectBackend();
 
     //void setBackend(WAbstractBackend * backendNew);
 
@@ -159,6 +162,7 @@ public: // Variables
     QString currentMedia;
 
     int timerClock;
+    int timerSynchronize;
 
     QElapsedTimer time;
 

@@ -429,6 +429,8 @@ public: // Static functions
     Q_INVOKABLE static qint64 currentDateToMSecs();
     Q_INVOKABLE static qint64 currentDateToSecs ();
 
+    Q_INVOKABLE static qint64 currentDateToMSecsWeek();
+
     Q_INVOKABLE static QString dateToString      (const QDateTime & date, const QString & format);
     Q_INVOKABLE static QString dateToStringNumber(const QDateTime & date);
 

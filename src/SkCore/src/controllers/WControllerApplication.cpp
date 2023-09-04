@@ -1763,6 +1763,11 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     return dateToSecs(QDateTime::currentDateTime());
 }
 
+/* Q_INVOKABLE static */ qint64 WControllerApplication::currentDateToMSecsWeek()
+{
+    return getMsecsWeek(QDateTime::currentDateTimeUtc());
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerApplication::dateToString(const QDateTime & date,
