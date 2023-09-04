@@ -92,7 +92,8 @@ public: // Functions
     void clearReply();
     void clearMedia();
 
-    void stopTimer();
+    void startClock();
+    void stopClock ();
 
     void connectBackend   ();
     void disconnectBackend();
@@ -157,7 +158,7 @@ public: // Variables
 
     QString currentMedia;
 
-    int timer;
+    int timerClock;
 
     QElapsedTimer time;
 

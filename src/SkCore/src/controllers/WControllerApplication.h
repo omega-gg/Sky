@@ -417,7 +417,10 @@ public: // Static functions
 
     Q_INVOKABLE static QDateTime dateFromSecs(qint64 seconds);
 
-    Q_INVOKABLE static int getMsecs  (const QTime & time);
+    Q_INVOKABLE static int getMsecs(const QTime & time);
+
+    Q_INVOKABLE static int getMsecsWeek(const QDateTime & date);
+
     Q_INVOKABLE static int getElapsed(const QTime & time);
 
     Q_INVOKABLE static qint64 dateToMSecs(const QDateTime & date);

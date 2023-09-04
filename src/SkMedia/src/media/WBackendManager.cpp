@@ -25,6 +25,7 @@
 #ifndef SK_NO_BACKENDMANAGER
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerPlaylist>
 #include <WControllerMedia>
 #include <WBackendVlc>
@@ -89,7 +90,7 @@ void WBackendManagerPrivate::init()
 
     start = -1;
 
-    timer = -1;
+    timerClock = -1;
 
 #ifndef SK_NO_QML
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
@@ -212,6 +213,10 @@ void WBackendManagerPrivate::applySources(bool play)
             type = Channel;
 
             loop = true;
+
+            QDateTime date = QDateTime::currentDateTimeUtc();
+
+            q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
         }
         else
         {
@@ -243,9 +248,7 @@ void WBackendManagerPrivate::applySources(bool play)
         }
         else if (play)
         {
-            time.restart();
-
-            timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+            startClock();
 
             q->setStateLoad(WAbstractBackend::StateLoadDefault);
         }
@@ -293,9 +296,7 @@ void WBackendManagerPrivate::applyDefault()
 
     timeA = currentTime;
 
-    time.restart();
-
-    timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+    startClock();
 
     q->setStateLoad(WAbstractBackend::StateLoadDefault);
 
@@ -359,7 +360,7 @@ void WBackendManagerPrivate::clearReply()
 
 void WBackendManagerPrivate::clearMedia()
 {
-    stopTimer();
+    stopClock();
 
     clearReply();
 
@@ -370,15 +371,20 @@ void WBackendManagerPrivate::clearMedia()
     currentMedia = QString();
 }
 
-void WBackendManagerPrivate::stopTimer()
+void WBackendManagerPrivate::startClock()
 {
-    if (timer == -1) return;
+    time.restart();
 
-    Q_Q(WBackendManager);
+    timerClock = q_func()->startTimer(BACKENDMANAGER_TIMEOUT);
+}
 
-    q->killTimer(timer);
+void WBackendManagerPrivate::stopClock()
+{
+    if (timerClock == -1) return;
 
-    timer = -1;
+    q_func()->killTimer(timerClock);
+
+    timerClock = -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -545,15 +551,13 @@ void WBackendManagerPrivate::onStateLoad()
 
     if (stateLoad == WAbstractBackend::StateLoadDefault)
     {
-        if (timer != -1) return;
+        if (timerClock != -1) return;
 
         qDebug("CLOCK");
 
-        time.restart();
-
-        timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+        startClock();
     }
-    else stopTimer();
+    else stopClock();
 }
 
 void WBackendManagerPrivate::onLive()
@@ -799,18 +803,15 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         return d->backend->isPlaying();
     }
 
-    if (d->currentMedia.isEmpty())
-    {
-        d->time.restart();
-
-        d->timer = startTimer(BACKENDMANAGER_TIMEOUT);
-    }
-    else
+    if (d->currentMedia.isEmpty() == false)
     {
         d->backendInterface->play();
 
         d->connectBackend();
+
+        if (d->clock) d->startClock();
     }
+    else d->startClock();
 
     return true;
 }
@@ -828,17 +829,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         return d->backend->isPaused();
     }
 
-    if (d->clock)
+    if (d->currentMedia.isEmpty() == false)
     {
-        d->stopTimer();
+        if (d->clock) d->stopClock();
 
         d->backendInterface->pause();
     }
-    else if (d->currentMedia.isEmpty())
-    {
-        d->stopTimer();
-    }
-    else d->backendInterface->pause();
+    else d->stopClock();
 
     return true;
 }
@@ -858,7 +855,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->currentMedia.isEmpty())
     {
-        d->stopTimer();
+        d->stopClock();
     }
     else d->stopBackend();
 

@@ -1719,6 +1719,17 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     return time.hour() * 3600000 + time.minute() * 60000 + time.second() * 1000 + time.msec();
 }
 
+/* Q_INVOKABLE static */ int WControllerApplication::getMsecsWeek(const QDateTime & date)
+{
+    int msecs = 0;
+
+    int day = date.date().dayOfWeek();
+
+    if (day) msecs += (day - 1) * 86400000;
+
+    return msecs + getMsecs(date.time());
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ int WControllerApplication::getElapsed(const QTime & time)
@@ -1777,8 +1788,6 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
     return date.toString(format);
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerApplication::dateToText(const QDateTime & date)
 {
