@@ -142,6 +142,11 @@ WTrack::Type WMediaReply::typeSource() const
     return _typeSource;
 }
 
+QString WMediaReply::timeZone() const
+{
+    return _timeZone;
+}
+
 int WMediaReply::currentTime() const
 {
     return _currentTime;
@@ -301,6 +306,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
     {
         if (type == WTrack::Channel)
         {
+            timeZone = reader.extractString("timezone");
+
             duration = CONTROLLERMEDIA_CHANNEL_DURATION;
         }
         else duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
@@ -777,11 +784,11 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     WPrivateMediaData * media = new WPrivateMediaData;
 
-    media->type       = WTrack::Unknown;
-    media->typeSource = WTrack::Track;
-
     media->url       = url;
     media->urlSource = url;
+
+    media->type       = WTrack::Unknown;
+    media->typeSource = WTrack::Track;
 
     media->currentTime = currentTime;
     media->duration    = -1;
@@ -848,7 +855,12 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
     int duration = data.duration;
 
-    if (duration != -1) media->duration = duration;
+    if (duration != -1)
+    {
+        media->timeZone = data.timeZone;
+
+        media->duration = duration;
+    }
 
     media->timeA = data.timeA;
 
@@ -1647,6 +1659,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
             reply->_type       = slice->type;
             reply->_typeSource = slice->typeSource;
+
+            reply->_timeZone = slice->timeZone;
 
             reply->_duration = slice->duration;
 

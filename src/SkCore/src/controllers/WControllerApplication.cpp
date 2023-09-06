@@ -61,6 +61,9 @@
 #include <QMimeData>
 #include <QDir>
 #include <QProcess>
+#ifdef QT_NEW
+#include <QTimeZone>
+#endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
 #endif
@@ -1750,6 +1753,23 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     return date.toMSecsSinceEpoch() / 1000;
 #else
     return date.toSecsSinceEpoch();
+#endif
+}
+
+/* Q_INVOKABLE static */
+QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
+{
+#ifdef QT_4
+    // FIXME Qt4: We're not supportign time zones at the moment.
+    return QDateTime::currentDateTimeUtc();
+#else
+    if (timeZone.isEmpty() == false)
+    {
+        QTimeZone zone(timeZone.C_STR);
+
+        return QDateTime::currentDateTimeUtc().toTimeZone(zone);
+    }
+    else return QDateTime::currentDateTimeUtc();
 #endif
 }
 

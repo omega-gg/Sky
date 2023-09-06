@@ -80,6 +80,8 @@ public: // Properties
     WTrack::Type type      () const;
     WTrack::Type typeSource() const;
 
+    QString timeZone() const;
+
     int currentTime() const;
     int duration   () const;
 
@@ -105,6 +107,8 @@ private: // Variables
 
     WTrack::Type _type;
     WTrack::Type _typeSource;
+
+    QString _timeZone;
 
     int _currentTime;
     int _duration;
@@ -167,6 +171,8 @@ public: // Variables
 
     QString origin;
     QString source;
+
+    QString timeZone;
 
     int duration;
 

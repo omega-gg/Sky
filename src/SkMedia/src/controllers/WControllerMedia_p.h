@@ -53,11 +53,13 @@ class WRemoteData;
 
 struct WPrivateMediaData
 {
+    QString url;
+    QString urlSource;
+
     WTrack::Type type;
     WTrack::Type typeSource;
 
-    QString url;
-    QString urlSource;
+    QString timeZone;
 
     int currentTime;
     int duration;
@@ -86,6 +88,8 @@ struct WPrivateMediaSlice
 
     WTrack::Type type;
     WTrack::Type typeSource;
+
+    QString timeZone;
 
     int duration;
 
