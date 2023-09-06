@@ -40,6 +40,8 @@
 static const int BACKENDMANAGER_TIMEOUT_CLOCK       =  200;
 static const int BACKENDMANAGER_TIMEOUT_SYNCHRONIZE = 3000;
 
+static const int BACKENDMANAGER_MAX_DELAY = 60000; // 1 minute
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -215,6 +217,8 @@ void WBackendManagerPrivate::applySources(bool play)
             type = Channel;
 
             loop = true;
+
+            q->setLive(true);
 
             q->setCurrentTime(WControllerApplication::currentDateToMSecsWeek());
         }
@@ -1141,9 +1145,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     }
     else // if (id == d->timerSynchronize)
     {
-        int gap = qAbs(WControllerApplication::currentDateToMSecsWeek() - d->currentTime);
+        int time = WControllerApplication::currentDateToMSecsWeek();
 
-        qDebug("SYNCHRONIZE %d", gap);
+        if (qAbs(time - d->currentTime) <= BACKENDMANAGER_MAX_DELAY) return;
+
+        qDebug("SYNCHRONIZE");
+
+        seek(time);
     }
 }
 

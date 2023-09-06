@@ -2286,7 +2286,22 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
         int length = eventPlayer->value.toInt();
 
         // NOTE: If length is 0 then it's a live feed.
-        if (length == 0) setLive(true);
+        if (length == 0)
+        {
+            Q_D(WBackendVlc);
+
+            if (d->live == false)
+            {
+                if (d->currentTime > 0)
+                {
+                    // FIXME VLC 3.0.18: When the seeking point is incorrect on a live feed the
+                    //                   player seems to bufferize randomly.
+                    d->player->seek(0);
+                }
+
+                setLive(true);
+            }
+        }
 
         setDuration(length);
 
