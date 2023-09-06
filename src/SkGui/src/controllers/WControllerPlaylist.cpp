@@ -416,9 +416,26 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
     {
         const QList<WYamlNode> & children = node->children;
 
-        if (children.isEmpty())
+        WTrack::Type type = WTrack::typeFromString(reader.extractString("type"));
+
+        if (type == WTrack::Channel)
         {
-            applySource(reader.node(), node->value);
+            currentTime = WControllerApplication::currentDateToMSecsWeek();
+
+            if (children.isEmpty())
+            {
+                applySource(reader.node(), node->value, CONTROLLERPLAYLIST_CHANNEL_DURATION);
+            }
+            else extractSource(node->children);
+        }
+        else if (children.isEmpty())
+        {
+            const WYamlNodeBase & nodeBase = reader.node();
+
+            int duration = WControllerPlaylist::vbmlDuration(nodeBase,
+                                                             nodeBase.extractMsecs("at"));
+
+            applySource(nodeBase, node->value, duration);
         }
         else extractSource(node->children);
     }
@@ -1072,13 +1089,12 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
     }
 }
 
-void WControllerPlaylistData::applySource(const WYamlNodeBase & node, const QString & url)
+void WControllerPlaylistData::applySource(const WYamlNodeBase & node,
+                                          const QString       & url, int duration)
 {
-    int durationSource = WControllerPlaylist::vbmlDuration(node, node.extractMsecs("at"));
-
-    if (currentTime > durationSource)
+    if (currentTime > duration)
     {
-        currentTime -= durationSource;
+        currentTime -= duration;
 
         return;
     }

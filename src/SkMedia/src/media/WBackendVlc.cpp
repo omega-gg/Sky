@@ -2272,7 +2272,8 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         Q_D(WBackendVlc);
 
-        if (d->stateLoad == StateLoadDefault)
+        // NOTE: When playing a hub, we want to avoid buffering while restarting the video.
+        if (d->stateLoad == StateLoadDefault && d->loop == false)
         {
             setStateLoad(StateLoadBuffering);
         }

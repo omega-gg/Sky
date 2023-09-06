@@ -448,7 +448,7 @@ private: // Functions
 
     void extractSource(const QList<WYamlNode> & children);
 
-    void applySource(const WYamlNodeBase & node, const QString & url);
+    void applySource(const WYamlNodeBase & node, const QString & url, int duration);
 
 public: // Variables
     QString url;
