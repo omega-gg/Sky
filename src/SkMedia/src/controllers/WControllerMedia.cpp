@@ -206,8 +206,7 @@ QString WMediaReply::error() const
 //=================================================================================================
 // Interface
 
-void WControllerMediaData::applyVbml(const QByteArray & array,
-                                     const QString    & url, int currentTime)
+void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url)
 {
     QString content = Sk::readBml(array);
 
@@ -238,7 +237,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
     {
         WControllerPlaylist::vbmlPatch(content, api);
 
-        applyVbml(content.toUtf8(), url, currentTime);
+        applyVbml(content.toUtf8(), url);
 
         return;
     }
@@ -307,6 +306,10 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
         if (type == WTrack::Channel)
         {
             timeZone = reader.extractString("timezone");
+
+            QDateTime date = WControllerApplication::currentDateUtc(timeZone);
+
+            currentTime = WControllerApplication::getMsecsWeek(date);
 
             duration = CONTROLLERMEDIA_CHANNEL_DURATION;
         }
@@ -394,7 +397,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
                 {
                     applySource(node->value, durationSource);
                 }
-                else extractSource(nodes, currentTime);
+                else extractSource(nodes);
 
                 if (source.isEmpty()) applyEmpty(currentTime);
 
@@ -405,7 +408,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
         }
     }
 
-    extractSource(children, currentTime);
+    extractSource(children);
 
     if (source.isEmpty()) applyEmpty(currentTime);
 }
@@ -451,7 +454,7 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int currentTime)
+void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 {
     foreach (const WYamlNode & child, children)
     {
@@ -495,7 +498,7 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
         {
             applySource(node->value, durationSource);
         }
-        else extractSource(nodes, currentTime);
+        else extractSource(nodes);
 
         return;
     }
@@ -574,13 +577,14 @@ signals:
 {
     WControllerMediaData data;
 
-    data.duration = duration;
+    data.currentTime = currentTime;
+    data.duration    = duration;
 
     data.timeA = timeA;
 
     data.start = start;
 
-    data.applyVbml(WControllerFile::readAll(device), url, currentTime);
+    data.applyVbml(WControllerFile::readAll(device), url);
 
     emit loaded(device, data);
 
@@ -859,6 +863,8 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
     {
         media->timeZone = data.timeZone;
 
+        media->currentTime = data.currentTime;
+
         media->duration = duration;
     }
 
@@ -946,6 +952,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         WTrack::Type type       = media->type;
         WTrack::Type typeSource = media->typeSource;
 
+        QString timeZone = media->timeZone;
+
         int duration = media->duration;
 
         int timeA = media->timeA;
@@ -957,6 +965,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.type       = type;
         slice.typeSource = typeSource;
+
+        slice.timeZone = timeZone;
 
         slice.medias = medias;
         slice.audios = audios;
@@ -980,6 +990,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_type       = type;
             reply->_typeSource = typeSource;
+
+            reply->_timeZone = timeZone;
 
             reply->_duration = duration;
 

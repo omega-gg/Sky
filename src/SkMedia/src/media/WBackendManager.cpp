@@ -216,11 +216,15 @@ void WBackendManagerPrivate::applySources(bool play)
         {
             type = Channel;
 
+            timeZone = reply->timeZone();
+
             loop = true;
 
             q->setLive(true);
 
-            q->setCurrentTime(WControllerApplication::currentDateToMSecsWeek());
+            QDateTime date = WControllerApplication::currentDateUtc(timeZone);
+
+            q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
         }
         else
         {
@@ -1145,7 +1149,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     }
     else // if (id == d->timerSynchronize)
     {
-        int time = WControllerApplication::currentDateToMSecsWeek();
+        QDateTime date = WControllerApplication::currentDateUtc(d->timeZone);
+
+        int time = WControllerApplication::getMsecsWeek(date);
 
         if (qAbs(time - d->currentTime) <= BACKENDMANAGER_MAX_DELAY) return;
 

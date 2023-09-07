@@ -152,6 +152,8 @@ public: // Variables
 
     Type type;
 
+    QString timeZone;
+
     int timeA;
     int timeB;
 

@@ -145,6 +145,8 @@ public:
     {
         type = WTrack::Track;
 
+        currentTime = 0;
+
         duration = -1;
 
         timeA =  0;
@@ -154,11 +156,11 @@ public:
     }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url, int currentTime);
+    void applyVbml(const QByteArray & array, const QString & url);
     void applyM3u (const QByteArray & array, const QString & url);
 
 private: // Functions
-    void extractSource(const QList<WYamlNode> & children, int currentTime);
+    void extractSource(const QList<WYamlNode> & children);
 
     void applyMedia(const WYamlNodeBase & node, const QString & url);
 
@@ -174,6 +176,7 @@ public: // Variables
 
     QString timeZone;
 
+    int currentTime;
     int duration;
 
     int timeA;
