@@ -60,6 +60,7 @@ struct WPrivateMediaData
     WTrack::Type typeSource;
 
     QString timeZone;
+    QString watermark;
 
     int currentTime;
     int duration;
@@ -90,6 +91,7 @@ struct WPrivateMediaSlice
     WTrack::Type typeSource;
 
     QString timeZone;
+    QString watermark;
 
     int duration;
 

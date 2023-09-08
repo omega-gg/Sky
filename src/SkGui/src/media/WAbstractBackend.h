@@ -223,6 +223,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
+    Q_PROPERTY(QString watermark READ watermark NOTIFY watermarkChanged)
+
 public:
     enum State
     {
@@ -435,6 +437,8 @@ protected: // Functions
     void setOutputActive (Output  output);
     void setQualityActive(Quality quality);
 
+    void setWatermark(const QString & url);
+
     void deleteNow();
 
     //---------------------------------------------------------------------------------------------
@@ -551,6 +555,8 @@ signals:
 
     void subtitleChanged();
 
+    void watermarkChanged();
+
 public: // Properties
 #ifndef SK_NO_QML
     WDeclarativePlayer * player() const;
@@ -629,6 +635,8 @@ public: // Properties
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
+
+    QString watermark() const;
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)

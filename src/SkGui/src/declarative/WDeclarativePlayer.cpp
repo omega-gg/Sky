@@ -1841,6 +1841,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(subtitleChanged()), this, SIGNAL(subtitleChanged()));
 
+    connect(backend, SIGNAL(watermarkChanged()), this, SIGNAL(watermarkChanged()));
+
     connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
 
     connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
@@ -2612,6 +2614,19 @@ void WDeclarativePlayer::setSubtitle(const QString & subtitle)
 
         emit subtitleChanged();
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WDeclarativePlayer::watermark() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->watermark();
+    }
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------

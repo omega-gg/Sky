@@ -136,6 +136,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
+    Q_PROPERTY(QString watermark READ watermark NOTIFY watermarkChanged)
+
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
@@ -314,6 +316,8 @@ signals:
 
     void subtitleChanged();
 
+    void watermarkChanged();
+
     void pauseTimeoutChanged();
 
     void countChanged();
@@ -420,6 +424,8 @@ public: // Properties
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
+
+    QString watermark() const;
 
     int  pauseTimeout() const;
     void setPauseTimeout(int msec);

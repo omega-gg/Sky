@@ -147,6 +147,11 @@ QString WMediaReply::timeZone() const
     return _timeZone;
 }
 
+QString WMediaReply::watermark() const
+{
+    return _watermark;
+}
+
 int WMediaReply::currentTime() const
 {
     return _currentTime;
@@ -305,7 +310,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     {
         if (type == WTrack::Channel)
         {
-            timeZone = reader.extractString("timezone");
+            timeZone  = reader.extractString("timezone");
+            watermark = reader.extractString("watermark");
 
             QDateTime date = WControllerApplication::currentDateUtc(timeZone);
 
@@ -875,7 +881,8 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
     if (duration != -1)
     {
-        media->timeZone = data.timeZone;
+        media->timeZone  = data.timeZone;
+        media->watermark = data.watermark;
 
         media->currentTime = data.currentTime;
 
@@ -966,7 +973,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         WTrack::Type type       = media->type;
         WTrack::Type typeSource = media->typeSource;
 
-        QString timeZone = media->timeZone;
+        QString timeZone  = media->timeZone;
+        QString watermark = media->watermark;
 
         int duration = media->duration;
 
@@ -980,7 +988,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.type       = type;
         slice.typeSource = typeSource;
 
-        slice.timeZone = timeZone;
+        slice.timeZone  = timeZone;
+        slice.watermark = watermark;
 
         slice.medias = medias;
         slice.audios = audios;
@@ -1005,7 +1014,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             reply->_type       = type;
             reply->_typeSource = typeSource;
 
-            reply->_timeZone = timeZone;
+            reply->_timeZone  = timeZone;
+            reply->_watermark = watermark;
 
             reply->_duration = duration;
 
@@ -1686,7 +1696,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
             reply->_type       = slice->type;
             reply->_typeSource = slice->typeSource;
 
-            reply->_timeZone = slice->timeZone;
+            reply->_timeZone  = slice->timeZone;
+            reply->_watermark = slice->watermark;
 
             reply->_duration = slice->duration;
 

@@ -104,6 +104,8 @@ public: // Variable
 
     QString subtitle;
 
+    QString watermark;
+
     QSizeF size;
 
     bool deleting;
