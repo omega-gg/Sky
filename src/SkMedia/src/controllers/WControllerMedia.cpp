@@ -506,9 +506,23 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url)
 {
-    start += node.extractMsecs("at");
+    int durationSource = WControllerPlaylist::vbmlDuration(node, 0, -1);
 
-    int durationSource = WControllerPlaylist::vbmlDuration(node, start);
+    if (durationSource == -1)
+    {
+        source = url;
+
+        return;
+    }
+
+    int at = node.extractMsecs("at");
+
+    if (at)
+    {
+        durationSource -= at;
+
+        start += at;
+    }
 
     if (durationSource <= 0) return;
 
