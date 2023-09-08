@@ -37,8 +37,9 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int BACKENDMANAGER_TIMEOUT_CLOCK       =  200;
-static const int BACKENDMANAGER_TIMEOUT_SYNCHRONIZE = 3000;
+static const int BACKENDMANAGER_TIMEOUT_CLOCK       =   200;
+static const int BACKENDMANAGER_TIMEOUT_SYNCHRONIZE =  3000;
+static const int BACKENDMANAGER_TIMEOUT_RELOAD      = 30000; // 3 minutes
 
 static const int BACKENDMANAGER_MAX_DELAY = 60000; // 1 minute
 
@@ -95,6 +96,7 @@ void WBackendManagerPrivate::init()
 
     timerClock       = -1;
     timerSynchronize = -1;
+    timerReload      = -1;
 
 #ifndef SK_NO_QML
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
@@ -145,6 +147,43 @@ void WBackendManagerPrivate::loadSources(bool play)
         setBackendInterface(backend);
     }
 
+    loadMedia();
+
+    if (reply == NULL) return;
+
+    if (reply->isLoaded())
+    {
+        applySources(play);
+
+        delete reply;
+
+        reply = NULL;
+    }
+    else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q_func(), SLOT(onLoaded()));
+}
+
+void WBackendManagerPrivate::reloadSources(bool play)
+{
+    loadMedia();
+
+    if (reply == NULL) return;
+
+    if (reply->isLoaded())
+    {
+        if (urlSource != reply->urlSource())
+        {
+            applySources(play);
+        }
+
+        delete reply;
+
+        reply = NULL;
+    }
+    else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q_func(), SLOT(onReloaded()));
+}
+
+void WBackendManagerPrivate::loadMedia()
+{
     Q_Q(WBackendManager);
 
     WAbstractBackend::SourceMode mode = q->getMode();
@@ -157,18 +196,6 @@ void WBackendManagerPrivate::loadSources(bool play)
          reply = wControllerMedia->getMedia(source, q, WAbstractBackend::SourceSafe, currentTime);
     }
     else reply = wControllerMedia->getMedia(source, q, mode, currentTime);
-
-    if (reply == NULL) return;
-
-    if (reply->isLoaded())
-    {
-        applySources(play);
-
-        delete reply;
-
-        reply = NULL;
-    }
-    else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q, SLOT(onLoaded()));
 }
 
 void WBackendManagerPrivate::applySources(bool play)
@@ -206,6 +233,8 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         Q_Q(WBackendManager);
 
+        QString url = reply->urlSource();
+
         WTrack::Type typeRoot = reply->type();
 
         loaded = true;
@@ -215,6 +244,8 @@ void WBackendManagerPrivate::applySources(bool play)
         if (typeRoot == WTrack::Channel)
         {
             type = Channel;
+
+            urlSource = url;
 
             timeZone = reply->timeZone();
 
@@ -246,7 +277,7 @@ void WBackendManagerPrivate::applySources(bool play)
 
         if (currentMedia.isEmpty() == false)
         {
-            loadSource(reply->urlSource(), currentMedia, currentTime - timeA + start);
+            loadSource(url, currentMedia, currentTime - timeA + start);
 
             if (play == false) return;
 
@@ -260,7 +291,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
             if (type == Channel)
             {
-                timerSynchronize = q_func()->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
+                timerSynchronize = q->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
+                timerReload      = q->startTimer(BACKENDMANAGER_TIMEOUT_RELOAD);
             }
 
             q->setStateLoad(WAbstractBackend::StateLoadDefault);
@@ -372,20 +404,27 @@ void WBackendManagerPrivate::stopClock()
 
 void WBackendManagerPrivate::startSynchronize()
 {
+    Q_Q(WBackendManager);
+
     QDateTime date = QDateTime::currentDateTimeUtc();
 
-    q_func()->setCurrentTime(WControllerApplication::getMsecsWeek(date));
+    q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
 
-    timerSynchronize = q_func()->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
+    timerSynchronize = q->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
+    timerReload      = q->startTimer(BACKENDMANAGER_TIMEOUT_RELOAD);
 }
 
 void WBackendManagerPrivate::stopSynchronize()
 {
     if (timerSynchronize == -1) return;
 
-    q_func()->killTimer(timerSynchronize);
+    Q_Q(WBackendManager);
+
+    q->killTimer(timerSynchronize);
+    q->killTimer(timerReload);
 
     timerSynchronize = -1;
+    timerReload      = -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -540,6 +579,22 @@ void WBackendManagerPrivate::onLoaded()
         q->stop();
     }
     else applySources(q->isPlaying());
+
+    reply->deleteLater();
+
+    reply = NULL;
+}
+
+void WBackendManagerPrivate::onReloaded()
+{
+    if (reply->hasError() == false && urlSource != reply->urlSource())
+    {
+        Q_Q(WBackendManager);
+
+        disconnectBackend();
+
+        applySources(q->isPlaying());
+    }
 
     reply->deleteLater();
 
@@ -1147,7 +1202,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->applyTime(currentTime);
     }
-    else // if (id == d->timerSynchronize)
+    else if (id == d->timerSynchronize)
     {
         QDateTime date = WControllerApplication::currentDateUtc(d->timeZone);
 
@@ -1158,6 +1213,16 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         qDebug("SYNCHRONIZE");
 
         seek(time);
+    }
+    else // if (id == d->timerReload)
+    {
+        if (d->reply) return;
+
+        qDebug("RELOADING");
+
+        wControllerMedia->clearMedia(d->source);
+
+        d->reloadSources(isPlaying());
     }
 }
 

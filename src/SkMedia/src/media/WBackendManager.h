@@ -95,7 +95,8 @@ protected: // Events
 private:
     W_DECLARE_PRIVATE(WBackendManager)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded())
+    Q_PRIVATE_SLOT(d_func(), void onLoaded  ())
+    Q_PRIVATE_SLOT(d_func(), void onReloaded())
 
 #ifndef SK_NO_QML
     Q_PRIVATE_SLOT(d_func(), void onPlayerChanged())

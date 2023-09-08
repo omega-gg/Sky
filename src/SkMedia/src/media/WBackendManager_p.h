@@ -74,7 +74,11 @@ public:
     void init();
 
 public: // Functions
-    void loadSources (bool play);
+    void loadSources  (bool play);
+    void reloadSources(bool play);
+
+    void loadMedia();
+
     void applySources(bool play);
 
     void loadSource(const QString & source, const QString & media, int currentTime);
@@ -106,7 +110,8 @@ public: // Functions
     void setBackendInterface(WBackendInterface * backendNew);
 
 public: // Slots
-    void onLoaded();
+    void onLoaded  ();
+    void onReloaded();
 
 #ifndef SK_NO_QML
     void onPlayerChanged();
@@ -150,6 +155,8 @@ public: // Variables
     bool clock;
     bool loop;
 
+    QString urlSource;
+
     Type type;
 
     QString timeZone;
@@ -165,6 +172,7 @@ public: // Variables
 
     int timerClock;
     int timerSynchronize;
+    int timerReload;
 
     QElapsedTimer time;
 
