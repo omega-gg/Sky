@@ -19,6 +19,7 @@ RectangleTag         1.0 RectangleTag.qml
 
 ImageBarcode 1.0 ImageBarcode.qml
 ImageTag     1.0 ImageTag.qml
+Watermark    1.0 Watermark.qml
 
 CursorSvg   1.0 CursorSvg.qml
 CursorTouch 1.0 CursorTouch.qml

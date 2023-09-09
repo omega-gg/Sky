@@ -3870,11 +3870,12 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     if (type == WControllerPlaylist::Redirect)
     {
-        if (source.isEmpty())
+        if (source.isEmpty() == false)
         {
-            applyNextPlaylist(playlist, origin, indexNext);
+            playlist->applySource(source);
         }
-        else playlist->applySource(source);
+
+        applyNextPlaylist(playlist, origin, indexNext);
 
         return;
     }
@@ -4236,9 +4237,10 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         if (source.isEmpty())
         {
-            applyNextFolder(folder, origin, indexNext);
+            folder->applySource(source);
         }
-        else playlist->applySource(source);
+
+        applyNextFolder(folder, origin, indexNext);
 
         return;
     }

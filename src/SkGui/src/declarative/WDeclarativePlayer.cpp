@@ -1425,6 +1425,38 @@ void WDeclarativePlayer::updateFrame()
     else return QRectF();
 }
 
+/* Q_INVOKABLE */ QRectF WDeclarativePlayer::getGeometry() const
+{
+    QRectF rect = getRect();
+
+    if (rect.isNull()) return rect;
+
+    QSizeF size(rect.width(), rect.height());
+
+    WAbstractBackend::FillMode mode = fillMode();
+
+    if (mode == WAbstractBackend::Stretch)
+    {
+        size.scale(size, Qt::KeepAspectRatio);
+    }
+    else if (mode == WAbstractBackend::PreserveAspectFit)
+    {
+        size.scale(size, Qt::KeepAspectRatio);
+    }
+    else // if (mode == WAbstractBackend::PreserveAspectCrop)
+    {
+        size.scale(size, Qt::KeepAspectRatioByExpanding);
+    }
+
+    qreal sizeWidth  = size.width ();
+    qreal sizeHeight = size.height();
+
+    qreal x = (width () - sizeWidth)  / 2;
+    qreal y = (height() - sizeHeight) / 2;
+
+    return QRectF(x, y, sizeWidth, sizeHeight);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WDeclarativePlayer::updateHighlightedTab()

@@ -206,6 +206,9 @@ public: // Interface
 
     Q_INVOKABLE QRectF getRect() const;
 
+    // NOTE: This functions returns the video frame geometry mapped to the player dimensions.
+    Q_INVOKABLE QRectF getGeometry() const;
+
     Q_INVOKABLE void updateHighlightedTab();
 
     //---------------------------------------------------------------------------------------------

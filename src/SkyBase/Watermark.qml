@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-TextSubtitle
+ImageScale
 {
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -31,36 +31,39 @@ TextSubtitle
 
     /* mandatory */ property variant player
 
-    property int margin: st.dp8
+    /* read */ property int marginRight: 0
+    /* read */ property int marginTop  : 0
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property variant pRect
+
+    property int pHeight: 0
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.left  : player.left
-    anchors.right : player.right
-    anchors.bottom: player.bottom
+    anchors.right: player.right
+    anchors.top  : player.top
 
-    anchors.leftMargin  : st.dp8
-    anchors.rightMargin : st.dp8
-    anchors.bottomMargin: margin
+    anchors.rightMargin: marginRight
+    anchors.topMargin  : marginTop
 
-    z: player.z
+    height: pHeight
 
-    // NOTE: The player has to be playing on the default output.
-    visible: (player.visible
-              &&
-              player.isLoading == false && player.isPlaying && player.hasOutput == false)
+    visible: (player.visible && isSourceDefault == false)
 
-    source: player.subtitle
+    source: player.watermark
 
-    currentTime: player.currentTime
+    fillMode: AbstractBackend.PreserveAspectFit
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onVisibleChanged: onUpdateMargin()
+    onVisibleChanged: if (visible) onUpdateGeometry()
 
     //---------------------------------------------------------------------------------------------
     // Connections
@@ -70,10 +73,16 @@ TextSubtitle
     {
         target: (visible) ? player : null
 
-        /* QML_CONNECTION */ function onWidthChanged () { onUpdateMargin() }
-        /* QML_CONNECTION */ function onHeightChanged() { onUpdateMargin() }
+        /* QML_CONNECTION */ function onWidthChanged () { onUpdateGeometry() }
+        /* QML_CONNECTION */ function onHeightChanged() { onUpdateGeometry() }
 
-        /* QML_CONNECTION */ function onFillModeChanged() { onUpdateMargin() }
+        /* QML_CONNECTION */ function onFillModeChanged() { onUpdateGeometry() }
+
+        /* QML_CONNECTION */ function onStateLoadChanged()
+        {
+            // NOTE: We want to update the geometry after the player has finished buffering.
+            if (player.isDefault) onUpdateGeometry();
+        }
     }
 
     //---------------------------------------------------------------------------------------------
@@ -81,5 +90,17 @@ TextSubtitle
     //---------------------------------------------------------------------------------------------
     // Events
 
-    function onUpdateMargin() {}
+    function onUpdateGeometry()
+    {
+        var rect = player.getGeometry();
+
+        if (pRect == rect) return;
+
+        pRect = rect;
+
+        pHeight = rect.height / 16;
+
+        marginRight = rect.x;
+        marginTop   = rect.y;
+    }
 }
