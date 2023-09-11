@@ -1136,22 +1136,42 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ int WPlaylist::addSource(const QString & url)
+/* Q_INVOKABLE */ int WPlaylist::addSource(const QString & url, bool load)
 {
-    return insertSource(count(), url);
+    return insertSource(count(), url, load);
 }
 
-/* Q_INVOKABLE */ int WPlaylist::insertSource(int index, const QString & url)
+/* Q_INVOKABLE */ int WPlaylist::insertSource(int index, const QString & url, bool load)
+{
+    WTrack track(url, WTrack::Default);
+
+    if (load)
+    {
+        int result = insertTrack(index, track);
+
+        loadTrack(index);
+
+        return result;
+    }
+    else return insertTrack(index, track);
+}
+
+/* Q_INVOKABLE */ int WPlaylist::addSources(const QString & urls)
+{
+    return insertSources(count(), urls);
+}
+
+/* Q_INVOKABLE */ int WPlaylist::insertSources(int index, const QString & urls)
 {
     QList<WTrack> tracks;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-    QStringList urls = url.split('\n', Qt::SkipEmptyParts);
+    QStringList list = urls.split('\n', Qt::SkipEmptyParts);
 #else
-    QStringList urls = url.split('\n', QString::SkipEmptyParts);
+    QStringList list = urls.split('\n', QString::SkipEmptyParts);
 #endif
 
-    foreach (const QString & source, urls)
+    foreach (const QString & source, list)
     {
         WTrack track(source, WTrack::Default);
 

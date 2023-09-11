@@ -132,6 +132,7 @@ public: // Enums
         Unknown,
         Redirect,
         Source,
+        Related,
         Track,
         Live,
         Hub,

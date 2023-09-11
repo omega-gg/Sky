@@ -438,6 +438,11 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
             applySource(nodeBase, node->value, duration);
         }
         else extractSource(node->children);
+
+        if (origin.isEmpty() == false)
+        {
+            source = reader.extractString("hub");
+        }
     }
     else
     {
@@ -445,7 +450,9 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
         if (origin.isEmpty() == false)
         {
-            type = WControllerPlaylist::Redirect;
+            type = WControllerPlaylist::Related;
+
+            source = reader.extractString("hub");
         }
     }
 }
@@ -1064,7 +1071,7 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
 
         if (related.isEmpty() == false)
         {
-            type = WControllerPlaylist::Redirect;
+            type = WControllerPlaylist::Related;
 
             origin = related;
 
@@ -1521,11 +1528,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         if (id.isEmpty() == false)
         {
-            WTrack track(backend->getUrlTrack(id), WTrack::Default);
-
-            playlist->addTrack(track);
-
-            playlist->loadTrack(0);
+            playlist->addSource(backend->getUrlTrack(id), true);
 
             if (getDataRelated(backend, playlist, id) == false)
             {
@@ -3881,15 +3884,16 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Source)
     {
+        if (source.isEmpty() == false)
+        {
+            playlist->addSource(source, true);
+        }
+
         WBackendNet * backend = wControllerPlaylist->backendFromTrack(origin);
 
         if (backend)
         {
-            WTrack track(origin, WTrack::Default);
-
-            playlist->addTrack(track);
-
-            playlist->loadTrack(0);
+            playlist->addSource(origin, true);
 
             playlist->d_func()->setQueryLoaded();
 
@@ -3904,15 +3908,28 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
         else
         {
+            // NOTE: We want the currentTime in seconds.
             QString time = QString::number(data.currentTime / 1000);
 
-            // NOTE: We want the currentTime in seconds.
             origin = WControllerNetwork::applyFragmentValue(origin, "t", time);
 
             origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin);
 
             applyNextPlaylist(playlist, origin, indexNext);
         }
+
+        return;
+    }
+    else if (type == WControllerPlaylist::Related)
+    {
+        if (source.isEmpty() == false)
+        {
+            playlist->addSource(source, true);
+        }
+
+        playlist->applySource(origin);
+
+        applyNextPlaylist(playlist, origin, indexNext);
 
         return;
     }
@@ -4441,7 +4458,9 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (urlTracks.count() == 1)
     {
-        WBackendNet * backend = backendTrack(source, playlist, 0);
+        int index = playlist->count() - 1;
+
+        WBackendNet * backend = backendTrack(source, playlist, index);
 
         if (backend)
         {
@@ -4449,7 +4468,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             if (id.isEmpty() == false)
             {
-                playlist->loadTrack(0);
+                playlist->loadTrack(index);
 
                 playlist->d_func()->setQueryLoaded();
 

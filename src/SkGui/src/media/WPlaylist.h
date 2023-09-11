@@ -134,9 +134,17 @@ public: // Interface
     Q_INVOKABLE int insertTrack (int index, const WTrack        & track);
     Q_INVOKABLE int insertTracks(int index, const QList<WTrack> & tracks);
 
-    Q_INVOKABLE int addSource(const QString & url);
+    Q_INVOKABLE int addSource(const QString & url, bool load = false);
 
-    Q_INVOKABLE int insertSource(int index, const QString & url);
+    Q_INVOKABLE int insertSource(int index, const QString & url, bool load = false);
+
+    // NOTE: This functions adds multiple source urls separated by a '\n'.
+    Q_INVOKABLE int addSources(const QString & urls);
+
+    // NOTE: This functions inserts multiple source urls separated by a '\n'.
+    Q_INVOKABLE int insertSources(int index, const QString & urls);
+
+    //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE void moveTrack(int from, int to);
 
