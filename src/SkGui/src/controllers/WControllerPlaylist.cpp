@@ -3884,7 +3884,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Source)
     {
-        if (source.isEmpty() == false)
+        if (source.isEmpty() == false) // hub
         {
             playlist->addSource(source, true);
         }
@@ -3922,7 +3922,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Related)
     {
-        if (source.isEmpty() == false)
+        if (source.isEmpty() == false) // hub
         {
             playlist->addSource(source, true);
         }

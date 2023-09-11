@@ -1147,11 +1147,13 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     if (load)
     {
-        int result = insertTrack(index, track);
+        if (insertTrack(index, track))
+        {
+            loadTrack(index);
 
-        loadTrack(index);
-
-        return result;
+            return 1;
+        }
+        else return 0;
     }
     else return insertTrack(index, track);
 }

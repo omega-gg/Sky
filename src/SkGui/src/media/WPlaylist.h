@@ -138,10 +138,10 @@ public: // Interface
 
     Q_INVOKABLE int insertSource(int index, const QString & url, bool load = false);
 
-    // NOTE: This functions adds multiple source urls separated by a '\n'.
+    // NOTE: This functions adds multiple sources separated by a '\n'.
     Q_INVOKABLE int addSources(const QString & urls);
 
-    // NOTE: This functions inserts multiple source urls separated by a '\n'.
+    // NOTE: This functions inserts multiple sources separated by a '\n'.
     Q_INVOKABLE int insertSources(int index, const QString & urls);
 
     //---------------------------------------------------------------------------------------------
