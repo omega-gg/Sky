@@ -29,10 +29,10 @@
 #ifndef SK_NO_DECLARATIVESCANNER
 
 // Forward declarations
-class WDeclarativeScannerPrivate;
-class WDeclarativePlayer;
-class WDeclarativeImage;
-class WBarcodeResult;
+class  WDeclarativeScannerPrivate;
+class  WDeclarativePlayer;
+class  WDeclarativeImage;
+struct WBarcodeResult;
 
 #ifdef QT_6
 Q_MOC_INCLUDE("WDeclarativePlayer")
