@@ -420,7 +420,11 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
         if (type == WTrack::Channel)
         {
-            currentTime = WControllerApplication::currentDateToMSecsWeek();
+            QString timeZone = reader.extractString("timezone");
+
+            QDateTime date = WControllerApplication::currentDateUtc(timeZone);
+
+            currentTime = WControllerApplication::getMsecsWeek(date);
 
             if (children.isEmpty())
             {

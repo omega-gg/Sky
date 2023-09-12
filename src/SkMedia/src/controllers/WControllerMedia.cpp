@@ -405,7 +405,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 }
                 else extractSource(nodes);
 
-                if (source.isEmpty()) applyEmpty(currentTime);
+                if (source.isEmpty()) applyEmpty();
 
                 return;
             }
@@ -416,7 +416,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     extractSource(children);
 
-    if (source.isEmpty()) applyEmpty(currentTime);
+    if (source.isEmpty()) applyEmpty();
 }
 
 void WControllerMediaData::applyM3u(const QByteArray & array, const QString & url)
@@ -555,7 +555,7 @@ void WControllerMediaData::applySource(const QString & url, int duration)
     timeA -= duration;
 }
 
-void WControllerMediaData::applyEmpty(int currentTime)
+void WControllerMediaData::applyEmpty()
 {
     if (currentTime >= duration) return;
 
