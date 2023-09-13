@@ -26,14 +26,12 @@
 // Qt includes
 #include <QObject>
 #include <QSizeF>
+#include <QHash>
 #ifndef SK_NO_QML
 #include <QImage>
 #endif
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
 #include <QSGGeometryNode>
-#endif
-#ifdef QT_4
-#include <QHash>
 #endif
 
 // Sk includes
