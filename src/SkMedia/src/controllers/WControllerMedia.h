@@ -168,7 +168,7 @@ private: // Functions
 
     void applySource(const QString & url, int duration);
 
-    void applyEmpty(int currentTime);
+    void applyEmpty();
 
 public: // Variables
     WTrack::Type type;
