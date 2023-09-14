@@ -166,8 +166,6 @@ private: // Functions
 
     void applyMedia(const WYamlNodeBase & node, const QString & url);
 
-    void applySource(const QString & url, int duration);
-
     void applyEmpty();
 
 public: // Variables

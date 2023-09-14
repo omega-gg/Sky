@@ -340,7 +340,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 durations.append(durationSource);
 
-                if (durationSource < 0)
+                if (durationSource <= 0)
                 {
                     startSource = -durationSource;
 
@@ -365,17 +365,19 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 int durationSource = durations.at(i);
 
-                if (durationSource < 0)
+                if (durationSource <= 0)
                 {
                     start = -durationSource;
 
                     continue;
                 }
 
-                timeA += durationSource;
+                int time = timeA + durationSource;
 
-                if (currentTime > timeA)
+                if (currentTime >= time)
                 {
+                    timeA = time;
+
                     start = 0;
 
                     continue;
@@ -388,7 +390,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (media.isEmpty() == false)
                 {
-                    applySource(media, durationSource);
+                    source = media;
+
+                    timeB = timeA + durationSource;
 
                     return;
                 }
@@ -401,7 +405,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (nodes.isEmpty())
                 {
-                    applySource(node->value, durationSource);
+                    source = node->value;
+
+                    timeB = timeA + durationSource;
                 }
                 else extractSource(nodes);
 
@@ -468,17 +474,19 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
         int durationSource = WControllerPlaylist::vbmlDuration(child, start);
 
-        if (durationSource < 0)
+        if (durationSource <= 0)
         {
             start = -durationSource;
 
             continue;
         }
 
-        timeA += durationSource;
+        int time = timeA + durationSource;
 
-        if (currentTime > timeA)
+        if (currentTime >= time)
         {
+            timeA = time;
+
             start = 0;
 
             continue;
@@ -489,7 +497,9 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
         if (media.isEmpty() == false)
         {
-            applySource(media, durationSource);
+            source = media;
+
+            timeB = timeA + durationSource;
 
             return;
         }
@@ -502,7 +512,9 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
         if (nodes.isEmpty())
         {
-            applySource(node->value, durationSource);
+            source = node->value;
+
+            timeB = timeA + durationSource;
         }
         else extractSource(nodes);
 
@@ -544,15 +556,6 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
     source = url;
 
     timeB = timeA + durationSource;
-}
-
-void WControllerMediaData::applySource(const QString & url, int duration)
-{
-    source = url;
-
-    timeB = timeA;
-
-    timeA -= duration;
 }
 
 void WControllerMediaData::applyEmpty()

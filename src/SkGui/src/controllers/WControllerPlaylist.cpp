@@ -441,7 +441,26 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             applySource(nodeBase, node->value, duration);
         }
-        else extractSource(node->children);
+        else
+        {
+            const WYamlNodeBase & nodeBase = reader.node();
+
+            int start = nodeBase.extractMsecs("at");
+
+            int duration = WControllerPlaylist::vbmlDuration(nodeBase, start);
+
+            // NOTE: If the duration is invalid we assume that the track is long enough.
+            if (duration != -1 && currentTime >= duration)
+            {
+                currentTime -= duration;
+
+                return;
+            }
+
+            currentTime += start;
+
+            extractSource(node->children);
+        }
 
         if (origin.isEmpty() == false)
         {
@@ -1063,7 +1082,7 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
     {
         int durationSource = WControllerPlaylist::vbmlDuration(child, child.extractMsecs("at"));
 
-        if (currentTime > durationSource)
+        if (currentTime >= durationSource)
         {
             currentTime -= durationSource;
 
@@ -1104,7 +1123,7 @@ void WControllerPlaylistData::applySource(const WYamlNodeBase & node,
                                           const QString       & url, int duration)
 {
     // NOTE: If the duration is invalid we assume that the track is long enough.
-    if (duration != -1 && currentTime > duration)
+    if (duration != -1 && currentTime >= duration)
     {
         currentTime -= duration;
 
