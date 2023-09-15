@@ -98,7 +98,7 @@ ImageScale
 
         pRect = rect;
 
-        pHeight = rect.height / 16;
+        pHeight = rect.height / 24;
 
         marginRight = rect.x;
         marginTop   = rect.y;
