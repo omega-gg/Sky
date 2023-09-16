@@ -135,8 +135,6 @@ void WBackendManagerPrivate::loadSources(bool play)
 
             type = Track;
 
-            q->setWatermark(QString());
-
             backendInterface->loadSource(source, duration, currentTime, NULL);
 
             if (play == false) return;
@@ -216,8 +214,6 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         if (currentMedia.isEmpty())
         {
-            q->setWatermark(QString());
-
             q->stop();
 
             return;
@@ -226,8 +222,6 @@ void WBackendManagerPrivate::applySources(bool play)
         loaded = true;
 
         type = Track;
-
-        q->setWatermark(QString());
 
         loadSource(source, currentMedia, currentTime);
 
@@ -262,16 +256,12 @@ void WBackendManagerPrivate::applySources(bool play)
             QDateTime date = WControllerApplication::currentDateUtc(timeZone);
 
             q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
-
-            q->setWatermark(reply->watermark());
         }
         else
         {
             type = MultiTrack;
 
             loop = (typeRoot == WTrack::Hub);
-
-            q->setWatermark(QString());
         }
 
         this->timeA = timeA;

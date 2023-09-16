@@ -293,13 +293,6 @@ void WAbstractHook::setQualityActive(WAbstractBackend::Quality quality)
 }
 
 //-------------------------------------------------------------------------------------------------
-
-void WAbstractHook::setWatermark(const QString & url)
-{
-    Q_D(WAbstractHook); d->backend->setWatermark(url);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Backend abstract functions
 
 bool WAbstractHook::backendSetSource(const QString & url, const WMediaReply * reply)

@@ -1074,19 +1074,6 @@ void WAbstractBackend::setQualityActive(Quality quality)
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractBackend::setWatermark(const QString & url)
-{
-    Q_D(WAbstractBackend);
-
-    if (d->watermark == url) return;
-
-    d->watermark = url;
-
-    emit watermarkChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WAbstractBackend::deleteNow()
 {
     Q_D(WAbstractBackend);
@@ -1668,13 +1655,6 @@ void WAbstractBackend::setSubtitle(const QString & subtitle)
     d->subtitle = subtitle;
 
     emit subtitleChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString WAbstractBackend::watermark() const
-{
-    Q_D(const WAbstractBackend); return d->watermark;
 }
 
 //=================================================================================================

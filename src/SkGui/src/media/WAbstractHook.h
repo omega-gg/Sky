@@ -107,8 +107,6 @@ protected: // Functions
     void setOutputActive (WAbstractBackend::Output  output);
     void setQualityActive(WAbstractBackend::Quality quality);
 
-    void setWatermark(const QString & watermark);
-
     //---------------------------------------------------------------------------------------------
     // Backend abstract functions
 
