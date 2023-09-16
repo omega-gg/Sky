@@ -41,6 +41,9 @@ GridTouch
     property int padding  : st.gridPlaylist_padding
     property int padding2x: padding * 2
 
+    // NOTE: The minimum tracks to load.
+    property int minimumLoad: 8
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -117,15 +120,24 @@ GridTouch
     {
         if (playlist == null) return;
 
+        var count = pGetCount();
+
+        if (count < minimumLoad)
+        {
+            var index = Math.max(0, pGetIndex() - Math.round((minimumLoad - count) / 2));
+
+            // NOTE: We skip tracks that were reloaded less than 1 minute ago.
+            playlist.reloadTracks(index, minimumLoad, 60000);
+        }
         // NOTE: We skip tracks that were reloaded less than 1 minute ago.
-        playlist.reloadTracks(pGetIndex(), pGetCount(), 60000);
+        else playlist.reloadTracks(pGetIndex(), count, 60000);
     }
 
     //---------------------------------------------------------------------------------------------
 
     function pGetIndex()
     {
-        var count = width / cellWidth;
+        var count = Math.round(width / cellWidth);
 
 //#QT_4
         return Math.floor(contentY / cellHeight) * count;
@@ -137,7 +149,7 @@ GridTouch
 
     function pGetCount()
     {
-        var count = width / cellWidth;
+        var count = Math.round(width / cellWidth);
 
         // NOTE: We add 1 to cover the entire region when half a track is exposed at the top and
         //       the bottom of the list.

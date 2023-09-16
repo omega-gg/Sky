@@ -665,11 +665,11 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     else return NULL;
 }
 
-/* Q_INVOKABLE */ void WControllerFile::reloadFile(const QString & url, int maxHost)
+/* Q_INVOKABLE */ void WControllerFile::reloadFile(const QString & url, int delay, int maxHost)
 {
     Q_D(WControllerFile);
 
-    if (d->cache) d->cache->reloadFile(url, maxHost);
+    if (d->cache) d->cache->reloadFile(url, delay, maxHost);
 }
 
 /* Q_INVOKABLE */ WCacheFile * WControllerFile::getHttp(const QString & url, QObject * parent,

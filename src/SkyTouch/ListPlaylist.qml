@@ -35,6 +35,9 @@ ListTouch
 
     property int sizeTrack: st.buttonTouch_size + spacing
 
+    // NOTE: The minimum tracks to load.
+    property int minimumLoad: 8
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -104,8 +107,17 @@ ListTouch
     {
         if (playlist == null) return;
 
+        var count = pGetCount();
+
+        if (count < minimumLoad)
+        {
+            var index = Math.max(0, pGetIndex() - Math.round((minimumLoad - count) / 2));
+
+            // NOTE: We skip tracks that were reloaded less than 1 minute ago.
+            playlist.reloadTracks(index, minimumLoad, 60000);
+        }
         // NOTE: We skip tracks that were reloaded less than 1 minute ago.
-        playlist.reloadTracks(pGetIndex(), pGetCount(), 60000);
+        else playlist.reloadTracks(pGetIndex(), count, 60000);
     }
 
     //---------------------------------------------------------------------------------------------

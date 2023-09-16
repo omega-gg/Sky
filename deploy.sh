@@ -18,7 +18,7 @@ SSL_versionB="1.1.1s"
 
 VLC_version="3.0.18"
 
-libtorrent_version="2.0.8"
+libtorrent_version="2.0.9"
 
 Boost_version="1.78.0"
 

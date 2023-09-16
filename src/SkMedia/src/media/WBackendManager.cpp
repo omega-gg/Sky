@@ -127,8 +127,6 @@ void WBackendManagerPrivate::loadSources(bool play)
     {
         if (hook->check(source))
         {
-            Q_Q(WBackendManager);
-
             setBackendInterface(hook);
 
             loaded = true;
