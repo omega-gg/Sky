@@ -122,8 +122,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onOutputAdded(const WBackendOutput &))
 
     Q_PRIVATE_SLOT(d_func(), void onOutputRemoved(int))
-
-    Q_PRIVATE_SLOT(d_func(), void onOutputChanged())
 };
 
 #include <private/WBackendManager_p>

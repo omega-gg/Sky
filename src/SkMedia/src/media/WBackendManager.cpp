@@ -109,8 +109,6 @@ void WBackendManagerPrivate::init()
                      q,       SLOT(onOutputAdded(const WBackendOutput &)));
 
     QObject::connect(backend, SIGNAL(outputRemoved(int)), q, SLOT(onOutputRemoved(int)));
-
-    QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -526,6 +524,8 @@ void WBackendManagerPrivate::clearActive()
 {
     Q_Q(WBackendManager);
 
+    q->setProgress(0);
+
     q->setOutputActive (WAbstractBackend::OutputNone);
     q->setQualityActive(WAbstractBackend::QualityDefault);
 }
@@ -794,21 +794,17 @@ void WBackendManagerPrivate::onError(const QString & message)
 
 void WBackendManagerPrivate::onOutputAdded(const WBackendOutput & output)
 {
-    Q_Q(WBackendManager); q->addOutput(output);
+    Q_Q(WBackendManager);
+
+    outputs.append(q->addOutput(output));
 }
 
 void WBackendManagerPrivate::onOutputRemoved(int index)
 {
-    Q_Q(WBackendManager); q->removeOutput(q->outputPointerAt(index));
-}
-
-void WBackendManagerPrivate::onOutputChanged()
-{
     Q_Q(WBackendManager);
 
-    WAbstractBackend * backend = items.first().backend;
-
-    q->setCurrentOutput(backend->currentOutput());
+    // NOTE: We ignore the 'Default' output.
+    q->removeOutput(outputs.takeAt(index - 1));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -949,6 +945,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     if (d->type == WBackendManagerPrivate::Track)
     {
         d->stopBackend();
+
+        d->clearActive();
 
         return d->backend->isStopped();
     }

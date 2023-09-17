@@ -138,8 +138,6 @@ public: // Slots
 
     void onOutputRemoved(int);
 
-    void onOutputChanged();
-
 public: // Variables
     QList<WBackendManagerItem> items;
 
@@ -175,6 +173,8 @@ public: // Variables
     int timerReload;
 
     QElapsedTimer time;
+
+    QList<const WBackendOutput *> outputs;
 
 protected:
     W_DECLARE_PUBLIC(WBackendManager)
