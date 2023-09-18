@@ -792,15 +792,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
     p->timeUpdate = Sk::currentDateToMSecs();
 
     // NOTE: Sometimes we don't want to reload a track too soon.
-    if (p->timeUpdate - timeUpdate < delay)
-    {
-        if (p->state == WTrack::Loaded)
-        {
-            wControllerFile->reloadFile(p->cover);
-        }
-
-        return;
-    }
+    if (p->timeUpdate - timeUpdate < delay) return;
 
 #ifdef SK_NO_TORRENT
     WControllerPlaylistPrivate * pController = wControllerPlaylist->d_func();
@@ -831,7 +823,6 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
         {
             loadCover(track, QNetworkRequest::NormalPriority);
         }
-        else wControllerFile->reloadFile(p->cover);
     }
     else if (state == WTrack::LoadCover)
     {
