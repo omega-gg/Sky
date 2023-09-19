@@ -74,7 +74,7 @@ Style
 
     property int borderImageShadow_adjust: dp2
 
-    property real borderImageShadow_shadowOpacity: 1.0
+    property real borderImageShadow_shadowOpacity: 0.8
 
     property url borderImageShadow_source: "pictures/shadow.png"
 
