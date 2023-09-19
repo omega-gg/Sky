@@ -18,4 +18,5 @@ SUBDIRS = $$PATH/3rdparty \
           $$PATH/BML \
           $$PATH/VBML \
           $$PATH/vox \
+          $$PATH/voxPopuli \
           $$PATH/status \
