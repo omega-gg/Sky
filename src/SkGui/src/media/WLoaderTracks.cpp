@@ -20,9 +20,9 @@
 */
 //=================================================================================================
 
-#include "WLoaderHub.h"
+#include "WLoaderTracks.h"
 
-#ifndef SK_NO_LOADERHUB
+#ifndef SK_NO_LOADERTRACKS
 
 // Sk includes
 #include <WControllerPlaylist>
@@ -31,17 +31,17 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int LOADERHUB_MAX_COUNT = 500;
+static const int LOADERTRACKS_MAX_COUNT = 500;
 
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
-WLoaderHubPrivate::WLoaderHubPrivate(WLoaderHub * p) : WLoaderPlaylistPrivate(p) {}
+WLoaderTracksPrivate::WLoaderTracksPrivate(WLoaderTracks * p) : WLoaderPlaylistPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
-void WLoaderHubPrivate::init()
+void WLoaderTracksPrivate::init()
 {
     type = WTrack::Track;
 
@@ -56,11 +56,11 @@ void WLoaderHubPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WLoaderHubPrivate::updateSources()
+void WLoaderTracksPrivate::updateSources()
 {
     if (history == NULL) return;
 
-    Q_Q(WLoaderHub);
+    Q_Q(WLoaderTracks);
 
     // NOTE: When the sources are empty we clear the previously loaded tracks.
     if (sources.isEmpty()) q->clearTracks();
@@ -83,14 +83,14 @@ void WLoaderHubPrivate::updateSources()
     QStringList urls = getSourcesInput();
 
     method.invoke(reply, Q_ARG(const QStringList &, urls),
-                         Q_ARG(const QStringList &, sources), Q_ARG(int, LOADERHUB_MAX_COUNT));
+                         Q_ARG(const QStringList &, sources), Q_ARG(int, LOADERTRACKS_MAX_COUNT));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WLoaderHubPrivate::processQueries()
+void WLoaderTracksPrivate::processQueries()
 {
-    Q_Q(WLoaderHub);
+    Q_Q(WLoaderTracks);
 
     QHash<QString, const WTrack *> tracks;
 
@@ -128,9 +128,9 @@ void WLoaderHubPrivate::processQueries()
     q->setQueryLoading(false);
 }
 
-void WLoaderHubPrivate::clearQueries()
+void WLoaderTracksPrivate::clearQueries()
 {
-    Q_Q(WLoaderHub);
+    Q_Q(WLoaderTracks);
 
     if (reply)
     {
@@ -145,7 +145,7 @@ void WLoaderHubPrivate::clearQueries()
 
 //-------------------------------------------------------------------------------------------------
 
-QStringList WLoaderHubPrivate::getSourcesInput() const
+QStringList WLoaderTracksPrivate::getSourcesInput() const
 {
     QStringList list;
 
@@ -170,7 +170,7 @@ QStringList WLoaderHubPrivate::getSourcesInput() const
     return list;
 }
 
-QStringList WLoaderHubPrivate::getSourcesOutput() const
+QStringList WLoaderTracksPrivate::getSourcesOutput() const
 {
     QStringList list;
 
@@ -193,8 +193,8 @@ QStringList WLoaderHubPrivate::getSourcesOutput() const
 
 //-------------------------------------------------------------------------------------------------
 
-QHash<QString, const WTrack *> WLoaderHubPrivate::getTracks(WPlaylist   * playlist,
-                                                            QStringList * urls) const
+QHash<QString, const WTrack *> WLoaderTracksPrivate::getTracks(WPlaylist   * playlist,
+                                                               QStringList * urls) const
 {
     QHash<QString, const WTrack *> hash;
 
@@ -218,21 +218,21 @@ QHash<QString, const WTrack *> WLoaderHubPrivate::getTracks(WPlaylist   * playli
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WLoaderHubPrivate::onPlaylistUpdated()
+void WLoaderTracksPrivate::onPlaylistUpdated()
 {
     if (active) updateSources();
 }
 
-void WLoaderHubPrivate::onPlaylistDestroyed()
+void WLoaderTracksPrivate::onPlaylistDestroyed()
 {
     history = NULL;
 
     if (active) clearQueries();
 }
 
-void WLoaderHubPrivate::onLoaded(const WLoaderPlaylistData & data)
+void WLoaderTracksPrivate::onLoaded(const WLoaderPlaylistData & data)
 {
-    Q_Q(WLoaderHub);
+    Q_Q(WLoaderTracks);
 
     reply = NULL;
 
@@ -242,41 +242,41 @@ void WLoaderHubPrivate::onLoaded(const WLoaderPlaylistData & data)
 }
 
 //=================================================================================================
-// WLoaderHub
+// WLoaderTracks
 //=================================================================================================
 
-/* explicit */ WLoaderHub::WLoaderHub(WLibraryFolder * folder, int id)
-    : WLoaderPlaylist(new WLoaderHubPrivate(this), folder, id)
+/* explicit */ WLoaderTracks::WLoaderTracks(WLibraryFolder * folder, int id)
+    : WLoaderPlaylist(new WLoaderTracksPrivate(this), folder, id)
 {
-    Q_D(WLoaderHub); d->init();
+    Q_D(WLoaderTracks); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Protected WLoaderPlaylist implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WLoaderHub::onStart()
+/* virtual */ void WLoaderTracks::onStart()
 {
-    Q_D(WLoaderHub); d->updateSources();
+    Q_D(WLoaderTracks); d->updateSources();
 }
 
-/* virtual */ void WLoaderHub::onStop()
+/* virtual */ void WLoaderTracks::onStop()
 {
-    Q_D(WLoaderHub); d->clearQueries();
+    Q_D(WLoaderTracks); d->clearQueries();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WTrack::Type WLoaderHub::type() const
+WTrack::Type WLoaderTracks::type() const
 {
-    Q_D(const WLoaderHub); return d->type;
+    Q_D(const WLoaderTracks); return d->type;
 }
 
-void WLoaderHub::setType(WTrack::Type type)
+void WLoaderTracks::setType(WTrack::Type type)
 {
-    Q_D(WLoaderHub);
+    Q_D(WLoaderTracks);
 
     if (d->type == type) return;
 
@@ -287,14 +287,14 @@ void WLoaderHub::setType(WTrack::Type type)
     emit typeChanged();
 }
 
-WPlaylist * WLoaderHub::history() const
+WPlaylist * WLoaderTracks::history() const
 {
-    Q_D(const WLoaderHub); return d->history;
+    Q_D(const WLoaderTracks); return d->history;
 }
 
-void WLoaderHub::setHistory(WPlaylist * history)
+void WLoaderTracks::setHistory(WPlaylist * history)
 {
-    Q_D(WLoaderHub);
+    Q_D(WLoaderTracks);
 
     if (d->history == history) return;
 
@@ -318,14 +318,14 @@ void WLoaderHub::setHistory(WPlaylist * history)
     emit historyChanged();
 }
 
-QStringList WLoaderHub::baseUrls() const
+QStringList WLoaderTracks::baseUrls() const
 {
-    Q_D(const WLoaderHub); return d->baseUrls;
+    Q_D(const WLoaderTracks); return d->baseUrls;
 }
 
-void WLoaderHub::setBaseUrls(const QStringList & urls)
+void WLoaderTracks::setBaseUrls(const QStringList & urls)
 {
-    Q_D(WLoaderHub);
+    Q_D(WLoaderTracks);
 
     if (d->baseUrls == urls) return;
 
@@ -336,4 +336,4 @@ void WLoaderHub::setBaseUrls(const QStringList & urls)
     emit baseUrlsChanged();
 }
 
-#endif // SK_NO_LOADERHUB
+#endif // SK_NO_LOADERTRACKS

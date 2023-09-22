@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WLOADERHUB_P_H
-#define WLOADERHUB_P_H
+#ifndef WLOADERTRACKS_P_H
+#define WLOADERTRACKS_P_H
 
 /*  W A R N I N G
     -------------
@@ -39,12 +39,12 @@
 // Private includes
 #include <private/WLoaderPlaylist_p>
 
-#ifndef SK_NO_LOADERHUB
+#ifndef SK_NO_LOADERTRACKS
 
-class SK_GUI_EXPORT WLoaderHubPrivate : public WLoaderPlaylistPrivate
+class SK_GUI_EXPORT WLoaderTracksPrivate : public WLoaderPlaylistPrivate
 {
 public:
-    WLoaderHubPrivate(WLoaderHub * p);
+    WLoaderTracksPrivate(WLoaderTracks * p);
 
     void init();
 
@@ -77,8 +77,8 @@ public: // Variables
     QMetaMethod method;
 
 protected:
-    W_DECLARE_PUBLIC(WLoaderHub)
+    W_DECLARE_PUBLIC(WLoaderTracks)
 };
 
-#endif // SK_NO_LOADERHUB
-#endif // WLOADERHUB_P_H
+#endif // SK_NO_LOADERTRACKS
+#endif // WLOADERTRACKS_P_H

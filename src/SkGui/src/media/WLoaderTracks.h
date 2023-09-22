@@ -20,18 +20,18 @@
 */
 //=================================================================================================
 
-#ifndef WLOADERHUB_H
-#define WLOADERHUB_H
+#ifndef WLOADERTRACKS_H
+#define WLOADERTRACKS_H
 
 // Sk includes
 #include <WLoaderPlaylist>
 
-#ifndef SK_NO_LOADERHUB
+#ifndef SK_NO_LOADERTRACKS
 
 // Forward declarations
-class WLoaderHubPrivate;
+class WLoaderTracksPrivate;
 
-class SK_GUI_EXPORT WLoaderHub : public WLoaderPlaylist
+class SK_GUI_EXPORT WLoaderTracks : public WLoaderPlaylist
 {
     Q_OBJECT
 
@@ -42,7 +42,7 @@ class SK_GUI_EXPORT WLoaderHub : public WLoaderPlaylist
     Q_PROPERTY(QStringList baseUrls READ baseUrls WRITE setBaseUrls NOTIFY baseUrlsChanged)
 
 public:
-    WLoaderHub(WLibraryFolder * folder, int id);
+    WLoaderTracks(WLibraryFolder * folder, int id);
 
 protected: // WLoaderPlaylist implementation
     /* virtual */ void onStart();
@@ -66,7 +66,7 @@ public: // Properties
     void        setBaseUrls(const QStringList & urls);
 
 private:
-    W_DECLARE_PRIVATE(WLoaderHub)
+    W_DECLARE_PRIVATE(WLoaderTracks)
 
     Q_PRIVATE_SLOT(d_func(), void onPlaylistUpdated  ())
     Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())
@@ -74,7 +74,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderPlaylistData &))
 };
 
-#include <private/WLoaderHub_p>
+#include <private/WLoaderTracks_p>
 
-#endif // SK_NO_LOADERHUB
-#endif // WLOADERHUB_H
+#endif // SK_NO_LOADERTRACKS
+#endif // WLOADERTRACKS_H
