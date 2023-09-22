@@ -66,11 +66,6 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
         }
     }
 
-    if (Sk::versionIsLower(api, "1.0.5"))
-    {
-        data.replace(WRegExp("\ncurrentTime"), "\nstart");
-    }
-
     //---------------------------------------------------------------------------------------------
     // NOTE: We replace the VBML comment with the right 'api' key.
 
