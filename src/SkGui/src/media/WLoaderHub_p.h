@@ -66,9 +66,11 @@ public: // Slots
     void onLoaded(const WLoaderPlaylistData & data);
 
 public: // Variables
+    WTrack::Type type;
+
     WPlaylist * history;
 
-    QStringList hubs;
+    QStringList baseUrls;
 
     WLoaderPlaylistReply * reply;
 

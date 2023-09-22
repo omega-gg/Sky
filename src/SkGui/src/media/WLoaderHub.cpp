@@ -43,6 +43,8 @@ WLoaderHubPrivate::WLoaderHubPrivate(WLoaderHub * p) : WLoaderPlaylistPrivate(p)
 
 void WLoaderHubPrivate::init()
 {
+    type = WTrack::Track;
+
     history = NULL;
 
     reply = NULL;
@@ -149,7 +151,7 @@ QStringList WLoaderHubPrivate::getSourcesInput() const
 
     foreach (const WTrack * track, history->trackPointers())
     {
-        if (track->isHub() == false) continue;
+        if (track->type() != type) continue;
 
         QString source = WControllerPlaylist::cleanSource(track->source());
 
@@ -158,11 +160,11 @@ QStringList WLoaderHubPrivate::getSourcesInput() const
         list.append(source);
     }
 
-    foreach (const QString & hub, hubs)
+    foreach (const QString & url, baseUrls)
     {
-        if (list.contains(hub)) continue;
+        if (list.contains(url)) continue;
 
-        list.append(hub);
+        list.append(url);
     }
 
     return list;
@@ -267,6 +269,24 @@ void WLoaderHubPrivate::onLoaded(const WLoaderPlaylistData & data)
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+WTrack::Type WLoaderHub::type() const
+{
+    Q_D(const WLoaderHub); return d->type;
+}
+
+void WLoaderHub::setType(WTrack::Type type)
+{
+    Q_D(WLoaderHub);
+
+    if (d->type == type) return;
+
+    d->type = type;
+
+    if (d->active) d->updateSources();
+
+    emit typeChanged();
+}
+
 WPlaylist * WLoaderHub::history() const
 {
     Q_D(const WLoaderHub); return d->history;
@@ -298,22 +318,22 @@ void WLoaderHub::setHistory(WPlaylist * history)
     emit historyChanged();
 }
 
-QStringList WLoaderHub::hubs() const
+QStringList WLoaderHub::baseUrls() const
 {
-    Q_D(const WLoaderHub); return d->hubs;
+    Q_D(const WLoaderHub); return d->baseUrls;
 }
 
-void WLoaderHub::setHubs(const QStringList & urls)
+void WLoaderHub::setBaseUrls(const QStringList & urls)
 {
     Q_D(WLoaderHub);
 
-    if (d->hubs == urls) return;
+    if (d->baseUrls == urls) return;
 
-    d->hubs = urls;
+    d->baseUrls = urls;
 
     if (d->active) d->updateSources();
 
-    emit hubsChanged();
+    emit baseUrlsChanged();
 }
 
 #endif // SK_NO_LOADERHUB

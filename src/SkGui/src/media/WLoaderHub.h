@@ -35,9 +35,11 @@ class SK_GUI_EXPORT WLoaderHub : public WLoaderPlaylist
 {
     Q_OBJECT
 
+    Q_PROPERTY(WTrack::Type type READ type WRITE setType NOTIFY typeChanged)
+
     Q_PROPERTY(WPlaylist * history READ history WRITE setHistory NOTIFY historyChanged)
 
-    Q_PROPERTY(QStringList hubs READ hubs WRITE setHubs NOTIFY hubsChanged)
+    Q_PROPERTY(QStringList baseUrls READ baseUrls WRITE setBaseUrls NOTIFY baseUrlsChanged)
 
 public:
     WLoaderHub(WLibraryFolder * folder, int id);
@@ -47,16 +49,21 @@ protected: // WLoaderPlaylist implementation
     /* virtual */ void onStop ();
 
 signals:
+    void typeChanged();
+
     void historyChanged();
 
-    void hubsChanged();
+    void baseUrlsChanged();
 
 public: // Properties
+    WTrack::Type type() const;
+    void         setType(WTrack::Type type);
+
     WPlaylist * history() const;
     void        setHistory(WPlaylist * history);
 
-    QStringList hubs() const;
-    void        setHubs(const QStringList & urls);
+    QStringList baseUrls() const;
+    void        setBaseUrls(const QStringList & urls);
 
 private:
     W_DECLARE_PRIVATE(WLoaderHub)
