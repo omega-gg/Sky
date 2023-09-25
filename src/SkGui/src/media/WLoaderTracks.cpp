@@ -251,6 +251,20 @@ void WLoaderTracksPrivate::onLoaded(const WLoaderPlaylistData & data)
     Q_D(WLoaderTracks); d->init();
 }
 
+#ifdef QT_4
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+// QML
+
+/* Q_INVOKABLE */ void WLoaderTracks::setType(int type)
+{
+    setType(static_cast<WTrack::Type> (type));
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Protected WLoaderPlaylist implementation
 //-------------------------------------------------------------------------------------------------
