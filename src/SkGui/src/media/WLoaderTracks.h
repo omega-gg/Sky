@@ -35,7 +35,7 @@ class SK_GUI_EXPORT WLoaderTracks : public WLoaderPlaylist
 {
     Q_OBJECT
 
-    Q_PROPERTY(WTrack::Type type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(int type READ type WRITE setType NOTIFY typeChanged)
 
     Q_PROPERTY(WPlaylist * history READ history WRITE setHistory NOTIFY historyChanged)
 
