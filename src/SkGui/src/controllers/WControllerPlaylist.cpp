@@ -313,20 +313,14 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
         // NOTE: We keep a base url for our track source and make it compliant.
-        this->url = WControllerPlaylist::generateSource(urlBase);
-
-        parseTrack(reader, string);
+        parseTrack(reader, string, WControllerPlaylist::generateSource(urlBase));
     }
     else if (WControllerPlaylist::vbmlTypePlaylist(type))
     {
-        this->url = url;
-
         parsePlaylist(reader);
     }
     else // NOTE: We default to the playlist type.
     {
-        this->url = url;
-
         parsePlaylist(reader);
 
         // NOTE: When the playlist is invalid we add the url itself given it could be a media.
@@ -847,7 +841,8 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & type)
+void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & type,
+                                                               const QString & url)
 {
     title = reader.extractString("title");
     cover = reader.extractString("cover");
@@ -3950,8 +3945,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             playlist->addSource(source, true);
         }
 
-        playlist->applySource(origin);
-
         applyNextPlaylist(playlist, origin, indexNext);
 
         return;
@@ -3981,26 +3974,12 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         // NOTE: We select the first track right away.
         playlist->setCurrentIndex(0);
 
-        if (source.isEmpty())
+        if (source.isEmpty() == false)
         {
-             // NOTE: We always have a valid url when parsing a VBML track.
-             playlist->applySource(data.url);
-        }
-        else playlist->applySource(source);
-    }
-    else if (source.isEmpty())
-    {
-        // NOTE: We are adding tracks when origin and source are not specified.
-        playlist->addTracks(data.tracks);
-
-        QString url = data.url;
-
-        if (url.isEmpty() == false)
-        {
-            playlist->applySource(url);
+            playlist->applySource(source);
         }
     }
-    else
+    else if (source.isEmpty() == false)
     {
         playlist->applySource(source);
 
@@ -4008,6 +3987,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         return;
     }
+    // NOTE: We are adding tracks when origin and source are not specified.
+    else playlist->addTracks(data.tracks);
 
     //---------------------------------------------------------------------------------------------
     // Media sources
@@ -4313,26 +4294,12 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         // NOTE: We select the first track right away.
         playlist->setCurrentIndex(0);
 
-        if (source.isEmpty())
+        if (source.isEmpty() == false)
         {
-             // NOTE: We always have a valid url when parsing a VBML track.
-             playlist->applySource(data.url);
-        }
-        else playlist->applySource(source);
-    }
-    else if (source.isEmpty())
-    {
-        // NOTE: We are adding tracks when origin and source are not specified.
-        playlist->addTracks(data.tracks);
-
-        QString url = data.url;
-
-        if (url.isEmpty() == false)
-        {
-            playlist->applySource(url);
+            playlist->applySource(source);
         }
     }
-    else
+    else if (source.isEmpty() == false)
     {
         playlist->tryDelete();
 
@@ -4344,6 +4311,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         return;
     }
+    // NOTE: We are adding tracks when origin and source are not specified.
+    else playlist->addTracks(data.tracks);
 
     //---------------------------------------------------------------------------------------------
     // Media sources

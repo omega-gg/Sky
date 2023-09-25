@@ -437,7 +437,7 @@ public: // Static functions
     static QString generateTitle(const QString & url, const QString & urlName);
 
 private: // Functions
-    void parseTrack   (WYamlReader & reader, const QString & type);
+    void parseTrack   (WYamlReader & reader, const QString & type, const QString & url);
     void parsePlaylist(WYamlReader & reader);
 
     void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);
@@ -454,8 +454,6 @@ private: // Functions
     void applySource(const WYamlNodeBase & node, const QString & url, int duration);
 
 public: // Variables
-    QString url;
-
     int currentTime;
 
     WControllerPlaylist::Type type;
