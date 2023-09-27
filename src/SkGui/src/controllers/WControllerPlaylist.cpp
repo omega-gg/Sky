@@ -455,11 +455,6 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             extractSource(node->children);
         }
-
-        if (origin.isEmpty() == false)
-        {
-            source = reader.extractString("hub");
-        }
     }
     else
     {
@@ -468,8 +463,6 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         if (origin.isEmpty() == false)
         {
             type = WControllerPlaylist::Related;
-
-            source = reader.extractString("hub");
         }
     }
 }
@@ -3902,11 +3895,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Source)
     {
-        if (source.isEmpty() == false) // hub
-        {
-            playlist->addSource(source, true);
-        }
-
         WBackendNet * backend = wControllerPlaylist->backendFromTrack(origin);
 
         if (backend)
@@ -3940,11 +3928,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Related)
     {
-        if (source.isEmpty() == false) // hub
-        {
-            playlist->addSource(source, true);
-        }
-
         applyNextPlaylist(playlist, origin, indexNext);
 
         return;
