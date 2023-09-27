@@ -3539,7 +3539,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
             }
         }
 
-        //if (reply.clearDuplicate)
+        if (reply.clearDuplicate)
         {
             QList<WTrack> * tracks = const_cast<QList<WTrack> *> (&(reply.tracks));
 
@@ -3888,7 +3888,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         return;
     }
 
-    QString feed = query->backendQuery.url;
+    QString urlQuery = query->backendQuery.url;
 
     int indexNext = query->backendQuery.indexNext;
 
@@ -3954,7 +3954,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         //       source.
         if (indexNext)
         {
-            playlist->addSource(feed, true);
+            playlist->addSource(urlQuery, true);
 
             playlist->d_func()->setQueryLoaded();
         }
@@ -4104,7 +4104,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             }
             else track.setCover(cover);
 
-            track.setFeed(feed);
+            track.setFeed(urlQuery);
 
             playlist->addTrack(track);
         }
@@ -4248,7 +4248,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         return;
     }
 
-    QString feed = query->backendQuery.url;
+    QString urlQuery = query->backendQuery.url;
 
     int indexNext = query->backendQuery.indexNext;
 
@@ -4414,7 +4414,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
             }
             else track.setCover(cover);
 
-            track.setFeed(feed);
+            track.setFeed(urlQuery);
 
             playlist->addTrack(track);
         }
