@@ -156,6 +156,8 @@ public: // Interface
 
     Q_INVOKABLE void removeSelectedTracks();
 
+    Q_INVOKABLE void clearDuplicates();
+
     Q_INVOKABLE void clearTracks();
 
     Q_INVOKABLE void updateCover();

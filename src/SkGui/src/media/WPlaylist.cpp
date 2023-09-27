@@ -1314,6 +1314,37 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WPlaylist::clearDuplicates()
+{
+    Q_D(WPlaylist);
+
+    QStringList sources;
+
+    W_FOREACH (const WTrack & track, d->tracks)
+    {
+        sources.append(track.source());
+    }
+
+    QList<int> indexes;
+
+    for (int i = sources.count() - 1; i != -1; i--)
+    {
+        QString source = sources.at(i);
+
+        if (source.isEmpty()) continue;
+
+        int index = sources.indexOf(source);
+
+        if (i == index) continue;
+
+        indexes.append(i);
+
+        sources.replace(index, QString());
+    }
+
+    removeTracks(indexes);
+}
+
 /* Q_INVOKABLE */ void WPlaylist::clearTracks()
 {
     abortAll();
