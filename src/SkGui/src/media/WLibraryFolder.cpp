@@ -2617,7 +2617,7 @@ void WLibraryFolder::updateIndex()
 {
     clearItems();
 
-    return wControllerPlaylist->d_func()->applySourceFolder(this, source);
+    return wControllerPlaylist->d_func()->applySourceFolder(this, source, 0);
 }
 
 /* virtual */ bool WLibraryFolder::onApplyQuery(const WBackendNetQuery & query)

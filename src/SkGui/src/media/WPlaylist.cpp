@@ -812,7 +812,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 
         pController->abortQueryTrack(track);
 
-        pController->applySourceTrack(q, track, p->source);
+        pController->applySourceTrack(q, track, p->source, 0);
     }
 
     WTrack::State state = p->state;
@@ -2657,7 +2657,7 @@ void WPlaylist::endTracksRemove() const
 {
     clearTracks();
 
-    return wControllerPlaylist->d_func()->applySourcePlaylist(this, source);
+    return wControllerPlaylist->d_func()->applySourcePlaylist(this, source, 0);
 }
 
 /* virtual */ bool WPlaylist::onApplyQuery(const WBackendNetQuery & query)

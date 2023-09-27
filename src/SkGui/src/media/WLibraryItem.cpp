@@ -393,7 +393,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* virtual */ bool WLibraryItem::onApplySource(const QString & source)
 {
-    return wControllerPlaylist->d_func()->applySourceItem(this, source);
+    return wControllerPlaylist->d_func()->applySourceItem(this, source, 0);
 }
 
 /* virtual */ bool WLibraryItem::onApplyQuery(const WBackendNetQuery & query)

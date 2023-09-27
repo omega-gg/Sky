@@ -1384,8 +1384,9 @@ bool WControllerPlaylistPrivate::applyQueryItem(WLibraryItem           * item,
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
-                                                  WTrack    * track, const QString & url)
+bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist     * playlist,
+                                                  WTrack        * track,
+                                                  const QString & url, int index)
 {
     if (url.isEmpty()) return true;
 
@@ -1407,6 +1408,8 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
             if (resolveTrack(backendId, query))
             {
+                query.indexNext = index;
+
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
                 query.priority = QNetworkRequest::HighPriority;
@@ -1424,6 +1427,8 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
         if (resolveTrack(backendId, query))
         {
+            query.indexNext = index;
+
             getDataTrack(playlist, track, query);
 
             return true;
@@ -1432,7 +1437,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
     if (WControllerPlaylist::urlIsVbmlFile(source))
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.target = WBackendNetQuery::TargetVbml;
 
@@ -1442,7 +1447,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
     }
     else if (WControllerPlaylist::urlIsVbmlUri(source))
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.type   = WBackendNetQuery::TypeVbml;
         query.target = WBackendNetQuery::TargetVbml;
@@ -1453,7 +1458,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
     }
     else if (WControllerFile::urlIsImage(source))
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.type   = WBackendNetQuery::TypeImage;
         query.target = WBackendNetQuery::TargetVbml;
@@ -1481,7 +1486,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
         return true;
     }
 
-    WBackendNetQuery query(source);
+    WBackendNetQuery query(source, index);
 
     query.target = WBackendNetQuery::TargetHtml;
     query.scope  = WAbstractLoader::ScopeText;
@@ -1491,7 +1496,8 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
     return true;
 }
 
-bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const QString & url)
+bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
+                                                     const QString & url, int index)
 {
     if (url.isEmpty()) return true;
 
@@ -1513,6 +1519,8 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
             if (resolvePlaylist(backendId, query))
             {
+                query.indexNext = index;
+
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
                 query.priority = QNetworkRequest::HighPriority;
@@ -1530,6 +1538,8 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         {
             backend->tryDelete();
 
+            query.indexNext = index;
+
             getDataPlaylist(playlist, query);
 
             return true;
@@ -1545,7 +1555,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
             {
                 backend->tryDelete();
 
-                WBackendNetQuery query(source);
+                WBackendNetQuery query(source, index);
 
                 query.target = WBackendNetQuery::TargetHtml;
 
@@ -1564,6 +1574,8 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         if (query.isValid())
         {
+            query.indexNext = index;
+
             getDataPlaylist(playlist, query);
 
             return true;
@@ -1572,7 +1584,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
     if (WControllerPlaylist::urlIsVbmlFile(source))
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.target = WBackendNetQuery::TargetVbml;
 
@@ -1582,7 +1594,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
     }
     else if (WControllerPlaylist::urlIsVbmlUri(source))
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.type   = WBackendNetQuery::TypeVbml;
         query.target = WBackendNetQuery::TargetVbml;
@@ -1593,7 +1605,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
     }
     else if (WControllerFile::urlIsImage(source))
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.type   = WBackendNetQuery::TypeImage;
         query.target = WBackendNetQuery::TargetVbml;
@@ -1604,7 +1616,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
     }
     else if (WControllerPlaylist::urlIsM3u(source))
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.target = WBackendNetQuery::TargetM3u;
 
@@ -1623,7 +1635,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         if (info.isDir())
         {
-            WBackendNetQuery query(source);
+            WBackendNetQuery query(source, index);
 
             query.target = WBackendNetQuery::TargetFolder;
 
@@ -1641,7 +1653,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
                 {
                     source = WControllerNetwork::extractBaseUrl(source);
 
-                    WBackendNetQuery query(source);
+                    WBackendNetQuery query(source, index);
 
                     query.target = WBackendNetQuery::TargetFolder;
 
@@ -1651,7 +1663,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
                 }
                 else if (info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
                 {
-                    WBackendNetQuery query(source);
+                    WBackendNetQuery query(source, index);
 
                     query.target = WBackendNetQuery::TargetFile;
 
@@ -1683,7 +1695,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         return true;
     }
 
-    WBackendNetQuery query(source);
+    WBackendNetQuery query(source, index);
 
     query.target = WBackendNetQuery::TargetHtml;
     query.scope  = WAbstractLoader::ScopeText;
@@ -1693,7 +1705,8 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
     return true;
 }
 
-bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, const QString & url)
+bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
+                                                   const QString  & url, int index)
 {
     if (url.isEmpty()) return true;
 
@@ -1728,6 +1741,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             if (resolveFolder(backendId, query))
             {
+                query.indexNext = index;
+
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
                 query.priority = QNetworkRequest::HighPriority;
@@ -1745,6 +1760,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         {
             backend->tryDelete();
 
+            query.indexNext = index;
+
             getDataFolder(folder, query);
 
             return true;
@@ -1758,7 +1775,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             if (WControllerNetwork::urlIsHttp(source))
             {
-                WBackendNetQuery query(source);
+                WBackendNetQuery query(source, index);
 
                 query.target = WBackendNetQuery::TargetHtml;
                 query.id     = 1;
@@ -1786,7 +1803,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         {
             addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
-            WBackendNetQuery query(source);
+            query.indexNext = index;
 
             getDataFolder(folder, query);
 
@@ -1798,7 +1815,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     {
         addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.target = WBackendNetQuery::TargetVbml;
 
@@ -1810,7 +1827,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     {
         addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.type   = WBackendNetQuery::TypeVbml;
         query.target = WBackendNetQuery::TargetVbml;
@@ -1823,7 +1840,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     {
         addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.type   = WBackendNetQuery::TypeImage;
         query.target = WBackendNetQuery::TargetVbml;
@@ -1836,7 +1853,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     {
         addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(source, index);
 
         query.target = WBackendNetQuery::TargetM3u;
 
@@ -1867,7 +1884,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                 {
                     source = WControllerNetwork::extractBaseUrl(source);
 
-                    WBackendNetQuery query(source);
+                    WBackendNetQuery query(source, index);
 
                     query.target = WBackendNetQuery::TargetFolder;
 
@@ -1877,7 +1894,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                 }
                 else if (info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
                 {
-                    WBackendNetQuery query(source);
+                    WBackendNetQuery query(source, index);
 
                     query.target = WBackendNetQuery::TargetFile;
 
@@ -1892,7 +1909,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                 &&
                 info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
             {
-                WBackendNetQuery query(source);
+                WBackendNetQuery query(source, index);
 
                 query.target = WBackendNetQuery::TargetFile;
 
@@ -1905,7 +1922,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         {
             addFolderSearch(folder, source, info.absoluteFilePath());
 
-            WBackendNetQuery query(source);
+            WBackendNetQuery query(source, index);
 
             query.target = WBackendNetQuery::TargetFolder;
 
@@ -1928,7 +1945,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     }
     else addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
-    WBackendNetQuery query(source);
+    WBackendNetQuery query(source, index);
 
     query.target = WBackendNetQuery::TargetHtml;
     query.scope  = WAbstractLoader::ScopeText;
@@ -1938,7 +1955,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     return true;
 }
 
-bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QString & url)
+bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem  * item,
+                                                 const QString & url, int index)
 {
     abortQueriesItem(item);
 
@@ -1962,6 +1980,8 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
 
             if (resolveItem(backendId, query))
             {
+                query.indexNext = index;
+
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
                 query.priority = QNetworkRequest::HighPriority;
@@ -1979,6 +1999,8 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
 
         if (resolveItem(backendId, query))
         {
+            query.indexNext = index;
+
             getDataItem(item, query);
 
             return true;
@@ -2000,7 +2022,7 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
         }
     }
 
-    WBackendNetQuery query(source);
+    WBackendNetQuery query(source, index);
 
     query.target = WBackendNetQuery::TargetItem;
 
@@ -2019,7 +2041,7 @@ bool WControllerPlaylistPrivate::applyNextTrack(WPlaylist     * playlist,
 
         return false;
     }
-    else return applySourceTrack(playlist, track, url);
+    else return applySourceTrack(playlist, track, url, index + 1);
 }
 
 bool WControllerPlaylistPrivate::applyNextPlaylist(WPlaylist     * playlist,
@@ -2031,7 +2053,7 @@ bool WControllerPlaylistPrivate::applyNextPlaylist(WPlaylist     * playlist,
 
         return false;
     }
-    else return applySourcePlaylist(playlist, url);
+    else return applySourcePlaylist(playlist, url, index + 1);
 }
 
 bool WControllerPlaylistPrivate::applyNextFolder(WLibraryFolder * folder,
@@ -2043,7 +2065,7 @@ bool WControllerPlaylistPrivate::applyNextFolder(WLibraryFolder * folder,
 
         return false;
     }
-    else return applySourceFolder(folder, url);
+    else return applySourceFolder(folder, url, index + 1);
 }
 
 bool WControllerPlaylistPrivate::applyNextItem(WLibraryItem   * item,
@@ -2055,7 +2077,7 @@ bool WControllerPlaylistPrivate::applyNextItem(WLibraryItem   * item,
 
         return false;
     }
-    else return applySourceItem(item, url);
+    else return applySourceItem(item, url, index + 1);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3517,7 +3539,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
             }
         }
 
-        if (reply.clearDuplicate)
+        //if (reply.clearDuplicate)
         {
             QList<WTrack> * tracks = const_cast<QList<WTrack> *> (&(reply.tracks));
 
@@ -3928,6 +3950,15 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Related)
     {
+        // NOTE: By checking the indexNext we can deduce it's a multi-track so we append the track
+        //       source.
+        if (indexNext)
+        {
+            playlist->addSource(feed, true);
+
+            playlist->d_func()->setQueryLoaded();
+        }
+
         applyNextPlaylist(playlist, origin, indexNext);
 
         return;

@@ -95,11 +95,11 @@ public: // Interface
 
     //-------------------------------------------------------------------------------------------------
 
-    bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url);
+    bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url, int index);
 
-    bool applySourcePlaylist(WPlaylist      * playlist, const QString & url);
-    bool applySourceFolder  (WLibraryFolder * folder,   const QString & url);
-    bool applySourceItem    (WLibraryItem   * item,     const QString & url);
+    bool applySourcePlaylist(WPlaylist      * playlist, const QString & url, int index);
+    bool applySourceFolder  (WLibraryFolder * folder,   const QString & url, int index);
+    bool applySourceItem    (WLibraryItem   * item,     const QString & url, int index);
 
     //---------------------------------------------------------------------------------------------
 
