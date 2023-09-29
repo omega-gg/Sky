@@ -2688,7 +2688,7 @@ void WPlaylist::endTracksRemove() const
 {
     clearTracks();
 
-    return wControllerPlaylist->d_func()->applySourcePlaylist(this, source, 0);
+    return wControllerPlaylist->d_func()->applySourcePlaylist(this, source, QString(), 0);
 }
 
 /* virtual */ bool WPlaylist::onApplyQuery(const WBackendNetQuery & query)

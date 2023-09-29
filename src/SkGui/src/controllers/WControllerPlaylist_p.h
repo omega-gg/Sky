@@ -97,17 +97,25 @@ public: // Interface
 
     bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url, int index);
 
-    bool applySourcePlaylist(WPlaylist      * playlist, const QString & url, int index);
-    bool applySourceFolder  (WLibraryFolder * folder,   const QString & url, int index);
-    bool applySourceItem    (WLibraryItem   * item,     const QString & url, int index);
+    bool applySourcePlaylist(WPlaylist * playlist, const QString & url,
+                                                   const QString & urlBase, int index);
+
+    bool applySourceFolder(WLibraryFolder * folder, const QString & url,
+                                                    const QString & urlBase, int index);
+
+    bool applySourceItem(WLibraryItem * item, const QString & url, int index);
 
     //---------------------------------------------------------------------------------------------
 
     bool applyNextTrack(WPlaylist * playlist, WTrack * track, const QString & url, int index);
 
-    bool applyNextPlaylist(WPlaylist      * playlist, const QString & url, int index);
-    bool applyNextFolder  (WLibraryFolder * folder,   const QString & url, int index);
-    bool applyNextItem    (WLibraryItem   * item,     const QString & url, int index);
+    bool applyNextPlaylist(WPlaylist * playlist, const QString & url,
+                                                 const QString & urlBase, int index);
+
+    bool applyNextFolder(WLibraryFolder * folder, const QString & url,
+                                                  const QString & urlBase, int index);
+
+    bool applyNextItem(WLibraryItem * item, const QString & url, int index);
 
     //---------------------------------------------------------------------------------------------
 

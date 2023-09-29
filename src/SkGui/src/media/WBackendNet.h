@@ -71,6 +71,12 @@ public:
 
     explicit WBackendNetQuery(Type type, const QString & url = QString(), int indexNext = 0);
 
+    explicit WBackendNetQuery(const QString & url,
+                              const QString & urlBase, int indexNext = 0);
+
+    explicit WBackendNetQuery(Type type, const QString & url,
+                                         const QString & urlBase, int indexNext = 0);
+
 public: // Interface
     bool isValid() const;
 
@@ -89,6 +95,7 @@ public: // Variables
     QString backend;
 
     QString url;
+    QString urlBase;
     QString urlRedirect;
 
     int currentTime;

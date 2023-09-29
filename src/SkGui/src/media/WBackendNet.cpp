@@ -61,6 +61,23 @@
     init(type, url, indexNext);
 }
 
+/* explicit */ WBackendNetQuery::WBackendNetQuery(const QString & url,
+                                                  const QString & urlBase, int indexNext)
+{
+    init(WBackendNetQuery::TypeDefault, url, indexNext);
+
+    this->urlBase = urlBase;
+}
+
+/* explicit */ WBackendNetQuery::WBackendNetQuery(Type type, const QString & url,
+                                                             const QString & urlBase,
+                                                             int             indexNext)
+{
+    init(type, url, indexNext);
+
+    this->urlBase = urlBase;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
@@ -122,6 +139,7 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
     backend = other.backend;
 
     url         = other.url;
+    urlBase     = other.urlBase;
     urlRedirect = other.urlRedirect;
 
     currentTime = other.currentTime;
