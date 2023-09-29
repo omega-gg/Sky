@@ -453,6 +453,8 @@ private: // Functions
 
     void applySource(const WYamlNodeBase & node, const QString & url, int duration);
 
+    QString extractRelated(const WYamlNodeBase & node);
+
 public: // Variables
     int currentTime;
 

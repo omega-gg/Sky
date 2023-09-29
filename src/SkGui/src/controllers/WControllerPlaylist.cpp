@@ -458,7 +458,7 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
     }
     else
     {
-        origin = reader.extractString("related");
+        origin = extractRelated(reader.node());
 
         if (origin.isEmpty() == false)
         {
@@ -1077,26 +1077,38 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
             continue;
         }
 
-        // NOTE: The related is prioritized over the source.
-        QString related = child.extractString("related");
+        const WYamlNode * node = child.at("source");
 
-        if (related.isEmpty() == false)
+        if (node == NULL)
         {
-            type = WControllerPlaylist::Related;
+            QString related = extractRelated(child);
 
-            origin = related;
+            if (related.isEmpty() == false)
+            {
+                type = WControllerPlaylist::Related;
+
+                origin = related;
+            }
 
             return;
         }
-
-        const WYamlNode * node = child.at("source");
-
-        if (node == NULL) return;
 
         const QList<WYamlNode> & nodes = node->children;
 
         if (nodes.isEmpty())
         {
+            // NOTE: The related is prioritized over the source.
+            QString related = extractRelated(child);
+
+            if (related.isEmpty() == false)
+            {
+                type = WControllerPlaylist::Related;
+
+                origin = related;
+
+                return;
+            }
+
             type = WControllerPlaylist::Source;
 
             origin = node->value;
@@ -1135,6 +1147,17 @@ void WControllerPlaylistData::applySource(const WYamlNodeBase & node,
     type = WControllerPlaylist::Source;
 
     origin = url;
+}
+
+QString WControllerPlaylistData::extractRelated(const WYamlNodeBase & node)
+{
+    QString related = node.extractString("related");
+
+    if (related.isEmpty())
+    {
+        return node.extractString("feed");
+    }
+    else return related;
 }
 
 //=================================================================================================
