@@ -32,6 +32,7 @@ Slider
     //---------------------------------------------------------------------------------------------
 
     property bool active: true
+    property bool live  : false
 
     property int currentTime: -1
     property int duration   : -1
@@ -326,7 +327,7 @@ Slider
         horizontalAlignment: Text.AlignRight
         verticalAlignment  : Text.AlignVCenter
 
-        visible: (active && duration == -1)
+        visible: live
 
         text: qsTr("L I V E")
 
