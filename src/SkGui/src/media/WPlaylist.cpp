@@ -2239,6 +2239,32 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QDateTime WPlaylist::trackDate(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+         return track->date();
+    }
+    else return QDateTime();
+}
+
+/* Q_INVOKABLE */ void WPlaylist::setTrackDate(int index, const QDateTime & date)
+{
+    Q_D(WPlaylist);
+
+    WTrack * track = d->getTrack(index);
+
+    if (track == NULL || track->date() == date) return;
+
+    track->setDate(date);
+
+    updateTrack(index);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Pointers
 
 /* Q_INVOKABLE */ const WTrack * WPlaylist::trackPointerFromId(int id) const

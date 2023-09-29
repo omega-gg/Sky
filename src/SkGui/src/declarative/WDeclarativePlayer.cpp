@@ -2864,6 +2864,17 @@ int WDeclarativePlayer::trackDuration() const
     else return -1;
 }
 
+QDateTime WDeclarativePlayer::trackDate() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->tab)
+    {
+         return d->tab->date();
+    }
+    else return QDateTime();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativePlayer::trackIndex() const

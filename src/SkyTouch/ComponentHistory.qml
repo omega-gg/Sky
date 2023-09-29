@@ -25,6 +25,8 @@ import Sky     1.0
 
 ComponentTrack
 {
+    id: componentHistory
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -57,26 +59,6 @@ ComponentTrack
     /* virtual */ function getPlaylist() { return null; }
 
     //---------------------------------------------------------------------------------------------
-    // Private
-
-    function pGetWidth()
-    {
-        var time = controllerNetwork.extractFragmentValue(source, 't');
-
-        if (time == "") return 0;
-
-        time *= 1000; // NOTE: We want the time in milliseconds.
-
-        var duration = getPlaylist().trackDuration(index);
-
-        if (duration < 1 || time > duration) return 0;
-
-        var size = buttonText.width - margins * 2;
-
-        return Math.max(0, size * (time / duration));
-    }
-
-    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
@@ -90,7 +72,7 @@ ComponentTrack
 
         anchors.margins: margins
 
-        width: pGetWidth()
+        width: st.getWidthHistory(getPlaylist(), componentHistory, source, index)
 
         radius: st.radius
 

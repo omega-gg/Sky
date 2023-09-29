@@ -23,6 +23,9 @@
 #ifndef WPLAYLIST_H
 #define WPLAYLIST_H
 
+// Qt includes
+#include <QDateTime>
+
 // Sk includes
 #include <WLibraryItem>
 #include <WTrack>
@@ -270,6 +273,9 @@ public: // Interface
 
     Q_INVOKABLE int  trackDuration   (int index) const;
     Q_INVOKABLE void setTrackDuration(int index, int msec);
+
+    Q_INVOKABLE QDateTime trackDate   (int index) const;
+    Q_INVOKABLE void      setTrackDate(int index, const QDateTime & date);
 
     //---------------------------------------------------------------------------------------------
     // Pointers

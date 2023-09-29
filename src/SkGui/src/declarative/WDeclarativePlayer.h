@@ -156,6 +156,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(int trackCurrentTime READ trackCurrentTime NOTIFY currentTrackUpdated)
     Q_PROPERTY(int trackDuration    READ trackDuration    NOTIFY currentTrackUpdated)
 
+    Q_PROPERTY(QDateTime trackDate READ trackDate NOTIFY currentTrackUpdated)
+
     Q_PROPERTY(int trackIndex READ trackIndex NOTIFY currentTrackUpdated)
 
     Q_PROPERTY(WTabsTrack * tabs READ tabs WRITE setTabs NOTIFY tabsChanged)
@@ -444,6 +446,8 @@ public: // Properties
 
     int trackCurrentTime() const;
     int trackDuration   () const;
+
+    QDateTime trackDate() const;
 
     int trackIndex() const;
 

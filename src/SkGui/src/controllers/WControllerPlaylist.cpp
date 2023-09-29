@@ -855,7 +855,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     {
         at = reader.extractMsecs("at");
 
-        duration = WControllerPlaylist::vbmlDuration(reader.node(), at);
+        duration = WControllerPlaylist::vbmlDuration(reader.node(), at, -1);
     }
 
     WTrack track;
@@ -887,9 +887,9 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
             // NOTE: When it's a multi-track we set the vbml uri.
             track.setSource(url);
 
-            if (duration == 0)
+            if (duration == -1)
             {
-                duration = WControllerPlaylist::vbmlDurationSource(*node, at);
+                duration = WControllerPlaylist::vbmlDurationSource(*node, at, -1);
             }
         }
     }
@@ -5957,11 +5957,12 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 }
 
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDurationSource(const WYamlNode & node,
-                                                                     int               at)
+                                                                     int               at,
+                                                                     int               defaultValue)
 {
     const QList<WYamlNode> & children = node.children;
 
-    if (children.isEmpty()) return 0;
+    if (children.isEmpty()) return defaultValue;
 
     int duration = 0;
 
@@ -5974,7 +5975,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 
     if (duration == 0)
     {
-        return 0;
+        return defaultValue;
     }
     else return duration - at;
 }
