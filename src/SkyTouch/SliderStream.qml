@@ -60,6 +60,11 @@ Slider
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
+
+    property alias itemProgress: itemProgress
+    property alias itemText    : itemText
+
+    //---------------------------------------------------------------------------------------------
     // Style
 
     property alias colorProgress: itemProgress.color
@@ -308,5 +313,23 @@ Slider
                 easing.type: st.easing
             }
         }
+    }
+
+    TextBase
+    {
+        id: itemText
+
+        anchors.fill: background
+
+        anchors.rightMargin: margins
+
+        horizontalAlignment: Text.AlignRight
+        verticalAlignment  : Text.AlignVCenter
+
+        visible: (active && duration == -1)
+
+        text: qsTr("L I V E")
+
+        color: colorFront
     }
 }
