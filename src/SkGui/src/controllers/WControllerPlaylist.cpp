@@ -35,7 +35,7 @@
     #include <QCoreApplication>
     #include <QSettings>
 #endif
-#endif
+#endif // SK_DESKTOP
 
 // Sk includes
 #include <WControllerApplication>
@@ -2277,7 +2277,7 @@ void WControllerPlaylistPrivate::unregisterTab(WTabTrack * tab)
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item) const
+void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item)
 {
     QList<int> idFull = item->idFull();
 
@@ -2291,7 +2291,8 @@ void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item) const
 
 #ifdef Q_OS_MACX
 
-bool WControllerPlaylistPrivate::compareBundle(const CFStringRef bundle, const CFStringRef handler)
+bool WControllerPlaylistPrivate::compareBundle(const CFStringRef bundle,
+                                               const CFStringRef handler) const
 {
     if (handler == NULL) return false;
 
