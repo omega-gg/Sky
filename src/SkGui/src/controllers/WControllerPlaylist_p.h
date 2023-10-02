@@ -138,6 +138,10 @@ public: // Functions
 
     void registerItemId(WLibraryItem * item);
 
+#ifdef Q_OS_MACX
+    bool compareBundle(const CFStringRef bundle, const CFStringRef handler);
+#endif
+
     //---------------------------------------------------------------------------------------------
 
     WLibraryFolder * getFolderRoot(int id) const;

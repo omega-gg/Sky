@@ -49,6 +49,11 @@
 #include <WBackendLoader>
 #include <WYamlReader>
 
+// macOS includes
+#ifdef Q_OS_MAC
+#include <CoreServices/CoreServices.h>
+#endif
+
 // Private includes
 #include <private/WPlaylist_p>
 #include <private/WBackendLoader_p>
@@ -2281,6 +2286,23 @@ void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item)
         tab->d_func()->onRegisterItemId(item, idFull);
     }
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef Q_OS_MACX
+
+bool WControllerPlaylistPrivate::compareBundle(const CFStringRef bundle, const CFStringRef handler)
+{
+    if (handler == NULL) return false;
+
+    bool result = (CFStringCompare(bundle, handler, 0) == kCFCompareEqualTo);
+
+    CFRelease(handler);
+
+    return result;
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -6147,6 +6169,29 @@ bool WControllerPlaylist::associateVbml() const
     if (settings.value("vbml/shell/open/command/Default") != value) return false;
 
     return true;
+#elif defined(Q_OS_MACX)
+    const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
+
+    if (bundle == NULL) return false;
+
+    const CFStringRef scheme = CFSTR("vbml");
+
+    if (d->compareBundle(bundle, LSCopyDefaultHandlerForURLScheme(scheme)) == false) return false;
+
+    bool result = false;
+
+    const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+                                                                 scheme, NULL);
+
+    if (id)
+    {
+        result = d->compareBundle(bundle,
+                                  LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer));
+
+        CFRelease(id);
+    }
+
+    return result;
 #else
     return false;
 #endif
@@ -6154,6 +6199,8 @@ bool WControllerPlaylist::associateVbml() const
 
 void WControllerPlaylist::setAssociateVbml(bool associate)
 {
+    if (associateVbml() == associate) return;
+
 #ifdef Q_OS_WIN
     QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
 
@@ -6167,10 +6214,6 @@ void WControllerPlaylist::setAssociateVbml(bool associate)
 
     if (associate)
     {
-        if (settings.value(".vbml/Default") == name
-            &&
-            settings.value("vbml/shell/open/command/Default") == value) return;
-
         settings.setValue(".vbml/Default",         name);
         settings.setValue(".vbml/OpenWithProgids", name);
 
@@ -6188,15 +6231,43 @@ void WControllerPlaylist::setAssociateVbml(bool associate)
     }
     else
     {
-        if (settings.value(".vbml/Default") != name
-            &&
-            settings.value("vbml/shell/open/command/Default") != value) return;
-
         settings.setValue(".vbml/Default", QString());
 
         settings.remove("vbml");
 
         emit associateVbmlChanged();
+    }
+#elif defined(Q_OS_MACX)
+    const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
+
+    if (bundle == NULL) return;
+
+    const CFStringRef scheme = CFSTR("vbml");
+
+    const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+                                                                 scheme, NULL);
+
+    if (associate)
+    {
+        LSSetDefaultHandlerForURLScheme(scheme, bundle);
+
+        if (id)
+        {
+            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, bundle);
+
+            CFRelease(id);
+        }
+    }
+    else
+    {
+        LSSetDefaultHandlerForURLScheme(scheme, NULL);
+
+        if (id)
+        {
+            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, NULL);
+
+            CFRelease(id);
+        }
     }
 #else
     Q_UNUSED(associate);
