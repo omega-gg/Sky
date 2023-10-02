@@ -2277,7 +2277,7 @@ void WControllerPlaylistPrivate::unregisterTab(WTabTrack * tab)
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item)
+void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item) const
 {
     QList<int> idFull = item->idFull();
 
@@ -6173,6 +6173,8 @@ bool WControllerPlaylist::associateVbml() const
     const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
 
     if (bundle == NULL) return false;
+
+    Q_D(const WControllerPlaylist);
 
     const CFStringRef scheme = CFSTR("vbml");
 
