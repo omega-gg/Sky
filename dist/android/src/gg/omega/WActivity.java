@@ -154,7 +154,7 @@ public class WActivity extends QtActivity
         }
         else if (action == "android.intent.action.VIEW")
         {
-            return WFile.getPath(getApplicationContext(), intent.getData());
+            return intent.getData().toString();
         }
         else return null;
     }
