@@ -30,6 +30,12 @@
 #ifdef QT_NEW
 #include <QUrlQuery>
 #endif
+#ifdef SK_DESKTOP
+#ifdef Q_OS_WIN
+    #include <QCoreApplication>
+    #include <QSettings>
+#endif
+#endif
 
 // Sk includes
 #include <WControllerApplication>
@@ -1417,6 +1423,30 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist     * playlist,
 
     QString source = WControllerPlaylist::generateSource(url);
 
+    // NOTE: The VBML uri is prioritized because it might contain an http url.
+    if (WControllerPlaylist::urlIsVbmlUri(source))
+    {
+        if (source.startsWith("vbml://"))
+        {
+            source.replace("vbml://", "https://");
+
+            track->setSource(source);
+
+            playlist->updateTrack(track);
+
+            return applySourceTrack(playlist, track, source, index);
+        }
+
+        WBackendNetQuery query(source, index);
+
+        query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataTrack(playlist, track, query);
+
+        return true;
+    }
+
     WBackendNet * backend = q->backendFromUrl(source);
 
     if (backend)
@@ -1462,17 +1492,6 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist     * playlist,
     {
         WBackendNetQuery query(source, index);
 
-        query.target = WBackendNetQuery::TargetVbml;
-
-        getDataTrack(playlist, track, query);
-
-        return true;
-    }
-    else if (WControllerPlaylist::urlIsVbmlUri(source))
-    {
-        WBackendNetQuery query(source, index);
-
-        query.type   = WBackendNetQuery::TypeVbml;
         query.target = WBackendNetQuery::TargetVbml;
 
         getDataTrack(playlist, track, query);
@@ -1529,33 +1548,70 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
 
     QString source = WControllerPlaylist::generateSource(url);
 
+    if (WBackendNet::checkQuery(source))
+    {
+        WBackendNet * backend = q->backendFromUrl(source);
+
+        if (backend)
+        {
+            QString backendId = backend->id();
+
+            WBackendNetQuery query = extractQuery(backend, source, backendId);
+
+            backend->tryDelete();
+
+            if (resolvePlaylist(backendId, query) == false) return false;
+
+            query.urlBase   = urlBase;
+            query.indexNext = index;
+
+            // NOTE: The custom query priority should be high because it's often tied to the
+            //       current action.
+            query.priority = QNetworkRequest::HighPriority;
+
+            getDataPlaylist(playlist, query);
+
+            return true;
+        }
+
+        WBackendNetQuery query = extractRelated(source);
+
+        if (query.isValid() == false) return false;
+
+        query.urlBase   = urlBase;
+        query.indexNext = index;
+
+        getDataPlaylist(playlist, query);
+
+        return true;
+    }
+    // NOTE: The VBML uri is prioritized because it might contain an http url.
+    else if (WControllerPlaylist::urlIsVbmlUri(source))
+    {
+        if (source.startsWith("vbml://"))
+        {
+            source.replace("vbml://", "https://");
+
+            playlist->applySource(source);
+
+            return applySourcePlaylist(playlist, source, urlBase, index);
+        }
+
+        WBackendNetQuery query(source, urlBase, index);
+
+        query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataPlaylist(playlist, query);
+
+        return true;
+    }
+
     WBackendNet * backend = q->backendFromUrl(source);
 
     if (backend)
     {
         QString backendId = backend->id();
-
-        if (WBackendNet::checkQuery(source))
-        {
-            WBackendNetQuery query = extractQuery(backend, source, backendId);
-
-            backend->tryDelete();
-
-            if (resolvePlaylist(backendId, query))
-            {
-                query.urlBase   = urlBase;
-                query.indexNext = index;
-
-                // NOTE: The custom query priority should be high because it's often tied to the
-                //       current action.
-                query.priority = QNetworkRequest::HighPriority;
-
-                getDataPlaylist(playlist, query);
-
-                return true;
-            }
-            else return false;
-        }
 
         WBackendNetQuery query = backend->getQueryPlaylist(source);
 
@@ -1594,36 +1650,11 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
 
         backend->tryDelete();
     }
-    else if (WBackendNet::checkQuery(source))
-    {
-        WBackendNetQuery query = extractRelated(source);
-
-        if (query.isValid())
-        {
-            query.urlBase   = urlBase;
-            query.indexNext = index;
-
-            getDataPlaylist(playlist, query);
-
-            return true;
-        }
-    }
 
     if (WControllerPlaylist::urlIsVbmlFile(source))
     {
         WBackendNetQuery query(source, urlBase, index);
 
-        query.target = WBackendNetQuery::TargetVbml;
-
-        getDataPlaylist(playlist, query);
-
-        return true;
-    }
-    else if (WControllerPlaylist::urlIsVbmlUri(source))
-    {
-        WBackendNetQuery query(source, urlBase, index);
-
-        query.type   = WBackendNetQuery::TypeVbml;
         query.target = WBackendNetQuery::TargetVbml;
 
         getDataPlaylist(playlist, query);
@@ -1742,14 +1773,14 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
 
     QString source = WControllerPlaylist::generateSource(url);
 
-    WBackendNet * backend = q->backendFromUrl(source);
-
-    if (backend)
+    if (WBackendNet::checkQuery(source))
     {
-        QString backendId = backend->id();
+        WBackendNet * backend = q->backendFromUrl(source);
 
-        if (WBackendNet::checkQuery(source))
+        if (backend)
         {
+            QString backendId = backend->id();
+
             if (source.contains("method") == false)
             {
                 folder->addItems(backend->getLibraryItems());
@@ -1782,6 +1813,49 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
             }
             else return false;
         }
+
+        WBackendNetQuery query = extractRelated(source);
+
+        if (query.isValid() == false) return false;
+
+        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+        query.urlBase   = urlBase;
+        query.indexNext = index;
+
+        getDataFolder(folder, query);
+
+        return true;
+    }
+    // NOTE: The VBML uri is prioritized because it might contain an http url.
+    else if (WControllerPlaylist::urlIsVbmlUri(source))
+    {
+        if (source.startsWith("vbml://"))
+        {
+            source.replace("vbml://", "https://");
+
+            folder->applySource(source);
+
+            return applySourceFolder(folder, source, urlBase, index);
+        }
+
+        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+        WBackendNetQuery query(source, urlBase, index);
+
+        query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataFolder(folder, query);
+
+        return true;
+    }
+
+    WBackendNet * backend = q->backendFromUrl(source);
+
+    if (backend)
+    {
+        QString backendId = backend->id();
 
         WBackendNetQuery query = backend->getQueryFolder(source);
 
@@ -1825,22 +1899,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
             return true;
         }
     }
-    else if (WBackendNet::checkQuery(source))
-    {
-        WBackendNetQuery query = extractRelated(source);
-
-        if (query.isValid())
-        {
-            addFolderSearch(folder, source, WControllerNetwork::urlName(source));
-
-            query.urlBase   = urlBase;
-            query.indexNext = index;
-
-            getDataFolder(folder, query);
-
-            return true;
-        }
-    }
 
     if (WControllerPlaylist::urlIsVbmlFile(source))
     {
@@ -1848,19 +1906,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
 
         WBackendNetQuery query(source, urlBase, index);
 
-        query.target = WBackendNetQuery::TargetVbml;
-
-        getDataFolder(folder, query);
-
-        return true;
-    }
-    else if (WControllerPlaylist::urlIsVbmlUri(source))
-    {
-        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
-
-        WBackendNetQuery query(source, urlBase, index);
-
-        query.type   = WBackendNetQuery::TypeVbml;
         query.target = WBackendNetQuery::TargetVbml;
 
         getDataFolder(folder, query);
@@ -5163,11 +5208,7 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 
         if (source.startsWith("vbml.", Qt::CaseInsensitive))
         {
-            int index = source.lastIndexOf('/');
-
-            source.remove(0, index + 1);
-
-            return "vbml:" + source;
+            return WControllerPlaylist::vbmlUriFromUrl(source);
         }
         else return url;
     }
@@ -6034,6 +6075,30 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     track->setDate(reader.extractDate("date"));
 }
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlUriFromUrl(const QString & url)
+{
+    QString result = url;
+
+    int index = result.indexOf("/view/");
+
+    if (index == -1)
+    {
+        index = result.indexOf('/');
+
+        if (index != -1)
+        {
+            result.remove(0, index + 1);
+        }
+    }
+    else result.remove(0, index + 6);
+
+    if (result.contains('.'))
+    {
+        return "vbml://" + result;
+    }
+    else return "vbml:" + result;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
@@ -6061,6 +6126,84 @@ QString WControllerPlaylist::pathStorageTabs() const
 {
     return wControllerFile->pathStorage() + CONTROLLERPLAYLIST_PATH_TABS;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef SK_DESKTOP
+
+bool WControllerPlaylist::associateVbml() const
+{
+#ifdef Q_OS_WIN
+    QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
+
+    QString fileName = QCoreApplication::applicationFilePath();
+
+    QString value = WControllerFile::fileBaseName(fileName);
+
+    if (settings.value(".vbml/Default") != value) return false;
+
+    value = Sk::quote(QDir::toNativeSeparators(fileName)) + " \"%1\"";
+
+    if (settings.value("vbml/shell/open/command/Default") != value) return false;
+
+    return true;
+#else
+    return false;
+#endif
+}
+
+void WControllerPlaylist::setAssociateVbml(bool associate)
+{
+#ifdef Q_OS_WIN
+    QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
+
+    QString fileName = QCoreApplication::applicationFilePath();
+
+    QString name = WControllerFile::fileBaseName(fileName);
+
+    QString path = Sk::quote(QDir::toNativeSeparators(fileName));
+
+    QString value = path + " \"%1\"";
+
+    if (associate)
+    {
+        if (settings.value(".vbml/Default") == name
+            &&
+            settings.value("vbml/shell/open/command/Default") == value) return;
+
+        settings.setValue(".vbml/Default",         name);
+        settings.setValue(".vbml/OpenWithProgids", name);
+
+        settings.setValue("vbml/Default", "URL:VBML link");
+
+        settings.setValue("vbml/URL Protocol", QString());
+
+        settings.setValue("vbml/DefaultIcon/Default", path);
+
+        settings.setValue("vbml/shell/Default", "open");
+
+        settings.setValue("vbml/shell/open/command/Default", value);
+
+        emit associateVbmlChanged();
+    }
+    else
+    {
+        if (settings.value(".vbml/Default") != name
+            &&
+            settings.value("vbml/shell/open/command/Default") != value) return;
+
+        settings.setValue(".vbml/Default", QString());
+
+        settings.remove("vbml");
+
+        emit associateVbmlChanged();
+    }
+#else
+    Q_UNUSED(associate);
+#endif
+}
+
+#endif
 
 #endif // SK_NO_CONTROLLERPLAYLIST
 

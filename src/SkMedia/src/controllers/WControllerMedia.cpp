@@ -739,9 +739,21 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     QString source = WControllerMedia::generateSource(url);
 
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
-
     WBackendNetQuery query;
+
+    // NOTE: The VBML uri is prioritized because it might contain an http url.
+    if (WControllerPlaylist::urlIsVbmlUri(source))
+    {
+        if (source.startsWith("vbml://") == false)
+        {
+            query.type = WBackendNetQuery::TypeVbml;
+
+            query.url = source;
+        }
+        else query.url = source.replace("vbml://", "https://");
+    }
+
+    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
     if (backend)
     {
@@ -759,12 +771,6 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
             return;
         }
-    }
-    else if (WControllerPlaylist::urlIsVbmlUri(source))
-    {
-        query.type = WBackendNetQuery::TypeVbml;
-
-        query.url = source;
     }
     else
     {
@@ -1827,13 +1833,11 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
-    if (source.startsWith("vbml.", Qt::CaseInsensitive) == false) return url;
-
-    int index = source.lastIndexOf('/');
-
-    source.remove(0, index + 1);
-
-    return "vbml:" + source;
+    if (source.startsWith("vbml.", Qt::CaseInsensitive))
+    {
+        return WControllerPlaylist::vbmlUriFromUrl(source);
+    }
+    else return url;
 }
 
 //-------------------------------------------------------------------------------------------------

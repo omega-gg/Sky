@@ -126,6 +126,11 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
     Q_PROPERTY(QString pathStorage     READ pathStorage     NOTIFY pathStorageChanged)
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
 
+#ifdef SK_DESKTOP
+    Q_PROPERTY(bool associateVbml READ associateVbml WRITE setAssociateVbml
+               NOTIFY associateVbmlChanged)
+#endif
+
 public: // Enums
     enum Type
     {
@@ -358,6 +363,9 @@ public: // Static functions
 
     Q_INVOKABLE static void vbmlApplyTrack(WTrack * track, const QString & uri);
 
+    // NOTE: This function returns a vbml uri from a vbml. based url without prefix.
+    Q_INVOKABLE static QString vbmlUriFromUrl(const QString & url);
+
 signals:
     void filesCleared(const QList<int> & idFull);
     void filesDeleted(const QList<int> & idFull);
@@ -366,6 +374,8 @@ signals:
 
     void pathCoverChanged();
 
+    void associateVbmlChanged();
+
 public: // Properties
     QThread * thread() const;
 
@@ -373,6 +383,11 @@ public: // Properties
 
     QString pathStorage    () const;
     QString pathStorageTabs() const;
+
+#ifdef SK_DESKTOP
+    bool associateVbml   () const;
+    void setAssociateVbml(bool associate);
+#endif
 
 private:
     W_DECLARE_PRIVATE   (WControllerPlaylist)

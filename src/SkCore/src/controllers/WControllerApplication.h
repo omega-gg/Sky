@@ -71,6 +71,10 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(bool isCore READ isCore CONSTANT)
     Q_PROPERTY(bool isGui  READ isGui  CONSTANT)
 
+#ifdef Q_OS_WIN
+    Q_PROPERTY(bool isUwp READ isUwp CONSTANT)
+#endif
+
     Q_PROPERTY(bool qrc READ isQrc WRITE setQrc NOTIFY qrcChanged)
 
     Q_PROPERTY(bool osWin   READ osWin   CONSTANT)
@@ -167,6 +171,10 @@ public: // Interface
 #endif
 
 public: // Static functions
+#ifdef Q_OS_WIN
+    Q_INVOKABLE static bool isUwp();
+#endif
+
     Q_INVOKABLE static QString extractParameter(const QString & argument);
 
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);

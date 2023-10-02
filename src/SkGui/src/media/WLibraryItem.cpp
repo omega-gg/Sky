@@ -189,14 +189,14 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (d->source == source) return false;
 
+    d->source = source;
+
     if (load && onApplySource(source) == false)
     {
         qWarning("WLibraryItem::loadSource: Failed to apply source %s.", source.C_STR);
 
         return false;
     }
-
-    d->source = source;
 
     if (d->parentFolder)
     {
@@ -212,6 +212,12 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* Q_INVOKABLE */ bool WLibraryItem::reloadSource(const QString & source)
 {
+    Q_D(WLibraryItem);
+
+    QString sourceOld = d->source;
+
+    d->source = source;
+
     if (onApplySource(source) == false)
     {
         qWarning("WLibraryItem::reloadSource: Failed to apply source %s.", source.C_STR);
@@ -219,11 +225,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
         return false;
     }
 
-    Q_D(WLibraryItem);
-
-    if (d->source == source) return true;
-
-    d->source = source;
+    if (d->source == sourceOld) return true;
 
     if (d->parentFolder)
     {

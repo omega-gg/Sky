@@ -434,6 +434,15 @@ void WControllerApplication::initController()
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
+#ifdef Q_OS_WIN
+
+/* Q_INVOKABLE static */ bool WControllerApplication::isUwp()
+{
+    return QCoreApplication::applicationFilePath().contains("/WindowsApps/");
+}
+
+#endif
+
 /* Q_INVOKABLE static */
 QString WControllerApplication::extractParameter(const QString & argument)
 {
@@ -2171,9 +2180,7 @@ bool WControllerApplication::runOnStartup() const
     QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
                        QSettings::NativeFormat);
 
-    QString fileName = QCoreApplication::applicationFilePath();
-
-    return settings.contains(WControllerFile::fileBaseName(fileName));
+    return settings.contains(WControllerFile::applicationName());
 #else
     return false;
 #endif
