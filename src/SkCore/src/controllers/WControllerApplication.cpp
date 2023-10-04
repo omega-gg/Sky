@@ -69,8 +69,9 @@
 #endif
 #ifdef Q_OS_WIN
 #include <QSettings>
-#endif
-#ifdef Q_OS_ANDROID
+#elif defined (Q_OS_IOS)
+#include <QDesktopServices>
+#elif defined (Q_OS_ANDROID)
 #ifdef QT_5
     #include <QtAndroid>
     #include <QAndroidJniEnvironment>
