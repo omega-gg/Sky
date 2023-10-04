@@ -573,7 +573,7 @@ void WViewPrivate::init(QQuickItem * item)
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
 
 #ifdef SK_MOBILE
-    QObject::connect(sk, SIGNAL(messageUpdated()), q, SLOT(onMessageUpdated()));
+    QObject::connect(sk, SIGNAL(messageChanged()), q, SLOT(onMessageChanged()));
 #endif
 
 #ifndef SK_WIN_NATIVE
@@ -1576,12 +1576,12 @@ void WViewPrivate::onIdleTimeout()
 
 #ifdef SK_MOBILE
 
-void WViewPrivate::onMessageUpdated()
+void WViewPrivate::onMessageChanged()
 {
 #ifdef Q_OS_ANDROID
     Q_Q(WView);
 
-    emit q->messageReceived(Sk::getMessage());
+    emit q->messageReceived(sk->message());
 #endif
 }
 

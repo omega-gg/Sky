@@ -92,7 +92,13 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
-#ifdef SK_DESKTOP
+#ifdef SK_MOBILE
+#ifdef Q_OS_IOS
+    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
+#else
+    Q_PROPERTY(QString message READ message NOTIFY messageChanged)
+#endif
+#else
     Q_PROPERTY(bool runOnStartup READ runOnStartup WRITE setRunOnStartup
                NOTIFY runOnStartupChanged)
 #endif
@@ -157,6 +163,10 @@ public: // Interface
     Q_INVOKABLE void restartScript();
 
     Q_INVOKABLE void clearComponentCache() const;
+#endif
+
+#ifdef Q_OS_IOS
+    void applyUrlHandler(const QString & scheme, bool enabled = true);
 #endif
 
     Q_INVOKABLE void quit();
@@ -410,9 +420,6 @@ public: // Static functions
     // NOTE: This is useful to extract the argument from QtSingleApplication::messageReceived().
     Q_INVOKABLE static QString extractMessage(const QString & message);
 
-    // NOTE: On Android this returns the 'intent' text.
-    Q_INVOKABLE static QString getMessage();
-
 #ifdef Q_OS_ANDROID
     Q_INVOKABLE static QString getIntentText();
 #endif
@@ -484,9 +491,6 @@ signals:
     //void controllerDestroyed(WController * controller);
 
 #ifdef SK_MOBILE
-    // NOTE: This is useful on Android to notify that the 'intent' has changed.
-    void messageUpdated();
-
     void imageSelected(const QString & fileName);
 
     void shareFinished(bool ok);
@@ -505,7 +509,10 @@ signals:
 
     void applicationUrlChanged();
 
-#ifdef SK_DESKTOP
+#ifdef SK_MOBILE
+    // NOTE android: This is useful to notify that the 'intent' has changed.
+    void messageChanged();
+#else
     void runOnStartupChanged();
 #endif
 
@@ -556,7 +563,13 @@ public: // Properties
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
 
-#ifdef SK_DESKTOP
+#ifdef SK_MOBILE
+    // NOTE android: This returns the 'intent' text.
+    QString message() const;
+#ifdef Q_OS_IOS
+    void setMessage(const QString & message);
+#endif
+#else
     bool runOnStartup() const;
     void setRunOnStartup(bool enabled);
 #endif

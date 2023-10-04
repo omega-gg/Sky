@@ -366,7 +366,18 @@ void WControllerApplication::initController()
 
 #endif
 
-//-------------------------------------------------------------------------------------------------
+#ifdef Q_OS_IOS
+
+void WControllerApplication::applyUrlHandler(const QString & scheme, bool enabled)
+{
+    if (enabled)
+    {
+        setUrlHandler(scheme, this, "setMessage");
+    }
+    else unsetUrlHandler(scheme);
+}
+
+#endif
 
 /* Q_INVOKABLE */ void WControllerApplication::quit()
 {
@@ -1668,15 +1679,6 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     else return message.mid(index + 1);
 }
 
-/* Q_INVOKABLE static */ QString WControllerApplication::getMessage()
-{
-#ifdef Q_OS_ANDROID
-    return getIntentText();
-#else
-    return QString();
-#endif
-}
-
 //-------------------------------------------------------------------------------------------------
 
 #ifdef Q_OS_ANDROID
@@ -2172,7 +2174,39 @@ void WControllerApplication::setApplicationUrl(const QString & url)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef SK_DESKTOP
+#ifdef SK_MOBILE
+
+QString WControllerApplication::message() const
+{
+#ifdef Q_OS_IOS
+    Q_D(const WControllerApplication);
+
+    return d->message;
+#elif defined(Q_OS_ANDROID)
+    return getIntentText();
+#else
+    return QString();
+#endif
+}
+
+#ifdef Q_OS_IOS
+
+void WControllerApplication::setMessage(const QString & message)
+{
+    Q_D(WControllerApplication);
+
+    if (d->message == message) return;
+
+    d->message = message;
+
+    emit messageChanged();
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
+#else
 
 bool WControllerApplication::runOnStartup() const
 {
@@ -2504,7 +2538,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_gg_omega_WActivity_updateIntent(JNIEnv *, jobject)
 {
-    emit sk->messageUpdated();
+    emit sk->messageChanged();
 }
 
 JNIEXPORT void JNICALL

@@ -169,7 +169,7 @@ public: // Slots
     void onIdleTimeout();
 
 #ifdef SK_MOBILE
-    void onMessageUpdated();
+    void onMessageChanged();
 #endif
 
     void onBeforeClose();

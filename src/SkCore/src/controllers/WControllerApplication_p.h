@@ -89,6 +89,10 @@ public: // Variables
 
     QString applicationUrl;
 
+#ifdef Q_OS_IOS
+    QString message;
+#endif
+
     bool qrc;
 
 #ifndef SK_CONSOLE

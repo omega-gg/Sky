@@ -78,6 +78,8 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
 {
     if (scanOutput == enabled) return;
 
+    qDebug("SCAN VLC PLAYER %d", enabled);
+
     scanOutput = enabled;
 
     WVlcEnginePrivate * p = engine->d_func();

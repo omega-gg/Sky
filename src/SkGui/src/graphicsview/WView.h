@@ -720,7 +720,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onIdleTimeout())
 
 #ifdef SK_MOBILE
-    Q_PRIVATE_SLOT(d_func(), void onMessageUpdated())
+    Q_PRIVATE_SLOT(d_func(), void onMessageChanged())
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onBeforeClose())
