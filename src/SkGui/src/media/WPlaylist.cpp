@@ -799,7 +799,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 
     pController->abortQueryTrack(track);
 
-    pController->applySourceTrack(q, track, p->source);
+    pController->applySourceTrack(q, track, p->source, 0);
 #else
     // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
     //        is not responding well.
