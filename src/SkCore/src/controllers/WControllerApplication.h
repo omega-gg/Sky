@@ -482,6 +482,12 @@ public: // Static functions
 
     Q_INVOKABLE static QString bmlDate(const QDateTime & date);
 
+#ifdef Q_OS_IOS
+private: // Slots
+    // FIXME iOS: It seems setUrlHandler won't let us declare this slot privately.
+    Q_INVOKABLE onUrl(const QUrl & url);
+#endif
+
 signals:
     //void controllerCreated  (WController * controller);
     //void controllerDestroyed(WController * controller);
@@ -596,10 +602,6 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE   (WControllerApplication)
     W_DECLARE_CONTROLLER(WControllerApplication)
-
-#ifdef Q_OS_IOS
-    Q_PRIVATE_SLOT(d_func(), void onUrl(const QUrl & url))
-#endif
 
     Q_PRIVATE_SLOT(d_func(), void onAboutToQuit())
 

@@ -240,19 +240,6 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-#ifdef Q_OS_IOS
-
-void WControllerApplicationPrivate::onUrl(const QUrl & url)
-{
-    Q_Q(WControllerApplication);
-
-    message = url.toString();
-
-    emit q->messageChanged();
-}
-
-#endif
-
 void WControllerApplicationPrivate::onAboutToQuit()
 {
     Q_Q(WControllerApplication);
@@ -1993,6 +1980,23 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
 {
     return date.toString(Qt::ISODate);
 }
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+#ifdef Q_OS_IOS
+
+/* Q_INVOKABLE */ void WControllerApplicationPrivate::onUrl(const QUrl & url)
+{
+    Q_D(WControllerApplication);
+
+    d->message = url.toString();
+
+    emit messageChanged();
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties
