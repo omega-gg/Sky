@@ -240,6 +240,19 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
+#ifdef Q_OS_IOS
+
+void WControllerApplicationPrivate::onUrl(const QUrl & url)
+{
+    Q_Q(WControllerApplication);
+
+    message = url.toString();
+
+    emit q->messageChanged();
+}
+
+#endif
+
 void WControllerApplicationPrivate::onAboutToQuit()
 {
     Q_Q(WControllerApplication);
@@ -373,9 +386,9 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 {
     if (enabled)
     {
-        setUrlHandler(scheme, this, "setMessage");
+        QDesktopServices::setUrlHandler(scheme, this, "onUrl");
     }
-    else unsetUrlHandler(scheme);
+    else QDesktopServices::unsetUrlHandler(scheme);
 }
 
 #endif
@@ -1649,7 +1662,11 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     QFontMetrics metrics(font);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+    return metrics.horizontalAdvance(text) + 3;
+#else
     return metrics.horizontalAdvance(text) + 2;
+#endif
 #elif defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     return metrics.width(text) + 1;
 #else
@@ -2190,24 +2207,11 @@ QString WControllerApplication::message() const
 #endif
 }
 
-#ifdef Q_OS_IOS
-
-void WControllerApplication::setMessage(const QString & message)
-{
-    Q_D(WControllerApplication);
-
-    if (d->message == message) return;
-
-    d->message = message;
-
-    emit messageChanged();
-}
-
 #endif
 
 //-------------------------------------------------------------------------------------------------
 
-#else
+#ifdef SK_DESKTOP
 
 bool WControllerApplication::runOnStartup() const
 {

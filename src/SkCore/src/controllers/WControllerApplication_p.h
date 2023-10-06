@@ -72,6 +72,10 @@ public: // WCoreApplication and WApplication interface
     void initApplication(QCoreApplication * application, Sk::Type type, bool gui);
 
 public: // Slots
+#ifdef Q_OS_IOS
+    void onUrl(const QUrl & url);
+#endif
+
     void onAboutToQuit();
 
 public: // Variables

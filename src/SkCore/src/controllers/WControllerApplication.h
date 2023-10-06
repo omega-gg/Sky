@@ -93,11 +93,7 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
                NOTIFY applicationUrlChanged)
 
 #ifdef SK_MOBILE
-#ifdef Q_OS_IOS
-    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
-#else
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
-#endif
 #else
     Q_PROPERTY(bool runOnStartup READ runOnStartup WRITE setRunOnStartup
                NOTIFY runOnStartupChanged)
@@ -566,9 +562,6 @@ public: // Properties
 #ifdef SK_MOBILE
     // NOTE android: This returns the 'intent' text.
     QString message() const;
-#ifdef Q_OS_IOS
-    void setMessage(const QString & message);
-#endif
 #else
     bool runOnStartup() const;
     void setRunOnStartup(bool enabled);
@@ -603,6 +596,10 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE   (WControllerApplication)
     W_DECLARE_CONTROLLER(WControllerApplication)
+
+#ifdef Q_OS_IOS
+    Q_PRIVATE_SLOT(d_func(), void onUrl(const QUrl & url))
+#endif
 
     Q_PRIVATE_SLOT(d_func(), void onAboutToQuit())
 
