@@ -452,7 +452,7 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             int start = nodeBase.extractMsecs("at");
 
-            int duration = WControllerPlaylist::vbmlDuration(nodeBase, start);
+            int duration = WControllerPlaylist::vbmlDuration(nodeBase, start, -1);
 
             // NOTE: If the duration is invalid we assume that the track is long enough.
             if (duration != -1 && currentTime >= duration)
@@ -480,8 +480,17 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
 void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString & url)
 {
+    // NOTE: When we get redirected to a VBML url we load it as VBML content.
+    if (WControllerPlaylist::urlIsVbml(url))
+    {
+        type = WControllerPlaylist::Redirect;
+
+        origin = url;
+
+        return;
+    }
     // NOTE: If we find a VMBL header we prioritize it over HTML.
-    if (WControllerPlaylist::vbmlCheck(array))
+    else if (WControllerPlaylist::vbmlCheck(array))
     {
         applyVbml(array, url, url);
 
@@ -2613,15 +2622,16 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
     if (target == WBackendNetQuery::TargetVbml)
     {
-        methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url),
-                                                             Q_ARG(const QString &, url));
+        methodVbml.invoke(reply, Q_ARG(QIODevice     *, device),
+                                 Q_ARG(const QString &, query.urlRedirect),
+                                 Q_ARG(const QString &, url));
 
         return;
     }
     else if (target == WBackendNetQuery::TargetRelated)
     {
         methodRelated.invoke(reply, Q_ARG(QIODevice     *, device),
-                                    Q_ARG(const QString &, query.url),
+                                    Q_ARG(const QString &, query.urlRedirect),
                                     Q_ARG(const QString &, url),
                                     Q_ARG(int,             query.currentTime));
 
@@ -2629,14 +2639,8 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     }
     else if (target == WBackendNetQuery::TargetHtml)
     {
-        // NOTE: When we get redirected to VBML we parse it instead.
-        if (WControllerPlaylist::urlIsVbml(query.urlRedirect))
-        {
-            methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url),
-                                                                 Q_ARG(const QString &, url));
-        }
-        else methodHtml.invoke(reply,
-                               Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
+        methodHtml.invoke(reply,
+                          Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.urlRedirect));
 
         return;
     }
