@@ -71,9 +71,9 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 
         if (file.isEmpty())
         {
-            sendMessage(eventFile->url().toString());
+            sk->onUrl(eventFile->url());
         }
-        else sendMessage(file);
+        else sk->onUrl(file);
     }
 
     return QApplication::event(event);

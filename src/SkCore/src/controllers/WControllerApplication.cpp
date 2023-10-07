@@ -1981,7 +1981,7 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
     return date.toString(Qt::ISODate);
 }
 
-#ifdef Q_OS_IOS
+#if defined(Q_OS_MAC) || defined(Q_OS_IOS)
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
