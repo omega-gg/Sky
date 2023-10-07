@@ -572,7 +572,7 @@ void WViewPrivate::init(QQuickItem * item)
     QObject::connect(&fadeTimer, SIGNAL(timeout()), q, SLOT(onFadeTimeout()));
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
 
-#ifdef SK_MOBILE
+#if defined(Q_OS_MAC) || defined(SK_MOBILE)
     QObject::connect(sk, SIGNAL(messageChanged()), q, SLOT(onMessageChanged()));
 #endif
 
@@ -1574,16 +1574,12 @@ void WViewPrivate::onIdleTimeout()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef SK_MOBILE
-
 void WViewPrivate::onMessageChanged()
 {
     Q_Q(WView);
 
     emit q->messageReceived(sk->message());
 }
-
-#endif
 
 //-------------------------------------------------------------------------------------------------
 

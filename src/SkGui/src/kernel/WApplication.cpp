@@ -30,6 +30,9 @@
 #else
 #include <QQmlComponent>
 #endif
+#ifdef Q_OS_MAC
+#include <QFileOpenEvent>
+#endif
 
 // Sk includes
 #include <WControllerView>
@@ -37,7 +40,7 @@
 // 3rdparty includes
 #include <qtsingleapplication>
 
-#ifdef SK_OS_MAC
+#ifdef Q_OS_MAC
 
 //=================================================================================================
 // WSingleApplication
@@ -49,7 +52,7 @@ class WSingleApplication : public QtSingleApplication
     Q_OBJECT
 
 public:
-    WSingleApplication::WSingleApplication(int & argc, char ** argv);
+    WSingleApplication(int & argc, char ** argv);
 
 protected: // Events
     /* virtual */ bool event(QEvent * event);
@@ -60,7 +63,15 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 
 /* virtual */ bool WSingleApplication::event(QEvent * event)
 {
-    if (event->type() == QEvent::FileOpen) {}
+    if (event->type() == QEvent::FileOpen)
+    {
+        QFileOpenEvent * eventFile = static_cast<QFileOpenEvent *> (event);
+
+        QUrl url = eventFile->url();
+
+        if (file.isEmpty()) sk->onUrl(url);
+        else                sk->onUrl(file);
+    }
 
     return QApplication::event(event);
 }
@@ -157,7 +168,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 {
     if (type == Sk::Single)
     {
-#ifdef SK_OS_MAC
+#ifdef Q_OS_MAC
         WSingleApplication * application = new WSingleApplication(argc, argv);
 #else
         QtSingleApplication * application = new QtSingleApplication(argc, argv);

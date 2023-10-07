@@ -482,7 +482,7 @@ public: // Static functions
 
     Q_INVOKABLE static QString bmlDate(const QDateTime & date);
 
-#ifdef Q_OS_IOS
+#if defined(Q_OS_MAC) || defined(Q_OS_IOS)
 private: // Slots
     // FIXME iOS: It seems setUrlHandler won't let us declare this slot privately.
     Q_INVOKABLE onUrl(const QUrl & url);
@@ -609,6 +609,9 @@ private:
     friend class WControllerPrivate;
     friend class WCoreApplication;
     friend class WApplication;
+#ifdef Q_OS_MAC
+    friend class WSingleApplication;
+#endif
 };
 
 #include <private/WControllerApplication_p>
