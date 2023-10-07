@@ -93,6 +93,45 @@ public: // Variables
     return true;
 }
 
+//=================================================================================================
+// WControllerViewWritePaths
+//=================================================================================================
+
+class WControllerViewWritePaths : public WControllerFileAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QStringList fileNames;
+    QStringList paths;
+
+    QString format;
+
+    int quality;
+};
+
+/* virtual */ bool WControllerViewWritePaths::run()
+{
+    const char * formatData = format.C_STR;
+
+    for (int i = 0; i < fileNames.count(); i++)
+    {
+        const QString & name = fileNames.at(i);
+
+        QImage image(WControllerFile::toLocalFile(paths.at(i)));
+
+        if (image.save(name, formatData, quality) == false)
+        {
+            qWarning("WControllerViewWritePaths::run: Failed to save image %s.", name.C_STR);
+        }
+    }
+
+    return true;
+}
+
 #ifdef QT_NEW
 
 //=================================================================================================
@@ -568,6 +607,31 @@ WControllerFileReply * WControllerView::startWriteImages(const QStringList   & f
 
     action->fileNames = fileNames;
     action->images    = images;
+    action->format    = format;
+    action->quality   = quality;
+
+    wControllerFile->startWriteAction(action);
+
+    return action->controllerReply();
+}
+
+WControllerFileReply * WControllerView::startWriteImage(const QString & fileName,
+                                                        const QString & path,
+                                                        const QString & format, int quality)
+{
+    return startWriteImages(QStringList() << fileName, QStringList() << path, format, quality);
+}
+
+WControllerFileReply * WControllerView::startWriteImages(const QStringList & fileNames,
+                                                         const QStringList & paths,
+                                                         const QString     & format, int quality)
+{
+    if (fileNames.isEmpty() || fileNames.count() != paths.count()) return NULL;
+
+    WControllerViewWritePaths * action = new WControllerViewWritePaths;
+
+    action->fileNames = fileNames;
+    action->paths     = paths;
     action->format    = format;
     action->quality   = quality;
 

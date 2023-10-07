@@ -139,6 +139,16 @@ public: // Static functions
                                             const QString       & format  = "png",
                                             int                   quality = -1);
 
+    WControllerFileReply * startWriteImage(const QString & fileName,
+                                           const QString & path,
+                                           const QString & format  = "png",
+                                           int             quality = -1);
+
+    WControllerFileReply * startWriteImages(const QStringList & fileNames,
+                                            const QStringList & paths,
+                                            const QString     & format  = "png",
+                                            int                 quality = -1);
+
 signals:
 #ifdef QT_4
     void openglChanged();
