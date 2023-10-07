@@ -39,11 +39,7 @@
 
 #ifndef SK_NO_APPLICATION
 
-#ifdef QT_4
-class SK_GUI_EXPORT WApplication : public QApplication
-#else
-class SK_GUI_EXPORT WApplication : public QGuiApplication
-#endif
+class SK_GUI_EXPORT WApplication
 {
 public: // Static functions
 #ifdef QT_4

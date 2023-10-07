@@ -37,7 +37,39 @@
 // 3rdparty includes
 #include <qtsingleapplication>
 
-//-------------------------------------------------------------------------------------------------
+#ifdef SK_OS_MAC
+
+//=================================================================================================
+// WSingleApplication
+//=================================================================================================
+
+// NOTE macOS: We need this class to forward file events to WControllerApplication.
+class WSingleApplication : public QtSingleApplication
+{
+    Q_OBJECT
+
+public:
+    WSingleApplication::WSingleApplication(int & argc, char ** argv);
+
+protected: // Events
+    /* virtual */ bool event(QEvent * event);
+};
+
+WSingleApplication::WSingleApplication(int & argc, char ** argv)
+    : QtSingleApplication(argc, argv) {}
+
+/* virtual */ bool WSingleApplication::event(QEvent * event)
+{
+    if (event->type() == QEvent::FileOpen) {}
+
+    return QApplication::event(event);
+}
+
+#endif
+
+//=================================================================================================
+// WApplication
+//=================================================================================================
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
@@ -125,7 +157,11 @@
 {
     if (type == Sk::Single)
     {
+#ifdef SK_OS_MAC
+        WSingleApplication * application = new WSingleApplication(argc, argv);
+#else
         QtSingleApplication * application = new QtSingleApplication(argc, argv);
+#endif
 
         QString message;
 
@@ -152,3 +188,7 @@
 }
 
 #endif // SK_NO_APPLICATION
+
+#ifdef Q_OS_MAC
+#include "WApplication.moc"
+#endif
