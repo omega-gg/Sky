@@ -1679,7 +1679,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
     if (index == -1)
     {
-        return QString();
+        return message;
     }
     else return message.mid(index + 1);
 }
