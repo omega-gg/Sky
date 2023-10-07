@@ -1578,11 +1578,9 @@ void WViewPrivate::onIdleTimeout()
 
 void WViewPrivate::onMessageChanged()
 {
-#ifdef Q_OS_ANDROID
     Q_Q(WView);
 
     emit q->messageReceived(sk->message());
-#endif
 }
 
 #endif
