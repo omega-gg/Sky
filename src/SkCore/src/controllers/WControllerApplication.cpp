@@ -1987,7 +1987,7 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WControllerApplicationPrivate::onUrl(const QUrl & url)
+/* Q_INVOKABLE */ void WControllerApplication::onUrl(const QUrl & url)
 {
     Q_D(WControllerApplication);
 
