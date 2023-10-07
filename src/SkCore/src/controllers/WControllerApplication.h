@@ -92,9 +92,11 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
-#ifdef SK_MOBILE
+#if defined(Q_OS_MAC) || defined(SK_MOBILE)
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
-#else
+#endif
+
+#ifdef SK_DESKTOP
     Q_PROPERTY(bool runOnStartup READ runOnStartup WRITE setRunOnStartup
                NOTIFY runOnStartupChanged)
 #endif
@@ -511,10 +513,12 @@ signals:
 
     void applicationUrlChanged();
 
-#ifdef SK_MOBILE
+#if defined(Q_OS_MAC) || defined(SK_MOBILE)
     // NOTE android: This is useful to notify that the 'intent' has changed.
     void messageChanged();
-#else
+#endif
+
+#ifdef SK_DESKTOP
     void runOnStartupChanged();
 #endif
 
