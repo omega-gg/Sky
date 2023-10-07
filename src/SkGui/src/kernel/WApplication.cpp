@@ -67,11 +67,11 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
     {
         QFileOpenEvent * eventFile = static_cast<QFileOpenEvent *> (event);
 
-        QUrl url = eventFile->url();
+        QString file = eventFile->file();
 
         if (file.isEmpty())
         {
-            sendMessage(url.toString());
+            sendMessage(eventFile->url().toString());
         }
         else sendMessage(file);
     }
