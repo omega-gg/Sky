@@ -485,7 +485,7 @@ public: // Static functions
 #if defined(Q_OS_MAC) || defined(Q_OS_IOS)
 private: // Slots
     // FIXME iOS: It seems setUrlHandler won't let us declare this slot privately.
-    Q_INVOKABLE onUrl(const QUrl & url);
+    Q_INVOKABLE void onUrl(const QUrl & url);
 #endif
 
 signals:
