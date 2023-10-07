@@ -569,10 +569,12 @@ public: // Properties
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
 
-#ifdef SK_MOBILE
+#if defined(Q_OS_MAC) || defined(SK_MOBILE)
     // NOTE android: This returns the 'intent' text.
     QString message() const;
-#else
+#endif
+
+#ifdef SK_OS_DESKTOP
     bool runOnStartup() const;
     void setRunOnStartup(bool enabled);
 #endif

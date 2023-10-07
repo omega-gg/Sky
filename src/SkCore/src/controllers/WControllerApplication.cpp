@@ -2196,11 +2196,11 @@ void WControllerApplication::setApplicationUrl(const QString & url)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef SK_MOBILE
+#if defined(Q_OS_MAC) || defined(SK_MOBILE)
 
 QString WControllerApplication::message() const
 {
-#ifdef Q_OS_IOS
+#if defined(Q_OS_MAC) || defined(Q_OS_IOS)
     Q_D(const WControllerApplication);
 
     return d->message;
