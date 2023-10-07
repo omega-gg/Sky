@@ -574,7 +574,7 @@ public: // Properties
     QString message() const;
 #endif
 
-#ifdef SK_OS_DESKTOP
+#ifdef SK_DESKTOP
     bool runOnStartup() const;
     void setRunOnStartup(bool enabled);
 #endif
