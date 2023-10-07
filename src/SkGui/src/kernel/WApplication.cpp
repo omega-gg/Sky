@@ -69,8 +69,11 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 
         QUrl url = eventFile->url();
 
-        if (file.isEmpty()) sk->onUrl(url);
-        else                sk->onUrl(file);
+        if (file.isEmpty())
+        {
+            sendMessage(url.toString());
+        }
+        else sendMessage(file);
     }
 
     return QApplication::event(event);
