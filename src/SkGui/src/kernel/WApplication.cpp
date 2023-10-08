@@ -71,7 +71,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 
         if (file.isEmpty())
         {
-            emit messageReceived(eventFile->url());
+            emit messageReceived(eventFile->url().toString());
         }
         else emit messageReceived(file);
     }
