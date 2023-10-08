@@ -6267,11 +6267,13 @@ void WControllerPlaylist::setAssociateVbml(bool associate)
     }
     else
     {
-        LSSetDefaultHandlerForURLScheme(scheme, NULL);
+        const CFStringRef empty = CFSTR("");
+
+        LSSetDefaultHandlerForURLScheme(scheme, empty);
 
         if (id)
         {
-            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, NULL);
+            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, empty);
 
             CFRelease(id);
         }
