@@ -49,7 +49,7 @@
 #endif
 
 // Mac includes
-#if defined(QT_6) == false && defined(Q_OS_MAC) && defined(Q_OS_IOS) == false
+#if defined(QT_6) == false && defined(Q_OS_MACX)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #endif
@@ -76,7 +76,7 @@
 //-------------------------------------------------------------------------------------------------
 // Opengl
 
-#if defined(QT_4) && defined(Q_OS_MAC) == false
+#if defined(QT_4) && defined(Q_OS_MACX) == false
 PFNGLGENPROGRAMSARBPROC              pglGenProgramsARB              = 0;
 PFNGLBINDPROGRAMARBPROC              pglBindProgramARB              = 0;
 PFNGLPROGRAMSTRINGARBPROC            pglProgramStringARB            = 0;
@@ -342,7 +342,7 @@ WBackendVlcShader::WBackendVlcShader()
     }
     else
     {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
         QString path = QCoreApplication::applicationDirPath() + "/../../../";
 #else
         QString path = QCoreApplication::applicationDirPath() + '/';

@@ -104,7 +104,7 @@
 #endif
 
 // macOS includes
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
 #include <CoreServices/CoreServices.h>
 #endif
 
@@ -308,7 +308,7 @@ void WControllerApplication::initController()
     {
         component.loadUrl(QUrl("qrc:/Main.qml"));
     }
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
     // NOTE macOS: We have to take the application bundle into account.
     else if (d->gui)
     {
@@ -519,7 +519,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     Qt::KeyboardModifiers flags = static_cast<Qt::KeyboardModifiers> (modifiers);
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
     // NOTE: On macOS an arrow key is considered part of the keypad.
     return (flags | Qt::KeypadModifier);
 #else
@@ -2076,7 +2076,7 @@ bool WControllerApplication::osWin() const
 
 bool WControllerApplication::osMac() const
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
     return true;
 #else
     return false;

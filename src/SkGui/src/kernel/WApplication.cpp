@@ -30,7 +30,7 @@
 #else
 #include <QQmlComponent>
 #endif
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
 #include <QFileOpenEvent>
 #endif
 
@@ -40,7 +40,7 @@
 // 3rdparty includes
 #include <qtsingleapplication>
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
 
 //=================================================================================================
 // WSingleApplication
@@ -125,7 +125,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
     //    ::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
     //QApplication::setGraphicsSystem("raster");
 #endif
 
@@ -171,7 +171,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 {
     if (type == Sk::Single)
     {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
         WSingleApplication * application = new WSingleApplication(argc, argv);
 #else
         QtSingleApplication * application = new QtSingleApplication(argc, argv);
@@ -203,6 +203,6 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 
 #endif // SK_NO_APPLICATION
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
 #include "WApplication.moc"
 #endif

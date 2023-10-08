@@ -50,7 +50,7 @@
 #include <WYamlReader>
 
 // macOS includes
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
 #include <CoreServices/CoreServices.h>
 #endif
 

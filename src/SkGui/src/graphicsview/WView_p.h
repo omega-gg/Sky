@@ -168,7 +168,7 @@ public: // Slots
     void onFadeTimeout();
     void onIdleTimeout();
 
-#if defined(Q_OS_MAC) || defined(SK_MOBILE)
+#if defined(Q_OS_MACX) || defined(SK_MOBILE)
     void onMessageChanged();
 #endif
 
