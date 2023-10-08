@@ -76,7 +76,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
         else sk->onUrl(file);
     }
 
-    return QApplication::event(event);
+    return QtSingleApplication::event(event);
 }
 
 #endif
