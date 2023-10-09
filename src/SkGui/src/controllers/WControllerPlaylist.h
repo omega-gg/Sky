@@ -126,7 +126,7 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
     Q_PROPERTY(QString pathStorage     READ pathStorage     NOTIFY pathStorageChanged)
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
 
-#ifdef SK_DESKTOP
+#if defined(SK_DESKTOP) && defined(SK_CONSOLE) == false
     Q_PROPERTY(bool associateVbml READ associateVbml WRITE setAssociateVbml
                NOTIFY associateVbmlChanged)
 #endif
@@ -374,7 +374,9 @@ signals:
 
     void pathCoverChanged();
 
+#if defined(SK_DESKTOP) && defined(SK_CONSOLE) == false
     void associateVbmlChanged();
+#endif
 
 public: // Properties
     QThread * thread() const;
@@ -384,7 +386,7 @@ public: // Properties
     QString pathStorage    () const;
     QString pathStorageTabs() const;
 
-#ifdef SK_DESKTOP
+#if defined(SK_DESKTOP) && defined(SK_CONSOLE) == false
     bool associateVbml   () const;
     void setAssociateVbml(bool associate);
 #endif

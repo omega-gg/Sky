@@ -6156,7 +6156,7 @@ QString WControllerPlaylist::pathStorageTabs() const
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef SK_DESKTOP
+#if defined(SK_DESKTOP) && defined(SK_CONSOLE) == false
 
 bool WControllerPlaylist::associateVbml() const
 {
