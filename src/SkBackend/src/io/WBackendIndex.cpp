@@ -541,7 +541,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     Q_D(const WBackendIndex);
 
-    QString source = "vbml://run?backend=";
+    QString source = "vbml:run?backend=";
 
     QString cover = d->data.origin;
 

@@ -5323,7 +5323,7 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
                                                                    const QString & label,
                                                                    const QString & q)
 {
-    QUrl source("vbml://run");
+    QUrl source("vbml:run");
 
 #ifdef QT_4
     source.addQueryItem("backend", backend);
@@ -5701,7 +5701,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlRun(const QString & url)
 {
-    return url.startsWith("vbml://run", Qt::CaseInsensitive);
+    return url.startsWith("vbml:run", Qt::CaseInsensitive);
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlConnect(const QString & url)
