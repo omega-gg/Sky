@@ -478,6 +478,8 @@ Style
 
     function getWidthHistory(playlist, item, source, index)
     {
+        if (playlist == null) return 0;
+
         var time = controllerNetwork.extractFragmentValue(source, 't');
 
         if (time == "") return 0;
