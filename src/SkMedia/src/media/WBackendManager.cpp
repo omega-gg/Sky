@@ -494,6 +494,14 @@ void WBackendManagerPrivate::disconnectBackend()
 
     // NOTE: We want to avoid signals while updating the backend.
     QObject::disconnect(backend, 0, q, 0);
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We use the first backend for Chromecast output detection.
+
+    QObject::connect(backend, SIGNAL(outputAdded(const WBackendOutput &)),
+                     q,       SLOT(onOutputAdded(const WBackendOutput &)));
+
+    QObject::connect(backend, SIGNAL(outputRemoved(int)), q, SLOT(onOutputRemoved(int)));
 }
 
 /*void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)

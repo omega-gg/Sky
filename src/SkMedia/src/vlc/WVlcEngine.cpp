@@ -94,8 +94,6 @@ void WVlcEnginePrivate::startScan(WVlcPlayerPrivate * player, bool enabled)
 
     ssize_t count = libvlc_renderer_discoverer_list_get(instance, &services);
 
-    qDebug("SCAN VLC ENGINE %d", count);
-
     for (int i = 0; i < count; i++)
     {
         libvlc_rd_description_t * service = services[i];
