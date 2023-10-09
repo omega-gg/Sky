@@ -92,7 +92,7 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
-#if defined(Q_OS_MAC) || defined(SK_MOBILE)
+#if defined(Q_OS_MACX) || defined(SK_MOBILE)
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
 #endif
 
@@ -484,7 +484,7 @@ public: // Static functions
 
     Q_INVOKABLE static QString bmlDate(const QDateTime & date);
 
-#if defined(Q_OS_MAC) || defined(Q_OS_IOS)
+#ifdef Q_OS_MAC
 private: // Slots
     // FIXME iOS: It seems setUrlHandler won't let us declare this slot privately.
     Q_INVOKABLE void onUrl(const QUrl & url);
@@ -513,7 +513,7 @@ signals:
 
     void applicationUrlChanged();
 
-#if defined(Q_OS_MAC) || defined(SK_MOBILE)
+#if defined(Q_OS_MACX) || defined(SK_MOBILE)
     // NOTE android: This is useful to notify that the 'intent' has changed.
     void messageChanged();
 #endif
@@ -569,7 +569,7 @@ public: // Properties
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
 
-#if defined(Q_OS_MAC) || defined(SK_MOBILE)
+#if defined(Q_OS_MACX) || defined(SK_MOBILE)
     // NOTE android: This returns the 'intent' text.
     QString message() const;
 #endif
@@ -615,7 +615,7 @@ private:
     friend class WControllerPrivate;
     friend class WCoreApplication;
     friend class WApplication;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
     friend class WSingleApplication;
 #endif
 };

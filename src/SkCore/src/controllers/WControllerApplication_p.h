@@ -89,7 +89,7 @@ public: // Variables
 
     QString applicationUrl;
 
-#if defined(Q_OS_MAC) || defined(Q_OS_IOS)
+#ifdef Q_OS_MAC
     QString message;
 #endif
 

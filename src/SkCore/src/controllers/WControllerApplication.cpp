@@ -1981,7 +1981,7 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
     return date.toString(Qt::ISODate);
 }
 
-#if defined(Q_OS_MAC) || defined(Q_OS_IOS)
+#ifdef Q_OS_MAC
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
@@ -2196,11 +2196,11 @@ void WControllerApplication::setApplicationUrl(const QString & url)
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(Q_OS_MAC) || defined(SK_MOBILE)
+#if defined(Q_OS_MACX) || defined(SK_MOBILE)
 
 QString WControllerApplication::message() const
 {
-#if defined(Q_OS_MAC) || defined(Q_OS_IOS)
+#ifdef Q_OS_MAC
     Q_D(const WControllerApplication);
 
     return d->message;
