@@ -484,11 +484,12 @@ public: // Static functions
 
     Q_INVOKABLE static QString bmlDate(const QDateTime & date);
 
-#ifdef Q_OS_MAC
+    // FIXME iOS: Having an ifdef prevents the function to be added to the moc.
+//#ifdef Q_OS_MAC
 private: // Slots
     // FIXME iOS: It seems setUrlHandler won't let us declare this slot privately.
     Q_INVOKABLE void onUrl(const QUrl & url);
-#endif
+//#endif
 
 signals:
     //void controllerCreated  (WController * controller);

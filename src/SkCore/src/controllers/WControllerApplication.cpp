@@ -1981,7 +1981,7 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
     return date.toString(Qt::ISODate);
 }
 
-#ifdef Q_OS_MAC
+//#ifdef Q_OS_MAC
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
@@ -1989,14 +1989,18 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
 
 /* Q_INVOKABLE */ void WControllerApplication::onUrl(const QUrl & url)
 {
+#ifdef Q_OS_MAC
     Q_D(WControllerApplication);
 
     d->message = url.toString();
 
     emit messageChanged();
+#else
+    Q_UNUSED(url);
+#endif
 }
 
-#endif
+//#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties
