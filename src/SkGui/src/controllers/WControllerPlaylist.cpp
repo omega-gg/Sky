@@ -2298,7 +2298,7 @@ void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef Q_OS_MACX
+#if defined(SK_CONSOLE) == false && defined(Q_OS_MACX)
 
 bool WControllerPlaylistPrivate::compareBundle(const CFStringRef bundle,
                                                const CFStringRef handler) const

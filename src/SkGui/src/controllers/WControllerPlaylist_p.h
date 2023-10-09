@@ -138,7 +138,7 @@ public: // Functions
 
     void registerItemId(WLibraryItem * item);
 
-#ifdef Q_OS_MACX
+#if defined(SK_CONSOLE) == false && defined(Q_OS_MACX)
     bool compareBundle(const CFStringRef bundle, const CFStringRef handler) const;
 #endif
 
