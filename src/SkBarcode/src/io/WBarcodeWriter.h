@@ -35,6 +35,16 @@ class WBarcodeWriterPrivate;
 class WAbstractThreadAction;
 
 //-------------------------------------------------------------------------------------------------
+// WBarcodeImage
+//-------------------------------------------------------------------------------------------------
+
+struct WBarcodeData
+{
+    QImage  image;
+    QString text;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WBarcodeTag
 //-------------------------------------------------------------------------------------------------
 
@@ -77,14 +87,14 @@ public: // Static functions
     Q_INVOKABLE static QString encode(const QString & text,
                                       Type type = Text, const QString & prefix = QString());
 
-    Q_INVOKABLE static QImage write(const QString & text,
-                                    Type type = Text, const QString & prefix = QString(),
-                                    int margins = 1);
+    Q_INVOKABLE static WBarcodeData write(const QString & text,
+                                          Type type = Text, const QString & prefix = QString(),
+                                          int margins = 1);
 
     // NOTE: When providing a cover the generated tag is twice the size.
-    Q_INVOKABLE static QImage writeTag(const QString     & text,
-                                       const QString     & background,
-                                       const WBarcodeTag & parameters = WBarcodeTag());
+    Q_INVOKABLE static WBarcodeData writeTag(const QString     & text,
+                                             const QString     & background,
+                                             const WBarcodeTag & parameters = WBarcodeTag());
 
     // NOTE: When providing a cover the generated tag is twice the size.
     Q_INVOKABLE static bool writeTagFile(const QString     & fileName,
@@ -100,7 +110,7 @@ public: // Static functions
                                                            Type            type     = Text,
                                                            const QString & prefix   = QString());
 
-    // NOTE: The 'method' format is complete(const QImage &).
+    // NOTE: The 'method' format is complete(const QImage &, const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startWrite(const QString & text,
                                                           QObject       * receiver = NULL,
                                                           const char    * method   = NULL,
@@ -108,7 +118,7 @@ public: // Static functions
                                                           const QString & prefix   = QString(),
                                                           int             margins  = 1);
 
-    // NOTE: The 'method' format is complete(const QImage &).
+    // NOTE: The 'method' format is complete(const QImage &, const QString &).
     Q_INVOKABLE static
     WAbstractThreadAction * startWriteTag(const QString     & text,
                                           const QString     & background,

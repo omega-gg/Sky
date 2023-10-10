@@ -193,10 +193,10 @@ protected: // WAbstractThreadReply reimplementation
     /* virtual */ void onCompleted(bool ok);
 
 signals:
-    void complete(const QImage & image);
+    void complete(const QImage & image, const QString & text);
 
 public: // Variables
-    QImage image;
+    WBarcodeData data;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -234,7 +234,7 @@ public: // Variables
 {
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
 
-    reply->image = WBarcodeWriter::write(text, type, prefix, margins);
+    reply->data = WBarcodeWriter::write(text, type, prefix, margins);
 
     return true;
 }
@@ -243,7 +243,7 @@ public: // Variables
 {
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
 
-    reply->image = WBarcodeWriter::writeTag(text, background, parameters);
+    reply->data = WBarcodeWriter::writeTag(text, background, parameters);
 
     return true;
 }
@@ -260,7 +260,7 @@ public: // Variables
 
 /* virtual */ void WBarcodeWriteReply::onCompleted(bool)
 {
-    emit complete(image);
+    emit complete(data.image, data.text);
 }
 
 //=================================================================================================
@@ -325,18 +325,22 @@ void WBarcodeWriterPrivate::init() {}
     else return text;
 }
 
-/* Q_INVOKABLE static */ QImage WBarcodeWriter::write(const QString & text, Type type,
-                                                      const QString & prefix, int margins)
+/* Q_INVOKABLE static */ WBarcodeData WBarcodeWriter::write(const QString & text, Type type,
+                                                            const QString & prefix, int margins)
 {
+    WBarcodeData data;
+
     QString string = encode(text, type, prefix);
 
-    if (string.isEmpty()) return QImage();
+    if (string.isEmpty()) return data;
+
+    data.text = string;
 
     if (string.length() > BARCODEWRITER_MAX)
     {
         qWarning("WBarcodeWriter::write: The text is too long (%d).", (int) string.size());
 
-        return QImage();
+        return data;
     }
 
     QRCode::EncodeResult code = QRCode::Encode(TextUtfEncoding::FromUtf8(string.toStdString()),
@@ -390,16 +394,20 @@ void WBarcodeWriterPrivate::init() {}
     }
 #endif
 
-    return image;
+    data.image = image;
+
+    return data;
 }
 
-/* Q_INVOKABLE static */ QImage WBarcodeWriter::writeTag(const QString     & text,
-                                                         const QString     & background,
-                                                         const WBarcodeTag & parameters)
+/* Q_INVOKABLE static */ WBarcodeData WBarcodeWriter::writeTag(const QString     & text,
+                                                               const QString     & background,
+                                                               const WBarcodeTag & parameters)
 {
-    QImage front = write(text, Vbml, parameters.prefix, parameters.margins);
+    WBarcodeData data = write(text, Vbml, parameters.prefix, parameters.margins);
 
-    if (front.isNull()) return QImage();
+    QImage front = data.image;
+
+    if (front.isNull()) return data;
 
     QImage back(WControllerFile::toLocalFile(background));
 
@@ -444,7 +452,9 @@ void WBarcodeWriterPrivate::init() {}
             painter.drawImage(QRect(sizeHalf, sizeHalf, size, size), front,
                               QRect(0, 0, front.width(), front.height()));
 
-            return content;
+            data.image = content;
+
+            return data;
         }
     }
 
@@ -462,7 +472,9 @@ void WBarcodeWriterPrivate::init() {}
     painter.drawImage(QRect(padding, padding, size, size), front,
                       QRect(0, 0, front.width(), front.height()));
 
-    return content;
+    data.image = content;
+
+    return data;
 }
 
 /* Q_INVOKABLE static */ bool WBarcodeWriter::writeTagFile(const QString     & fileName,
@@ -471,7 +483,7 @@ void WBarcodeWriterPrivate::init() {}
                                                            const WBarcodeTag & parameters,
                                                            const QString     & format)
 {
-    QImage image = writeTag(text, background, parameters);
+    QImage image = writeTag(text, background, parameters).image;
 
     return image.save(fileName, format.C_STR);
 }
@@ -508,7 +520,8 @@ WAbstractThreadAction * WBarcodeWriter::startWrite(const QString & text,
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
                                  (wControllerFile->startWriteAction(action));
 
-    if (receiver) connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
+    if (receiver) connect(reply,
+                          SIGNAL(complete(const QImage &, const QString &)), receiver, method);
 
     return action;
 }
@@ -525,7 +538,8 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTag(const QString     & text,
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
                                  (wControllerFile->startWriteAction(action));
 
-    if (receiver) connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
+    if (receiver) connect(reply,
+                          SIGNAL(complete(const QImage &, const QString &)), receiver, method);
 
     return action;
 }
