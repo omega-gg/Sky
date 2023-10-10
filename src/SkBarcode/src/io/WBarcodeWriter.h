@@ -93,7 +93,6 @@ public: // Static functions
                                          const WBarcodeTag & parameters = WBarcodeTag(),
                                          const QString     & format     = "png");
 
-
     // NOTE: The 'method' format is complete(const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startEncode(const QString & text,
                                                            QObject       * receiver = NULL,
