@@ -90,7 +90,7 @@ void WDeclarativeBarcodePrivate::loadText()
     Q_Q(WDeclarativeBarcode);
 
     q->applyImage(WBarcodeWriter::write(text, static_cast<WBarcodeWriter::Type> (type), prefix,
-                                        margins));
+                                        margins).image);
 }
 
 //-------------------------------------------------------------------------------------------------
