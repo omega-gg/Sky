@@ -177,6 +177,11 @@ Item
         return value * ratioTempo * ratioVelocity;
     }
 
+    function toBpm(msecs)
+    {
+        return msecs / ratioTempo / ratioVelocity;
+    }
+
     //---------------------------------------------------------------------------------------------
 
     // NOTE: This can be useful to check a bpm interval.

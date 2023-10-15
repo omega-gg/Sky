@@ -1919,6 +1919,50 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
     else return QString("%1 ").arg(seconds) + tr("seconds ago");
 }
 
+/* Q_INVOKABLE static */ int WControllerApplication::extractMsecs(const QString & text,
+                                                                  int             defaultValue)
+{
+    QStringList list = text.split(':');
+
+    int count = list.count();
+
+    if (count == 1)
+    {
+        return list.first().toInt();
+    }
+    else if (count == 2)
+    {
+        QStringList seconds = list.last().split('.');
+
+        int msecs = list.at(0).toInt() * 60000 // 1 minute
+                    +
+                    seconds.first().toInt() * 1000;
+
+        if (seconds.count() == 2)
+        {
+             return msecs + seconds.last().toInt();
+        }
+        else return msecs;
+    }
+    else if (count == 3)
+    {
+        QStringList seconds = list.last().split('.');
+
+        int msecs = list.at(0).toInt() * 3600000 // 1 hour
+                    +
+                    list.at(1).toInt() * 60000 // 1 hour
+                    +
+                    seconds.first().toInt() * 1000;
+
+        if (seconds.count() == 2)
+        {
+             return msecs + seconds.last().toInt();
+        }
+        else return msecs;
+    }
+    else return defaultValue;
+}
+
 //---------------------------------------------------------------------------------------------
 // BML
 

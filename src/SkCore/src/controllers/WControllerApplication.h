@@ -454,6 +454,10 @@ public: // Static functions
 
     Q_INVOKABLE static QString dateToText(const QDateTime & date);
 
+    // NOTE: This extracts msecs as a raw value or mm:ss.zzz and hh:mm:ss.zzz format with optional
+    //       zzz for msecs.
+    Q_INVOKABLE static int extractMsecs(const QString & text, int defaultValue = 0);
+
     //---------------------------------------------------------------------------------------------
     // BML
 

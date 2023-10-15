@@ -97,45 +97,9 @@ int WYamlNodeBase::extractMsecs(const QString & key, int defaultValue) const
 {
     const WYamlNode * node = at(key);
 
-    if (node == NULL) return defaultValue;
-
-    QStringList list = node->value.split(':');
-
-    int count = list.count();
-
-    if (count == 1)
+    if (node)
     {
-        return list.first().toInt();
-    }
-    else if (count == 2)
-    {
-        QStringList seconds = list.last().split('.');
-
-        int msecs = list.at(0).toInt() * 60000 // 1 minute
-                    +
-                    seconds.first().toInt() * 1000;
-
-        if (seconds.count() == 2)
-        {
-             return msecs + seconds.last().toInt();
-        }
-        else return msecs;
-    }
-    else if (count == 3)
-    {
-        QStringList seconds = list.last().split('.');
-
-        int msecs = list.at(0).toInt() * 3600000 // 1 hour
-                    +
-                    list.at(1).toInt() * 60000 // 1 hour
-                    +
-                    seconds.first().toInt() * 1000;
-
-        if (seconds.count() == 2)
-        {
-             return msecs + seconds.last().toInt();
-        }
-        else return msecs;
+        return Sk::extractMsecs(node->value, defaultValue);
     }
     else return defaultValue;
 }
