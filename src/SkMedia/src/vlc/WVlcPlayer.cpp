@@ -513,7 +513,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                 media = libvlc_media_new_location(d->engine->d_func()->instance,
                                                   d->encodeUrl(eventSource->media).C_UTF);
 
-                // NOTE VLC 3.0.18: This option seems to fail the second time we call it.
+                // FIXME VLC 3.0.18: This option seems to fail the second time we call it.
                 libvlc_media_add_option(media, "no-video");
             }
             else media = libvlc_media_new_location(d->engine->d_func()->instance,
