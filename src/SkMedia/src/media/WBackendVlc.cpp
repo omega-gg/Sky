@@ -1651,12 +1651,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
     d->clearPlayer();
 
-    // FIXME VLC 3.0.16: Pause does not seem to work on a live stream.
-    /*if (d->live)
-    {
-         d->player->stop();
-    }
-    else */d->player->pause();
+    d->player->stop();
 
     d->clearActive();
 

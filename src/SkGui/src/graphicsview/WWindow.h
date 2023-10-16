@@ -323,6 +323,9 @@ public: // Interface
                               int x = 0, int y = 0, int width = -1, int height = -1,
                               const QString & format = "png", int quality = -1) const;
 
+    Q_INVOKABLE bool saveShot(const QString & fileName,
+                              const QString & format, int quality = -1) const;
+
     Q_INVOKABLE void writeShot(const QString & path,
                                const QString & format = "png", int quality = -1) const;
 

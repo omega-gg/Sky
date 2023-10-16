@@ -2169,6 +2169,17 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 }
 
 #ifdef QT_4
+/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName,
+                                       const QString & format, int quality) const
+#else
+/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName,
+                                       const QString & format, int quality)
+#endif
+{
+    return saveShot(fileName, 0, 0, -1, -1, format, quality);
+}
+
+#ifdef QT_4
 /* Q_INVOKABLE */ void WView::writeShot(const QString & path,
                                         const QString & format, int quality) const
 #else

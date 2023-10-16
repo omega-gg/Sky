@@ -535,7 +535,7 @@ WallBookmarkTrack
                 }
                 else return true;
             }
-            else return hasStarted;
+            else return (hasStarted && pAudio == false);
         }
 
         // NOTE: When the wall is exposed we make sure to clip the player properly.

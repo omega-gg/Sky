@@ -1105,7 +1105,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setTrackVideo(id);
+    d->backend->setTrackVideo(id);
 }
 
 /* virtual */ void WBackendManager::backendSetAudio(int id)

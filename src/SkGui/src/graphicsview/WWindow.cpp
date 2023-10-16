@@ -614,6 +614,14 @@ void WWindowPrivate::deleteItems()
     return d->view->saveShot(fileName, x, y, width, height, format, quality);
 }
 
+/* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName,
+                                         const QString & format, int quality) const
+{
+    Q_D(const WWindow);
+
+    return d->view->saveShot(fileName, format, quality);
+}
+
 /* Q_INVOKABLE */ void WWindow::writeShot(const QString & path,
                                           const QString & format, int quality) const
 {
