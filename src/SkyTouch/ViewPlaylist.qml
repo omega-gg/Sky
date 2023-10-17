@@ -46,6 +46,9 @@ Loader
 
     property int currentIndex: -1
 
+    // NOTE: We want to avoid autoScroll for playlists.
+    property bool autoScroll: false
+
     //---------------------------------------------------------------------------------------------
     // Signals
     //---------------------------------------------------------------------------------------------
@@ -141,6 +144,8 @@ Loader
 
             delegate: viewPlaylist.delegateGrid
 
+            autoScroll: viewPlaylist.autoScroll
+
             onMovementStarted: viewPlaylist.movementStarted()
 
             onCurrentIndexChanged: viewPlaylist.currentIndex = currentIndex
@@ -183,6 +188,8 @@ Loader
             model: viewPlaylist.model
 
             delegate: viewPlaylist.delegateList
+
+            autoScroll: viewPlaylist.autoScroll
 
             onMovementStarted: viewPlaylist.movementStarted()
 

@@ -78,7 +78,12 @@ PanelContextual
 
         clip: true
 
-        onVisibleChanged: if (visible) positionViewAtIndex(currentIndex, ListView.Contain)
+        onVisibleChanged:
+        {
+            if (autoScroll == false || visible == false) return;
+
+            positionViewAtIndex(currentIndex, ListView.Contain);
+        }
     }
 
     ScrollBar

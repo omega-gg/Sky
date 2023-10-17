@@ -28,6 +28,12 @@ GridView
     id: baseGrid
 
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool autoScroll: true
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -42,7 +48,7 @@ GridView
     onCountChanged: if (count == 0) contentHeight = 1
 //#END
 
-    onCurrentIndexChanged: positionViewAtIndex(currentIndex, GridView.Contain)
+    onCurrentIndexChanged: if (autoScroll) positionViewAtIndex(currentIndex, GridView.Contain)
 
     // NOTE: When we have a contextual area we hide its panels when scrolling.
     onMovementStarted: window.checkContextual(areaContextual, baseGrid)

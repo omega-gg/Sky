@@ -28,6 +28,12 @@ ListView
     id: baseList
 
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool autoScroll: true
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -42,7 +48,7 @@ ListView
     onCountChanged: if (count == 0) contentHeight = 1
 //#END
 
-    onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
+    onCurrentIndexChanged: if (autoScroll) positionViewAtIndex(currentIndex, ListView.Contain)
 
     // NOTE: When we have a contextual area we hide its panels when scrolling.
     onMovementStarted: window.checkContextual(areaContextual, baseList)
