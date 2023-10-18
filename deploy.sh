@@ -69,6 +69,7 @@ copyAndroid()
 
     cp "$1"/plugins/imageformats/lib*qsvg_*.so  deploy/imageformats
     cp "$1"/plugins/imageformats/lib*qjpeg_*.so deploy/imageformats
+    cp "$1"/plugins/imageformats/lib*qwebp_*.so deploy/imageformats
 
     if [ $qt = "qt5" ]; then
 
@@ -322,6 +323,7 @@ else
 
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg.dll deploy/imageformats
+        cp "$Qt"/plugins/imageformats/qwebp.dll deploy/imageformats
 
         if [ $qt = "qt5" ]; then
 
@@ -382,6 +384,7 @@ else
 
         cp "$Qt"/plugins/imageformats/libqsvg.dylib  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.dylib deploy/imageformats
+        cp "$Qt"/plugins/imageformats/libqwebp.dylib deploy/imageformats
 
         if [ $qt = "qt5" ]; then
 
@@ -433,6 +436,7 @@ else
 
         cp "$Qt"/plugins/imageformats/libqsvg.a  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.a deploy/imageformats
+        cp "$Qt"/plugins/imageformats/libqwebp.a deploy/imageformats
 
         if [ $qt = "qt5" ]; then
 
@@ -513,6 +517,7 @@ else
 
         cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
+        cp "$Qt"/plugins/imageformats/libqwebp.so deploy/imageformats
 
         if [ $qt = "qt5" ]; then
 
