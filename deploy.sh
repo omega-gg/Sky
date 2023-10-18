@@ -517,7 +517,11 @@ else
 
         cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
-        cp "$Qt"/plugins/imageformats/libqwebp.so deploy/imageformats
+
+        if [ -f "$Qt"/plugins/imageformats/libqwebp.so ]; then
+
+            cp "$Qt"/plugins/imageformats/libqwebp.so deploy/imageformats
+        fi
 
         if [ $qt = "qt5" ]; then
 
