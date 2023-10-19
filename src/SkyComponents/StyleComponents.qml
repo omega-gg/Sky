@@ -871,17 +871,6 @@ Style
     property int wallVideo_overlayHeight: itemWall_iconHeight
 
     property color wallVideo_colorPlayer: "black"
-
-    property color wallVideo_colorShadow: color_highlight
-
-    property alias wallVideo_filterShadow: wallVideo_filterShadow
-
-    ImageFilterColor
-    {
-        id: wallVideo_filterShadow
-
-        color: wallVideo_colorShadow
-    }
 //#END
 
 //#PlayerBrowser

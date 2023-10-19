@@ -232,14 +232,6 @@ WallBookmarkTrack
     }
 
     //---------------------------------------------------------------------------------------------
-
-    function getOpacity(area)
-    {
-        if (area.pressed) return 1.0;
-        else              return 0.5;
-    }
-
-    //---------------------------------------------------------------------------------------------
     // WallBookmarkTrack reimplementation
 
     function getItemBarMargin(index)
@@ -682,47 +674,6 @@ WallBookmarkTrack
 
             onVisibleChanged: if (visible) applyScale()
         }
-    }
-
-    RectangleShadowClick
-    {
-        id: areaBackward
-
-        anchors.top   : player.top
-        anchors.bottom: player.bottom
-
-        width: pAreaWidth
-
-        z: player.z
-
-        visible: (isExposed == false
-                  &&
-                  player.isPlaying && player.duration != -1)
-
-        direction: Sk.Right
-
-        filter: st.wallVideo_filterShadow
-
-        onClicked: seekBackward()
-    }
-
-    RectangleShadowClick
-    {
-        id: areaForward
-
-        anchors.right : player.right
-        anchors.top   : player.top
-        anchors.bottom: player.bottom
-
-        width: pAreaWidth
-
-        z: player.z
-
-        visible: areaBackward.visible
-
-        filter: st.wallVideo_filterShadow
-
-        onClicked: seekForward()
     }
 
     TextSubtitle
