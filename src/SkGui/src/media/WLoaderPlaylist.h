@@ -159,8 +159,8 @@ struct WLoaderPlaylistData
 // WLoaderPlaylistReply
 //=================================================================================================
 
-// NOTE: This function is supposed to be instantiated as a pointer object and deletes itself after
-//       the extract function has been processed.
+// NOTE: This function is supposed to be instantiated as a pointer object and deleted after the
+//       extract function has been processed.
 class WLoaderPlaylistReply : public QObject
 {
     Q_OBJECT
@@ -169,6 +169,8 @@ public: // Interface
     Q_INVOKABLE void extract(const QStringList & urls, const QStringList & sources, int maximum);
 
     Q_INVOKABLE void applyMethod(QMetaMethod * method);
+
+    Q_INVOKABLE void abortAndDelete(const QObject * receiver);
 
 protected: // Functions
     virtual WBackendNetQuery getQuery(const QString & url, int index) const; // {}

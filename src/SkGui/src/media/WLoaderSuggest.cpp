@@ -112,11 +112,7 @@ void WLoaderSuggestPrivate::updateSources()
 
     q->setQueryLoading(true);
 
-    if (reply)
-    {
-        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
-                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
-    }
+    if (reply) reply->abortAndDelete(q);
 
     QStringList titles;
 
@@ -141,8 +137,7 @@ void WLoaderSuggestPrivate::clearQueries()
 
     if (reply)
     {
-        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
-                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
+        reply->abortAndDelete(q);
 
         reply = NULL;
     }
@@ -252,6 +247,8 @@ void WLoaderSuggestPrivate::onPlaylistDestroyed()
 void WLoaderSuggestPrivate::onLoaded(const WLoaderPlaylistData & data)
 {
     Q_Q(WLoaderSuggest);
+
+    reply->deleteLater();
 
     reply = NULL;
 

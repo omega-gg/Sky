@@ -67,11 +67,7 @@ void WLoaderTracksPrivate::updateSources()
 
     q->setQueryLoading(true);
 
-    if (reply)
-    {
-        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
-                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
-    }
+    if (reply) reply->abortAndDelete(q);
 
     reply = new WLoaderPlaylistReply;
 
@@ -134,8 +130,7 @@ void WLoaderTracksPrivate::clearQueries()
 
     if (reply)
     {
-        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
-                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
+        reply->abortAndDelete(q);
 
         reply = NULL;
     }
@@ -233,6 +228,8 @@ void WLoaderTracksPrivate::onPlaylistDestroyed()
 void WLoaderTracksPrivate::onLoaded(const WLoaderPlaylistData & data)
 {
     Q_Q(WLoaderTracks);
+
+    reply->deleteLater();
 
     reply = NULL;
 

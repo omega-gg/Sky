@@ -627,6 +627,12 @@ void WLoaderPlaylist::setRunning(bool running)
     data.sources = list;
 
     emit loaded(data);
+}
+
+/* Q_INVOKABLE */ void WLoaderPlaylistReply::abortAndDelete(const QObject * receiver)
+{
+    disconnect(this,     SIGNAL(loaded(const WLoaderPlaylistData &)),
+               receiver, SLOT(onLoaded(const WLoaderPlaylistData &)));
 
     deleteLater();
 }
