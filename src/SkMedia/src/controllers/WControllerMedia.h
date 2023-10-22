@@ -211,13 +211,15 @@ public: // Interface
 #endif
 
     Q_INVOKABLE
-    WMediaReply * getMedia(const QString & url,
-                           QObject * parent                  = NULL,
-                           WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault,
-                           int currentTime                   = -1);
+    WMediaReply * getMedia(const QString              & url,
+                           QObject                    * parent = NULL,
+                           WAbstractBackend::SourceMode mode   = WAbstractBackend::SourceDefault,
+                           int                          currentTime = -1);
 
     // NOTE: This function is provided for convenient loading of specific media sources.
-    Q_INVOKABLE WMediaReply * getMedia(const QString & url, WAbstractBackend::SourceMode mode);
+    Q_INVOKABLE WMediaReply * getMedia(const QString              & url,
+                                       WAbstractBackend::SourceMode mode,
+                                       int                          currentTime = -1);
 
     Q_INVOKABLE void clearMedia (const QString & url);
     Q_INVOKABLE void clearMedias();

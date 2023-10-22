@@ -1718,10 +1718,12 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
     return reply;
 }
 
-/* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url,
-                                                           WAbstractBackend::SourceMode mode)
+/* Q_INVOKABLE */
+WMediaReply * WControllerMedia::getMedia(const QString              & url,
+                                         WAbstractBackend::SourceMode mode,
+                                         int                          currentTime)
 {
-    return getMedia(url, NULL, mode, -1);
+    return getMedia(url, NULL, mode, currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
