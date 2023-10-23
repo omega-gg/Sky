@@ -154,6 +154,14 @@ void WLoaderPlaylistPrivate::onQueryCompleted()
 
     WLoaderPlaylistNode * node = jobs.take(playlist);
 
+    if (node == NULL)
+    {
+        // NOTE: We don't need these tracks anymore so we clear them along with pending queries.
+        playlist->clearTracks();
+
+        return;
+    }
+
     node->query = WBackendNetQuery();
 
     q->onApplyPlaylist(node, playlist);

@@ -533,6 +533,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                     QString input = "input-slave=" + d->encodeUrl(audio);
 
                     libvlc_media_add_option(media, input.C_UTF);
+
+                    // FIXME VLC 3.0.18: This seems to fix the missing audio bytes at the end of
+                    //                   the video.
+                    libvlc_media_add_option(media, "demux=avformat");
                 }
             }
             else libvlc_media_add_option(media, "no-audio");
