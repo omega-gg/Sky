@@ -1051,7 +1051,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         if (duration < 0) return;
 
-        d->backendInterface->seek(msec * (qreal) duration / d->duration);
+        d->backendInterface->seek(msec - duration * (int) (msec / duration));
     }
     else if (d->currentMedia.isEmpty() == false)
     {
