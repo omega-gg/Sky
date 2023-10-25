@@ -48,7 +48,15 @@ WDeclarativeMouseAreaPrivate::WDeclarativeMouseAreaPrivate(WDeclarativeMouseArea
 
 /* virtual */ WDeclarativeMouseAreaPrivate::~WDeclarativeMouseAreaPrivate()
 {
-    clearView();
+    if (view == NULL) return;
+
+    Q_Q(WDeclarativeMouseArea);
+
+    WViewPrivate * p = view->d_func();
+
+    if (hoverActive) p->itemsHovered.removeOne(q);
+
+    if (p->areaDrop == q) p->areaDrop = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -199,24 +207,26 @@ void WDeclarativeMouseAreaPrivate::clearView()
 
     Q_Q(WDeclarativeMouseArea);
 
+    WViewPrivate * p = view->d_func();
+
     if (hoverActive)
     {
         hoverActive = false;
 
-        view->d_func()->itemsHovered.removeOne(q);
+        p->itemsHovered.removeOne(q);
 
         emit q->hoverActiveChanged();
 
         emit q->hoverExited();
     }
 
-    if (view->d_func()->areaDrop == q)
+    if (p->areaDrop == q)
     {
         WDeclarativeDropEvent event(-1, -1, QString());
 
         emit q->dragExited(&event);
 
-        view->d_func()->areaDrop = NULL;
+        p->areaDrop = NULL;
     }
 }
 
