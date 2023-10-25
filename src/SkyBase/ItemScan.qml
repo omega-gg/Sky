@@ -25,6 +25,8 @@ import Sky     1.0
 
 Scanner
 {
+    id: itemScan
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -146,7 +148,14 @@ Scanner
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function click(x, y)
+    function click()
+    {
+        var position = window.mapToItem(itemScan, window.contentMouseX(), window.contentMouseY());
+
+        clickAt(position.x, position.y);
+    }
+
+    function clickAt(x, y)
     {
         // NOTE: We check a larger surface on touch interactions.
         if (window.isTouching)
@@ -184,7 +193,11 @@ Scanner
 
     function pScan()
     {
-        if (pHoverable) scanFrame(window.mouseX, window.mouseY);
+        if (pHoverable == false) return;
+
+        var position = window.mapToItem(itemScan, window.contentMouseX(), window.contentMouseY());
+
+        scanFrame(position.x, position.y);
     }
 
     function pClearHover()

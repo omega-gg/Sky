@@ -4381,7 +4381,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         folder->removeAt(0);
 
-        if (source.isEmpty())
+        if (source.isEmpty() == false)
         {
             folder->applySource(source);
         }

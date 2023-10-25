@@ -102,6 +102,8 @@ WallBookmarkTrack
 
     property alias itemLoader: itemLoader
 
+    property alias scanner: scanner
+
     property alias buttonsItem: buttonsItem
 
     //---------------------------------------------------------------------------------------------
@@ -113,6 +115,8 @@ WallBookmarkTrack
 
     signal playerPressed      (variant mouse)
     signal playerDoubleClicked(variant mouse)
+
+    signal tagClicked(string text)
 
     signal contextualBrowser
 
@@ -134,6 +138,9 @@ WallBookmarkTrack
 
         if (isActive) pExpanded = false;
     }
+
+    // NOTE: We need to check tags at the root and in playerMouseArea.
+    onClicked: if (scanner.visible) scanner.click()
 
     //---------------------------------------------------------------------------------------------
     // Connections
@@ -481,6 +488,9 @@ WallBookmarkTrack
         /* QML_EVENT */ onPressed: function(mouse) { playerPressed(mouse); }
 
         /* QML_EVENT */ onDoubleClicked: function(mouse) { playerDoubleClicked(mouse); }
+
+        // NOTE: We need to check tags at the root and in playerMouseArea.
+        onClicked: if (scanner.visible) scanner.click()
     }
 
     Rectangle
@@ -775,6 +785,24 @@ WallBookmarkTrack
 
             onVisibleChanged: if (visible) loadNow()
         }
+    }
+
+    ItemScan
+    {
+        id: scanner
+
+        anchors.fill: playerBrowser
+
+        z: playerBrowser.z
+
+        visible: (player.visible || playerBack.visible || browserBack.visible)
+
+        player: player
+
+        cover: (playerCover.visible) ? playerCover
+                                     : browserCover
+
+        /* QML_EVENT */ onClicked: function(text) { tagClicked(text) }
     }
 
     PlayerBrowser
