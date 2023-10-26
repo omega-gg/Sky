@@ -150,7 +150,7 @@ Scanner
 
     function click()
     {
-        var position = window.mapToItem(itemScan, window.contentMouseX(), window.contentMouseY());
+        var position = window.mapToItem(itemScan, window.mouseX, window.mouseY);
 
         clickAt(position.x, position.y);
     }
@@ -195,7 +195,7 @@ Scanner
     {
         if (pHoverable == false) return;
 
-        var position = window.mapToItem(itemScan, window.contentMouseX(), window.contentMouseY());
+        var position = window.mapToItem(itemScan, window.mouseX, window.mouseY);
 
         scanFrame(position.x, position.y);
     }

@@ -200,12 +200,12 @@ BaseWindow
 
     function mapFromItem(item, x, y)
     {
-        return content.mapFromItem(item, x, y);
+        return viewport.mapFromItem(item, x, y);
     }
 
     function mapToItem(item, x, y)
     {
-        return content.mapToItem(item, x, y);
+        return viewport.mapToItem(item, x, y);
     }
 
     function contentMouseX()

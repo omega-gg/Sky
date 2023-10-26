@@ -95,7 +95,7 @@ Item
     {
         if (visible)
         {
-             return window.viewport.mapToItem(slider.slider, window.mouseX, 0).x;
+             return window.mapToItem(slider.slider, window.mouseX, 0).x;
         }
         else return -1;
     }
