@@ -152,7 +152,7 @@ Scanner
     {
         var position = window.mapToItem(itemScan, window.mouseX, window.mouseY);
 
-        clickAt(position.x, position.y);
+        return clickAt(position.x, position.y);
     }
 
     function clickAt(x, y)

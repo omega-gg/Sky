@@ -70,6 +70,8 @@ WallBookmarkTrack
     property variant pItemA: null
     property variant pItemB: null
 
+    property variant pMouse
+
     property TabTrack pHoveredTab: tabs.tabAt(indexHover)
 
     property bool pExpanded: true
@@ -102,7 +104,8 @@ WallBookmarkTrack
 
     property alias itemLoader: itemLoader
 
-    property alias scanner: scanner
+    property alias scannerPlayer : scannerPlayer
+    property alias scannerBrowser: scannerBrowser
 
     property alias buttonsItem: buttonsItem
 
@@ -113,10 +116,10 @@ WallBookmarkTrack
     signal titleClicked (variant mouse)
     signal authorClicked(variant mouse)
 
-    signal playerPressed      (variant mouse)
+    signal playerClicked      (variant mouse)
     signal playerDoubleClicked(variant mouse)
 
-    signal tagClicked(string text)
+    signal tagClicked(variant mouse, string text)
 
     signal contextualBrowser
 
@@ -139,8 +142,18 @@ WallBookmarkTrack
         if (isActive) pExpanded = false;
     }
 
-    // NOTE: We need to check tags at the root and in playerMouseArea.
-    onClicked: if (scanner.visible) scanner.click()
+    onClicked:
+    {
+        pMouse = mouse;
+
+        if (scannerPlayer.visible)
+        {
+            // NOTE: We need to check tags at the root and in playerMouseArea.
+            if (scannerPlayer.click()) return;
+        }
+
+        if (scannerBrowser.visible) scannerBrowser.click();
+    }
 
     //---------------------------------------------------------------------------------------------
     // Connections
@@ -485,12 +498,17 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        /* QML_EVENT */ onPressed: function(mouse) { playerPressed(mouse); }
+        /* QML_EVENT */ onClicked: function(mouse)
+        {
+            pMouse = mouse;
+
+            // NOTE: We need to check tags at the root and in playerMouseArea.
+            if (scannerPlayer.click()) return;
+
+            playerClicked(mouse);
+        }
 
         /* QML_EVENT */ onDoubleClicked: function(mouse) { playerDoubleClicked(mouse); }
-
-        // NOTE: We need to check tags at the root and in playerMouseArea.
-        onClicked: if (scanner.visible) scanner.click()
     }
 
     Rectangle
@@ -789,20 +807,44 @@ WallBookmarkTrack
 
     ItemScan
     {
-        id: scanner
+        id: scannerPlayer
 
-        anchors.fill: playerBrowser
+        anchors.fill: player
 
-        z: playerBrowser.z
+        z: player.z
 
-        visible: (player.visible || playerBack.visible || browserBack.visible)
+        visible: (player.visible || playerBack.visible)
 
         player: player
 
-        cover: (playerCover.visible) ? playerCover
-                                     : browserCover
+        cover: playerCover
 
-        /* QML_EVENT */ onClicked: function(text) { tagClicked(text) }
+        /* QML_EVENT */ onClicked: function(text)
+        {
+            if (text)
+            {
+                tagClicked(pMouse, text);
+            }
+            else if (enablePress)
+            {
+                playerClicked(pMouse);
+            }
+        }
+    }
+
+    ItemScan
+    {
+        id: scannerBrowser
+
+        anchors.fill: browserBack
+
+        z: browserBack.z
+
+        visible: browserBack.visible
+
+        cover: browserCover
+
+        /* QML_EVENT */ onClicked: function(text) { tagClicked(pMouse, text) }
     }
 
     PlayerBrowser

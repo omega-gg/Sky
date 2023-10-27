@@ -78,7 +78,7 @@ bool WDeclarativeScannerPrivate::scan()
     QRectF rect;
     QImage image;
 
-    if (cover->isVisible())
+    if (cover && cover->isVisible())
     {
         rect = cover->getRect();
 
@@ -88,6 +88,8 @@ bool WDeclarativeScannerPrivate::scan()
     }
     else
     {
+        if (player->isVisible() == false) return false;
+
         rect = player->getRect();
 
         if (rect.contains(x, y) == false) return false;
@@ -250,7 +252,7 @@ void WDeclarativeScannerPrivate::onClearCover()
 {
     Q_D(WDeclarativeScanner);
 
-    if (d->player == NULL || d->cover == NULL) return false;
+    if (d->player == NULL && d->cover == NULL) return false;
 
     d->stopTimer();
 
