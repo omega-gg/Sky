@@ -884,7 +884,10 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
     if (duration != -1)
     {
-        media->timeZone = data.timeZone;
+        if (media->timeZone.isEmpty())
+        {
+            media->timeZone = data.timeZone;
+        }
 
         media->currentTime = data.currentTime;
 
