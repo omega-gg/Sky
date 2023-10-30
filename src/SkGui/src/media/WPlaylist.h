@@ -78,9 +78,9 @@ class SK_GUI_EXPORT WPlaylist : public WLibraryItem
     Q_ENUMS(TrackType)
     Q_ENUMS(TrackState)
 
-    Q_PROPERTY(bool isBase   READ isBase   CONSTANT)
-    Q_PROPERTY(bool isFeed   READ isFeed   CONSTANT)
-    Q_PROPERTY(bool isSearch READ isSearch CONSTANT)
+    Q_PROPERTY(bool isBase   READ isBase   NOTIFY typeChanged)
+    Q_PROPERTY(bool isFeed   READ isFeed   NOTIFY typeChanged)
+    Q_PROPERTY(bool isSearch READ isSearch NOTIFY typeChanged)
 
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentTrackChanged)
 
