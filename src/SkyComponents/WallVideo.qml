@@ -144,6 +144,8 @@ WallBookmarkTrack
 
     onClicked:
     {
+        if (mouse.button & Qt.RightButton) return;
+
         pMouse = mouse;
 
         if (scannerPlayer.visible)
@@ -500,6 +502,14 @@ WallBookmarkTrack
 
         /* QML_EVENT */ onClicked: function(mouse)
         {
+            // NOTE: If it's a RightButton we forward the mouse without checking tags.
+            if (mouse.button & Qt.RightButton)
+            {
+                playerClicked(mouse);
+
+                return;
+            }
+
             pMouse = mouse;
 
             // NOTE: We need to check tags at the root and in playerMouseArea.

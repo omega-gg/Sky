@@ -33,6 +33,8 @@ Scanner
 
     property real ratioTouch: st.itemScan_ratioTouch
 
+    /* read */ property string text
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -73,6 +75,8 @@ Scanner
 
     /* QML_EVENT */ onLoaded: function(text, rect)
     {
+        itemScan.text = text;
+
         if (text)
         {
             rectangleTag.x      = rect.x;
@@ -167,6 +171,22 @@ Scanner
         else pClick = scanFrame(x, y, 1, 5);
 
         return pClick;
+    }
+
+    function getTextHovered()
+    {
+        if (rectangleTag.hovered == false) return "";
+
+        var position = window.mapToItem(rectangleTag, window.mouseX, window.mouseY);
+
+        var x = position.x;
+        var y = position.y;
+
+        if (x < 0 || y < 0
+            ||
+            x >= rectangleTag.width || y >= rectangleTag.height) return "";
+
+        return text;
     }
 
     //---------------------------------------------------------------------------------------------
