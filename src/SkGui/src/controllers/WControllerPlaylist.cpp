@@ -1791,7 +1791,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
     if (WBackendNet::checkQuery(source))
     {
 #ifdef QT_4
-        QString method = source.queryItemValue("method");
+        QString method = QUrl(source).queryItemValue("method");
 #else
         QUrlQuery urlQuery(source);
 
