@@ -1789,31 +1789,42 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
 
     if (WBackendNet::checkQuery(source))
     {
-        WBackendNet * backend = q->backendFromUrl(source);
+#ifdef QT_4
+        QString method = source.queryItemValue("method");
+#else
+        QUrlQuery urlQuery(source);
 
-        if (backend)
+        QString method = urlQuery.queryItemValue("method");
+#endif
+
+        // NOTE: The view and related methods only works for playlists.
+        if (method != "view" && method != "related")
         {
-            QString backendId = backend->id();
+            WBackendNet * backend = q->backendFromUrl(source);
 
-            if (source.contains("method") == false)
+            if (backend)
             {
-                folder->addItems(backend->getLibraryItems());
+                QString backendId = backend->id();
+
+                if (method.isEmpty())
+                {
+                    folder->addItems(backend->getLibraryItems());
+
+                    backend->tryDelete();
+
+                    folder->setCurrentIndex(0);
+
+                    folder->d_func()->setQueryFinished();
+
+                    return true;
+                }
+
+                WBackendNetQuery query = extractQuery(backend, source, backendId);
 
                 backend->tryDelete();
 
-                folder->setCurrentIndex(0);
+                if (resolveFolder(backendId, query) == false) return false;
 
-                folder->d_func()->setQueryFinished();
-
-                return true;
-            }
-
-            WBackendNetQuery query = extractQuery(backend, source, backendId);
-
-            backend->tryDelete();
-
-            if (resolveFolder(backendId, query))
-            {
                 query.urlBase   = urlBase;
                 query.indexNext = index;
 
@@ -1825,19 +1836,17 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
 
                 return true;
             }
-            else return false;
         }
 
-        WBackendNetQuery query = extractRelated(source);
+        WLibraryFolderItem item(WLibraryItem::Playlist, WLocalObject::Default);
 
-        if (query.isValid() == false) return false;
+        item.source = source;
 
-        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+        folder->addItem(item);
 
-        query.urlBase   = urlBase;
-        query.indexNext = index;
+        folder->setCurrentIndex(0);
 
-        getDataFolder(folder, query);
+        folder->d_func()->setQueryFinished();
 
         return true;
     }
