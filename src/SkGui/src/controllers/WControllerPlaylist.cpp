@@ -3560,9 +3560,6 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         if (checkTrack(track)) return;
 
         applyTrack(playlist, track, trackReply.state(), index);
-
-        // NOTE: We reload the cover in case it changed since the last time.
-        WControllerPlaylist::reloadCover(track->cover());
     }
     else
     {
@@ -3575,6 +3572,9 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         playlist->updateTrack(index);
     }
+
+    // NOTE: We reload the cover in case it changed since the last time.
+    WControllerPlaylist::reloadCover(track->cover());
 
     playlist->d_func()->applyTrackLoaded(index);
 }
@@ -3677,14 +3677,14 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
         addToCache(playlist->source(), reply.cache);
 
         if (getNextPlaylists(backendId, playlist, reply.nextQueries, indexNext)) return;
-
-        // NOTE: We reload the cover in case it changed since the last time.
-        WControllerPlaylist::reloadCover(playlist->cover());
     }
     else emit playlist->queryEnded();
 
     // NOTE: Maybe other queries are still loading.
     if (checkPlaylist(playlist)) return;
+
+    // NOTE: We reload the cover in case it changed since the last time.
+    WControllerPlaylist::reloadCover(playlist->cover());
 
     playlist->d_func()->setQueryLoaded();
 }
@@ -3800,14 +3800,14 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         addToCache(folder->source(), reply.cache);
 
         if (getNextFolders(backendId, folder, reply.nextQueries, indexNext)) return;
-
-        // NOTE: We reload the cover in case it changed since the last time.
-        WControllerPlaylist::reloadCover(folder->cover());
     }
     else emit folder->queryEnded();
 
     // NOTE: Maybe other queries are still loading.
     if (checkFolder(folder)) return;
+
+    // NOTE: We reload the cover in case it changed since the last time.
+    WControllerPlaylist::reloadCover(folder->cover());
 
     folder->d_func()->setQueryLoaded();
 }
@@ -3971,10 +3971,10 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
         }
 
         applyTrack(playlist, track, trackReply.state(), index);
-
-        // NOTE: We reload the cover in case it changed since the last time.
-        WControllerPlaylist::reloadCover(trackReply.cover());
     }
+
+    // NOTE: We reload the cover in case it changed since the last time.
+    WControllerPlaylist::reloadCover(track->cover());
 
     playlist->d_func()->applyTrackLoaded(index);
 }
