@@ -5074,37 +5074,49 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     WBackendNet * backend = backendFromUrl(url);
 
-    if (backend == NULL)
+    if (backend)
     {
-        // NOTE: When we can't find a backend we load the url as a VBML resource and try to extract
-        //       the 'related' property.
-        return createSource("vbml", "related", "tracks", url);
+        QString id = backend->id();
+
+        QString trackId = backend->getTrackId(url);
+
+        if (trackId.isEmpty()) trackId = url;
+
+        WBackendNetQuery query = backend->createQuery("related", "tracks", trackId);
+
+        backend->tryDelete();
+
+        if      (query.isValid()) return createSource(id, "related", "tracks", trackId);
+        else if (title.isEmpty()) return createSource(id, "related", "tracks", url);
+        else                      return createSource(id, "related", "tracks", title);
     }
 
-    QString id = backend->id();
+    if (url.isEmpty()) return QString();
 
-    QString trackId = backend->getTrackId(url);
-
-    if (trackId.isEmpty()) trackId = url;
-
-    WBackendNetQuery query = backend->createQuery("related", "tracks", trackId);
-
-    backend->tryDelete();
-
-    if      (query.isValid()) return createSource(id, "related", "tracks", trackId);
-    else if (title.isEmpty()) return createSource(id, "related", "tracks", url);
-    else                      return createSource(id, "related", "tracks", title);
+    // NOTE: When we can't find a backend we load the url as a VBML resource and try to extract
+    //       the 'related' property.
+    return createSource("vbml", "related", "tracks", url);
 }
 
 /* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryPlaylist(const QString & url) const
 {
     WBackendNet * backend = backendFromUrl(url);
 
-    if (backend == NULL) return WBackendNetQuery();
+    if (backend)
+    {
+        WBackendNetQuery query = backend->getQueryPlaylist(url);
 
-    WBackendNetQuery query = backend->getQueryPlaylist(url);
+        backend->tryDelete();
 
-    backend->tryDelete();
+        return query;
+    }
+
+    if (url.isEmpty()) return WBackendNetQuery();
+
+    WBackendNetQuery query(url);
+
+    query.target = WBackendNetQuery::TargetHtml;
+    query.scope  = WAbstractLoader::ScopeText;
 
     return query;
 }
@@ -5116,66 +5128,53 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 {
     WBackendNet * backend = backendFromUrl(url);
 
-    if (backend == NULL)
+    if (backend)
     {
-        if (WControllerNetwork::urlIsFile(url))
+        QString id = backend->getTrackId(url);
+
+        WBackendNetQuery query = backend->createQuery("related", "tracks", id);
+
+        if (query.isValid())
         {
-            QFileInfo info(WControllerFile::filePath(url));
-
-            WBackendNetQuery query("file:///" + info.absolutePath());
-
-            query.target = WBackendNetQuery::TargetFolder;
+            backend->tryDelete();
 
             return query;
         }
-        else if (WControllerNetwork::urlIsHttp(url) == false)
+
+        //-----------------------------------------------------------------------------------------
+        // NOTE: When we fail to create a valid query we try to create one with the backendSearch.
+
+        id = backend->getId();
+
+        QString host = backend->getHost();
+
+        backend->tryDelete();
+
+        backend = backendSearch();
+
+        if (backend == NULL || title.isEmpty()) return query;
+
+        if (host.isEmpty())
         {
-            return WBackendNetQuery();
+             query = backend->createQuery("related", "tracks", id + " " + title);
         }
+        else query = backend->createQuery("related", "tracks", prefix + host + " " + title);
 
-        WBackendNetQuery query(url);
-
-        query.target = WBackendNetQuery::TargetRelated;
-
-        // NOTE: The url might be a large media file so we scope it to text.
-        query.scope = WAbstractLoader::ScopeText;
-
-        return query;
-    }
-
-    QString id = backend->getTrackId(url);
-
-    WBackendNetQuery query = backend->createQuery("related", "tracks", id);
-
-    if (query.isValid())
-    {
         backend->tryDelete();
 
         return query;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // NOTE: When we fail to create a valid query we try to create one with the backendSearch.
+    if (url.isEmpty()) return WBackendNetQuery();
 
-    id = backend->getId();
+    Q_D(const WControllerPlaylist);
 
-    QString host = backend->getHost();
+    // NOTE: When we can't find a backend we load the url as a VBML resource and try to extract
+    //       the 'related' property.
+    QString source = createSource("vbml", "related", "tracks", url);
 
-    backend->tryDelete();
+    return d->extractRelated(source);
 
-    backend = backendSearch();
-
-    if (backend == NULL || title.isEmpty()) return query;
-
-    if (host.isEmpty())
-    {
-         query = backend->createQuery("related", "tracks", id + " " + title);
-    }
-    else query = backend->createQuery("related", "tracks", prefix + host + " " + title);
-
-    backend->tryDelete();
-
-    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

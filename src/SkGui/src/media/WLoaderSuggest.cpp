@@ -153,7 +153,9 @@ QStringList WLoaderSuggestPrivate::getSourcesInput(QStringList & titles) const
 
     foreach (const WTrack * track, history->trackPointers())
     {
-        QString source = WControllerPlaylist::cleanSource(track->source());
+        //QString source = WControllerPlaylist::cleanSource(track->source());
+
+        QString source = track->source();
 
         if (source.isEmpty() || list.contains(source)) continue;
 
