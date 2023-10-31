@@ -345,6 +345,11 @@ protected: // WLibraryItem reimplementation
     /* virtual */ void onApplyCurrentIds(const QList<int> & ids);
 
 signals:
+#ifdef QT_4
+    // NOTE Qt4: We have to redeclare the typeChanged signal.
+    void typeChanged();
+#endif
+
     void tracksInserted(int index, int count);
 
     void tracksMoved(const QList<int> & indexes, int to);
