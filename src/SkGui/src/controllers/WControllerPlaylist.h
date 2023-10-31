@@ -230,6 +230,9 @@ public: // Interface
     Q_INVOKABLE void unregisterLoaders();
 
 public: // Static functions
+    Q_INVOKABLE static void reloadCover(const QString & url, int delay   = 60 * 5, // 5 minutes
+                                                             int maxHost = -1);
+
     Q_INVOKABLE static QString generateSource(const QString & url);
 
     Q_INVOKABLE static QString simpleSource(const QString & url);

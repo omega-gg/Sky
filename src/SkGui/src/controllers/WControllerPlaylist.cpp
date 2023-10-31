@@ -44,6 +44,7 @@
 #include <WControllerDownload>
 #include <WRegExp>
 #include <WLoaderVbml>
+#include <WPixmapCache>
 #include <WPlaylist>
 #include <WTabTrack>
 #include <WBackendLoader>
@@ -3542,8 +3543,6 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
     {
         const WTrack & trackReply = reply.track;
 
-        bool sameCover = (trackReply.cover() == track->cover());
-
         trackReply.applyDataTo(track);
 
         emit playlist->trackQueryEnded();
@@ -3563,7 +3562,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         applyTrack(playlist, track, trackReply.state(), index);
 
         // NOTE: We reload the cover in case it changed since the last time.
-        if (sameCover) wControllerFile->reloadFile(track->cover());
+        WControllerPlaylist::reloadCover(track->cover());
     }
     else
     {
@@ -3631,10 +3630,8 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
     if (reply.valid)
     {
-        const QString & title = reply.title;
-        const QString & cover = reply.cover;
-
-        bool sameCover = (cover == playlist->cover());
+        QString title = reply.title;
+        QString cover = reply.cover;
 
         if (playlist->isPlaylistSearch() == false)
         {
@@ -3682,7 +3679,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
         if (getNextPlaylists(backendId, playlist, reply.nextQueries, indexNext)) return;
 
         // NOTE: We reload the cover in case it changed since the last time.
-        if (sameCover) wControllerFile->reloadFile(cover);
+        WControllerPlaylist::reloadCover(playlist->cover());
     }
     else emit playlist->queryEnded();
 
@@ -3743,10 +3740,8 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
     if (reply.valid)
     {
-        const QString & title = reply.title;
-        const QString & cover = reply.cover;
-
-        bool sameCover = (cover == folder->cover());
+        QString title = reply.title;
+        QString cover = reply.cover;
 
         if (folder->isFolderSearch() == false)
         {
@@ -3807,7 +3802,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         if (getNextFolders(backendId, folder, reply.nextQueries, indexNext)) return;
 
         // NOTE: We reload the cover in case it changed since the last time.
-        if (sameCover) wControllerFile->reloadFile(cover);
+        WControllerPlaylist::reloadCover(folder->cover());
     }
     else emit folder->queryEnded();
 
@@ -3976,6 +3971,9 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
         }
 
         applyTrack(playlist, track, trackReply.state(), index);
+
+        // NOTE: We reload the cover in case it changed since the last time.
+        WControllerPlaylist::reloadCover(trackReply.cover());
     }
 
     playlist->d_func()->applyTrackLoaded(index);
@@ -4282,6 +4280,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             }
         }
     }
+
+    // NOTE: We reload the cover in case it changed since the last time.
+    WControllerPlaylist::reloadCover(playlist->cover());
 
     playlist->d_func()->setQueryLoaded();
 }
@@ -4617,6 +4618,9 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         folder->removeItem(playlist->id());
     }
+
+    // NOTE: We reload the cover in case it changed since the last time.
+    WControllerPlaylist::reloadCover(folder->cover());
 
     playlist->d_func()->setQueryLoaded();
 
@@ -5229,6 +5233,14 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WControllerPlaylist::reloadCover(const QString & url, int delay,
+                                                                                    int maxHost)
+{
+    WPixmapCache::removePath(url);
+
+    wControllerFile->reloadFile(url, delay, maxHost);
+}
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::generateSource(const QString & url)
 {
