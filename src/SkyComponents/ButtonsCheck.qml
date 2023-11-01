@@ -54,11 +54,15 @@ Item
     property alias delegate: repeater.delegate
 
     //---------------------------------------------------------------------------------------------
+
+    property alias repeater: repeater
+
+    //---------------------------------------------------------------------------------------------
     // Signals
     //---------------------------------------------------------------------------------------------
 
-    signal pressed(variant mouse, int index)
-    signal clicked(variant mouse, int index)
+    signal pressed(int index)
+    signal clicked(int index)
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -70,14 +74,30 @@ Item
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function pGetX(index)
+    function itemAt(index)
     {
-        if (index == 0)
-        {
-             return index * buttonWidth;
-        }
-        else return index * buttonWidth + extra;
+        return repeater.itemAt(index).item;
     }
+
+    function pressAt(index)
+    {
+        if (checkable)
+        {
+            if (currentIndex == index) return;
+
+            currentIndex = index;
+        }
+
+        pressed(index);
+    }
+
+    function clickAt(index)
+    {
+        clicked(index);
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Private
 
     function pGetWidth(index, x)
     {
@@ -92,18 +112,13 @@ Item
         else return buttonWidth;
     }
 
-    //---------------------------------------------------------------------------------------------
-
-    function pressAt(mouse, index)
+    function pGetX(index)
     {
-        if (checkable)
+        if (index == 0)
         {
-            if (currentIndex == index) return;
-
-            currentIndex = index;
+             return index * buttonWidth;
         }
-
-        pressed(mouse, index);
+        else return index * buttonWidth + extra;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -151,12 +166,8 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(mouse, index) }
-
-                    /* QML_EVENT */ onClicked: function(mouse)
-                    {
-                        buttonsCheck.clicked(mouse, index);
-                    }
+                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
+                    /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
                 }
             }
 
@@ -179,12 +190,8 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(mouse, index) }
-
-                    /* QML_EVENT */ onClicked: function(mouse)
-                    {
-                        buttonsCheck.clicked(mouse, index);
-                    }
+                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
+                    /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
                 }
             }
 
@@ -207,12 +214,8 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(mouse, index) }
-
-                    /* QML_EVENT */ onClicked: function(mouse)
-                    {
-                        buttonsCheck.clicked(mouse, index);
-                    }
+                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
+                    /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
                 }
             }
         }

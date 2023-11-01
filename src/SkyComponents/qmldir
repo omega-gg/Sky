@@ -60,6 +60,9 @@ ButtonPushOverlay    1.0 ButtonPushOverlay.qml
 
 ButtonRound 1.0 ButtonRound.qml
 
+ButtonWide     1.0 ButtonWide.qml
+ButtonWideFull 1.0 ButtonWideFull.qml
+
 ButtonPiano          1.0 ButtonPiano.qml
 ButtonPianoIcon      1.0 ButtonPianoIcon.qml
 ButtonPianoFull      1.0 ButtonPianoFull.qml
