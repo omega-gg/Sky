@@ -39,6 +39,8 @@ Item
 
     property int extra: height / 8 + st.border_size / 2
 
+    property bool checkable: true
+
     property int currentIndex : -1
     property int currentActive: -1
 
@@ -55,7 +57,8 @@ Item
     // Signals
     //---------------------------------------------------------------------------------------------
 
-    signal pressed
+    signal pressed(variant mouse, int index)
+    signal clicked(variant mouse, int index)
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -91,13 +94,16 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    function pressAt(index)
+    function pressAt(mouse, index)
     {
-        if (currentIndex == index) return;
+        if (checkable)
+        {
+            if (currentIndex == index) return;
 
-        currentIndex = index;
+            currentIndex = index;
+        }
 
-        pressed();
+        pressed(mouse, index);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -145,7 +151,12 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    onPressed: pressAt(index)
+                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(mouse, index) }
+
+                    /* QML_EVENT */ onClicked: function(mouse)
+                    {
+                        buttonsCheck.clicked(mouse, index);
+                    }
                 }
             }
 
@@ -168,7 +179,12 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    onPressed: pressAt(index)
+                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(mouse, index) }
+
+                    /* QML_EVENT */ onClicked: function(mouse)
+                    {
+                        buttonsCheck.clicked(mouse, index);
+                    }
                 }
             }
 
@@ -191,7 +207,12 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    onPressed: pressAt(index)
+                    /* QML_EVENT */ onPressed: function(mouse) { pressAt(mouse, index) }
+
+                    /* QML_EVENT */ onClicked: function(mouse)
+                    {
+                        buttonsCheck.clicked(mouse, index);
+                    }
                 }
             }
         }

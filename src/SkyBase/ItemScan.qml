@@ -61,6 +61,10 @@ Scanner
     // Signals
     //---------------------------------------------------------------------------------------------
 
+//#DESKTOP
+    signal positionChanged(variant mouse)
+//#END
+
     signal clicked(string text)
 
     //---------------------------------------------------------------------------------------------
@@ -257,14 +261,16 @@ Scanner
 
         anchors.fill: parent
 
+        acceptedButtons: Qt.NoButton
+
         hoverEnabled: true
 
         cursor: Qt.PointingHandCursor
 
-        /* QML_EVENT */ onPressed: function(mouse) { mouse.accepted = false }
-
         // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
         onHoverActiveChanged: if (hoverActive == false) pClearHover()
+
+        /* QML_EVENT */ onPositionChanged: function(mouse) { itemScan.positionChanged(mouse); }
     }
 //#END
 
