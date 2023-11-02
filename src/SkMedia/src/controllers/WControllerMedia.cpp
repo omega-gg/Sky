@@ -491,6 +491,8 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
         if (media.isEmpty() == false)
         {
+            typeSource = WTrack::typeFromString(child.extractString("type"));
+
             source = media;
 
             timeB = timeA + durationSource;
@@ -506,6 +508,8 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
         if (nodes.isEmpty())
         {
+            typeSource = WTrack::typeFromString(child.extractString("type"));
+
             source = node->value;
 
             timeB = timeA + durationSource;
@@ -874,7 +878,13 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->type = data.type;
     }
 
-    media->typeSource = data.type;
+    WTrack::Type type = data.typeSource;
+
+    if (type == WTrack::Unknown)
+    {
+         media->typeSource = type;
+    }
+    else media->typeSource = data.type;
 
     int timeB = data.timeB;
 

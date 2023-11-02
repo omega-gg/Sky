@@ -143,7 +143,8 @@ struct WControllerMediaData
 public:
     WControllerMediaData()
     {
-        type = WTrack::Track;
+        type       = WTrack::Track;
+        typeSource = WTrack::Unknown;
 
         currentTime = 0;
 
@@ -168,6 +169,7 @@ private: // Functions
 
 public: // Variables
     WTrack::Type type;
+    WTrack::Type typeSource;
 
     QString origin;
     QString source;

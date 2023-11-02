@@ -2730,13 +2730,15 @@ void WControllerPlaylistPrivate::addToCache(const QString    & url,
 WBackendNet * WControllerPlaylistPrivate::backendTrack(const QString & source,
                                                        WPlaylist * playlist, int index) const
 {
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+    Q_Q(const WControllerPlaylist);
+
+    WBackendNet * backend = q->backendFromUrl(source);
 
     if (backend)
     {
         return backend;
     }
-    else return wControllerPlaylist->backendFromUrl(playlist->trackSource(index));
+    else return q->backendFromUrl(playlist->trackSource(index));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3317,6 +3319,8 @@ void WControllerPlaylistPrivate::abortItem(WLibraryItem * item)
 
 void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 {
+    Q_Q(WControllerPlaylist);
+
     WControllerPlaylistQuery * query = jobs.take(data);
 
     if (query == NULL) qDebug("TEST: QUERY SHOULD NOT BE NULL");
@@ -3329,9 +3333,9 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (id.isEmpty())
     {
-         backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
+         backend = q->backendFromUrl(backendQuery->url);
     }
-    else backend = wControllerPlaylist->backendFromId(id);
+    else backend = q->backendFromId(id);
 
     // NOTE: We apply the backend to the query so we can delete it later.
     query->backend = backend;
@@ -3421,8 +3425,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
         return;
     }
-
-    Q_Q(WControllerPlaylist);
 
     QIODevice * networkReply = data->takeReply(NULL);
 
@@ -4029,7 +4031,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Source)
     {
-        WBackendNet * backend = wControllerPlaylist->backendFromTrack(origin);
+        Q_Q(WControllerPlaylist);
+
+        WBackendNet * backend = q->backendFromTrack(origin);
 
         if (backend)
         {
@@ -4117,6 +4121,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     // NOTE: We are adding tracks when origin and source are not specified.
     else playlist->addTracks(data.tracks);
 
+    Q_Q(WControllerPlaylist);
+
     //---------------------------------------------------------------------------------------------
     // Media sources
 
@@ -4128,7 +4134,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         {
             const QString & url = playlist->d_func()->itemAt(i)->source();
 
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+            WBackendNet * backend = q->backendFromUrl(url);
 
             if (backend)
             {
@@ -4149,7 +4155,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         {
             const QString & url = source.url;
 
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+            WBackendNet * backend = q->backendFromUrl(url);
 
             if (backend == NULL)
             {
@@ -4242,7 +4248,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     if (source.isEmpty() == false)
     {
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+        WBackendNet * backend = q->backendFromUrl(source);
 
         if (backend)
         {
@@ -4313,13 +4319,15 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (query->backendQuery.id == 1)
     {
+        Q_Q(WControllerPlaylist);
+
         deleteQuery(query);
 
         for (int i = 0; i < folder->count(); i++)
         {
             const QString & url = folder->itemAt(i)->source;
 
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+            WBackendNet * backend = q->backendFromUrl(url);
 
             if (backend)
             {
@@ -4345,7 +4353,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         {
             const QString & url = source.url;
 
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+            WBackendNet * backend = q->backendFromUrl(url);
 
             if (backend)
             {
@@ -4449,6 +4457,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     // NOTE: We are adding tracks when origin and source are not specified.
     else playlist->addTracks(data.tracks);
 
+    Q_Q(WControllerPlaylist);
+
     //---------------------------------------------------------------------------------------------
     // Media sources
 
@@ -4460,7 +4470,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         {
             const QString & url = source.url;
 
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+            WBackendNet * backend = q->backendFromUrl(url);
 
             if (backend == NULL)
             {
@@ -4560,7 +4570,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (source.isEmpty() == false)
     {
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+        WBackendNet * backend = q->backendFromUrl(source);
 
         if (backend)
         {
