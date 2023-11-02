@@ -873,18 +873,22 @@ void WControllerMediaPrivate::loadUrl(QIODevice              * device,
 void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
                                         const WControllerMediaData & data)
 {
+    WTrack::Type type = data.type;
+
     if (media->type == WTrack::Unknown)
     {
-        media->type = data.type;
+        media->type       = type;
+        media->typeSource = type;
     }
-
-    WTrack::Type type = data.typeSource;
-
-    if (type == WTrack::Unknown)
+    else
     {
-         media->typeSource = type;
+        WTrack::Type typeSource = data.typeSource;
+
+        if (typeSource)
+        {
+            media->typeSource = typeSource;
+        }
     }
-    else media->typeSource = data.type;
 
     int timeB = data.timeB;
 
