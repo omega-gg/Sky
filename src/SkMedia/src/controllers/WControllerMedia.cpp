@@ -877,8 +877,13 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
     if (media->type == WTrack::Unknown)
     {
-        media->type       = type;
-        media->typeSource = type;
+        if (type)
+        {
+            media->type       = type;
+            media->typeSource = type;
+        }
+        // NOTE: typeSource defaults to WTrack::Track.
+        else media->type = WTrack::Track;
     }
     else
     {

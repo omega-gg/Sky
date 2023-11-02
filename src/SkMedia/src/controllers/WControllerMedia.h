@@ -143,7 +143,7 @@ struct WControllerMediaData
 public:
     WControllerMediaData()
     {
-        type       = WTrack::Track;
+        type       = WTrack::Unknown;
         typeSource = WTrack::Unknown;
 
         currentTime = 0;
