@@ -2948,7 +2948,7 @@ QVariant * WBackendUniversalNode::getKeyValue(WBackendUniversalParameters * para
 
         QString data = node.data;
 
-        *value = parameters->valueConst(data);
+        *value = *(parameters->valueConst(data));
 
         if (value == NULL)
         {

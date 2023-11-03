@@ -1557,7 +1557,11 @@ bool WWindow::hoverActive() const
 
 bool WWindow::pressed() const
 {
+#if (QT_VERSION < QT_VERSION_CHECK(6, 6, 0))
     Q_D(const WWindow); return d->viewport->pressed();
+#else
+    Q_D(const WWindow); return d->viewport->isPressed();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
