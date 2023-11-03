@@ -40,7 +40,7 @@ AnimatedSlideImage
 
     source: st.picture_flag
 
-    smooth: false
+    imageA.smooth: false
 
     //---------------------------------------------------------------------------------------------
     // Animations

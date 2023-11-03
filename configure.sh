@@ -61,7 +61,7 @@ copyIncludes()
 
     cp -r "$1"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
 
-    if [ -d "$1"/include/QtGui/"$qx"*/QtGui/rhi ]; then
+    if [ $qt = "qt6" ]; then
 
         cp -r "$1"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
     fi

@@ -134,7 +134,7 @@ Loader
 
             anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
 
-            isMoving: (moving || scrollBar.pressed)
+            isMoving: (moving || scrollBar.handle.pressed)
 
             playlist: viewPlaylist.playlist
 
@@ -177,7 +177,7 @@ Loader
 
             anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
 
-            isMoving: (moving || scrollBar.pressed)
+            isMoving: (moving || scrollBar.handle.pressed)
 
             sizeTrack: viewPlaylist.sizeTrack
 

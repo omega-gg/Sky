@@ -31,8 +31,6 @@ AnimatedSlide
 
     property alias source: imageA.source
 
-    property alias smooth: imageA.smooth
-
     //---------------------------------------------------------------------------------------------
 
     property alias imageA: imageA

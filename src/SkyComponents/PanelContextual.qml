@@ -45,7 +45,7 @@ BasePanelContextual
 
     //---------------------------------------------------------------------------------------------
 
-    property alias clip: content.clip
+    //property alias clip: content.clip
 
     property alias borderSize : borders.size
     property alias borderColor: borders.color

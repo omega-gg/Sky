@@ -138,17 +138,17 @@ Scanner
     {
         target: (visible && window.isDragged == false) ? window : null
 
-        onMousePosChanged: pRestartHover()
+        /* QML_CONNECTION */ function onMousePosChanged() { pRestartHover() }
     }
 
     Connections
     {
         target: (visible) ? cover : null
 
-        onLoaded: pRestart()
+        /* QML_CONNECTION */ function onLoaded() { pRestart() }
 
         // NOTE: Clear the rectangle when we switch between the player and the cover.
-        onVisibleChanged: pClearHover()
+        /* QML_CONNECTION */ function onVisibleChanged() { pClearHover() }
     }
 //#END
 
