@@ -60,7 +60,11 @@ copyIncludes()
     cp -r "$1"/include/QtQuick $include
 
     cp -r "$1"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
-    cp -r "$1"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+
+    if [ -d "$1"/include/QtGui/"$qx"*/QtGui/rhi ]; then
+
+        cp -r "$1"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+    fi
 
     mv $include/QtCore/"$qx"*/QtCore/private/*   $include/QtCore/private
     mv $include/QtGui/"$qx"*/QtGui/private/*     $include/QtGui/private
