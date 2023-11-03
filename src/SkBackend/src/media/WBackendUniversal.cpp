@@ -2928,45 +2928,6 @@ QVariant * WBackendUniversalNode::getKey(WBackendUniversalParameters * parameter
 
 //-------------------------------------------------------------------------------------------------
 
-QVariant * WBackendUniversalNode::getKeyValue(WBackendUniversalParameters * parameters,
-                                              int                           index,
-                                              QVariant                    * value) const
-{
-    const WBackendUniversalNode & node = nodes.at(index);
-
-    if (node.type == String)
-    {
-        *value = node.data;
-
-        return NULL;
-    }
-    else if (node.type == Variable)
-    {
-        QVariant * key = parameters->value(node.data);
-
-        if (key) return key;
-
-        QString data = node.data;
-
-        *value = *(parameters->valueConst(data));
-
-        if (value == NULL)
-        {
-            *value = data;
-        }
-
-        return NULL;
-    }
-    else // if (node.type == Function)
-    {
-        *value = node.run(parameters);
-
-        return NULL;
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
 const QVariantList WBackendUniversalNode::variants(const QStringList & list) const
 {
     QVariantList variants;

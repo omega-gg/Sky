@@ -182,9 +182,6 @@ public: // Interface
 
     QVariant * getKey(WBackendUniversalParameters * parameters, int index) const;
 
-    QVariant * getKeyValue(WBackendUniversalParameters * parameters,
-                           int                           index, QVariant * variant) const;
-
     const QVariantList variants(const QStringList & list) const;
 
 #ifndef SK_NO_TORRENT
