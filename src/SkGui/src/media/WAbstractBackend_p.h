@@ -33,6 +33,11 @@
     We mean it.
 */
 
+// Sk includes
+#ifdef QT_NEW
+#include <WList>
+#endif
+
 // Private includes
 #include <private/Sk_p>
 
@@ -100,7 +105,12 @@ public: // Variable
 
     WBackendOutput outputData;
 
+#ifdef QT_OLD
     QList<WBackendOutput> outputs;
+#else
+    // NOTE: We want to ensure that data pointers are updated on a move operation.
+    WList<WBackendOutput> outputs;
+#endif
 
     QString subtitle;
 

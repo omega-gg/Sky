@@ -143,7 +143,7 @@ QStringList WLoaderRecentPrivate::getSourcesOutput() const
 {
     QStringList list;
 
-    foreach (const WLoaderPlaylistNode & node, nodes)
+    W_FOREACH (const WLoaderPlaylistNode & node, nodes)
     {
         const QList<QStringList> & urls = node.urls;
 

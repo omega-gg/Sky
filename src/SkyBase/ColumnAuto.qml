@@ -28,8 +28,16 @@ Column
     id: columnAuto
 
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    // FIXME Qt6.6: For some reason, binding this to height seems to crash.
+    property int pHeight: st.getHeightColumn(columnAuto)
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    height: st.getHeightColumn(columnAuto)
+    height: pHeight
 }

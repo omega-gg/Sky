@@ -108,6 +108,11 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
     // NOTE: We want to handle dpi scaling ourselves.
     qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
 
+#ifdef SK_DESKTOP
+    // FIXME Qt6.6: We keep deceleration until the mouse wheel gets snappier.
+    qputenv("QT_QUICK_FLICKABLE_WHEEL_DECELERATION", "1");
+#endif
+
     if (api == QSGRendererInterface::Null)
     {
 #ifdef SK_SOFTWARE

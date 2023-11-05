@@ -38,6 +38,9 @@
 
 // Sk includes
 #include <WListId>
+#ifdef QT_NEW
+#include <WList>
+#endif
 
 // Private includes
 #include <private/WLibraryItem_p>
@@ -118,7 +121,12 @@ public: // Slots
     void onItemLoaded    ();
 
 public: // Variables
+#ifdef QT_OLD
     QList<WLibraryFolderItem> items;
+#else
+    // NOTE: We want to ensure that data pointers are updated on a move operation.
+    WList<WLibraryFolderItem> items;
+#endif
 
     WListId                    ids;
     QHash<int, WLibraryItem *> idHash;

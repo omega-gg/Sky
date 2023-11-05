@@ -173,7 +173,7 @@ QStringList WLoaderSuggestPrivate::getSourcesOutput() const
 
     for (int i = 0; i < LOADERSUGGEST_SLICES; i++)
     {
-        foreach (const WLoaderPlaylistNode & node, nodes)
+        W_FOREACH (const WLoaderPlaylistNode & node, nodes)
         {
             const QList<QStringList> & urls = node.urls;
 

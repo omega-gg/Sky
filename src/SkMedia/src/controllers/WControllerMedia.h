@@ -163,7 +163,8 @@ public: // Interface
 private: // Functions
     void extractSource(const QList<WYamlNode> & children);
 
-    void applyMedia(const WYamlNodeBase & node, const QString & url);
+    void applySource(const WYamlNodeBase & node, const QString & url, int duration);
+    void applyMedia (const WYamlNodeBase & node, const QString & url);
 
     void applyEmpty();
 

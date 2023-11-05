@@ -222,7 +222,7 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 
     loading = true;
 
-    reader.startRead(frame.toImage(), WBarcodeReader::Any, q, SLOT(onLoaded(const QByteArray &)),
+    reader.startRead(frame.toImage(), WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)),
                      target);
 
     timer.start();

@@ -157,6 +157,9 @@ MouseArea
 
     function pGetSize()
     {
+        // NOTE Qt6.6: We need to check the view to avoid a warning.
+        if (view == null) return 0;
+
         var size = height * (height / view.contentHeight);
 
         if (size < minimumSize)

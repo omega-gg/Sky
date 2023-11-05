@@ -52,6 +52,9 @@ public: // Interface
 
     const T & at(int index) const;
 
+    const T & first() const;
+    const T & last () const;
+
     bool contains(const T & value) const;
 
     bool isEmpty() const;
@@ -111,6 +114,18 @@ const T & WList<T>::at(int index) const
     Q_ASSERT(index >= 0 && index < (int) this->size());
 
     return *(std::next(this->begin(), index));
+}
+
+template<typename T>
+const T & WList<T>::first() const
+{
+    return at(0);
+}
+
+template<typename T>
+const T & WList<T>::last() const
+{
+    return at(this->size() - 1);
 }
 
 template<typename T>

@@ -269,7 +269,12 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     if (source.isEmpty() == false)
     {
-        type = WTrack::typeFromString(reader.extractString("type"));
+        // NOTE: By default, an image is played like a hub.
+        if (WControllerFile::urlIsImage(source))
+        {
+            type = WTrack::Hub;
+        }
+        else type = WTrack::typeFromString(reader.extractString("type"));
 
         applyMedia(reader.node(), source);
 
@@ -286,18 +291,25 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         return;
     }
 
-    type = WTrack::typeFromString(reader.extractString("type"));
-
     const QList<WYamlNode> & children = node->children;
 
     if (children.isEmpty())
     {
         source = node->value;
 
+        // NOTE: By default, an image is played like a hub.
+        if (WControllerFile::urlIsImage(source))
+        {
+            type = WTrack::Hub;
+        }
+        else type = WTrack::typeFromString(reader.extractString("type"));
+
         applyMedia(reader.node(), source);
 
         return;
     }
+
+    type = WTrack::typeFromString(reader.extractString("type"));
 
     start += reader.extractMsecs("at");
 
@@ -384,9 +396,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (media.isEmpty() == false)
                 {
-                    source = media;
-
-                    timeB = timeA + durationSource;
+                    applySource(child, media, durationSource);
 
                     return;
                 }
@@ -399,9 +409,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (nodes.isEmpty())
                 {
-                    source = node->value;
-
-                    timeB = timeA + durationSource;
+                    applySource(child, node->value, durationSource);
                 }
                 else extractSource(nodes);
 
@@ -491,11 +499,7 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
         if (media.isEmpty() == false)
         {
-            typeSource = WTrack::typeFromString(child.extractString("type"));
-
-            source = media;
-
-            timeB = timeA + durationSource;
+            applySource(child, media, durationSource);
 
             return;
         }
@@ -508,16 +512,33 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 
         if (nodes.isEmpty())
         {
-            typeSource = WTrack::typeFromString(child.extractString("type"));
-
-            source = node->value;
-
-            timeB = timeA + durationSource;
+            applySource(child, node->value, durationSource);
         }
         else extractSource(nodes);
 
         return;
     }
+}
+
+void WControllerMediaData::applySource(const WYamlNodeBase & node,
+                                       const QString       & url, int duration)
+{
+    if (WControllerFile::urlIsImage(url) == false)
+    {
+        QString type = node.extractString("type");
+
+        if (type.isEmpty())
+        {
+            typeSource = WTrack::Track;
+        }
+        else typeSource = WTrack::typeFromString(type);
+    }
+    // NOTE: By default, an image is played like a hub.
+    else typeSource = WTrack::Hub;
+
+    source = url;
+
+    timeB = timeA + duration;
 }
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url)
@@ -877,22 +898,18 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
     if (media->type == WTrack::Unknown)
     {
-        if (type)
-        {
-            media->type       = type;
-            media->typeSource = type;
-        }
-        // NOTE: typeSource defaults to WTrack::Track.
-        else media->type = WTrack::Track;
+        media->type = type;
     }
-    else
-    {
-        WTrack::Type typeSource = data.typeSource;
 
-        if (typeSource)
-        {
-            media->typeSource = typeSource;
-        }
+    WTrack::Type typeSource = data.typeSource;
+
+    if (typeSource)
+    {
+        media->typeSource = typeSource;
+    }
+    else if (type)
+    {
+        media->typeSource = type;
     }
 
     int timeB = data.timeB;
@@ -1065,7 +1082,11 @@ void WControllerMediaPrivate::appendSlice(const WPrivateMediaSlice     & slice,
 
         if (data)
         {
+#ifdef QT_OLD
             QList<WPrivateMediaSlice> & slices = data->slices;
+#else
+            WList<WPrivateMediaSlice> & slices = data->slices;
+#endif
 
             while (slices.count() == CONTROLLERMEDIA_MAX_SLICES)
             {
@@ -1122,7 +1143,11 @@ void WControllerMediaPrivate::updateSources()
         {
             j.next();
 
+#ifdef QT_OLD
             QList<WPrivateMediaSlice> & slices = j.value().slices;
+#else
+            WList<WPrivateMediaSlice> & slices = j.value().slices;
+#endif
 
             int index = 0;
 
@@ -1287,7 +1312,11 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
 
     if (modes == NULL) return NULL;
 
+#ifdef QT_OLD
     QList<WPrivateMediaSlice> & slices = modes->slices;
+#else
+    WList<WPrivateMediaSlice> & slices = modes->slices;
+#endif
 
     int count = slices.count();
 

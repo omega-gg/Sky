@@ -33,8 +33,8 @@
     We mean it.
 */
 
-// Qt includes
-#ifdef QT_6
+// Sk includes
+#ifdef QT_NEW
 #include <WList>
 #endif
 

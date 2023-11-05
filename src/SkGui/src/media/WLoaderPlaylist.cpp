@@ -154,17 +154,12 @@ void WLoaderPlaylistPrivate::onQueryCompleted()
 
     WLoaderPlaylistNode * node = jobs.take(playlist);
 
-    if (node == NULL)
+    if (node)
     {
-        // NOTE: We don't need these tracks anymore so we clear them along with pending queries.
-        playlist->clearTracks();
+        //node->query = WBackendNetQuery();
 
-        return;
+        q->onApplyPlaylist(node, playlist);
     }
-
-    node->query = WBackendNetQuery();
-
-    q->onApplyPlaylist(node, playlist);
 
     // NOTE: We don't need these tracks anymore so we clear them along with pending queries.
     playlist->clearTracks();
@@ -262,7 +257,7 @@ void WLoaderPlaylist::applyActions(const WLoaderPlaylistData & data)
 
             d->nodes.move(from, to);
         }
-        else if (type == Remove)
+        else // if (type == Remove)
         {
             d->nodes.removeAt(action.index);
         }
@@ -417,6 +412,8 @@ void WLoaderPlaylist::processQueries()
 
         playlist->applyQuery(query);
 
+        node->query = WBackendNetQuery();
+
         d->jobs.insert(playlist, node);
     }
 
@@ -570,13 +567,14 @@ void WLoaderPlaylist::setRunning(bool running)
                 action.query = query;
 
                 actions.append(action);
-            }
-            else
-            {
-                int to;
 
-                if (index < total) to = total - 1;
-                else               to = total;
+                total++;
+
+                if (total == maximum) break;
+            }
+            else if (index < total)
+            {
+                int to = total - 1;
 
                 list.move(index, to);
 
@@ -591,6 +589,26 @@ void WLoaderPlaylist::setRunning(bool running)
                 action.index = to;
 
                 actions.append(action);
+            }
+            else
+            {
+                list.move(index, total);
+
+                WLoaderPlaylistAction action(WLoaderPlaylist::Move);
+
+                action.index = index;
+
+                actions.append(action);
+
+                action = WLoaderPlaylistAction(WLoaderPlaylist::Insert);
+
+                action.index = total;
+
+                actions.append(action);
+
+                total++;
+
+                if (total == maximum) break;
             }
         }
         else
@@ -608,11 +626,11 @@ void WLoaderPlaylist::setRunning(bool running)
             action.query = query;
 
             actions.append(action);
+
+            total++;
+
+            if (total == maximum) break;
         }
-
-        total++;
-
-        if (total == maximum) break;
     }
 
     count = list.count();
@@ -626,8 +644,6 @@ void WLoaderPlaylist::setRunning(bool running)
         action.index = total;
 
         actions.append(action);
-
-        total++;
 
         count--;
     }

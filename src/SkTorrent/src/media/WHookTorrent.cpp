@@ -351,7 +351,7 @@ void WTorrentSocket::onWrite()
 
         QByteArray bytes = thread->file->read(buffer);
 
-        if (bytes.count() == buffer)
+        if (bytes.length() == buffer)
         {
             ready = false;
 
@@ -411,7 +411,7 @@ void WTorrentSocket::onWrite()
 
         QByteArray bytes = thread->file->read(buffer);
 
-        if (bytes.count() == buffer)
+        if (bytes.length() == buffer)
         {
             ready = false;
 

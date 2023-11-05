@@ -33,6 +33,11 @@
     We mean it.
 */
 
+// Sk includes
+#ifdef QT_NEW
+#include <WList>
+#endif
+
 // Private includes
 #include <private/Sk_p>
 
@@ -74,7 +79,12 @@ public: // Variables
 
     QStringList sources;
 
+#ifdef QT_OLD
     QList<WLoaderPlaylistNode> nodes;
+#else
+    // NOTE: We want to ensure that data pointers are updated on a move operation.
+    WList<WLoaderPlaylistNode> nodes;
+#endif
 
     QList<WPlaylist *> playlists;
 

@@ -2558,7 +2558,7 @@ void WLibraryFolder::updateIndex()
 
     action->scrollValue = d->scrollValue;
 
-    foreach (const WLibraryFolderItem & item, d->items)
+    W_FOREACH (const WLibraryFolderItem & item, d->items)
     {
         action->dataItems.append(item);
     }
