@@ -254,7 +254,11 @@ else
             cp -r "$Qt"/include/QtQuick $include
 
             cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
-            cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+
+            if [ $qt = "qt6" ]; then
+
+                cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+            fi
 
         elif [ $1 = "macOS" ]; then
 
@@ -264,7 +268,11 @@ else
             cp -r "$Qt"/lib/QtQuick.framework/Headers/* $include/QtQuick
 
             cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa $include/QtGui
-            cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/rhi $include/QtGui
+
+            if [ $qt = "qt6" ]; then
+
+                cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/rhi $include/QtGui
+            fi
 
         elif [ $1 = "iOS" ]; then
 
@@ -274,7 +282,11 @@ else
             cp -r "$Qt"/include/QtQuick $include
 
             cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
-            cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+
+            if [ $qt = "qt6" ]; then
+
+                cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+            fi
 
         elif [ $1 = "linux" ]; then
 
@@ -285,7 +297,11 @@ else
             cp -r "$Qt"/include/QtDBus  $include
 
             cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
-            cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+
+            if [ $qt = "qt6" ]; then
+
+                cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+            fi
         fi
 
         mv $include/QtCore/"$qx"*/QtCore/private/*   $include/QtCore/private
