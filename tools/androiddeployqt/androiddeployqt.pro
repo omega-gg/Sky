@@ -19,4 +19,8 @@ contains(QT_MAJOR_VERSION, 4) {
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
-SOURCES += main.cpp
+lessThan(QT_MAJOR_VERSION, 6) {
+    SOURCES += qt5/main.cpp
+} else {
+    SOURCES += qt6/main.cpp
+}
