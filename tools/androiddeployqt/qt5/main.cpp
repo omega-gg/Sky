@@ -157,6 +157,7 @@ struct Options
     QString sdkPath;
     QString sdkBuildToolsVersion;
     QString ndkPath;
+    QString ndkVersion;
     QString jdkPath;
 
     // Build paths
@@ -174,7 +175,7 @@ struct Options
     QString versionName;
     QString versionCode;
     QByteArray minSdkVersion{"21"};
-    QByteArray targetSdkVersion{"28"};
+    QByteArray targetSdkVersion{"30"};
 
     // lib c++ path
     QString stdCppPath;
@@ -891,6 +892,30 @@ bool readInputFile(Options *options)
             return false;
         }
         options->ndkPath = ndk.toString();
+    }
+
+    {
+        const QString ndkPropertiesPath = options->ndkPath + QStringLiteral("/source.properties");
+        QFile file(ndkPropertiesPath);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            const char pkgRevisionKey[] = "Pkg.Revision";
+            while (!file.atEnd()) {
+                const QByteArray line = file.readLine();
+                if (line.startsWith(pkgRevisionKey)) {
+                    const QList<QByteArray> parts = line.split('=');
+                    if (parts.size() == 2 && parts.at(0).trimmed() == QByteArray(pkgRevisionKey)) {
+                        options->ndkVersion = QString::fromLocal8Bit(parts.at(1).trimmed());
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (options->ndkVersion.isEmpty()) {
+            fprintf(stderr, "Couldn't retrieve the NDK version from \"%s\".\n",
+                    qPrintable(ndkPropertiesPath));
+            return false;
+        }
     }
 
     {
@@ -1794,14 +1819,14 @@ bool scanImports(Options *options, QSet<QString> *usedDependencies)
                     qPrintable(object.value(QLatin1String("name")).toString()));
         } else {
             if (options->verbose)
-                fprintf(stdout, "  -- Adding '%s' as QML dependency\n", path.toLocal8Bit().constData());
+                fprintf(stdout, "  -- Adding '%s' as QML dependency\n", qPrintable(path));
 
             QFileInfo info(path);
 
             // The qmlimportscanner sometimes outputs paths that do not exist.
             if (!info.exists()) {
                 if (options->verbose)
-                    fprintf(stdout, "    -- Skipping because file does not exist.\n");
+                    fprintf(stdout, "    -- Skipping because path does not exist.\n");
                 continue;
             }
 
@@ -1811,7 +1836,7 @@ bool scanImports(Options *options, QSet<QString> *usedDependencies)
 
             if (absolutePath.startsWith(rootPath)) {
                 if (options->verbose)
-                    fprintf(stdout, "    -- Skipping because file is in QML root path.\n");
+                    fprintf(stdout, "    -- Skipping because path is in QML root path.\n");
                 continue;
             }
 
@@ -1834,30 +1859,57 @@ bool scanImports(Options *options, QSet<QString> *usedDependencies)
                 return false;
             }
 
+            importPathOfThisImport = QDir(importPathOfThisImport).absolutePath() + QLatin1Char('/');
+            QList<QtDependency> qmlImportsDependencies;
+            auto collectQmlDependency = [&usedDependencies, &qmlImportsDependencies,
+                                         &importPathOfThisImport](const QString &filePath) {
+                if (!usedDependencies->contains(filePath)) {
+                    usedDependencies->insert(filePath);
+                    qmlImportsDependencies += QtDependency(
+                            QLatin1String("qml/") + filePath.mid(importPathOfThisImport.size()),
+                            filePath);
+                }
+            };
+
+
             QDir dir(importPathOfThisImport);
             importPathOfThisImport = dir.absolutePath() + QLatin1Char('/');
 
             const QList<QtDependency> fileNames = findFilesRecursively(*options, info, importPathOfThisImport);
             for (QtDependency fileName : fileNames) {
-                if (usedDependencies->contains(fileName.absolutePath))
-                    continue;
-
-                usedDependencies->insert(fileName.absolutePath);
-
-                if (options->verbose)
-                    fprintf(stdout, "    -- Appending dependency found by qmlimportscanner: %s\n", qPrintable(fileName.absolutePath));
-
-                // Put all imports in default import path in assets
-                fileName.relativePath.prepend(QLatin1String("qml/"));
-                options->qtDependencies[options->currentArchitecture].append(fileName);
-
-                if (fileName.absolutePath.endsWith(QLatin1String(".so")) && checkArchitecture(*options, fileName.absolutePath)) {
+                if (!usedDependencies->contains(fileName.absolutePath) && fileName.absolutePath.endsWith(QLatin1String(".so")) && checkArchitecture(*options, fileName.absolutePath)) {
                     QSet<QString> remainingDependencies;
-                    if (!readDependenciesFromElf(options, fileName.absolutePath, usedDependencies, &remainingDependencies))
-                        return false;
-
+                    if (readDependenciesFromElf(options, fileName.absolutePath, usedDependencies, &remainingDependencies))
+                        collectQmlDependency(fileName.absolutePath);
                 }
             }
+
+            QFileInfo qmldirFileInfo = QFileInfo(path + QLatin1Char('/') + QLatin1String("qmldir"));
+            if (qmldirFileInfo.exists()) {
+                collectQmlDependency(qmldirFileInfo.absoluteFilePath());
+            }
+
+            QVariantList qmlFiles =
+                    object.value(QLatin1String("components")).toArray().toVariantList();
+            qmlFiles.append(object.value(QLatin1String("scripts")).toArray().toVariantList());
+            bool qmlFilesMissing = false;
+            for (const auto &qmlFileEntry : qmlFiles) {
+                QFileInfo fileInfo(qmlFileEntry.toString());
+                if (!fileInfo.exists()) {
+                    qmlFilesMissing = true;
+                    break;
+                }
+                collectQmlDependency(fileInfo.absoluteFilePath());
+            }
+
+            if (qmlFilesMissing) {
+                if (options->verbose)
+                    fprintf(stdout,
+                            "    -- Skipping because the required qml files are missing.\n");
+                continue;
+            }
+
+            options->qtDependencies[options->currentArchitecture].append(qmlImportsDependencies);
         }
     }
 
@@ -2260,9 +2312,9 @@ static GradleProperties readGradleProperties(const QString &path)
         if (line.trimmed().startsWith('#'))
             continue;
 
-        QList<QByteArray> prop(line.split('='));
-        if (prop.size() > 1)
-            properties[prop.at(0).trimmed()] = prop.at(1).trimmed();
+        const int idx = line.indexOf('=');
+        if (idx > -1)
+            properties[line.left(idx).trimmed()] = line.mid(idx + 1).trimmed();
     }
     file.close();
     return properties;
@@ -2270,15 +2322,16 @@ static GradleProperties readGradleProperties(const QString &path)
 
 static bool mergeGradleProperties(const QString &path, GradleProperties properties)
 {
-    QFile::remove(path + QLatin1Char('~'));
-    QFile::rename(path, path + QLatin1Char('~'));
+    const QString oldPathStr = path + QLatin1Char('~');
+    QFile::remove(oldPathStr);
+    QFile::rename(path, oldPathStr);
     QFile file(path);
     if (!file.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text)) {
         fprintf(stderr, "Can't open file: %s for writing\n", qPrintable(file.fileName()));
         return false;
     }
 
-    QFile oldFile(path + QLatin1Char('~'));
+    QFile oldFile(oldPathStr);
     if (oldFile.open(QIODevice::ReadOnly)) {
         while (!oldFile.atEnd()) {
             QByteArray line(oldFile.readLine());
@@ -2294,6 +2347,7 @@ static bool mergeGradleProperties(const QString &path, GradleProperties properti
             file.write(line);
         }
         oldFile.close();
+        QFile::remove(oldPathStr);
     }
 
     for (GradleProperties::const_iterator it = properties.begin(); it != properties.end(); ++it)
@@ -2328,9 +2382,8 @@ bool buildAndroidProject(const Options &options)
 {
     GradleProperties localProperties;
     localProperties["sdk.dir"] = QDir::fromNativeSeparators(options.sdkPath).toUtf8();
-    localProperties["ndk.dir"] = QDir::fromNativeSeparators(options.ndkPath).toUtf8();
-
-    if (!mergeGradleProperties(options.outputDirectory + QLatin1String("local.properties"), localProperties))
+    const QString localPropertiesPath = options.outputDirectory + QLatin1String("local.properties");
+    if (!mergeGradleProperties(localPropertiesPath, localProperties))
         return false;
 
     QString gradlePropertiesPath = options.outputDirectory + QLatin1String("gradle.properties");
@@ -2341,6 +2394,7 @@ bool buildAndroidProject(const Options &options)
     gradleProperties["androidCompileSdkVersion"] = options.androidPlatform.split(QLatin1Char('-')).last().toLocal8Bit();
     gradleProperties["qtMinSdkVersion"] = options.minSdkVersion;
     gradleProperties["qtTargetSdkVersion"] = options.targetSdkVersion;
+    gradleProperties["androidNdkVersion"] = options.ndkVersion.toUtf8();
     if (gradleProperties["androidBuildToolsVersion"].isEmpty())
         gradleProperties["androidBuildToolsVersion"] = options.sdkBuildToolsVersion.toLocal8Bit();
 
@@ -2465,7 +2519,7 @@ QString packagePath(const Options &options, PackageType pt)
             path += QLatin1String(".aab");
         }
     }
-    return shellQuote(path);
+    return path;
 }
 
 bool installApk(const Options &options)
@@ -2592,9 +2646,10 @@ bool jarSignerSignPackage(const Options &options)
     auto signPackage = [&](const QString &file) {
         fprintf(stdout, "Signing file %s\n", qPrintable(file));
         fflush(stdout);
-        auto command = jarSignerTool + QLatin1String(" %1 %2")
-                .arg(file)
-                .arg(shellQuote(options.keyStoreAlias));
+        QString command = jarSignerTool
+                + QLatin1String(" %1 %2")
+                          .arg(shellQuote(file))
+                          .arg(shellQuote(options.keyStoreAlias));
 
         FILE *jarSignerCommand = openProcess(command);
         if (jarSignerCommand == 0) {
@@ -2640,10 +2695,10 @@ bool jarSignerSignPackage(const Options &options)
     }
 
     zipAlignTool = QLatin1String("%1%2 -f 4 %3 %4")
-            .arg(shellQuote(zipAlignTool),
-                 options.verbose ? QLatin1String(" -v") : QLatin1String(),
-                 packagePath(options, UnsignedAPK),
-                 packagePath(options, SignedAPK));
+                           .arg(shellQuote(zipAlignTool),
+                                options.verbose ? QLatin1String(" -v") : QLatin1String(),
+                                shellQuote(packagePath(options, UnsignedAPK)),
+                                shellQuote(packagePath(options, SignedAPK)));
 
     FILE *zipAlignCommand = openProcess(zipAlignTool);
     if (zipAlignCommand == 0) {
@@ -2694,28 +2749,54 @@ bool signPackage(const Options &options)
         }
     }
 
-    zipAlignTool = QLatin1String("%1%2 -f 4 %3 %4")
-            .arg(shellQuote(zipAlignTool),
-                 options.verbose ? QLatin1String(" -v") : QLatin1String(),
-                 packagePath(options, UnsignedAPK),
-                 packagePath(options, SignedAPK));
+    auto zipalignRunner = [](const QString &zipAlignCommandLine) {
+        FILE *zipAlignCommand = openProcess(zipAlignCommandLine);
+        if (zipAlignCommand == 0) {
+            fprintf(stderr, "Couldn't run zipalign.\n");
+            return false;
+        }
 
-    FILE *zipAlignCommand = openProcess(zipAlignTool);
-    if (zipAlignCommand == 0) {
-        fprintf(stderr, "Couldn't run zipalign.\n");
-        return false;
-    }
+        char buffer[512];
+        while (fgets(buffer, sizeof(buffer), zipAlignCommand) != 0)
+            fprintf(stdout, "%s", buffer);
 
-    char buffer[512];
-    while (fgets(buffer, sizeof(buffer), zipAlignCommand) != 0)
-        fprintf(stdout, "%s", buffer);
+        return pclose(zipAlignCommand) == 0;
+    };
 
-    int errorCode = pclose(zipAlignCommand);
-    if (errorCode != 0) {
-        fprintf(stderr, "zipalign command failed.\n");
-        if (!options.verbose)
-            fprintf(stderr, "  -- Run with --verbose for more information.\n");
-        return false;
+    const QString verifyZipAlignCommandLine =
+            QLatin1String("%1%2 -c 4 %3")
+                    .arg(shellQuote(zipAlignTool),
+                         options.verbose ? QLatin1String(" -v") : QLatin1String(),
+                         shellQuote(packagePath(options, UnsignedAPK)));
+
+    if (zipalignRunner(verifyZipAlignCommandLine)) {
+        if (options.verbose)
+            fprintf(stdout, "APK already aligned, copying it for signing.\n");
+
+        if (QFile::exists(packagePath(options, SignedAPK)))
+            QFile::remove(packagePath(options, SignedAPK));
+
+        if (!QFile::copy(packagePath(options, UnsignedAPK), packagePath(options, SignedAPK))) {
+            fprintf(stderr, "Could not copy unsigned APK.\n");
+            return false;
+        }
+    } else {
+        if (options.verbose)
+            fprintf(stdout, "APK not aligned, aligning it for signing.\n");
+
+        const QString zipAlignCommandLine =
+                QLatin1String("%1%2 -f 4 %3 %4")
+                        .arg(shellQuote(zipAlignTool),
+                             options.verbose ? QLatin1String(" -v") : QLatin1String(),
+                             shellQuote(packagePath(options, UnsignedAPK)),
+                             shellQuote(packagePath(options, SignedAPK)));
+
+        if (!zipalignRunner(zipAlignCommandLine)) {
+            fprintf(stderr, "zipalign command failed.\n");
+            if (!options.verbose)
+                fprintf(stderr, "  -- Run with --verbose for more information.\n");
+            return false;
+        }
     }
 
     QString apkSignerCommandLine = QLatin1String("%1 sign --ks %2")
@@ -2733,8 +2814,7 @@ bool signPackage(const Options &options)
     if (options.verbose)
         apkSignerCommandLine += QLatin1String(" --verbose");
 
-    apkSignerCommandLine += QLatin1String(" %1")
-            .arg(packagePath(options, SignedAPK));
+    apkSignerCommandLine += QLatin1String(" %1").arg(shellQuote(packagePath(options, SignedAPK)));
 
     auto apkSignerRunner = [&] {
         FILE *apkSignerCommand = openProcess(apkSignerCommandLine);
@@ -2747,7 +2827,7 @@ bool signPackage(const Options &options)
         while (fgets(buffer, sizeof(buffer), apkSignerCommand) != 0)
             fprintf(stdout, "%s", buffer);
 
-        errorCode = pclose(apkSignerCommand);
+        int errorCode = pclose(apkSignerCommand);
         if (errorCode != 0) {
             fprintf(stderr, "apksigner command failed.\n");
             if (!options.verbose)
@@ -2761,8 +2841,9 @@ bool signPackage(const Options &options)
     if (!apkSignerRunner())
         return false;
 
-    apkSignerCommandLine = QLatin1String("%1 verify --verbose %2")
-        .arg(shellQuote(apksignerTool), packagePath(options, SignedAPK));
+    apkSignerCommandLine =
+            QLatin1String("%1 verify --verbose %2")
+                    .arg(shellQuote(apksignerTool), shellQuote(packagePath(options, SignedAPK)));
 
     // Verify the package and remove the unsigned apk
     return apkSignerRunner() && QFile::remove(packagePath(options, UnsignedAPK));
