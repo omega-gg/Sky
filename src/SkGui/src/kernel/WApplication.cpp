@@ -110,6 +110,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 
 #ifdef SK_DESKTOP
     // FIXME Qt6.6: We keep deceleration until the mouse wheel gets snappier.
+    //              https://bugreports.qt.io/browse/QTBUG-116388
     qputenv("QT_QUICK_FLICKABLE_WHEEL_DECELERATION", "1");
 #endif
 
