@@ -34,6 +34,12 @@
 #  include <stddef.h>
 #endif
 
+#ifdef Q_OS_MAC
+// FIXME mac/zlib: We need this header to avoid the following: implicit declaration of function
+//                 'lseek' is invalid in C99.
+#include <unistd.h>
+#endif
+
 #if defined(__TURBOC__) || defined(_MSC_VER) || defined(_WIN32)
 #  include <io.h>
 #endif
