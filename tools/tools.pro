@@ -5,4 +5,4 @@ SUBDIRS = includeGenerator \
           projectGenerator \
 
 # NOTE Qt5: We need an updated androiddeployqt with the latests changes.
-contains(QT_MAJOR_VERSION, 5) SUBDIRS += androiddeployqt
+contains(QT_VERSION, 5.15) SUBDIRS += androiddeployqt
