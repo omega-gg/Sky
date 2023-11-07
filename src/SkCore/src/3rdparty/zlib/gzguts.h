@@ -3,9 +3,11 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
+#ifdef Q_OS_MAC
 // FIXME mac/zlib: We need this header to avoid the following error: implicit declaration of
 //                 function 'lseek' is invalid in C99.
 #include <unistd.h>
+#endif
 
 #ifdef _LARGEFILE64_SOURCE
 #  ifndef _LARGEFILE_SOURCE
