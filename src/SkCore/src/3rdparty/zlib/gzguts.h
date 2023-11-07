@@ -3,6 +3,10 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
+// FIXME mac/zlib: We need this header to avoid the following error: implicit declaration of
+//                 function 'lseek' is invalid in C99.
+#include <unistd.h>
+
 #ifdef _LARGEFILE64_SOURCE
 #  ifndef _LARGEFILE_SOURCE
 #    define _LARGEFILE_SOURCE 1
@@ -32,12 +36,6 @@
 
 #ifdef _WIN32
 #  include <stddef.h>
-#endif
-
-#ifdef Q_OS_MAC
-// FIXME mac/zlib: We need this header to avoid the following: implicit declaration of function
-//                 'lseek' is invalid in C99.
-#include <unistd.h>
 #endif
 
 #if defined(__TURBOC__) || defined(_MSC_VER) || defined(_WIN32)
