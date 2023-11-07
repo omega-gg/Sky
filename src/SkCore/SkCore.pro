@@ -50,6 +50,7 @@ include(src/network/network.pri)
 #include(src/plugin/plugin.pri)
 
 include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
+include(src/3rdparty/zlib/zlib.pri)
 include(src/3rdparty/quazip/quazip.pri)
 include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 
@@ -61,11 +62,5 @@ unix:!macx:!ios:!android:greaterThan(QT_MAJOR_VERSION, 4) {
     INCLUDEPATH += $$SK/include/$$QTX/QtDBus
 }
 
-win32-msvc*:INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/QtZlib
-
-win32:!win32-msvc*:LIBS += -L$$SK/lib -lz
-
 # Windows dependency for ShellExecuteA and SystemParametersInfo
 win32-msvc*:LIBS += shell32.lib User32.lib
-
-unix:LIBS += -lz
