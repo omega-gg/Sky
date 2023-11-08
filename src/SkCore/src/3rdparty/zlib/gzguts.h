@@ -3,7 +3,7 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
-#ifdef Q_OS_MAC
+#ifdef __APPLE__
 // FIXME mac/zlib: We need this header to avoid the following error: implicit declaration of
 //                 function 'lseek' is invalid in C99.
 #include <unistd.h>
