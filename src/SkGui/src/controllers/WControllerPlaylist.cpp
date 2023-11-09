@@ -5246,7 +5246,9 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 /* Q_INVOKABLE static */ void WControllerPlaylist::reloadCover(const QString & url, int delay,
                                                                                     int maxHost)
 {
+#ifndef SK_CONSOLE
     WPixmapCache::removePath(url);
+#endif
 
     wControllerFile->reloadFile(url, delay, maxHost);
 }
