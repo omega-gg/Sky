@@ -755,6 +755,11 @@ if [ $os = "windows" ]; then
     cp bin/deployer.exe         deploy
     cp bin/projectGenerator.exe deploy
 
+    if [ -f bin/androiddeployqt.exe ]; then
+
+        cp bin/androiddeployqt.exe deploy
+    fi
+
 elif [ $os = "mobile" ]; then
 
     cp -r "$external"/Sky/* deploy
@@ -762,6 +767,11 @@ else
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
     cp bin/projectGenerator deploy
+
+    if [ -f bin/androiddeployqt ]; then
+
+        cp bin/androiddeployqt deploy
+    fi
 fi
 
 if [ $1 = "macOS" ]; then
