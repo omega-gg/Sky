@@ -739,24 +739,6 @@ WallBookmarkTrack
         onVisibleChanged: pUpdateText()
     }
 
-    AnimatedLoader
-    {
-        id: itemLoader
-
-        anchors.left  : player.left
-        anchors.right : player.right
-        anchors.bottom: player.bottom
-
-        height: loaderHeight
-
-        z: player.z
-
-        opacity: (player.isPlaying && player.isLoading)
-
-        // NOTE: When the wall is exposed we make sure to clip the loader properly.
-        clip: isActive
-    }
-
     Rectangle
     {
         id: browserBack
@@ -813,6 +795,24 @@ WallBookmarkTrack
 
             onVisibleChanged: if (visible) loadNow()
         }
+    }
+
+    AnimatedLoader
+    {
+        id: itemLoader
+
+        anchors.left  : player.left
+        anchors.right : player.right
+        anchors.bottom: player.bottom
+
+        height: loaderHeight
+
+        z: player.z
+
+        opacity: (player.isPlaying && player.isLoading)
+
+        // NOTE: When the wall is exposed we make sure to clip the loader properly.
+        clip: isActive
     }
 
     ItemScan
