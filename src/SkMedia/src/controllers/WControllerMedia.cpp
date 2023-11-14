@@ -431,6 +431,12 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 {
     QString content = Sk::readUtf8(array);
 
+    QString urlBase = WControllerNetwork::extractBaseUrl(url) + '/';
+
+    QString fileName = WControllerNetwork::extractUrlFileName(url);
+
+    fileName = WControllerNetwork::removeFileExtension(fileName);
+
     QStringList list = Sk::slicesIn(content, WRegExp("EXT-X-STREAM-INF"), WRegExp("[#$]"));
 
     foreach (const QString & media, list)
@@ -443,16 +449,32 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 
         if (quality == WAbstractBackend::QualityDefault || medias.contains(quality)) continue;
 
+        QString source;
+
         int index = media.lastIndexOf("http");
 
-        // NOTE: We only support http(s) urls.
-        if (index == -1) continue;
+        if (index == -1)
+        {
+            index = media.lastIndexOf(fileName);
 
-        QString source = media.mid(index);
+            if (index == -1) continue;
 
-        if (source.endsWith('\n')) source.chop(1);
+            source = media.mid(index);
 
-        if (source.isEmpty()) continue;
+            if (source.endsWith('\n')) source.chop(1);
+
+            if (source.isEmpty()) continue;
+
+            source.prepend(urlBase);
+        }
+        else
+        {
+            source = media.mid(index);
+
+            if (source.endsWith('\n')) source.chop(1);
+
+            if (source.isEmpty()) continue;
+        }
 
         medias.insert(quality, source);
     }

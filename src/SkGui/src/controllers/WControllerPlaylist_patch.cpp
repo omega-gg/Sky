@@ -71,7 +71,7 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
 
     Sk::removeLine(&data, QString('#'), WControllerPlaylist::vbmlHeader(data));
 
-    data.prepend("# VBML " + WControllerPlaylist::versionApi());
+    data.prepend("# VBML " + WControllerPlaylist::versionApi() + '\n');
 }
 
 #endif // SK_NO_CONTROLLERPLAYLIST

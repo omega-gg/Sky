@@ -339,9 +339,20 @@ void WBackendIndexPrivate::onUpdate()
 {
     Q_Q(WBackendIndex);
 
-    QByteArray array = remote->readAll();
-
     QObject::disconnect(remote, 0, q, 0);
+
+    if (remote->hasError())
+    {
+        remote->deleteLater();
+
+        remote = NULL;
+
+        applyLoaded();
+
+        return;
+    }
+
+    QByteArray array = remote->readAll();
 
     remote->deleteLater();
 
