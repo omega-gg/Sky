@@ -9,6 +9,7 @@ ItemScan  1.0 ItemScan.qml
 LoaderSlide 1.0 LoaderSlide.qml
 LoaderWipe  1.0 LoaderWipe.qml
 
+AreaPanel      1.0 AreaPanel.qml
 AreaContextual 1.0 AreaContextual.qml
 
 RectangleBorders     1.0 RectangleBorders.qml
