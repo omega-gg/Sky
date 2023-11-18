@@ -241,7 +241,11 @@ void WYamlReaderPrivate::extractNode(WYamlNode * node, QString * content, QStrin
     {
         QChar character = string->at(0);
 
-        if (character == '|')
+        if (character == '#')
+        {
+            extractChilds(node, content);
+        }
+        else if (character == '|')
         {
             extractValue(WYamlReaderPrivate::Paragraph, node, content);
         }
