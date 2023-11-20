@@ -3518,6 +3518,8 @@ QString WBackendUniversalScript::extractString(QString * string, const QChar & c
         result.replace("\\\"", "\"");
         result.replace("\\\\", "\\");
 
+        result.replace("\\n", "\n");
+
         string->remove(0, index + 1);
     }
 

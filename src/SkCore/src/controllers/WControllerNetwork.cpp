@@ -1950,6 +1950,8 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
         result.replace("\\\"", "\"");
         result.replace("\\\\", "\\");
 
+        result.replace("\\n", "\n");
+
         return result;
     }
     else if (character == '{' || character == '[')
