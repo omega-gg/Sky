@@ -49,6 +49,8 @@ Popup 1.0 Popup.qml
 LineEdit      1.0 LineEdit.qml
 LineEditClear 1.0 LineEditClear.qml
 
+LinesEdit 1.0 LinesEdit.qml
+
 Console 1.0 Console.qml
 
 ColumnWide   1.0 ColumnWide.qml
