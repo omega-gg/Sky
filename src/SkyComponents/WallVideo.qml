@@ -565,7 +565,7 @@ WallBookmarkTrack
                 }
                 else return true;
             }
-            else return (hasStarted && pAudio == false);
+            else return hasStarted;
         }
 
         // NOTE: When the wall is exposed we make sure to clip the player properly.
@@ -655,7 +655,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isStarting || player.isResuming || (player.visible && pAudio))
+        visible: (player.isStarting || player.isResuming || pAudio)
 
         gradient: Gradient
         {
