@@ -234,6 +234,7 @@ void WVlcEnginePrivate::clearDiscoverers()
     options.append("--no-stats");
     options.append("--no-media-library");
     options.append("--text-renderer=none");
+
     // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
     options.append("--http-reconnect");
 
