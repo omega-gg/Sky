@@ -234,6 +234,8 @@ void WVlcEnginePrivate::clearDiscoverers()
     options.append("--no-stats");
     options.append("--no-media-library");
     options.append("--text-renderer=none");
+    // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
+    options.append("--http-reconnect");
 
     // NOTE: This is useful for the mkv default language.
     options.append("--audio-language=en");
@@ -273,10 +275,11 @@ void WVlcEnginePrivate::clearDiscoverers()
                 "--no-stats",          /* No statistics    */
                 "--no-media-library",  /* No Media Library */
                 "--text-renderer=none" /* No FreeType      */
+                // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
+                "--http-reconnect",    /* Auto reconnect   */
                 // NOTE: This is useful for the mkv default language.
                 "--audio-language=en"  /* Audio english    */
                 //"--input-fast-seek", /* Fast seek        */
-                //"--http-reconnect",  /* Auto reconnect   */
                 //"--avcodec-fast",    /* Speed tricks     */
                 //"--avcodec-dr",
                 //"--avcodec-hurry-up",
