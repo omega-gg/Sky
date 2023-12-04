@@ -3335,6 +3335,13 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
          backend = q->backendFromUrl(backendQuery->url);
     }
+    // NOTE: This is required to enforce VBML parsing from a backend.
+    else if (id == "vbml")
+    {
+        backend = NULL;
+
+        backendQuery->target = WBackendNetQuery::TargetVbml;
+    }
     else backend = q->backendFromId(id);
 
     // NOTE: We apply the backend to the query so we can delete it later.
