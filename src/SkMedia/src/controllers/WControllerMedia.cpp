@@ -1383,7 +1383,6 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
     {
          backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
     }
-    // NOTE: This is required to enforce VBML parsing from a backend.
     else if (id == "vbml")
     {
         backend = NULL;

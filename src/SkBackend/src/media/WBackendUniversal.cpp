@@ -3994,6 +3994,8 @@ void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters 
     parameters->add("url",         query.url);
     parameters->add("urlRedirect", query.urlRedirect);
 
+    parameters->add("currentTime", query.currentTime);
+
     parameters->add("id", query.id);
 
     WAbstractBackend::SourceMode mode = query.mode;
@@ -4033,6 +4035,8 @@ void WBackendUniversalPrivate::applyQueryResults(WBackendUniversalParameters * p
     else                   query->backend = backend;
 
     query->url = parameters->value("url")->toString();
+
+    query->currentTime = parameters->value("currentTime")->toInt();
 
     query->id = parameters->value("id")->toInt();
 
@@ -4418,6 +4422,8 @@ WBackendNetQuery WBackendUniversalPrivate::getQuery(const QVariant & value) cons
     else                   query.backend = backend;
 
     query.url = hash.value("url").toString();
+
+    query.currentTime = hash.value("currentTime").toInt();
 
     query.id = hash.value("id").toInt();
 
