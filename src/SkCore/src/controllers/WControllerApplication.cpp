@@ -705,7 +705,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     if (jni.isValid() == false) return;
 
-    jni.callMethod<void>("openGallery");
+    jni.callMethod<void>("goBack");
 }
 
 #endif
