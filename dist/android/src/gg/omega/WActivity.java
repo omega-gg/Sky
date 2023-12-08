@@ -128,6 +128,17 @@ public class WActivity extends QtActivity
                 = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
     }
 
+    public void goBack()
+    {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+
+        intent.addCategory(Intent.CATEGORY_HOME);
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        startActivity(intent);
+    }
+
     public String getIntentText()
     {
         Intent intent = getIntent();

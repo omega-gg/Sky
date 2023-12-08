@@ -235,6 +235,8 @@ public: // Static functions
 
     // NOTE android: This is required to avoid the notch in full screen.
     Q_INVOKABLE static void prepareFullScreen(bool enabled);
+
+    Q_INVOKABLE static void goBack();
 #endif
 
     //---------------------------------------------------------------------------------------------
