@@ -64,6 +64,8 @@ struct WPrivateMediaData
     WTrack::Type type;
     WTrack::Type typeSource;
 
+    bool vbml;
+
     QString timeZone;
 
     int currentTime;
@@ -93,6 +95,8 @@ struct WPrivateMediaSlice
 
     WTrack::Type type;
     WTrack::Type typeSource;
+
+    bool vbml;
 
     QString timeZone;
 

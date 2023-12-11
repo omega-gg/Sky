@@ -137,6 +137,7 @@ public: // Enums
         SOURCE,
         STATE,
         STATELOAD,
+        VBML,
         LIVE,
         STARTED,
         ENDED,

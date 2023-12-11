@@ -718,6 +718,7 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
         QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
         QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad  ()));
+        QObject::connect(backend, SIGNAL(vbmlChanged         ()), q, SLOT(onVbml       ()));
         QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive       ()));
         QObject::connect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart      ()));
         QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd        ()));
@@ -740,6 +741,7 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
         QObject::disconnect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
         QObject::disconnect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad  ()));
+        QObject::disconnect(backend, SIGNAL(vbmlChanged         ()), q, SLOT(onVbml       ()));
         QObject::disconnect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive       ()));
         QObject::disconnect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart      ()));
         QObject::disconnect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd        ()));
@@ -992,6 +994,11 @@ void WDeclarativePlayerPrivate::onStateLoad()
 {
     server->sendReply(WBroadcastReply::STATELOAD,
                       WAbstractBackend::stateLoadToString(backend->stateLoad()));
+}
+
+void WDeclarativePlayerPrivate::onVbml()
+{
+    server->sendReply(WBroadcastReply::VBML, QString::number(backend->isVbml()));
 }
 
 void WDeclarativePlayerPrivate::onLive()
@@ -1835,6 +1842,7 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
 
+    connect(backend, SIGNAL(vbmlChanged()), this, SIGNAL(vbmlChanged()));
     connect(backend, SIGNAL(liveChanged()), this, SIGNAL(liveChanged()));
 
     connect(backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
@@ -2126,6 +2134,17 @@ bool WDeclarativePlayer::isAudio() const
 }
 
 //-------------------------------------------------------------------------------------------------
+
+bool WDeclarativePlayer::isVbml() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->isVbml();
+    }
+    else return false;
+}
 
 bool WDeclarativePlayer::isLive() const
 {

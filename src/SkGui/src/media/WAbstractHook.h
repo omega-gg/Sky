@@ -94,6 +94,7 @@ protected: // Functions
     void setState    (WAbstractBackend::State     state);
     void setStateLoad(WAbstractBackend::StateLoad stateLoad);
 
+    void setVbml(bool vbml);
     void setLive(bool live);
 
     void setStarted(bool started);

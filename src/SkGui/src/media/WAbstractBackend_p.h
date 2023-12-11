@@ -69,6 +69,7 @@ public: // Variable
     WAbstractBackend::State     state;
     WAbstractBackend::StateLoad stateLoad;
 
+    bool vbml;
     bool live;
 
     bool started;

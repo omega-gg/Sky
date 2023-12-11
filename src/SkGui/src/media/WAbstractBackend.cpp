@@ -75,6 +75,7 @@ void WAbstractBackendPrivate::init()
     state     = WAbstractBackend::StateStopped;
     stateLoad = WAbstractBackend::StateLoadDefault;
 
+    vbml = false;
     live = false;
 
     started = false;
@@ -656,6 +657,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
             emit audiosChanged();
         }
 
+        setVbml(false);
         setLive(false);
 
         //-----------------------------------------------------------------------------------------
@@ -937,6 +939,19 @@ void WAbstractBackend::setStateLoad(StateLoad stateLoad)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WAbstractBackend::setVbml(bool vbml)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterVbml(&vbml);
+
+    if (d->vbml == vbml) return;
+
+    d->vbml = vbml;
+
+    emit vbmlChanged();
+}
 
 void WAbstractBackend::setLive(bool live)
 {
@@ -1345,6 +1360,11 @@ bool WAbstractBackend::isStopped() const
 }
 
 //-------------------------------------------------------------------------------------------------
+
+bool WAbstractBackend::isVbml() const
+{
+    Q_D(const WAbstractBackend); return d->vbml;
+}
 
 bool WAbstractBackend::isLive() const
 {
@@ -1759,6 +1779,7 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 /* virtual */ void WBackendFilter::filterState    (WAbstractBackend::State     *) {}
 /* virtual */ void WBackendFilter::filterStateLoad(WAbstractBackend::StateLoad *) {}
 
+/* virtual */ void WBackendFilter::filterVbml(bool *) {}
 /* virtual */ void WBackendFilter::filterLive(bool *) {}
 
 /* virtual */ void WBackendFilter::filterEnded(bool *) {}

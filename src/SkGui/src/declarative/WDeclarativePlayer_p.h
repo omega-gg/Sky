@@ -111,6 +111,7 @@ public: // Slots
     void onSource     ();
     void onState      ();
     void onStateLoad  ();
+    void onVbml       ();
     void onLive       ();
     void onStart      ();
     void onEnd        ();

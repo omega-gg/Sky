@@ -890,27 +890,25 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     {
         const WYamlNode * node = reader.at("source");
 
-        if (node == NULL)
+        if (node)
         {
-            // NOTE: When the source is empty we set the vbml uri.
-            track.setSource(url);
-        }
-        else if (node->children.isEmpty())
-        {
-            source = node->value;
-
-            // NOTE: When the source is empty we set the vbml uri.
-            if (source.isEmpty()) track.setSource(url);
-            else                  track.setSource(source);
-        }
-        else
-        {
-            // NOTE: When it's a multi-track we set the vbml uri.
-            track.setSource(url);
-
-            if (duration == -1)
+            if (node->children.isEmpty())
             {
-                duration = WControllerPlaylist::vbmlDurationSource(*node, at, -1);
+                source = node->value;
+
+                // NOTE: When the source is empty we set the vbml uri.
+                if (source.isEmpty()) track.setSource(url);
+                else                  track.setSource(source);
+            }
+            else
+            {
+                // NOTE: When it's a multi-track we set the vbml uri.
+                track.setSource(url);
+
+                if (duration == -1)
+                {
+                    duration = WControllerPlaylist::vbmlDurationSource(*node, at, -1);
+                }
             }
         }
     }

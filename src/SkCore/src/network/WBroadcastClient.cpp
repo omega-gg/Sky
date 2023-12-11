@@ -536,7 +536,7 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     {
         if (parameters.count() == 2) return;
     }
-    else if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE
+    else if (type == SOURCE || type == STATE || type == STATELOAD || type == VBML || type == LIVE
              ||
              type == STARTED || type == ENDED || type == TIME || type == DURATION
              ||
@@ -579,6 +579,7 @@ QByteArray WBroadcastReply::generateData() const
     if      (string == "SOURCE")     return SOURCE;
     else if (string == "STATE")      return STATE;
     else if (string == "STATELOAD")  return STATELOAD;
+    else if (string == "VBML")       return VBML;
     else if (string == "LIVE")       return LIVE;
     else if (string == "STARTED")    return STARTED;
     else if (string == "ENDED")      return ENDED;
@@ -604,6 +605,7 @@ QByteArray WBroadcastReply::generateData() const
     if      (type == SOURCE)     return "SOURCE";
     else if (type == STATE)      return "STATE";
     else if (type == STATELOAD)  return "STATELOAD";
+    else if (type == VBML)       return "VBML";
     else if (type == LIVE)       return "LIVE";
     else if (type == STARTED)    return "STARTED";
     else if (type == ENDED)      return "ENDED";

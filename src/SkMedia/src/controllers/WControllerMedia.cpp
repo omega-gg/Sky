@@ -142,6 +142,11 @@ WTrack::Type WMediaReply::typeSource() const
     return _typeSource;
 }
 
+bool WMediaReply::isVbml() const
+{
+    return _vbml;
+}
+
 QString WMediaReply::timeZone() const
 {
     return _timeZone;
@@ -251,6 +256,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     //---------------------------------------------------------------------------------------------
     // Source
+
+    vbml = true;
 
     QString string = reader.extractString("origin");
 
@@ -897,6 +904,13 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->typeSource = type;
     }
 
+    bool vbml = data.vbml;
+
+    if (media->vbml == vbml)
+    {
+        media->vbml = vbml;
+    }
+
     int timeB = data.timeB;
 
     if (timeB == -1) return;
@@ -954,10 +968,14 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         WTrack::Type type       = media->type;
         WTrack::Type typeSource = media->typeSource;
 
+        bool vbml = media->vbml;
+
         slice.urlSource = urlSource;
 
         slice.type       = type;
         slice.typeSource = typeSource;
+
+        slice.vbml = vbml;
 
         slice.medias = medias;
         slice.audios = audios;
@@ -982,6 +1000,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             reply->_type       = type;
             reply->_typeSource = typeSource;
 
+            reply->_vbml = vbml;
+
             reply->_medias = medias;
             reply->_audios = audios;
 
@@ -999,6 +1019,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         WTrack::Type type       = media->type;
         WTrack::Type typeSource = media->typeSource;
 
+        bool vbml = media->vbml;
+
         QString timeZone = media->timeZone;
 
         int duration = media->duration;
@@ -1012,6 +1034,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.type       = type;
         slice.typeSource = typeSource;
+
+        slice.vbml = vbml;
 
         slice.timeZone = timeZone;
 
@@ -1037,6 +1061,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_type       = type;
             reply->_typeSource = typeSource;
+
+            reply->_vbml = vbml;
 
             reply->_timeZone = timeZone;
 
@@ -1703,6 +1729,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
     reply->_type       = WTrack::Track;
     reply->_typeSource = WTrack::Track;
 
+    reply->_vbml = false;
+
     reply->_currentTime = currentTime;
     reply->_duration    = -1;
 
@@ -1734,6 +1762,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
             reply->_type       = slice->type;
             reply->_typeSource = slice->typeSource;
+
+            reply->_vbml = slice->vbml;
 
             reply->_timeZone = slice->timeZone;
 

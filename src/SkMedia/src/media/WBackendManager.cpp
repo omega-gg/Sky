@@ -204,6 +204,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
     currentMedia = WAbstractBackend::mediaFromQuality(medias, quality);
 
+    q->setVbml(reply->isVbml());
+
     int timeA = reply->timeA();
 
     if (timeA == -1)

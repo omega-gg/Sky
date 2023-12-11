@@ -83,6 +83,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(bool isVideo READ isVideo NOTIFY sourceChanged)
     Q_PROPERTY(bool isAudio READ isAudio NOTIFY sourceChanged)
 
+    Q_PROPERTY(bool isVbml READ isVbml NOTIFY vbmlChanged)
     Q_PROPERTY(bool isLive READ isLive NOTIFY liveChanged)
 
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
@@ -277,6 +278,7 @@ signals:
     void stateChanged    ();
     void stateLoadChanged();
 
+    void vbmlChanged();
     void liveChanged();
 
     void startedChanged();
@@ -364,6 +366,7 @@ public: // Properties
     bool isVideo() const;
     bool isAudio() const;
 
+    bool isVbml() const;
     bool isLive() const;
 
     bool hasStarted() const;
@@ -487,6 +490,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onSource     ())
     Q_PRIVATE_SLOT(d_func(), void onState      ())
     Q_PRIVATE_SLOT(d_func(), void onStateLoad  ())
+    Q_PRIVATE_SLOT(d_func(), void onVbml       ())
     Q_PRIVATE_SLOT(d_func(), void onLive       ())
     Q_PRIVATE_SLOT(d_func(), void onStart      ())
     Q_PRIVATE_SLOT(d_func(), void onEnd        ())

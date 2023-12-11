@@ -179,6 +179,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(bool isPaused  READ isPaused  NOTIFY stateChanged)
     Q_PROPERTY(bool isStopped READ isStopped NOTIFY stateChanged)
 
+    Q_PROPERTY(bool isVbml READ isVbml NOTIFY vbmlChanged)
     Q_PROPERTY(bool isLive READ isLive NOTIFY liveChanged)
 
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
@@ -420,6 +421,7 @@ protected: // Functions
     void setState    (State     state);
     void setStateLoad(StateLoad stateLoad);
 
+    void setVbml(bool vbml);
     void setLive(bool live);
 
     void setStarted(bool started);
@@ -511,6 +513,7 @@ signals:
     void stateChanged    ();
     void stateLoadChanged();
 
+    void vbmlChanged();
     void liveChanged();
 
     void startedChanged();
@@ -574,6 +577,7 @@ public: // Properties
     bool isPaused () const;
     bool isStopped() const;
 
+    bool isVbml() const;
     bool isLive() const;
 
     bool hasStarted() const;
@@ -711,6 +715,7 @@ public:
     virtual void filterState    (WAbstractBackend::State     * state);     // {}
     virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad); // {}
 
+    virtual void filterVbml(bool * live); // {}
     virtual void filterLive(bool * live); // {}
 
     virtual void filterEnded(bool * ended); // {}

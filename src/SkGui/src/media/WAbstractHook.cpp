@@ -244,6 +244,11 @@ void WAbstractHook::setStateLoad(WAbstractBackend::StateLoad stateLoad)
 
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractHook::setVbml(bool vbml)
+{
+    Q_D(WAbstractHook); d->backend->setVbml(vbml);
+}
+
 void WAbstractHook::setLive(bool live)
 {
     Q_D(WAbstractHook); d->backend->setLive(live);

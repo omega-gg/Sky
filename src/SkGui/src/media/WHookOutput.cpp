@@ -380,6 +380,12 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         q->setStateLoad(WAbstractBackend::stateLoadFromString(reply.parameters.first()));
     }
+    else if (type == WBroadcastReply::VBML)
+    {
+        Q_Q(WHookOutput);
+
+        q->setVbml(reply.parameters.first().toInt());
+    }
     else if (type == WBroadcastReply::LIVE)
     {
         Q_Q(WHookOutput);

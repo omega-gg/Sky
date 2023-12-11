@@ -80,6 +80,8 @@ public: // Properties
     WTrack::Type type      () const;
     WTrack::Type typeSource() const;
 
+    bool isVbml() const;
+
     QString timeZone() const;
 
     int currentTime() const;
@@ -107,6 +109,8 @@ private: // Variables
 
     WTrack::Type _type;
     WTrack::Type _typeSource;
+
+    bool _vbml;
 
     QString _timeZone;
 
@@ -146,6 +150,8 @@ public:
         type       = WTrack::Unknown;
         typeSource = WTrack::Unknown;
 
+        vbml = false;
+
         currentTime = 0;
 
         duration = -1;
@@ -171,6 +177,8 @@ private: // Functions
 public: // Variables
     WTrack::Type type;
     WTrack::Type typeSource;
+
+    bool vbml;
 
     QString origin;
     QString source;
