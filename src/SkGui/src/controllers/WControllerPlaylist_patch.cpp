@@ -66,6 +66,16 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
         }
     }
 
+    if (Sk::versionIsLower(api, "1.0.6"))
+    {
+        WControllerPlaylist::Type type = WControllerPlaylist::vbmlType(data);
+
+        if (WControllerPlaylist::vbmlTypeTrack(type))
+        {
+            data.replace(WRegExp("\nmedia"), "\nsource");
+        }
+    }
+
     //---------------------------------------------------------------------------------------------
     // NOTE: We replace the VBML comment with the right 'api' key.
 

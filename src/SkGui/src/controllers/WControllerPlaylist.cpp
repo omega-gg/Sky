@@ -336,7 +336,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
         parsePlaylist(reader);
 
         // NOTE: When the playlist is invalid we add the url itself given it could be a media.
-        if (source.isEmpty() && title.isEmpty() && tracks.isEmpty()
+        if (title.isEmpty() && tracks.isEmpty()
             &&
             // NOTE: The url should not be a vbml run uri.
             WControllerPlaylist::urlIsVbmlRun(url) == false)
@@ -931,8 +931,6 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
 
 void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
 {
-    source = reader.extractString("source");
-
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
@@ -3947,22 +3945,6 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
         if (origin.isEmpty() == false)
         {
-            WBackendNetQuery query(origin);
-
-            query.target = WBackendNetQuery::TargetVbml;
-
-            if (getNextTrack("", playlist, track, query, indexNext))
-            {
-                playlist->updateTrack(index);
-
-                return;
-            }
-        }
-
-        origin = data.source;
-
-        if (origin.isEmpty() == false)
-        {
             Q_Q(WControllerPlaylist);
 
             WBackendNet * backend = q->backendFromUrl(origin);
@@ -3981,6 +3963,17 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
                     return;
                 }
+            }
+
+            WBackendNetQuery query(origin);
+
+            query.target = WBackendNetQuery::TargetVbml;
+
+            if (getNextTrack("", playlist, track, query, indexNext))
+            {
+                playlist->updateTrack(index);
+
+                return;
             }
         }
 
@@ -4110,28 +4103,15 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         return;
     }
-    else if (WControllerPlaylist::vbmlTypeTrack(type))
-    {
-        playlist->addTracks(data.tracks);
 
+    // NOTE: We are adding tracks when origin is not specified.
+    playlist->addTracks(data.tracks);
+
+    if (WControllerPlaylist::vbmlTypeTrack(type))
+    {
         // NOTE: We select the first track right away.
         playlist->setCurrentIndex(0);
-
-        if (source.isEmpty() == false)
-        {
-            playlist->applySource(source);
-        }
     }
-    else if (source.isEmpty() == false)
-    {
-        playlist->applySource(source);
-
-        applyNextPlaylist(playlist, source, QString(), indexNext);
-
-        return;
-    }
-    // NOTE: We are adding tracks when origin and source are not specified.
-    else playlist->addTracks(data.tracks);
 
     Q_Q(WControllerPlaylist);
 
@@ -4442,32 +4422,15 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         return;
     }
-    else if (WControllerPlaylist::vbmlTypeTrack(type))
-    {
-        playlist->addTracks(data.tracks);
 
+    // NOTE: We are adding tracks when origin is not specified.
+    playlist->addTracks(data.tracks);
+
+    if (WControllerPlaylist::vbmlTypeTrack(type))
+    {
         // NOTE: We select the first track right away.
         playlist->setCurrentIndex(0);
-
-        if (source.isEmpty() == false)
-        {
-            playlist->applySource(source);
-        }
     }
-    else if (source.isEmpty() == false)
-    {
-        playlist->tryDelete();
-
-        folder->removeAt(0);
-
-        folder->applySource(source);
-
-        applyNextFolder(folder, source, QString(), indexNext);
-
-        return;
-    }
-    // NOTE: We are adding tracks when origin and source are not specified.
-    else playlist->addTracks(data.tracks);
 
     Q_Q(WControllerPlaylist);
 
@@ -6039,18 +6002,6 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     return vbmlTypeFromString(line.toLower());
 }
 
-/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlSource(const WYamlNode & node)
-{
-    // NOTE: The media is prioritized over the source.
-    QString source = node.extractString("media");
-
-    if (source.isEmpty())
-    {
-        return node.extractString("source");
-    }
-    else return source;
-}
-
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node,
                                                                int                   at,
                                                                int                   defaultValue)
@@ -6183,7 +6134,7 @@ QThread * WControllerPlaylist::thread() const
 
 /* static */ QString WControllerPlaylist::versionApi()
 {
-    return "1.0.5";
+    return "1.0.6";
 }
 
 //-------------------------------------------------------------------------------------------------

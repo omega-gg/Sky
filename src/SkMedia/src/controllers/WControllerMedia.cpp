@@ -264,23 +264,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         return;
     }
 
-    // NOTE: The media is prioritized over the source.
-    source = reader.extractString("media");
-
-    if (source.isEmpty() == false)
-    {
-        // NOTE: By default, an image is played like a hub.
-        if (WControllerFile::urlIsImage(source))
-        {
-            type = WTrack::Hub;
-        }
-        else type = WTrack::typeFromString(reader.extractString("type"));
-
-        applyMedia(reader.node(), source);
-
-        return;
-    }
-
     const WYamlNode * node = reader.at("source");
 
     // NOTE: If the parsing fails we add the current url as the default source.
@@ -390,16 +373,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 }
 
                 const WYamlNode & child = children.at(i);
-
-                // NOTE: The media is prioritized over the source.
-                QString media = child.extractString("media");
-
-                if (media.isEmpty() == false)
-                {
-                    applySource(child, media, durationSource);
-
-                    return;
-                }
 
                 const WYamlNode * node = child.at("source");
 
@@ -514,16 +487,6 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
             start = 0;
 
             continue;
-        }
-
-        // NOTE: The media is prioritized over the source.
-        QString media = child.extractString("media");
-
-        if (media.isEmpty() == false)
-        {
-            applySource(child, media, durationSource);
-
-            return;
         }
 
         const WYamlNode * node = child.at("source");

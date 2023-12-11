@@ -186,7 +186,7 @@ void WTrack::applyDataTo(WTrack * other) const
 
     if (WControllerNetwork::urlIsFile(d->source) == false)
     {
-        Sk::bmlPair(vbml, "source", d->source, "\n\n");
+        Sk::bmlPair(vbml, "origin", d->source, "\n\n");
     }
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");

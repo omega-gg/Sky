@@ -2362,7 +2362,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     {
         if (expand == 0) expand = 1;
     }
-    else Sk::bmlPair(vbml, "source", d->source, "\n\n");
+    else Sk::bmlPair(vbml, "origin", d->source, "\n\n");
 
     if (expand == 1)
     {

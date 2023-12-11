@@ -349,8 +349,6 @@ public: // Static functions
     Q_INVOKABLE static QString vbmlVersion(const QString & vbml);
     Q_INVOKABLE static Type    vbmlType   (const QString & vbml);
 
-    Q_INVOKABLE static QString vbmlSource(const WYamlNode & node);
-
     Q_INVOKABLE static int vbmlDuration(const WYamlNodeBase & node, int at           = 0,
                                                                     int defaultValue = 0);
 

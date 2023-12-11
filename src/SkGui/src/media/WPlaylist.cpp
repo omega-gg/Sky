@@ -2419,7 +2419,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         if (expand == 0) expand = 1;
     }
-    else Sk::bmlPair(vbml, "source", source, "\n\n");
+    else Sk::bmlPair(vbml, "origin", source, "\n\n");
 
     if (expand == 1)
     {

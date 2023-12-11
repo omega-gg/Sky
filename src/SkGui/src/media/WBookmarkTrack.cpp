@@ -295,12 +295,12 @@ void WBookmarkTrack::save()
     {
         if (WControllerNetwork::urlIsFile(d->source) == false)
         {
-            Sk::bmlPair(vbml, "source", d->source, "\n\n");
+            Sk::bmlPair(vbml, "origin", d->source, "\n\n");
         }
     }
     else if (WControllerNetwork::urlIsFile(source) == false)
     {
-        Sk::bmlPair(vbml, "source", source, "\n\n");
+        Sk::bmlPair(vbml, "origin", source, "\n\n");
     }
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
