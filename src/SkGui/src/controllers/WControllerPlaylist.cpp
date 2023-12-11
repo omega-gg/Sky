@@ -416,6 +416,21 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         return;
     }
 
+    if (currentTime == -1)
+    {
+        origin = extractRelated(reader.node());
+
+        if (origin.isEmpty() == false)
+        {
+            type = WControllerPlaylist::Related;
+
+            return;
+        }
+
+        // NOTE: When there's no related specified we try with a default timestamp.
+        currentTime = 0;
+    }
+
     const WYamlNode * node = reader.at("source");
 
     if (node)
@@ -2806,7 +2821,7 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
         query.target = WBackendNetQuery::TargetRelated;
 
-        query.currentTime = WControllerPlaylist::extractTime(q);
+        query.currentTime = WControllerPlaylist::extractTime(q, -1);
 
         return query;
     }
@@ -2829,7 +2844,7 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
         // NOTE: The url might be a large media file so we scope it to text.
         query.scope = WAbstractLoader::ScopeText;
 
-        query.currentTime = WControllerPlaylist::extractTime(q);
+        query.currentTime = WControllerPlaylist::extractTime(q, -1);
 
         return query;
     }
@@ -5387,11 +5402,12 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
     return (cleanSource(urlA) == cleanSource(urlB));
 }
 
-/* Q_INVOKABLE static */ int WControllerPlaylist::extractTime(const QString & string)
+/* Q_INVOKABLE static */ int WControllerPlaylist::extractTime(const QString & string,
+                                                              int             defaultValue)
 {
     QString time = WControllerNetwork::extractFragmentValue(string, "t");
 
-    if (time.isEmpty()) return 0;
+    if (time.isEmpty()) return defaultValue;
 
     // NOTE: We want the time in milliseconds.
     return time.toInt() * 1000;

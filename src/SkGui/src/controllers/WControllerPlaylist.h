@@ -249,7 +249,7 @@ public: // Static functions
     Q_INVOKABLE static bool cleanMatch(const QString & urlA, const QString & urlB);
 
     // NOTE: Extract a millisecond fragment value with the '#t=value' format.
-    Q_INVOKABLE static int extractTime(const QString & string);
+    Q_INVOKABLE static int extractTime(const QString & string, int defaultValue = 0);
 
     Q_INVOKABLE static WControllerFileReply * copyBackends(const QString & path,
                                                            const QString & newPath);

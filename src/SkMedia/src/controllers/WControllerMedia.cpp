@@ -904,11 +904,9 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->typeSource = type;
     }
 
-    bool vbml = data.vbml;
-
-    if (media->vbml == vbml)
+    if (media->vbml == false)
     {
-        media->vbml = vbml;
+        media->vbml = data.vbml;
     }
 
     int timeB = data.timeB;
