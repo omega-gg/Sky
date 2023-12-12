@@ -558,6 +558,8 @@ void WBackendManagerPrivate::clearReply()
 
 void WBackendManagerPrivate::clearMedia()
 {
+    Q_Q(WBackendManager);
+
     stopClock      ();
     stopSynchronize();
 
@@ -568,6 +570,8 @@ void WBackendManagerPrivate::clearMedia()
     loop   = false;
 
     currentMedia = QString();
+
+    q->setVbml(false);
 }
 
 //-------------------------------------------------------------------------------------------------
