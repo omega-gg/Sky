@@ -28,6 +28,7 @@ cp "$solid"/chevron-down.svg  icons
 cp "$solid"/backward-step.svg icons/backward.svg
 cp "$solid"/forward-step.svg  icons/forward.svg
 cp "$solid"/play.svg          icons
+cp "$solid"/plus.svg          icons
 
 cp "$solid"/rss.svg icons
 

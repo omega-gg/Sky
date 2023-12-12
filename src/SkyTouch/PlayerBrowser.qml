@@ -31,6 +31,8 @@ BasePlayerBrowser
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    /* read */ property bool hasSource: (player.source != "")
+
     property bool active: true
 
     property bool animate: st.animate
@@ -52,6 +54,12 @@ BasePlayerBrowser
     // Style
 
     property int durationAnimation: st.playerBrowser_durationAnimation
+
+    //---------------------------------------------------------------------------------------------
+    // Signals
+    //---------------------------------------------------------------------------------------------
+
+    signal browse
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -196,29 +204,47 @@ BasePlayerBrowser
 
         margins: Math.round(width / 6)
 
-        visible: (player.source != "")
+        visible: (hasSource || player.trackTitle != "" )
 
         isHovered: (hoverActive || areaPlay.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaPlay.pressed)
 
-        icon: st.icon_play
+        icon: (hasSource) ? st.icon_play
+                          : st.icon_plus
 
         cursor: Qt.PointingHandCursor
 
         //-----------------------------------------------------------------------------------------
         // NOTE: We want the play button slightly shifted to the right
 
-        itemIcon.anchors.left: buttonPlay.left
-
         itemIcon.anchors.leftMargin: Math.round(width / 3.4)
 
         itemIcon.anchors.centerIn: undefined
 
-        itemIcon.anchors.verticalCenter: buttonPlay.verticalCenter
+        itemIcon.anchors.horizontalCenter: buttonPlay.horizontalCenter
+        itemIcon.anchors.verticalCenter  : buttonPlay.verticalCenter
 
         //-----------------------------------------------------------------------------------------
 
-        onClicked: play()
+        states: State
+        {
+            name: "source"; when: hasSource
+
+            AnchorChanges
+            {
+                target: buttonPlay.itemIcon
+
+                anchors.left: buttonPlay.left
+
+                anchors.horizontalCenter: undefined
+            }
+        }
+
+        onClicked:
+        {
+            if (player.source) play  ();
+            else               browse();
+        }
     }
 }
