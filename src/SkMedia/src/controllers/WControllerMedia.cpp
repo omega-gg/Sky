@@ -1542,23 +1542,48 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
         if (indexNext == -1) return;
 
-        query = WBackendNetQuery(origin);
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(origin);
 
-        query.indexNext = indexNext;
-
-        if (WControllerPlaylist::urlIsVbmlUri(origin))
+        if (backend)
         {
-            query.type = WBackendNetQuery::TypeVbml;
+            QString backendId = backend->id();
 
-            query.url = origin;
+            query = backend->getQuerySource(origin);
+
+            backend->tryDelete();
+
+            if (resolve(backendId, query))
+            {
+                query.indexNext = indexNext;
+
+                // NOTE: We propagate the compatibility mode.
+                query.mode = mode;
+
+                getData(media, &query);
+
+                return;
+            }
         }
+        else
+        {
+            query = WBackendNetQuery(origin);
 
-        // NOTE: We propagate the compatibility mode.
-        query.mode = mode;
+            query.indexNext = indexNext;
 
-        getData(media, &query);
+            if (WControllerPlaylist::urlIsVbmlUri(origin))
+            {
+                query.type = WBackendNetQuery::TypeVbml;
 
-        return;
+                query.url = origin;
+            }
+
+            // NOTE: We propagate the compatibility mode.
+            query.mode = mode;
+
+            getData(media, &query);
+
+            return;
+        }
     }
 
     WBackendNetSource backendSource;
@@ -1579,12 +1604,12 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
             query = backend->getQuerySource(source);
 
-            query.indexNext = indexNext;
-
             backend->tryDelete();
 
             if (resolve(backendId, query))
             {
+                query.indexNext = indexNext;
+
                 // NOTE: We propagate the compatibility mode.
                 query.mode = mode;
 
