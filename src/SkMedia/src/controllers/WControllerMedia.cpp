@@ -834,6 +834,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     media->type       = WTrack::Unknown;
     media->typeSource = WTrack::Track;
 
+    media->vbml = false;
+
     media->currentTime = currentTime;
     media->duration    = -1;
 
@@ -904,9 +906,9 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->typeSource = type;
     }
 
-    if (media->vbml == false)
+    if (data.vbml)
     {
-        media->vbml = data.vbml;
+        media->vbml = true;
     }
 
     int timeB = data.timeB;
