@@ -4423,7 +4423,12 @@ WBackendNetQuery WBackendUniversalPrivate::getQuery(const QVariant & value) cons
 
     query.url = hash.value("url").toString();
 
-    query.currentTime = hash.value("currentTime").toInt();
+    QString currentTime = hash.value("currentTime").toString();
+
+    if (currentTime.isEmpty() == false)
+    {
+        query.currentTime = currentTime.toInt();
+    }
 
     query.id = hash.value("id").toInt();
 

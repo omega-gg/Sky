@@ -99,7 +99,7 @@ void WBackendNetQuery::init(Type type, const QString & url, int indexNext)
 
     this->url = url;
 
-    currentTime = 0;
+    currentTime = -1;
 
     id = 0;
 

@@ -4091,7 +4091,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             // NOTE: We want a clean fragment without the timestamp.
             playlist->addSource(WControllerPlaylist::cleanSource(urlQuery), true);
 
-            playlist->d_func()->setQueryLoaded();
+            emit playlist->queryEnded();
         }
 
         applyNextPlaylist(playlist, origin, QString(), indexNext);
