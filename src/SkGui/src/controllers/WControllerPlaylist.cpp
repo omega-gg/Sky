@@ -4241,7 +4241,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
     }
     // NOTE: When having a single track we try to load related tracks.
-    else if (playlist->count() == 1 && tracks.count() == 1)
+    else if (tracks.count() == 1)
     {
         urlTracks.append(tracks.first().source());
     }
@@ -4271,12 +4271,14 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         int index = playlist->count() - 1;
 
-        WBackendNetQuery query = q->queryRelatedTracks(playlist->trackSource(index),
-                                                       playlist->trackTitle (index));
+        source = q->sourceRelatedTracks(playlist->trackSource(index),
+                                        playlist->trackTitle (index));
 
-        QString backendId = WControllerNetwork::extractUrlValue(query.url, "backend");
-
-        if (getNextPlaylist(backendId, playlist, query, indexNext)) return;
+        // NOTE: Is this sufficient to avoid redundant calls ?
+        if (urlQuery != source)
+        {
+            applyNextPlaylist(playlist, source, QString(), indexNext);
+        }
     }
 
     // NOTE: We reload the cover in case it changed since the last time.
@@ -4533,7 +4535,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         }
     }
     // NOTE: When having a single track we try to load related tracks.
-    else if (playlist->count() == 1 && tracks.count() == 1)
+    else if (tracks.count() == 1)
     {
         urlTracks.append(tracks.first().source());
     }
@@ -4572,12 +4574,14 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         int index = playlist->count() - 1;
 
-        WBackendNetQuery query = q->queryRelatedTracks(playlist->trackSource(index),
-                                                       playlist->trackTitle (index));
+        source = q->sourceRelatedTracks(playlist->trackSource(index),
+                                        playlist->trackTitle (index));
 
-        QString backendId = WControllerNetwork::extractUrlValue(query.url, "backend");
-
-        if (getNextPlaylist(backendId, playlist, query, indexNext)) return;
+        // NOTE: Is this sufficient to avoid redundant calls ?
+        if (urlQuery != source)
+        {
+            applyNextPlaylist(playlist, source, QString(), indexNext);
+        }
     }
     // NOTE: Clearing the default playlist when it's empty and we have other playlist(s).
     else if (folder->count() > 1 && playlist->isEmpty())
