@@ -317,6 +317,11 @@ bool WTrack::isHub() const
     Q_D(const WTrack); return (d->type == Hub);
 }
 
+bool WTrack::isLite() const
+{
+    Q_D(const WTrack); return (d->type == Lite);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WTrack::State WTrack::state() const

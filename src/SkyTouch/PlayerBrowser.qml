@@ -31,7 +31,7 @@ BasePlayerBrowser
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool hasSource: (player.source != "")
+    /* read */ property bool isLite: player.trackIsLite
 
     property bool active: true
 
@@ -204,14 +204,14 @@ BasePlayerBrowser
 
         margins: Math.round(width / 6)
 
-        visible: (hasSource || player.trackTitle != "" )
+        visible: (player.source != "")
 
         isHovered: (hoverActive || areaPlay.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaPlay.pressed)
 
-        icon: (hasSource) ? st.icon_play
-                          : st.icon_plus
+        icon: (isLite) ? st.icon_plus
+                       : st.icon_play
 
         cursor: Qt.PointingHandCursor
 
@@ -229,7 +229,7 @@ BasePlayerBrowser
 
         states: State
         {
-            name: "source"; when: hasSource
+            name: "source"; when: (isLite == false)
 
             AnchorChanges
             {
@@ -243,8 +243,8 @@ BasePlayerBrowser
 
         onClicked:
         {
-            if (player.source) play  ();
-            else               browse();
+            if (isLite) browse();
+            else        play  ();
         }
     }
 }

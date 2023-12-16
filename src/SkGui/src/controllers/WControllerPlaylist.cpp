@@ -896,8 +896,6 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
 
     WTrack track;
 
-    track.setType(typeTrack);
-
     track.setState(WTrack::Default);
 
     // NOTE: The origin is prioritized over the source.
@@ -905,29 +903,43 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     {
         const WYamlNode * node = reader.at("source");
 
-        if (node)
+        if (node == NULL)
         {
-            if (node->children.isEmpty())
-            {
-                source = node->value;
+            // NOTE: When a track has no source it's a lite track.
+            track.setType(WTrack::Lite);
 
-                // NOTE: When the source is empty we set the vbml uri.
-                if (source.isEmpty()) track.setSource(url);
-                else                  track.setSource(source);
-            }
-            else
-            {
-                // NOTE: When it's a multi-track we set the vbml uri.
-                track.setSource(url);
+            // NOTE: When the source is empty we set the vbml uri.
+            track.setSource(url);
+        }
+        else if (node->children.isEmpty())
+        {
+            track.setType(typeTrack);
 
-                if (duration == -1)
-                {
-                    duration = WControllerPlaylist::vbmlDurationSource(*node, at, -1);
-                }
+            source = node->value;
+
+            // NOTE: When the source is empty we set the vbml uri.
+            if (source.isEmpty()) track.setSource(url);
+            else                  track.setSource(source);
+        }
+        else
+        {
+            track.setType(typeTrack);
+
+            // NOTE: When it's a multi-track we set the vbml uri.
+            track.setSource(url);
+
+            if (duration == -1)
+            {
+                duration = WControllerPlaylist::vbmlDurationSource(*node, at, -1);
             }
         }
     }
-    else track.setSource(origin);
+    else
+    {
+        track.setType(typeTrack);
+
+        track.setSource(origin);
+    }
 
     track.setTitle(title);
     track.setCover(cover);
@@ -2951,11 +2963,18 @@ bool WControllerPlaylistPrivate::resolveQuery(WBackendNetQuery & query) const
 
     WBackendNet * backend = q->backendFromUrl(url);
 
-    if (backend == NULL) return true;
+    if (backend)
+    {
+        query = backend->extractQuery(url);
 
-    query = backend->extractQuery(url);
+        backend->tryDelete();
 
-    backend->tryDelete();
+        return true;
+    }
+
+    WBackendNetQuery queryRelated = extractRelated(url);
+
+    if (queryRelated.isValid()) query = queryRelated;
 
     return true;
 }
@@ -3351,12 +3370,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         backend = NULL;
 
         backendQuery->target = WBackendNetQuery::TargetVbml;
-    }
-    else if (id == "related")
-    {
-        backend = NULL;
-
-        backendQuery->target = WBackendNetQuery::TargetRelated;
     }
     else backend = q->backendFromId(id);
 
