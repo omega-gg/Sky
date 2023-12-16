@@ -1325,21 +1325,19 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         sources.append(track.source());
     }
 
+    QStringList urls;
+
     QList<int> indexes;
 
-    for (int i = sources.count() - 1; i != -1; i--)
+    for (int i = 0; i < sources.count(); i++)
     {
         QString source = sources.at(i);
 
-        if (source.isEmpty()) continue;
-
-        int index = sources.indexOf(source);
-
-        if (i == index) continue;
-
-        indexes.append(i);
-
-        sources.replace(index, QString());
+        if (urls.contains(source))
+        {
+            indexes.append(i);
+        }
+        else urls.append(source);
     }
 
     removeTracks(indexes);

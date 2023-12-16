@@ -4117,8 +4117,10 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         return;
     }
 
+    const QList<WTrack> & tracks = data.tracks;
+
     // NOTE: We are adding tracks when origin is not specified.
-    playlist->addTracks(data.tracks);
+    playlist->addTracks(tracks);
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
@@ -4239,11 +4241,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
     }
     // NOTE: When having a single track we try to load related tracks.
-    else if (playlist->count() == 1)
+    else if (playlist->count() == 1 && tracks.count() == 1)
     {
-        const QString & url = playlist->d_func()->itemAt(0)->source();
-
-        urlTracks.append(url);
+        urlTracks.append(tracks.first().source());
     }
 
     //---------------------------------------------------------------------------------------------
@@ -4271,25 +4271,12 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         int index = playlist->count() - 1;
 
-        WBackendNet * backend = backendTrack(source, playlist, index);
+        WBackendNetQuery query = q->queryRelatedTracks(playlist->trackSource(index),
+                                                       playlist->trackTitle (index));
 
-        if (backend)
-        {
-            QString id = backend->getTrackId(source);
+        QString backendId = WControllerNetwork::extractUrlValue(query.url, "backend");
 
-            if (id.isEmpty() == false)
-            {
-                playlist->loadTrack(index);
-
-                playlist->d_func()->setQueryLoaded();
-
-                getDataRelated(backend, playlist, id);
-
-                backend->tryDelete();
-
-                return;
-            }
-        }
+        if (getNextPlaylist(backendId, playlist, query, indexNext)) return;
     }
 
     // NOTE: We reload the cover in case it changed since the last time.
@@ -4436,8 +4423,10 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         return;
     }
 
+    const QList<WTrack> & tracks = data.tracks;
+
     // NOTE: We are adding tracks when origin is not specified.
-    playlist->addTracks(data.tracks);
+    playlist->addTracks(tracks);
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
@@ -4544,11 +4533,9 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         }
     }
     // NOTE: When having a single track we try to load related tracks.
-    else if (playlist->count() == 1)
+    else if (playlist->count() == 1 && tracks.count() == 1)
     {
-        const QString & url = playlist->d_func()->itemAt(0)->source();
-
-        urlTracks.append(url);
+        urlTracks.append(tracks.first().source());
     }
 
     //---------------------------------------------------------------------------------------------
@@ -4585,29 +4572,12 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         int index = playlist->count() - 1;
 
-        WBackendNet * backend = backendTrack(source, playlist, index);
+        WBackendNetQuery query = q->queryRelatedTracks(playlist->trackSource(index),
+                                                       playlist->trackTitle (index));
 
-        if (backend)
-        {
-            QString id = backend->getTrackId(source);
+        QString backendId = WControllerNetwork::extractUrlValue(query.url, "backend");
 
-            if (id.isEmpty() == false)
-            {
-                playlist->loadTrack(index);
-
-                playlist->d_func()->setQueryLoaded();
-
-                getDataRelated(backend, playlist, id);
-
-                backend->tryDelete();
-
-                playlist->tryDelete();
-
-                folder->d_func()->setQueryFinished();
-
-                return;
-            }
-        }
+        if (getNextPlaylist(backendId, playlist, query, indexNext)) return;
     }
     // NOTE: Clearing the default playlist when it's empty and we have other playlist(s).
     else if (folder->count() > 1 && playlist->isEmpty())
