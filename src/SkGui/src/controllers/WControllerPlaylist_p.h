@@ -124,7 +124,7 @@ public: // Interface
 
     bool abortQueriesPlaylist(WPlaylist      * playlist);
     bool abortQueriesFolder  (WLibraryFolder * folder);
-    bool abortQueriesItem    (WLibraryItem * item);
+    bool abortQueriesItem    (WLibraryItem   * item);
 
 public: // Functions
     void registerLoader  (WBackendLoader * loader);
