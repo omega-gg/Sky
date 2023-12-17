@@ -3946,9 +3946,7 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
             playlist->updateTrack(index);
         }
 
-        applyNextTrack(playlist, track, origin, indexNext);
-
-        return;
+        if (applyNextTrack(playlist, track, origin, indexNext)) return;
     }
 
     const QList<WTrack> & tracks = data.tracks;
@@ -4056,9 +4054,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             playlist->applySource(source);
         }
 
-        applyNextPlaylist(playlist, origin, urlQuery, indexNext);
-
-        return;
+        if (applyNextPlaylist(playlist, origin, urlQuery, indexNext)) return;
     }
     else if (type == WControllerPlaylist::Source)
     {
@@ -4070,7 +4066,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         {
             playlist->addSource(origin, true);
 
-            playlist->d_func()->setQueryLoaded();
+            emit playlist->queryEnded();
 
             QString backendId = backend->id();
 
@@ -4079,7 +4075,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             backend->tryDelete();
 
-            getNextPlaylist(backendId, playlist, query, indexNext);
+            if (getNextPlaylist(backendId, playlist, query, indexNext)) return;
         }
         else
         {
@@ -4090,16 +4086,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin);
 
-            applyNextPlaylist(playlist, origin, QString(), indexNext);
+            if (applyNextPlaylist(playlist, origin, QString(), indexNext)) return;
         }
-
-        return;
     }
     else if (type == WControllerPlaylist::Related)
     {
-        // NOTE: By checking the indexNext we can deduce it's a multi-track so we append the track
-        //       source.
-        if (indexNext)
+        // NOTE: When the currentTime is set we append the track source.
+        if (data.currentTime != -1 && indexNext)
         {
             // NOTE: We want a clean fragment without the timestamp.
             playlist->addSource(WControllerPlaylist::cleanSource(urlQuery), true);
@@ -4107,9 +4100,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             emit playlist->queryEnded();
         }
 
-        applyNextPlaylist(playlist, origin, QString(), indexNext);
-
-        return;
+        if (applyNextPlaylist(playlist, origin, QString(), indexNext)) return;
     }
 
     if (type == WControllerPlaylist::Feed)
@@ -4125,9 +4116,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         playlist->applySource(origin);
 
-        applyNextPlaylist(playlist, origin, QString(), indexNext);
-
-        return;
+        if (applyNextPlaylist(playlist, origin, QString(), indexNext)) return;
     }
 
     const QList<WTrack> & tracks = data.tracks;
@@ -4290,7 +4279,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         // NOTE: Is this sufficient to avoid redundant calls ?
         if (urlQuery != source)
         {
-            applyNextPlaylist(playlist, source, QString(), indexNext);
+            if (applyNextPlaylist(playlist, source, QString(), indexNext)) return;
         }
     }
 
@@ -4411,9 +4400,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
             folder->applySource(source);
         }
 
-        applyNextFolder(folder, origin, urlQuery, indexNext);
-
-        return;
+        if (applyNextFolder(folder, origin, urlQuery, indexNext)) return;
     }
 
     if (type == WControllerPlaylist::Feed)
@@ -4433,9 +4420,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         folder->applySource(origin);
 
-        applyNextFolder(folder, origin, QString(), indexNext);
-
-        return;
+        if (applyNextFolder(folder, origin, QString(), indexNext)) return;
     }
 
     const QList<WTrack> & tracks = data.tracks;
@@ -4593,7 +4578,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         // NOTE: Is this sufficient to avoid redundant calls ?
         if (urlQuery != source)
         {
-            applyNextPlaylist(playlist, source, QString(), indexNext);
+            if (applyNextPlaylist(playlist, source, QString(), indexNext)) return;
         }
     }
     // NOTE: Clearing the default playlist when it's empty and we have other playlist(s).
@@ -5115,11 +5100,15 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 
     if (backend)
     {
+        Q_D(const WControllerPlaylist);
+
         QString id = backend->getTrackId(url);
 
         WBackendNetQuery query = backend->createQuery("related", "tracks", id);
 
-        if (query.isValid())
+        id = backend->id();
+
+        if (d->resolvePlaylist(id, query))
         {
             backend->tryDelete();
 
@@ -5128,8 +5117,6 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 
         //-----------------------------------------------------------------------------------------
         // NOTE: When we fail to create a valid query we try to create one with the backendSearch.
-
-        id = backend->getId();
 
         QString host = backend->getHost();
 
