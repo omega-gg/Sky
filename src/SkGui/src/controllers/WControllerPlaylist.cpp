@@ -2972,9 +2972,7 @@ bool WControllerPlaylistPrivate::resolveQuery(WBackendNetQuery & query) const
         return true;
     }
 
-    WBackendNetQuery queryRelated = extractRelated(url);
-
-    if (queryRelated.isValid()) query = queryRelated;
+    query = extractRelated(url);
 
     return true;
 }
@@ -3948,40 +3946,53 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
         if (applyNextTrack(playlist, track, origin, indexNext)) return;
     }
-
-    const QList<WTrack> & tracks = data.tracks;
-
-    if (tracks.isEmpty())
-    {
-        emit playlist->trackQueryEnded();
-
-        track->setState(WTrack::Default);
-
-        playlist->updateTrack(index);
-    }
     else
     {
-        const WTrack & trackReply = tracks.first();
+        const QList<WTrack> & tracks = data.tracks;
 
-        trackReply.applyDataTo(track);
-
-        emit playlist->trackQueryEnded();
-
-        if (origin.isEmpty() == false)
+        if (tracks.isEmpty())
         {
-            Q_Q(WControllerPlaylist);
+            emit playlist->trackQueryEnded();
 
-            WBackendNet * backend = q->backendFromUrl(origin);
+            track->setState(WTrack::Default);
 
-            if (backend)
+            playlist->updateTrack(index);
+        }
+        else
+        {
+            const WTrack & trackReply = tracks.first();
+
+            trackReply.applyDataTo(track);
+
+            emit playlist->trackQueryEnded();
+
+            if (origin.isEmpty() == false)
             {
-                QString backendId = backend->id();
+                Q_Q(WControllerPlaylist);
 
-                WBackendNetQuery query = backend->getQueryTrack(origin);
+                WBackendNet * backend = q->backendFromUrl(origin);
 
-                backend->tryDelete();
+                if (backend)
+                {
+                    QString backendId = backend->id();
 
-                if (getNextTrack(backendId, playlist, track, query, indexNext))
+                    WBackendNetQuery query = backend->getQueryTrack(origin);
+
+                    backend->tryDelete();
+
+                    if (getNextTrack(backendId, playlist, track, query, indexNext))
+                    {
+                        playlist->updateTrack(index);
+
+                        return;
+                    }
+                }
+
+                WBackendNetQuery query(origin);
+
+                query.target = WBackendNetQuery::TargetVbml;
+
+                if (getNextTrack("", playlist, track, query, indexNext))
                 {
                     playlist->updateTrack(index);
 
@@ -3989,19 +4000,8 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
                 }
             }
 
-            WBackendNetQuery query(origin);
-
-            query.target = WBackendNetQuery::TargetVbml;
-
-            if (getNextTrack("", playlist, track, query, indexNext))
-            {
-                playlist->updateTrack(index);
-
-                return;
-            }
+            applyTrack(playlist, track, trackReply.state(), index);
         }
-
-        applyTrack(playlist, track, trackReply.state(), index);
     }
 
     // NOTE: We reload the cover in case it changed since the last time.
@@ -4046,6 +4046,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     QString origin = data.origin;
     QString source = data.source;
+
+    const QList<WTrack> & tracks = data.tracks;
 
     if (type == WControllerPlaylist::Redirect)
     {
@@ -4102,38 +4104,38 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         if (applyNextPlaylist(playlist, origin, QString(), indexNext)) return;
     }
-
-    if (type == WControllerPlaylist::Feed)
+    else
     {
-         playlist->setType(WLibraryItem::PlaylistFeed);
+        if (type == WControllerPlaylist::Feed)
+        {
+             playlist->setType(WLibraryItem::PlaylistFeed);
+        }
+        else playlist->setType(WLibraryItem::Playlist);
+
+        playlist->setTitle(data.title);
+        playlist->setCover(data.cover);
+
+        if (origin.isEmpty() == false)
+        {
+            playlist->applySource(origin);
+
+            if (applyNextPlaylist(playlist, origin, QString(), indexNext)) return;
+        }
+
+        // NOTE: We are adding tracks when origin is not specified.
+        playlist->addTracks(tracks);
+
+        if (WControllerPlaylist::vbmlTypeTrack(type))
+        {
+            // NOTE: We select the first track right away.
+            playlist->setCurrentIndex(0);
+        }
     }
-    else playlist->setType(WLibraryItem::Playlist);
-
-    playlist->setTitle(data.title);
-    playlist->setCover(data.cover);
-
-    if (origin.isEmpty() == false)
-    {
-        playlist->applySource(origin);
-
-        if (applyNextPlaylist(playlist, origin, QString(), indexNext)) return;
-    }
-
-    const QList<WTrack> & tracks = data.tracks;
-
-    // NOTE: We are adding tracks when origin is not specified.
-    playlist->addTracks(tracks);
-
-    if (WControllerPlaylist::vbmlTypeTrack(type))
-    {
-        // NOTE: We select the first track right away.
-        playlist->setCurrentIndex(0);
-    }
-
-    Q_Q(WControllerPlaylist);
 
     //---------------------------------------------------------------------------------------------
     // Media sources
+
+    Q_Q(WControllerPlaylist);
 
     QStringList urlTracks;
 
@@ -4389,6 +4391,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     QString origin = data.origin;
     QString source = data.source;
 
+    const QList<WTrack> & tracks = data.tracks;
+
     if (data.type == WControllerPlaylist::Redirect)
     {
         playlist->tryDelete();
@@ -4402,42 +4406,42 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         if (applyNextFolder(folder, origin, urlQuery, indexNext)) return;
     }
-
-    if (type == WControllerPlaylist::Feed)
+    else
     {
-         playlist->setType(WLibraryItem::PlaylistFeed);
+        if (type == WControllerPlaylist::Feed)
+        {
+             playlist->setType(WLibraryItem::PlaylistFeed);
+        }
+        else playlist->setType(WLibraryItem::Playlist);
+
+        playlist->setTitle(data.title);
+        playlist->setCover(data.cover);
+
+        if (origin.isEmpty() == false)
+        {
+            playlist->tryDelete();
+
+            folder->removeAt(0);
+
+            folder->applySource(origin);
+
+            if (applyNextFolder(folder, origin, QString(), indexNext)) return;
+        }
+
+        // NOTE: We are adding tracks when origin is not specified.
+        playlist->addTracks(tracks);
+
+        if (WControllerPlaylist::vbmlTypeTrack(type))
+        {
+            // NOTE: We select the first track right away.
+            playlist->setCurrentIndex(0);
+        }
     }
-    else playlist->setType(WLibraryItem::Playlist);
-
-    playlist->setTitle(data.title);
-    playlist->setCover(data.cover);
-
-    if (origin.isEmpty() == false)
-    {
-        playlist->tryDelete();
-
-        folder->removeAt(0);
-
-        folder->applySource(origin);
-
-        if (applyNextFolder(folder, origin, QString(), indexNext)) return;
-    }
-
-    const QList<WTrack> & tracks = data.tracks;
-
-    // NOTE: We are adding tracks when origin is not specified.
-    playlist->addTracks(tracks);
-
-    if (WControllerPlaylist::vbmlTypeTrack(type))
-    {
-        // NOTE: We select the first track right away.
-        playlist->setCurrentIndex(0);
-    }
-
-    Q_Q(WControllerPlaylist);
 
     //---------------------------------------------------------------------------------------------
     // Media sources
+
+    Q_Q(WControllerPlaylist);
 
     QStringList urlTracks;
 
