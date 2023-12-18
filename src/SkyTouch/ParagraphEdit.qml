@@ -23,8 +23,10 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseTextEdit
+Item
 {
+    id: paragraphEdit
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -33,19 +35,35 @@ BaseTextEdit
     property real opacityBackground: st.lineEdit_opacity
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pAtBottom: true
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
 
+    property alias scrollArea: scrollArea
+    property alias textEdit  : textEdit
+
     //---------------------------------------------------------------------------------------------
-    // Settings
+    // Functions
     //---------------------------------------------------------------------------------------------
 
-    width : st.lineEdit_size
-    height: st.lineEdit_size
+    function setFocus()
+    {
+        textEdit.forceActiveFocus();
+    }
 
-    paddingLeft: st.lineEdit_padding
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pScrollToBottom()
+    {
+        if (pAtBottom) scrollArea.scrollToBottom();
+    }
 
     //---------------------------------------------------------------------------------------------
     // Children
@@ -57,8 +75,6 @@ BaseTextEdit
 
         anchors.fill: parent
 
-        z: -1
-
         radius: st.radius
 
         opacity: (isFocused || isHovered) ? st.lineEdit_opacityHover
@@ -69,5 +85,38 @@ BaseTextEdit
 //#QT_4
         smooth: true
 //#END
+    }
+
+    ScrollArea
+    {
+        id: scrollArea
+
+        anchors.fill: parent
+
+//#QT_4
+        contentHeight: textEdit.height
+//#ELSE
+        contentHeight: textEdit.height
+//#END
+
+        onHeightChanged: pScrollToBottom()
+
+        onContentHeightChanged: pScrollToBottom()
+
+        onContentYChanged: pAtBottom = flickable.atYEnd
+
+        BaseTextEdit
+        {
+            id: textEdit
+
+            anchors.left : parent.left
+            anchors.right: parent.right
+
+//#QT_4
+            height: Math.max(paragraphEdit.height, paintedHeight)
+//#ELSE
+            height: Math.max(paragraphEdit.height, contentHeight)
+//#END
+        }
     }
 }

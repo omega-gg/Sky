@@ -44,8 +44,6 @@ BaseTextEdit
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    wrapMode: Text.Wrap
-
 //#MOBILE
     // NOTE: We want to be read only.
     readOnly: true

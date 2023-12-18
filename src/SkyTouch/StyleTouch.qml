@@ -218,7 +218,7 @@ Style
     property real popup_opacity: 1.0
 //#END
 
-//#LineEdit:LinesEdit
+//#LineEdit:ParagraphEdit
     //---------------------------------------------------------------------------------------------
     // LineEdit
 

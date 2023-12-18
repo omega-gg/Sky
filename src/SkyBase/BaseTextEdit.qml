@@ -63,6 +63,8 @@ TextEdit
 
     selectByMouse: true
 
+    wrapMode: Text.Wrap
+
     cursorDelegate: Component
     {
         Rectangle
