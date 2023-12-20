@@ -569,26 +569,34 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString     & fi
 /* Q_INVOKABLE static */ QString WBarcodeWriter::getTagName(const QString & title,
                                                             const QString & prefix)
 {
-    QString name = title;
-
-    name.remove(WRegExp("[^a-zA-Z0-9. ]"));
-
-    name = name.simplified();
-
-    int length = name.length();
-
-    if (length > BARCODEWRITER_MAX_LENGTH)
+    if (title.isEmpty() == false)
     {
-        name.chop(length - BARCODEWRITER_MAX_LENGTH);
+        QString name = title;
+
+        name.remove(WRegExp("[^a-zA-Z0-9. ]"));
+
+        name = name.simplified();
+
+        int length = name.length();
+
+        if (length > BARCODEWRITER_MAX_LENGTH)
+        {
+            name.chop(length - BARCODEWRITER_MAX_LENGTH);
+        }
+
+        name.replace(' ', '_');
+
+        if (prefix.isEmpty())
+        {
+            return name + '-' + Sk::currentDateString();
+        }
+        else return prefix + name + '-' + Sk::currentDateString();
     }
-
-    name.replace(' ', '_');
-
-    if (prefix.isEmpty())
+    else if (prefix.isEmpty())
     {
-        return name + '-' + Sk::currentDateString();
+        return Sk::currentDateString();
     }
-    else return prefix + name + '-' + Sk::currentDateString();
+    else return prefix + Sk::currentDateString();
 }
 
 //-------------------------------------------------------------------------------------------------

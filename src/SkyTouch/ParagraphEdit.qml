@@ -43,8 +43,10 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property bool isFocused: textEdit.isFocused
-    property bool isHovered: textEdit.isHovered
+    property alias isFocused: textEdit.isFocused
+    property alias isHovered: textEdit.isHovered
+
+    property alias text: textEdit.text
 
     //---------------------------------------------------------------------------------------------
 
@@ -56,6 +58,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
+
+    function clear() { textEdit.clear() }
 
     function setFocus()
     {

@@ -84,5 +84,9 @@ MouseWatcher
         anchors.topMargin: marginTop
 
         anchors.horizontalCenter: parent.horizontalCenter
+
+//#QT_NEW
+        asynchronous: true
+//#END
     }
 }
