@@ -59,11 +59,50 @@ Item
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function clear() { textEdit.clear() }
-
     function setFocus()
     {
-        textEdit.forceActiveFocus();
+        textEdit.setFocus();
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function moveCursorAt(index)
+    {
+        textEdit.moveCursorAt(index);
+    }
+
+    function moveCursorAtStart()
+    {
+        textEdit.moveCursorAtStart();
+    }
+
+    function moveCursorAtEnd()
+    {
+        textEdit.moveCursorAtEnd();
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function select(start, end)
+    {
+        textEdit.select(start, end);
+    }
+
+    function selectAll()
+    {
+        textEdit.selectAll();
+    }
+
+    function deselect()
+    {
+        textEdit.deselect();
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function clear()
+    {
+        textEdit.clear();
     }
 
     //---------------------------------------------------------------------------------------------
