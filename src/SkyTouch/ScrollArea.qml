@@ -67,6 +67,18 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
+    // Events
+
+    function onUpdateMargin()
+    {
+        if (scrollBar.isActive)
+        {
+            flickable.anchors.rightMargin = scrollBar.width;
+        }
+        else flickable.anchors.rightMargin = 0;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
@@ -75,8 +87,6 @@ Item
         id: flickable
 
         anchors.fill: parent
-
-        anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
 
         clip: true
 
@@ -100,5 +110,13 @@ Item
         anchors.right: parent.right
 
         view: flickable
+
+//#QT_4
+        onIsActiveChanged: onUpdateMargin()
+//#ELSE
+        // NOTE: We update margins later to avoid a binding loop when the flickable width affects
+        //       the contentHeight. For example, this happens with a wrapped TextEdit.
+        onIsActiveChanged: Qt.callLater(onUpdateMargin)
+//#END
     }
 }
