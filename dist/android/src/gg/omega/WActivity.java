@@ -52,6 +52,8 @@ public class WActivity extends QtActivity
     static final int ACTIVITY_GALLERY = 1;
     static final int ACTIVITY_SHARE   = 2;
 
+    static String message = null;
+
     //---------------------------------------------------------------------------------------------
     // C++ functions
     //---------------------------------------------------------------------------------------------
@@ -145,29 +147,40 @@ public class WActivity extends QtActivity
 
         String action = intent.getAction();
 
+        if (action == "") return message;
+
+        // NOTE: We clear the action to avoid applying the same intent when restarting the
+        //       application.
+        intent.setAction("");
+
+        setIntent(intent);
+
         if (action == "android.intent.action.SEND")
         {
             Bundle bundle = intent.getExtras();
 
-            if (bundle == null) return null;
-
-            Object object = bundle.get(Intent.EXTRA_STREAM);
-
-            if (object == null)
+            if (bundle != null)
             {
-                object = bundle.getCharSequence("android.intent.extra.TEXT");
+                Object object = bundle.get(Intent.EXTRA_STREAM);
 
-                if (object == null) return null;
+                if (object == null)
+                {
+                    object = bundle.getCharSequence("android.intent.extra.TEXT");
 
-                return object.toString();
+                    if (object != null)
+                    {
+                        message = object.toString();
+                    }
+                }
+                else message = WFile.getPath(getApplicationContext(), (Uri) object);
             }
-            else return WFile.getPath(getApplicationContext(), (Uri) object);
         }
         else if (action == "android.intent.action.VIEW")
         {
-            return intent.getData().toString();
+            message = intent.getData().toString();
         }
-        else return null;
+
+        return message;
     }
 
     //---------------------------------------------------------------------------------------------
