@@ -907,32 +907,24 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
         {
             // NOTE: When a track has no source it's a lite track.
             track.setType(WTrack::Lite);
-
-            // NOTE: When the source is empty we set the vbml uri.
-            track.setSource(url);
         }
         else if (node->children.isEmpty())
         {
             track.setType(typeTrack);
 
             source = node->value;
-
-            // NOTE: When the source is empty we set the vbml uri.
-            if (source.isEmpty()) track.setSource(url);
-            else                  track.setSource(source);
         }
         else
         {
             track.setType(typeTrack);
-
-            // NOTE: When it's a multi-track we set the vbml uri.
-            track.setSource(url);
 
             if (duration == -1)
             {
                 duration = WControllerPlaylist::vbmlDurationSource(*node, at, -1);
             }
         }
+
+        track.setSource(url);
     }
     else
     {
