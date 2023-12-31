@@ -6068,7 +6068,14 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 
     track->setState(WTrack::Default);
 
-    track->setSource(reader.extractString("source"));
+    // NOTE: The 'origin' is prioritized over the 'source'.
+    QString origin = reader.extractString("origin");
+
+    if (origin.isEmpty())
+    {
+        track->setSource(reader.extractString("source"));
+    }
+    else track->setSource(origin);
 
     track->setTitle(reader.extractString("title"));
     track->setCover(reader.extractString("cover"));
