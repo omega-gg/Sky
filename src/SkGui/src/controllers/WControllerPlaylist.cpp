@@ -4267,12 +4267,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         int index = playlist->count() - 1;
 
-        source = q->sourceRelatedTracks(playlist->trackSource(index),
-                                        playlist->trackTitle (index));
+        source = playlist->trackSource(index);
 
         // NOTE: Is this sufficient to avoid redundant calls ?
         if (urlQuery != source)
         {
+            source = q->sourceRelatedTracks(source, playlist->trackTitle(index));
+
             if (applyNextPlaylist(playlist, source, QString(), indexNext)) return;
         }
     }
