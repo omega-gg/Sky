@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WYamlReader>
 #include <WRegExp>
 
 void WControllerPlaylist_patch(QString & data, const QString & api)
@@ -56,13 +57,13 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
 
     if (Sk::versionIsLower(api, "1.0.4"))
     {
-        data.replace(WRegExp("\nbackend_"), "\nbackends_");
+        data.replace("\nbackend_", "\nbackends_");
 
         WControllerPlaylist::Type type = WControllerPlaylist::vbmlType(data);
 
         if (type == WControllerPlaylist::Index || type == WControllerPlaylist::Backend)
         {
-            data.replace(WRegExp("\nsource"), "\norigin");
+            data.replace("\nsource", "\norigin");
         }
     }
 
@@ -72,7 +73,23 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
 
         if (WControllerPlaylist::vbmlTypeTrack(type))
         {
-            data.replace(WRegExp("\nmedia"), "\nsource");
+            if (data.contains("\nsource") == false)
+            {
+                data.replace("\nmedia", "\nsource");
+            }
+
+            WYamlReader reader(data.toUtf8());
+
+            if (data.contains("\norigin") == false)
+            {
+                const WYamlNode * node = reader.at("source");
+
+                // NOTE: A single source is the equivalent of the origin property.
+                if (node->children.isEmpty())
+                {
+                    data.replace("\nsource", "\norigin");
+                }
+            }
         }
     }
 
