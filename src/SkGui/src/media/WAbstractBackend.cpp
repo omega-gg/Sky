@@ -94,6 +94,7 @@ void WAbstractBackendPrivate::init()
 
     output  = WAbstractBackend::OutputMedia;
     quality = WAbstractBackend::QualityDefault;
+    mode    = WAbstractBackend::SourceDefault;
 
     outputActive  = WAbstractBackend::OutputNone;
     qualityActive = WAbstractBackend::QualityDefault;
@@ -254,8 +255,13 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 {
     Q_D(const WAbstractBackend);
 
-    if (d->output == OutputAudio) return WAbstractBackend::SourceAudio;
-    else                          return WAbstractBackend::SourceDefault;
+    WAbstractBackend::SourceMode mode = d->mode;
+
+    if (mode == SourceDefault && d->output == OutputAudio)
+    {
+        return SourceAudio;
+    }
+    else return mode;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -481,6 +487,14 @@ WAbstractBackend::Quality WAbstractBackend::qualityFromString(const QString & st
 }
 
 /* Q_INVOKABLE static */
+WAbstractBackend::SourceMode WAbstractBackend::modeFromString(const QString & string)
+{
+    if      (string ==  "safe")  return SourceSafe;
+    else if (string ==  "audio") return SourceAudio;
+    else                         return SourceDefault;
+}
+
+/* Q_INVOKABLE static */
 WAbstractBackend::FillMode WAbstractBackend::fillModeFromString(const QString & string)
 {
     if      (string == "stretch") return Stretch;
@@ -542,6 +556,13 @@ WBackendTrack WAbstractBackend::trackFromString(const QString & string)
     else if (quality == Quality1440) return "1440";
     else if (quality == Quality2160) return "2160";
     else                             return "default";
+}
+
+/* Q_INVOKABLE static */ QString WAbstractBackend::modeToString(SourceMode mode)
+{
+    if      (mode == SourceSafe)  return "safe";
+    else if (mode == SourceAudio) return "audio";
+    else                          return "default";
 }
 
 /* Q_INVOKABLE static */ QString WAbstractBackend::fillModeToString(FillMode fillMode)
@@ -1169,6 +1190,11 @@ void WAbstractBackend::endOutputRemove() const
     qWarning("WAbstractBackend::backendSetQuality: Not supported.");
 }
 
+/* virtual */ void WAbstractBackend::backendSetSourceMode(SourceMode)
+{
+    qWarning("WAbstractBackend::backendSetSourceMode: Not supported.");
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendSetFillMode(FillMode)
@@ -1506,6 +1532,26 @@ void WAbstractBackend::setQuality(Quality quality)
     emit qualityChanged();
 }
 
+WAbstractBackend::SourceMode WAbstractBackend::sourceMode() const
+{
+    Q_D(const WAbstractBackend); return d->mode;
+}
+
+void WAbstractBackend::setSourceMode(SourceMode mode)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterSourceMode(&mode);
+
+    if (d->mode == mode) return;
+
+    d->mode = mode;
+
+    backendSetSourceMode(mode);
+
+    emit sourceModeChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WAbstractBackend::Output WAbstractBackend::outputActive() const
@@ -1794,6 +1840,8 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 
 /* virtual */ void WBackendFilter::filterQuality      (WAbstractBackend::Quality *) {}
 /* virtual */ void WBackendFilter::filterQualityActive(WAbstractBackend::Quality *) {}
+
+/* virtual */ void WBackendFilter::filterSourceMode(WAbstractBackend::SourceMode *) {}
 
 /* virtual */ void WBackendFilter::filterSpeed(qreal *) {}
 

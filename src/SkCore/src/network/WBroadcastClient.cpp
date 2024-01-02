@@ -390,11 +390,11 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     {
         if (parameters.count() == 3) return;
     }
-    else if (type == SEEK || type == OUTPUT || type == QUALITY || type == FILLMODE || type == SPEED
+    else if (type == SEEK || type == OUTPUT || type == QUALITY || type == MODE || type == FILLMODE
              ||
-             type == VIDEO || type == AUDIO || type == SUBTITLE || type == VOLUME || type == SCREEN
+             type == SPEED || type == VIDEO || type == AUDIO || type == SUBTITLE || type == VOLUME
              ||
-             type == FULLSCREEN || type == VIDEOTAG || type == STARTUP)
+             type == SCREEN || type == FULLSCREEN || type == VIDEOTAG || type == STARTUP)
     {
         if (parameters.count() == 1) return;
     }
@@ -440,6 +440,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (string == "SEEK")       return SEEK;
     else if (string == "OUTPUT")     return OUTPUT;
     else if (string == "QUALITY")    return QUALITY;
+    else if (string == "MODE")       return MODE;
     else if (string == "FILLMODE")   return FILLMODE;
     else if (string == "SPEED")      return SPEED;
     else if (string == "VIDEO")      return VIDEO;

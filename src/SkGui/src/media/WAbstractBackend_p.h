@@ -86,8 +86,9 @@ public: // Variable
 
     bool repeat;
 
-    WAbstractBackend::Output  output;
-    WAbstractBackend::Quality quality;
+    WAbstractBackend::Output     output;
+    WAbstractBackend::Quality    quality;
+    WAbstractBackend::SourceMode mode;
 
     WAbstractBackend::Output  outputActive;
     WAbstractBackend::Quality qualityActive;

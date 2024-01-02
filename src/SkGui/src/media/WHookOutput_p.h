@@ -87,6 +87,7 @@ public: // Functions
 public: // Slots
     void onOutputChanged  ();
     void onQualityChanged ();
+    void onModeChanged    ();
     void onFillModeChanged();
     void onSpeedChanged   ();
     void onVideoChanged   ();

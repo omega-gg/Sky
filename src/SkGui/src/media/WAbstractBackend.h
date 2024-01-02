@@ -202,6 +202,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(Output  outputActive  READ outputActive  NOTIFY outputActiveChanged)
     Q_PROPERTY(Quality qualityActive READ qualityActive NOTIFY qualityActiveChanged)
 
+    Q_PROPERTY(SourceMode sourceMode READ sourceMode WRITE setSourceMode NOTIFY sourceModeChanged)
+
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
 
     Q_PROPERTY(int trackVideo READ trackVideo WRITE setTrackVideo NOTIFY trackVideoChanged)
@@ -274,7 +276,7 @@ public:
         Quality2160
     };
 
-    // NOTE: This is a compatibility cursor for sources retrieval.
+    // NOTE: This is a compatibility enum for sources retrieval.
     //       For instance, this is useful to enforce compatible sources with Chromecast.
     enum SourceMode
     {
@@ -368,14 +370,16 @@ public: // Static functions
     Q_INVOKABLE static StateLoad     stateLoadFromString(const QString & string);
     Q_INVOKABLE static Output        outputFromString   (const QString & string);
     Q_INVOKABLE static Quality       qualityFromString  (const QString & string);
+    Q_INVOKABLE static SourceMode    modeFromString     (const QString & string);
     Q_INVOKABLE static FillMode      fillModeFromString (const QString & string);
     Q_INVOKABLE static WBackendTrack trackFromString    (const QString & string);
 
-    Q_INVOKABLE static QString stateToString    (State     state);
-    Q_INVOKABLE static QString stateLoadToString(StateLoad stateLoad);
-    Q_INVOKABLE static QString outputToString   (Output    output);
-    Q_INVOKABLE static QString qualityToString  (Quality   quality);
-    Q_INVOKABLE static QString fillModeToString (FillMode  fillMode);
+    Q_INVOKABLE static QString stateToString    (State      state);
+    Q_INVOKABLE static QString stateLoadToString(StateLoad  stateLoad);
+    Q_INVOKABLE static QString outputToString   (Output     output);
+    Q_INVOKABLE static QString qualityToString  (Quality    quality);
+    Q_INVOKABLE static QString modeToString     (SourceMode mode);
+    Q_INVOKABLE static QString fillModeToString (FillMode   fillMode);
     Q_INVOKABLE static QString trackToString    (const WBackendTrack & track);
 
     Q_INVOKABLE static QString mediaFromQuality(QHash<Quality, QString> medias, Quality quality);
@@ -466,8 +470,9 @@ protected: // Virtual functions
 
     virtual void backendSetSpeed(qreal speed); // {}
 
-    virtual void backendSetOutput (Output  output);  // {}
-    virtual void backendSetQuality(Quality quality); // {}
+    virtual void backendSetOutput    (Output     output);  // {}
+    virtual void backendSetQuality   (Quality    quality); // {}
+    virtual void backendSetSourceMode(SourceMode mode);    // {}
 
     virtual void backendSetFillMode(FillMode fillMode); // {}
 
@@ -535,6 +540,7 @@ signals:
 
     void outputActiveChanged ();
     void qualityActiveChanged();
+    void sourceModeChanged   ();
 
     void fillModeChanged();
 
@@ -602,6 +608,9 @@ public: // Properties
 
     Quality quality() const;
     void    setQuality(Quality quality);
+
+    SourceMode sourceMode() const;
+    void       setSourceMode(SourceMode mode);
 
     Output  outputActive () const;
     Quality qualityActive() const;
@@ -730,6 +739,8 @@ public:
 
     virtual void filterQuality      (WAbstractBackend::Quality * quality); // {}
     virtual void filterQualityActive(WAbstractBackend::Quality * quality); // {}
+
+    virtual void filterSourceMode(WAbstractBackend::SourceMode * mode); // {}
 
     virtual void filterSpeed(qreal * speed); // {}
 

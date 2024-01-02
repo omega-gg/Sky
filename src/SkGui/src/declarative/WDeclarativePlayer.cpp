@@ -102,6 +102,7 @@ void WDeclarativePlayerPrivate::init()
 
     output  = WAbstractBackend::OutputMedia;
     quality = WAbstractBackend::QualityDefault;
+    mode    = WAbstractBackend::SourceDefault;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
@@ -897,6 +898,12 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
         Q_Q(WDeclarativePlayer);
 
         q->setQuality(WAbstractBackend::qualityFromString(message.parameters.first()));
+    }
+    else if (type == WBroadcastMessage::MODE)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setSourceMode(WAbstractBackend::modeFromString(message.parameters.first()));
     }
     else if (type == WBroadcastMessage::FILLMODE)
     {
@@ -1821,8 +1828,9 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     backend->setVolume(d->volume);
 
-    backend->setOutput (d->output);
-    backend->setQuality(d->quality);
+    backend->setOutput    (d->output);
+    backend->setQuality   (d->quality);
+    backend->setSourceMode(d->mode);
 
     backend->setFillMode(d->fillMode);
 
@@ -1859,8 +1867,9 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(repeatChanged()), this, SIGNAL(repeatChanged()));
 
-    connect(backend, SIGNAL(outputChanged ()), this, SIGNAL(outputChanged ()));
-    connect(backend, SIGNAL(qualityChanged()), this, SIGNAL(qualityChanged()));
+    connect(backend, SIGNAL(outputChanged    ()), this, SIGNAL(outputChanged    ()));
+    connect(backend, SIGNAL(qualityChanged   ()), this, SIGNAL(qualityChanged   ()));
+    connect(backend, SIGNAL(sourceModeChanged()), this, SIGNAL(sourceModeChanged()));
 
     connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
     connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
@@ -2377,8 +2386,6 @@ void WDeclarativePlayer::setOutput(WAbstractBackend::Output output)
     }
 }
 
-//-------------------------------------------------------------------------------------------------
-
 WAbstractBackend::Quality WDeclarativePlayer::quality() const
 {
     Q_D(const WDeclarativePlayer);
@@ -2403,6 +2410,33 @@ void WDeclarativePlayer::setQuality(WAbstractBackend::Quality quality)
         d->quality = quality;
 
         emit qualityChanged();
+    }
+}
+
+WAbstractBackend::SourceMode WDeclarativePlayer::sourceMode() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->sourceMode();
+    }
+    else return d->mode;
+}
+
+void WDeclarativePlayer::setSourceMode(WAbstractBackend::SourceMode mode)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        d->backend->setSourceMode(mode);
+    }
+    else if (d->mode != mode)
+    {
+        d->mode = mode;
+
+        emit sourceModeChanged();
     }
 }
 

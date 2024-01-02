@@ -111,6 +111,9 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(WAbstractBackend::Quality quality READ quality WRITE setQuality
                NOTIFY qualityChanged)
 
+    Q_PROPERTY(WAbstractBackend::SourceMode sourceMode READ sourceMode WRITE setSourceMode
+               NOTIFY sourceModeChanged)
+
     Q_PROPERTY(WAbstractBackend::Output outputActive READ outputActive NOTIFY outputActiveChanged)
 
     Q_PROPERTY(WAbstractBackend::Quality qualityActive READ qualityActive
@@ -302,8 +305,9 @@ signals:
 
     void repeatChanged();
 
-    void outputChanged ();
-    void qualityChanged();
+    void outputChanged    ();
+    void qualityChanged   ();
+    void sourceModeChanged();
 
     void outputActiveChanged ();
     void qualityActiveChanged();
@@ -402,6 +406,9 @@ public: // Properties
 
     WAbstractBackend::Quality quality() const;
     void                      setQuality(WAbstractBackend::Quality quality);
+
+    WAbstractBackend::SourceMode sourceMode() const;
+    void                         setSourceMode(WAbstractBackend::SourceMode mode);
 
     WAbstractBackend::Output  outputActive () const;
     WAbstractBackend::Quality qualityActive() const;

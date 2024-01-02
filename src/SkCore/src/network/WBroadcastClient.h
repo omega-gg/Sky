@@ -81,6 +81,7 @@ public: // Enums
         SEEK,
         OUTPUT,
         QUALITY,
+        MODE,
         FILLMODE,
         SPEED,
         VIDEO,

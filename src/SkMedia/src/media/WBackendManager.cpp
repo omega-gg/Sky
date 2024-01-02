@@ -1096,6 +1096,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     d->backend->setQuality(quality);
 }
 
+/* virtual */ void WBackendManager::backendSetSourceMode(SourceMode mode)
+{
+    Q_D(WBackendManager);
+
+    d->backend->setSourceMode(mode);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WBackendManager::backendSetFillMode(FillMode fillMode)

@@ -255,6 +255,8 @@ public: // Functions
 
     void playMedia();
 
+    void reload();
+
     void updateTargetRect();
 
     void updateLoading();

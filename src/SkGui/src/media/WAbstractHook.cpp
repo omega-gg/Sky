@@ -371,6 +371,11 @@ void WAbstractHook::backendSetQuality(WAbstractBackend::Quality quality)
     Q_D(WAbstractHook); d->backend->backendSetQuality(quality);
 }
 
+void WAbstractHook::backendSetSourceMode(WAbstractBackend::SourceMode mode)
+{
+    Q_D(WAbstractHook); d->backend->backendSetSourceMode(mode);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WAbstractHook::backendSetFillMode(WAbstractBackend::FillMode fillMode)

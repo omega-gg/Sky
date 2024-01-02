@@ -3998,17 +3998,7 @@ void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters 
 
     parameters->add("id", query.id);
 
-    WAbstractBackend::SourceMode mode = query.mode;
-
-    if (mode == WAbstractBackend::SourceSafe)
-    {
-        parameters->add("mode", "safe");
-    }
-    else if (mode == WAbstractBackend::SourceAudio)
-    {
-        parameters->add("mode", "audio");
-    }
-    else parameters->add("mode", "default");
+    parameters->add("mode", WAbstractBackend::modeToString(query.mode));
 
     parameters->add("queryData", query.data);
 

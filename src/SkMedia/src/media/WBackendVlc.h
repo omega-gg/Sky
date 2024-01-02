@@ -67,8 +67,9 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetSpeed(qreal speed);
 
-    /* virtual */ void backendSetOutput (Output  output);
-    /* virtual */ void backendSetQuality(Quality quality);
+    /* virtual */ void backendSetOutput    (Output     output);
+    /* virtual */ void backendSetQuality   (Quality    quality);
+    /* virtual */ void backendSetSourceMode(SourceMode mode);
 
     /* virtual */ void backendSetFillMode(FillMode fillMode);
 

@@ -128,8 +128,9 @@ protected: // Functions
 
     void backendSetSpeed(qreal speed);
 
-    void backendSetOutput (WAbstractBackend::Output  output);
-    void backendSetQuality(WAbstractBackend::Quality quality);
+    void backendSetOutput    (WAbstractBackend::Output     output);
+    void backendSetQuality   (WAbstractBackend::Quality    quality);
+    void backendSetSourceMode(WAbstractBackend::SourceMode mode);
 
     void backendSetFillMode(WAbstractBackend::FillMode fillMode);
 

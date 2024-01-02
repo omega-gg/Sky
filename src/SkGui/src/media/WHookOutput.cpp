@@ -224,6 +224,12 @@ void WHookOutputPrivate::onQualityChanged()
                        WAbstractBackend::qualityToString(backend->quality()));
 }
 
+void WHookOutputPrivate::onModeChanged()
+{
+    client.sendMessage(WBroadcastMessage::MODE,
+                       WAbstractBackend::modeToString(backend->sourceMode()));
+}
+
 void WHookOutputPrivate::onFillModeChanged()
 {
     client.sendMessage(WBroadcastMessage::FILLMODE,
@@ -312,6 +318,7 @@ void WHookOutputPrivate::onConnectedChanged()
 
         QObject::connect(backend, SIGNAL(outputChanged    ()), q, SLOT(onOutputChanged  ()));
         QObject::connect(backend, SIGNAL(qualityChanged   ()), q, SLOT(onQualityChanged ()));
+        QObject::connect(backend, SIGNAL(sourceModeChanged()), q, SLOT(onModeChanged    ()));
         QObject::connect(backend, SIGNAL(fillModeChanged  ()), q, SLOT(onFillModeChanged()));
         QObject::connect(backend, SIGNAL(speedChanged     ()), q, SLOT(onSpeedChanged   ()));
         QObject::connect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));
@@ -340,6 +347,7 @@ void WHookOutputPrivate::onConnectedChanged()
 
         QObject::disconnect(backend, SIGNAL(outputChanged    ()), q, SLOT(onOutputChanged  ()));
         QObject::disconnect(backend, SIGNAL(qualityChanged   ()), q, SLOT(onQualityChanged ()));
+        QObject::disconnect(backend, SIGNAL(sourceModeChanged()), q, SLOT(onModeChanged    ()));
         QObject::disconnect(backend, SIGNAL(fillModeChanged  ()), q, SLOT(onFillModeChanged()));
         QObject::disconnect(backend, SIGNAL(speedChanged     ()), q, SLOT(onSpeedChanged   ()));
         QObject::disconnect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));

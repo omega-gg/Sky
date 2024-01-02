@@ -1156,6 +1156,26 @@ void WBackendVlcPrivate::playMedia()
     }
 }
 
+void WBackendVlcPrivate::reload()
+{
+    Q_Q(WBackendVlc);
+
+    // NOTE: When the currentMedia is empty we skip this call. This is useful when using a
+    //       WHookOutput.
+    if (currentMedia.isEmpty() || q->hasStarted() == false) return;
+
+    clearReply();
+
+    q->backendStop();
+
+    // NOTE: We clear sources because we want check their validity when we resume playback.
+    clearSources();
+
+    loadSources(q->isPlaying());
+
+    updateLoading();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WBackendVlcPrivate::updateTargetRect()
@@ -1722,22 +1742,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 // NOTE: When switching the output we want to reload sources in case they are different.
 /* virtual */ void WBackendVlc::backendSetOutput(Output)
 {
-    Q_D(WBackendVlc);
-
-    // NOTE: When the currentMedia is empty we skip this call. This is useful when using a
-    //       WHookOutput.
-    if (d->currentMedia.isEmpty() || hasStarted() == false) return;
-
-    d->clearReply();
-
-    backendStop();
-
-    // NOTE: We clear sources because we want check their validity when we resume playback.
-    d->clearSources();
-
-    d->loadSources(isPlaying());
-
-    d->updateLoading();
+    Q_D(WBackendVlc); d->reload();
 }
 
 /* virtual */ void WBackendVlc::backendSetQuality(Quality quality)
@@ -1777,6 +1782,11 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
             d->player->play(d->currentTime);
         }
     }
+}
+
+/* virtual */ void WBackendVlc::backendSetSourceMode(SourceMode)
+{
+    Q_D(WBackendVlc); d->reload();
 }
 
 //-------------------------------------------------------------------------------------------------
