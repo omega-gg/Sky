@@ -85,7 +85,7 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
                 const WYamlNode * node = reader.at("source");
 
                 // NOTE: A single source is the equivalent of the origin property.
-                if (node->children.isEmpty())
+                if (node && node->children.isEmpty())
                 {
                     data.replace("\nsource", "\norigin");
                 }
