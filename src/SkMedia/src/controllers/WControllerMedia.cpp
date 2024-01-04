@@ -512,8 +512,7 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
     }
 }
 
-void WControllerMediaData::applySource(const WYamlNodeBase & node,
-                                       const QString       & url, int duration)
+void WControllerMediaData::applySource(const WYamlNode & node, const QString & url, int duration)
 {
     if (WControllerFile::urlIsImage(url) == false)
     {
@@ -521,7 +520,7 @@ void WControllerMediaData::applySource(const WYamlNodeBase & node,
 
         if (type.isEmpty())
         {
-            typeSource = WTrack::Track;
+             typeSource = WTrack::typeFromString(node.key);
         }
         else typeSource = WTrack::typeFromString(type);
     }
