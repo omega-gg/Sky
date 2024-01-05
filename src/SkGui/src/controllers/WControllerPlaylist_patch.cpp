@@ -73,22 +73,21 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
 
         if (WControllerPlaylist::vbmlTypeTrack(type))
         {
-            if (data.contains("\nsource") == false)
-            {
-                data.replace("\nmedia", "\nsource");
-            }
-
             WYamlReader reader(data.toUtf8());
 
             if (data.contains("\norigin") == false)
             {
                 const WYamlNode * node = reader.at("source");
 
-                // NOTE: A single source is the equivalent of the origin property.
-                if (node && node->children.isEmpty())
+                if (node)
                 {
-                    data.replace("\nsource", "\norigin");
+                    // NOTE: A single source is the equivalent of the origin property.
+                    if (node->children.isEmpty())
+                    {
+                        data.replace("\nsource", "\norigin");
+                    }
                 }
+                else data.replace("\nmedia", "\nsource");
             }
         }
     }
