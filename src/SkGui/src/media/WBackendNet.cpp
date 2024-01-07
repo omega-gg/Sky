@@ -563,15 +563,17 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     QString method = source.queryItemValue("method");
     QString label  = source.queryItemValue("label");
     QString q      = source.queryItemValue("q");
+    QString t      = source.queryItemValue("t");
 #else
     QUrlQuery query(source);
 
     QString method = query.queryItemValue("method");
     QString label  = query.queryItemValue("label");
     QString q      = query.queryItemValue("q");
+    QString t      = query.queryItemValue("t");
 #endif
 
-    return createQuery(method, label, WControllerNetwork::decodeUrl(q));
+    return createQuery(method, label, WControllerNetwork::decodeUrl(q), t);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -737,6 +739,24 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     return (url.startsWith(sk->applicationUrl()) || WControllerPlaylist::urlIsVbmlRun(url));
 }
 
+/* Q_INVOKABLE static */ QString WBackendNet::timeToString(int msecs)
+{
+    if (msecs < 0)
+    {
+        return QString();
+    }
+    else return QString::number(msecs / 1000);
+}
+
+/* Q_INVOKABLE static */ int WBackendNet::stringToTime(const QString & seconds)
+{
+    if (seconds.isEmpty())
+    {
+        return -1;
+    }
+    else return seconds.toInt() * 1000;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
@@ -879,7 +899,8 @@ WBackendNetQuery WBackendNet::getQueryItem(const QString &) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendNet::createQuery(const QString &, const QString &, const QString &) const
+WBackendNetQuery WBackendNet::createQuery(const QString &, const QString &, const QString &,
+                                          const QString &) const
 {
     return WBackendNetQuery();
 }

@@ -362,7 +362,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         {
             type = WControllerPlaylist::Redirect;
 
-            origin = WControllerPlaylist::createSource("vbml", "related", "tracks", content);
+            origin = WControllerPlaylist::createSource("vbml", "related", "tracks", content,
+                                                       WBackendNet::timeToString(currentTime));
 
             return;
         }
@@ -376,7 +377,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
             {
                 type = WControllerPlaylist::Redirect;
 
-                origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin);
+                origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin,
+                                                           WBackendNet::timeToString(currentTime));
             }
 
             return;
@@ -411,7 +413,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
     {
         type = WControllerPlaylist::Redirect;
 
-        origin = WControllerPlaylist::createSource("vbml", "related", "tracks", string);
+        origin = WControllerPlaylist::createSource("vbml", "related", "tracks", string,
+                                                   WBackendNet::timeToString(currentTime));
 
         return;
     }
@@ -2766,17 +2769,19 @@ WBackendNetQuery WControllerPlaylistPrivate::extractQuery(WBackendNet * backend,
     QString method = url.queryItemValue("method");
     QString label  = url.queryItemValue("label");
     QString q      = url.queryItemValue("q");
+    QString t      = url.queryItemValue("t");
 #else
     QUrlQuery urlQuery(url);
 
     QString method = urlQuery.queryItemValue("method");
     QString label  = urlQuery.queryItemValue("label");
     QString q      = urlQuery.queryItemValue("q");
+    QString t      = urlQuery.queryItemValue("t");
 #endif
 
     q = WControllerNetwork::decodeUrl(q);
 
-    WBackendNetQuery query = backend->createQuery(method, label, q);
+    WBackendNetQuery query = backend->createQuery(method, label, q, t);
 
     if (query.isValid()) return query;
 
@@ -2791,9 +2796,9 @@ WBackendNetQuery WControllerPlaylistPrivate::extractQuery(WBackendNet * backend,
 
     if (host.isEmpty())
     {
-         query = backend->createQuery(method, label, id + " " + q);
+         query = backend->createQuery(method, label, id + " " + q, t);
     }
-    else query = backend->createQuery(method, label, "site:" + host + " " + q);
+    else query = backend->createQuery(method, label, "site:" + host + " " + q, t);
 
     id = backend->id();
 
@@ -2826,7 +2831,13 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
         query.target = WBackendNetQuery::TargetRelated;
 
-        query.currentTime = WControllerPlaylist::extractTime(q, -1);
+#ifdef QT_4
+        QString t = url.queryItemValue("t");
+#else
+        QString t = urlQuery.queryItemValue("t");
+#endif
+
+        query.currentTime = WBackendNet::stringToTime(t);
 
         return query;
     }
@@ -2849,7 +2860,13 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
         // NOTE: The url might be a large media file so we scope it to text.
         query.scope = WAbstractLoader::ScopeText;
 
-        query.currentTime = WControllerPlaylist::extractTime(q, -1);
+#ifdef QT_4
+        QString t = url.queryItemValue("t");
+#else
+        QString t = urlQuery.queryItemValue("t");
+#endif
+
+        query.currentTime = WBackendNet::stringToTime(t);
 
         return query;
     }
@@ -4057,6 +4074,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         WBackendNet * backend = q->backendFromTrack(origin);
 
+        QString t = WBackendNet::timeToString(data.currentTime);
+
         if (backend)
         {
             playlist->addSource(origin, true);
@@ -4066,7 +4085,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             QString backendId = backend->id();
 
             WBackendNetQuery query = backend->createQuery("related", "tracks",
-                                                          backend->getTrackId(origin));
+                                                          backend->getTrackId(origin), t);
 
             backend->tryDelete();
 
@@ -4074,12 +4093,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
         else
         {
-            // NOTE: We want the currentTime in seconds.
-            QString time = QString::number(data.currentTime / 1000);
-
-            origin = WControllerNetwork::applyFragmentValue(origin, "t", time);
-
-            origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin);
+            origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin, t);
 
             if (applyNextPlaylist(playlist, origin, QString(), indexNext)) return;
         }
@@ -5038,7 +5052,8 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ QString WControllerPlaylist::sourceRelatedTracks(const QString & url,
-                                                                   const QString & title) const
+                                                                   const QString & title,
+                                                                   int             time) const
 {
     WBackendNet * backend = backendFromUrl(url);
 
@@ -5048,22 +5063,22 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         QString trackId = backend->getTrackId(url);
 
-        if (trackId.isEmpty()) trackId = url;
+        QString t = WBackendNet::timeToString(time);
 
-        WBackendNetQuery query = backend->createQuery("related", "tracks", trackId);
+        WBackendNetQuery query = backend->createQuery("related", "tracks", trackId, t);
 
         backend->tryDelete();
 
-        if      (query.isValid()) return createSource(id, "related", "tracks", trackId);
-        else if (title.isEmpty()) return createSource(id, "related", "tracks", url);
-        else                      return createSource(id, "related", "tracks", title);
+        if      (query.isValid()) return createSource(id, "related", "tracks", trackId, t);
+        else if (title.isEmpty()) return createSource(id, "related", "tracks", url,     t);
+        else                      return createSource(id, "related", "tracks", title,   t);
     }
 
     if (url.isEmpty()) return QString();
 
     // NOTE: When we can't find a backend we load the url as a VBML resource and try to extract
     //       the 'related' property.
-    return createSource("vbml", "related", "tracks", url);
+    return createSource("vbml", "related", "tracks", url, t);
 }
 
 /* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryPlaylist(const QString & url) const
@@ -5313,7 +5328,8 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 /* Q_INVOKABLE static */ QString WControllerPlaylist::createSource(const QString & backend,
                                                                    const QString & method,
                                                                    const QString & label,
-                                                                   const QString & q)
+                                                                   const QString & q,
+                                                                   const QString & t)
 {
     QUrl source("vbml:run");
 
@@ -5326,6 +5342,11 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
     {
         source.addQueryItem("q", QUrl::toPercentEncoding(q, QByteArray(), "?&"));
     }
+
+    if (time >= 0)
+    {
+        source.addQueryItem("t", t);
+    }
 #else
     QUrlQuery query(source);
 
@@ -5336,6 +5357,11 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
     if (q.isEmpty() == false)
     {
         query.addQueryItem("q", QUrl::toPercentEncoding(q, QByteArray(), "?&"));
+    }
+
+    if (time >= 0)
+    {
+        query.addQueryItem("t", t);
     }
 
     source.setQuery(query);

@@ -208,7 +208,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE QString sourceRelatedTracks(const QString & url, const QString & title) const;
+    Q_INVOKABLE QString sourceRelatedTracks(const QString & url,
+                                            const QString & title, int time = -1) const;
 
     Q_INVOKABLE WBackendNetQuery queryPlaylist(const QString & url) const;
 
@@ -239,8 +240,11 @@ public: // Static functions
 
     Q_INVOKABLE static QString simpleQuery(const QString & text);
 
-    Q_INVOKABLE static QString createSource(const QString & backend, const QString & method,
-                                            const QString & label,   const QString & q = QString());
+    Q_INVOKABLE static QString createSource(const QString & backend,
+                                            const QString & method,
+                                            const QString & label,
+                                            const QString & q    = QString(),
+                                            const int       time = -1);
 
     // NOTE: Returns the source fragment cleaned up. That's useful for comparison.
     Q_INVOKABLE static QString cleanSource(const QString & url);

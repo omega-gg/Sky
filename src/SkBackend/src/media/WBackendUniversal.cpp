@@ -4998,8 +4998,8 @@ WBackendNetQuery WBackendUniversal::getQueryItem(const QString & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendUniversal::createQuery(const QString & method,
-                                                const QString & label, const QString & q) const
+WBackendNetQuery WBackendUniversal::createQuery(const QString & method, const QString & label,
+                                                const QString & q,      const QString & t) const
 {
     Q_D(const WBackendUniversal);
 
@@ -5021,6 +5021,7 @@ WBackendNetQuery WBackendUniversal::createQuery(const QString & method,
     parameters.add("method", method);
     parameters.add("label",  label);
     parameters.add("q",      q);
+    parameters.add("t",      t);
 
     script->run(&parameters);
 

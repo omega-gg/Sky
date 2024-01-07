@@ -429,6 +429,12 @@ public: // Interface
 public: // Static functions
     Q_INVOKABLE static bool checkQuery(const QString & url);
 
+    // NOTE: This functions turns milliseconds into a second based string.
+    Q_INVOKABLE static QString timeToString(int msecs);
+
+    // NOTE: This functions turns a second based string into milliseconds.
+    Q_INVOKABLE static int stringToTime(const QString & seconds);
+
 public: // Abstract interface
     Q_INVOKABLE virtual QString getId   () const = 0;
     Q_INVOKABLE virtual QString getTitle() const = 0;
@@ -475,9 +481,11 @@ public: // Virtual interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE virtual WBackendNetQuery createQuery(const QString & method,
-                                                     const QString & label,
-                                                     const QString & q) const; // {}
+    Q_INVOKABLE
+    virtual WBackendNetQuery createQuery(const QString & method,
+                                         const QString & label,
+                                         const QString & q,
+                                         const QString & t = QString()) const; // {}
 
     //---------------------------------------------------------------------------------------------
 
