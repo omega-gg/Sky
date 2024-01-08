@@ -244,7 +244,7 @@ public: // Static functions
                                             const QString & method,
                                             const QString & label,
                                             const QString & q = QString(),
-                                            const int       t = -1);
+                                            const QString & t = QString());
 
     // NOTE: Returns the source fragment cleaned up. That's useful for comparison.
     Q_INVOKABLE static QString cleanSource(const QString & url);

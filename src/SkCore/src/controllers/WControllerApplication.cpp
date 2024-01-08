@@ -716,6 +716,9 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ int WControllerApplication::versionCheck(const QString & versionA,
                                                                   const QString & versionB)
 {
+    // NOTE: We can't check an empty string, so we consider it equal to the other one.
+    if (versionA.isEmpty() || versionB.isEmpty()) return 0;
+
     QString stringA = versionA;
     QString stringB = versionB;
 
@@ -761,21 +764,13 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ bool WControllerApplication::versionIsLower(const QString & versionA,
                                                                      const QString & versionB)
 {
-    if (versionCheck(versionA, versionB) == -1)
-    {
-         return true;
-    }
-    else return false;
+    return (versionCheck(versionA, versionB) == -1);
 }
 
 /* Q_INVOKABLE static */ bool WControllerApplication::versionIsHigher(const QString & versionA,
                                                                       const QString & versionB)
 {
-    if (versionCheck(versionA, versionB) == 1)
-    {
-         return true;
-    }
-    else return false;
+    return (versionCheck(versionA, versionB) == 1);
 }
 
 //-------------------------------------------------------------------------------------------------

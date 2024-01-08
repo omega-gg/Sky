@@ -288,19 +288,21 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
             }
         }
     }
-
-    if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+    else
     {
-        WControllerPlaylist::vbmlPatch(content, api);
+        if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+        {
+            WControllerPlaylist::vbmlPatch(content, api);
 
-        applyVbml(content.toUtf8(), url, urlBase);
+            applyVbml(content.toUtf8(), url, urlBase);
 
-        return;
-    }
+            return;
+        }
 
-    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
-    {
-        qWarning("WControllerPlaylistData::applyVbml: The required API is too high.");
+        if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
+        {
+            qWarning("WControllerPlaylistData::applyVbml: The required API is too high.");
+        }
     }
 
     WYamlReader reader(content.toUtf8());
@@ -384,19 +386,21 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
             return;
         }
     }
-
-    if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+    else
     {
-        WControllerPlaylist::vbmlPatch(content, api);
+        if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+        {
+            WControllerPlaylist::vbmlPatch(content, api);
 
-        applyRelated(content.toUtf8(), url, urlBase);
+            applyRelated(content.toUtf8(), url, urlBase);
 
-        return;
-    }
+            return;
+        }
 
-    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
-    {
-        qWarning("WControllerPlaylistData::applyRelated: The required API is too high.");
+        if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
+        {
+            qWarning("WControllerPlaylistData::applyRelated: The required API is too high.");
+        }
     }
 
     WYamlReader reader(content.toUtf8());
@@ -494,6 +498,12 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         if (origin.isEmpty() == false)
         {
             type = WControllerPlaylist::Related;
+        }
+        // NOTE: When the playlist is invalid we add the url itself given it could be a media.
+        //       The url should not be a vbml run uri.
+        else if (WControllerPlaylist::urlIsVbmlRun(url) == false)
+        {
+            addMedia(url, WControllerNetwork::extractUrlFileName(url));
         }
     }
 }
@@ -2831,6 +2841,8 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
         query.target = WBackendNetQuery::TargetRelated;
 
+        query.backend = "vbml";
+
 #ifdef QT_4
         QString t = url.queryItemValue("t");
 #else
@@ -2856,6 +2868,8 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
         WBackendNetQuery query(q);
 
         query.target = WBackendNetQuery::TargetRelated;
+
+        query.backend = "vbml";
 
         // NOTE: The url might be a large media file so we scope it to text.
         query.scope = WAbstractLoader::ScopeText;
@@ -3377,7 +3391,10 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         backend = NULL;
 
-        backendQuery->target = WBackendNetQuery::TargetVbml;
+        if (backendQuery->target != WBackendNetQuery::TargetRelated)
+        {
+            backendQuery->target = WBackendNetQuery::TargetVbml;
+        }
     }
     else backend = q->backendFromId(id);
 
@@ -5078,7 +5095,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     // NOTE: When we can't find a backend we load the url as a VBML resource and try to extract
     //       the 'related' property.
-    return createSource("vbml", "related", "tracks", url, t);
+    return createSource("vbml", "related", "tracks", url, WBackendNet::timeToString(time));
 }
 
 /* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryPlaylist(const QString & url) const
@@ -5343,7 +5360,7 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
         source.addQueryItem("q", QUrl::toPercentEncoding(q, QByteArray(), "?&"));
     }
 
-    if (time >= 0)
+    if (t.isEmpty() == false)
     {
         source.addQueryItem("t", t);
     }
@@ -5359,7 +5376,7 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
         query.addQueryItem("q", QUrl::toPercentEncoding(q, QByteArray(), "?&"));
     }
 
-    if (time >= 0)
+    if (t.isEmpty() == false)
     {
         query.addQueryItem("t", t);
     }

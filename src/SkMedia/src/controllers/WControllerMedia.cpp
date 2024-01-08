@@ -237,19 +237,21 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             if (origin.isEmpty() == false) return;
         }
     }
-
-    if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+    else
     {
-        WControllerPlaylist::vbmlPatch(content, api);
+        if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+        {
+            WControllerPlaylist::vbmlPatch(content, api);
 
-        applyVbml(content.toUtf8(), url);
+            applyVbml(content.toUtf8(), url);
 
-        return;
-    }
+            return;
+        }
 
-    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
-    {
-        qWarning("WControllerMediaReply::applyVbml: The required API is too high.");
+        if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
+        {
+            qWarning("WControllerMediaReply::applyVbml: The required API is too high.");
+        }
     }
 
     WYamlReader reader(content.toUtf8());
