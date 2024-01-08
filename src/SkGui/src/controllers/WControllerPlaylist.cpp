@@ -423,6 +423,21 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         return;
     }
 
+    if (currentTime == -1)
+    {
+        origin = extractRelated(reader.node());
+
+        if (origin.isEmpty() == false)
+        {
+            type = WControllerPlaylist::Related;
+
+            return;
+        }
+
+        // NOTE: When there's no related specified we try with a default timestamp.
+        currentTime = 0;
+    }
+
     const WYamlNode * node = reader.at("source");
 
     if (node)
@@ -442,26 +457,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
                 applySource(reader.node(), node->value, CONTROLLERPLAYLIST_CHANNEL_DURATION);
             }
             else extractSource(node->children);
-
-            return;
         }
-
-        if (currentTime == -1)
-        {
-            origin = extractRelated(reader.node());
-
-            if (origin.isEmpty() == false)
-            {
-                type = WControllerPlaylist::Related;
-
-                return;
-            }
-
-            // NOTE: When there's no related specified we try with a default timestamp.
-            currentTime = 0;
-        }
-
-        if (children.isEmpty())
+        else if (children.isEmpty())
         {
             const WYamlNodeBase & nodeBase = reader.node();
 

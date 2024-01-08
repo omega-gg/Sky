@@ -907,11 +907,6 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->typeSource = type;
     }
 
-    if (data.vbml)
-    {
-        media->vbml = true;
-    }
-
     int timeB = data.timeB;
 
     if (timeB == -1) return;
@@ -1538,6 +1533,11 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
     WBackendNetQuery & query = media->query;
 
     WAbstractBackend::SourceMode mode = query.mode;
+
+    if (data.vbml)
+    {
+        media->vbml = true;
+    }
 
     if (origin.isEmpty() == false)
     {
