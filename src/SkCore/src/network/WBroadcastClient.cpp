@@ -466,6 +466,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (type == SEEK)       return "SEEK";
     else if (type == OUTPUT)     return "OUTPUT";
     else if (type == QUALITY)    return "QUALITY";
+    else if (type == MODE)       return "MODE";
     else if (type == FILLMODE)   return "FILLMODE";
     else if (type == SPEED)      return "SPEED";
     else if (type == VIDEO)      return "VIDEO";
