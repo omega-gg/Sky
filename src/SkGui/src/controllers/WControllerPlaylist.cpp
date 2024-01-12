@@ -1672,7 +1672,14 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
 
         if (id.isEmpty() == false)
         {
-            playlist->addSource(backend->getUrlTrack(id), true);
+            // NOTE: We want to keep the time property.
+            QString time = WControllerNetwork::extractFragmentValue(source, "t");
+
+            if (time.isEmpty())
+            {
+                 playlist->addSource(backend->getUrlTrack(id), true);
+            }
+            else playlist->addSource(backend->getUrlTrack(id) + "#t=" + time, true);
 
             if (getDataRelated(backend, playlist, id) == false)
             {
