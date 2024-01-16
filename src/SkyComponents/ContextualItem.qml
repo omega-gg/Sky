@@ -183,10 +183,7 @@ MouseArea
     {
         id: itemText
 
-        anchors.left  : parent.left
-        anchors.right : parent.right
-        anchors.top   : parent.top
-        anchors.bottom: border.top
+        anchors.fill: background
 
         anchors.leftMargin: textMargin
 

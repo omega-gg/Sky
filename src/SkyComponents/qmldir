@@ -148,6 +148,7 @@ ItemTab  1.0 ItemTab.qml
 ItemWall 1.0 ItemWall.qml
 
 ComponentList              1.0 ComponentList.qml
+ComponentListFull          1.0 ComponentListFull.qml
 ComponentContextual        1.0 ComponentContextual.qml
 ComponentCompletion        1.0 ComponentCompletion.qml
 ComponentTab               1.0 ComponentTab.qml

@@ -139,36 +139,36 @@ MouseArea
                 }
             }
         }
+    }
 
-        TextBase
+    TextBase
+    {
+        id: itemText
+
+        anchors.fill: background
+
+        anchors.leftMargin : st.dp8
+        anchors.rightMargin: st.dp8
+
+        verticalAlignment: Text.AlignVCenter
+
+        text: title
+
+        color:
         {
-            id: itemText
-
-            anchors.fill: parent
-
-            anchors.leftMargin : st.dp8
-            anchors.rightMargin: st.dp8
-
-            verticalAlignment: Text.AlignVCenter
-
-            text: title
-
-            color:
+            if (isCurrent)
             {
-                if (isCurrent)
-                {
-                    return st.itemList_colorTextSelected;
-                }
-                else if (hoverActive)
-                {
-                    return st.itemList_colorTextHover;
-                }
-                else return st.itemList_colorText
+                return st.itemList_colorTextSelected;
             }
-
-            style: (isCurrent) ? st.text_raised
-                               : st.text_sunken
+            else if (hoverActive)
+            {
+                return st.itemList_colorTextHover;
+            }
+            else return st.itemList_colorText
         }
+
+        style: (isCurrent) ? st.text_raised
+                           : st.text_sunken
     }
 
     BorderHorizontal
