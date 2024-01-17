@@ -128,6 +128,8 @@ Slider       1.0 Slider.qml
 SliderVolume 1.0 SliderVolume.qml
 SliderStream 1.0 SliderStream.qml
 
+SliderWide 1.0 SliderWide.qml
+
 BaseTabs    1.0 BaseTabs.qml
 Tabs        1.0 Tabs.qml
 TabsBrowser 1.0 TabsBrowser.qml
