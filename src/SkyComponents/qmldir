@@ -28,11 +28,13 @@ TextRich        1.0 TextRich.qml
 TextDate        1.0 TextDate.qml
 TextListDefault 1.0 TextListDefault.qml
 
-Panel           1.0 Panel.qml
-PanelContextual 1.0 PanelContextual.qml
-PanelImage      1.0 PanelImage.qml
-BaseToolTip     1.0 BaseToolTip.qml
-ToolTip         1.0 ToolTip.qml
+Panel                 1.0 Panel.qml
+PanelContextual       1.0 PanelContextual.qml
+PanelContextualLoader 1.0 PanelContextualLoader.qml
+PanelImage            1.0 PanelImage.qml
+
+BaseToolTip 1.0 BaseToolTip.qml
+ToolTip     1.0 ToolTip.qml
 
 BarWindow       1.0 BarWindow.qml
 BarTitle        1.0 BarTitle.qml
