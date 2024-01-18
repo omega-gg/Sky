@@ -287,6 +287,15 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
                 return;
             }
         }
+
+        type = WControllerPlaylist::Redirect;
+
+        origin = WControllerPlaylist::createSource(wControllerPlaylist->backendSearchId(),
+                                                   "search", "tracks", content.simplified());
+
+        source = origin;
+
+        return;
     }
     else
     {
@@ -4893,6 +4902,23 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         return id;
     }
     else return QString();
+}
+
+/* Q_INVOKABLE */ QString WControllerPlaylist::backendSearchId() const
+{
+    Q_D(const WControllerPlaylist);
+
+    foreach (WBackendLoader * loader, d->backendLoaders)
+    {
+        QString id = loader->searchId();
+
+        if (id.isEmpty() == false)
+        {
+            return id;
+        }
+    }
+
+    return QString();
 }
 
 /* Q_INVOKABLE */ QString WControllerPlaylist::backendCoverFromId(const QString & id) const
