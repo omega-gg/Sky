@@ -35,7 +35,7 @@ void WBackendPlaylist_patch(QString & data, const QString & api)
 {
     qWarning("WBackendPlaylist_patch: Patching.");
 
-    if (Sk::versionIsLower(api, "1.8.1-3"))
+    if (Sk::versionIsLower(api, "1.8.1-4"))
     {
         int index = data.indexOf("<tracks>");
 
