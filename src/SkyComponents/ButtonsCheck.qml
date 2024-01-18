@@ -153,11 +153,13 @@ Item
 
                 ButtonPushLeft
                 {
+                    property bool isActive: (index == currentActive)
+
                     anchors.fill: parent
 
                     padding: buttonsCheck.padding
 
-                    highlighted: (index == currentActive)
+                    highlighted: (checked && isActive)
 
                     checked   : (index == currentIndex)
                     checkHover: false
@@ -165,6 +167,8 @@ Item
                     text: title
 
                     itemText.elide: buttonsCheck.elide
+
+                    itemText.color: st.getTextColor(isHighlighted, checked, isActive)
 
                     /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
                     /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
@@ -177,11 +181,13 @@ Item
 
                 ButtonPushCenter
                 {
+                    property bool isActive: (index == currentActive)
+
                     anchors.fill: parent
 
                     padding: buttonsCheck.padding - margins
 
-                    highlighted: (index == currentActive)
+                    highlighted: (checked && isActive)
 
                     checked   : (index == currentIndex)
                     checkHover: false
@@ -189,6 +195,8 @@ Item
                     text: title
 
                     itemText.elide: buttonsCheck.elide
+
+                    itemText.color: st.getTextColor(isHighlighted, checked, isActive)
 
                     /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
                     /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
@@ -201,11 +209,13 @@ Item
 
                 ButtonPushRight
                 {
+                    property bool isActive: (index == currentActive)
+
                     anchors.fill: parent
 
                     padding: buttonsCheck.padding
 
-                    highlighted: (index == currentActive)
+                    highlighted: (checked && isActive)
 
                     checked   : (index == currentIndex)
                     checkHover: false
@@ -213,6 +223,8 @@ Item
                     text: title
 
                     itemText.elide: buttonsCheck.elide
+
+                    itemText.color: st.getTextColor(isHighlighted, checked, isActive)
 
                     /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
                     /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
