@@ -288,6 +288,9 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
             }
         }
 
+        //-----------------------------------------------------------------------------------------
+        // NOTE: When it's not valid VBML we fallback to a search query.
+
         type = WControllerPlaylist::Redirect;
 
         origin = WControllerPlaylist::createSource(wControllerPlaylist->backendSearchId(),
