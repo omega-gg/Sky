@@ -102,6 +102,8 @@ void WBackendManagerPrivate::init()
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
 #endif
 
+    QObject::connect(q, SIGNAL(repeatChanged()), q, SLOT(onRepeatChanged()));
+
     //---------------------------------------------------------------------------------------------
     // NOTE: We use the first backend for Chromecast output detection.
 
@@ -628,6 +630,11 @@ void WBackendManagerPrivate::onPlayerChanged()
 }
 
 #endif
+
+void WBackendManagerPrivate::onRepeatChanged()
+{
+    backend->setRepeat(repeat);
+}
 
 //-------------------------------------------------------------------------------------------------
 

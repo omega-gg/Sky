@@ -117,6 +117,8 @@ public: // Slots
     void onPlayerChanged();
 #endif
 
+    void onRepeatChanged();
+
     void onState      ();
     void onStateLoad  ();
     void onLive       ();
