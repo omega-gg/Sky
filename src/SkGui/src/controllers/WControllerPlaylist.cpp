@@ -288,6 +288,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
             }
         }
 
+        // NOTE: When the content does not seem to be a text query we return.
         if (content.isEmpty() || content.contains('\n')) return;
 
         //-----------------------------------------------------------------------------------------
