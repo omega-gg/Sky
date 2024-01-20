@@ -1167,11 +1167,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     QList<WTrack> tracks;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-    QStringList list = urls.split('\n', Qt::SkipEmptyParts);
-#else
-    QStringList list = urls.split('\n', QString::SkipEmptyParts);
-#endif
+    QStringList list = Sk::split(urls, '\n');
 
     foreach (const QString & source, list)
     {

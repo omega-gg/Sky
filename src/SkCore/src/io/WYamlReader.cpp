@@ -31,6 +31,14 @@
 // WYamlNodeBase
 //=================================================================================================
 
+WYamlNodeBase::WYamlNodeBase() {}
+
+/* virtual */ WYamlNodeBase::~WYamlNodeBase() {}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
 void WYamlNodeBase::append(const WYamlNode & node)
 {
     children.append(node);
@@ -137,10 +145,14 @@ QStringList WYamlNodeBase::extractList(const QString & key) const
 // WYamlNode
 //=================================================================================================
 
-WYamlNode::WYamlNode(const QString & key) : WYamlNodeBase()
+/* explicit */ WYamlNode::WYamlNode(const QString & key) : WYamlNodeBase()
 {
     this->key = key;
 }
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
 
 void WYamlNode::dump(int indent) const
 {
@@ -163,6 +175,25 @@ void WYamlNode::dump(int indent) const
         }
     }
     else qDebug("%s[%s] [%s]", string.C_STR, key.C_STR, value.C_STR);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WYamlNode::WYamlNode(const WYamlNode & other)
+{
+    *this = other;
+}
+
+WYamlNode & WYamlNode::operator=(const WYamlNode & other)
+{
+    children = other.children;
+
+    key   = other.key;
+    value = other.value;
+
+    return *this;
 }
 
 //=================================================================================================

@@ -43,6 +43,11 @@ class WYamlNode;
 
 class SK_CORE_EXPORT WYamlNodeBase
 {
+public:
+    WYamlNodeBase();
+
+    virtual ~WYamlNodeBase();
+
 public: // Interface
     void append(const WYamlNode & node);
 
@@ -76,10 +81,15 @@ public: // Variables
 class SK_CORE_EXPORT WYamlNode : public WYamlNodeBase
 {
 public:
-    WYamlNode(const QString & key);
+    explicit WYamlNode(const QString & key = QString());
 
 public: // Interface
     void dump(int indent = 0) const;
+
+public: // Operators
+    WYamlNode(const WYamlNode & other);
+
+    WYamlNode & operator=(const WYamlNode & other);
 
 public: // Variables
     QString key;

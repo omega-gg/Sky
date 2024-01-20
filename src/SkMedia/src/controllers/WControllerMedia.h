@@ -31,6 +31,7 @@
 // Sk includes
 #include <WController>
 #include <WBackendNet>
+#include <WYamlReader>
 
 #ifndef SK_NO_CONTROLLERMEDIA
 
@@ -92,6 +93,8 @@ public: // Properties
 
     int start() const;
 
+    QString context() const;
+
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
 
@@ -122,6 +125,8 @@ private: // Variables
 
     int _start;
 
+    QString _context;
+
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
 
@@ -142,36 +147,62 @@ private:
 // WControllerMediaData
 //-------------------------------------------------------------------------------------------------
 
-struct WControllerMediaData
+class WControllerMediaSource
 {
 public:
-    WControllerMediaData()
-    {
-        type       = WTrack::Unknown;
-        typeSource = WTrack::Unknown;
+    WControllerMediaSource(const WYamlNode * node, int index);
 
-        vbml = false;
+public: // Interface
+    int getDuration(int at) const;
 
-        currentTime = 0;
+public: // Variables
+    const WYamlNode * node;
 
-        duration = -1;
+    QString id;
 
-        timeA =  0;
-        timeB = -1;
+    int index;
 
-        start = -1;
-    }
+    int duration;
+
+    int at;
+    int end;
+};
+
+struct WControllerMediaObject
+{
+    QString id;
+
+    WControllerMediaSource * media;
+};
+
+class WControllerMediaData
+{
+public:
+    WControllerMediaData();
 
 public: // Interface
     void applyVbml(const QByteArray & array, const QString & url);
     void applyM3u (const QByteArray & array, const QString & url);
+
+public: // Static functions
+    static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
+
+    static QHash<QString, WControllerMediaSource *>
+    generateHash(QList<WControllerMediaSource> & sources);
+
+    static QList<WControllerMediaObject>
+    generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
+                     const QString                                  & context);
+
+    static WControllerMediaSource *
+    getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
 
 private: // Functions
     void extractSource(const QList<WYamlNode> & children);
 
     void applySource(const WYamlNode & node, const QString & url, int duration);
 
-    void applyMedia (const WYamlNodeBase & node, const QString & url);
+    void applyMedia(const WYamlNodeBase & node, const QString & url);
 
     void applyEmpty();
 
@@ -193,6 +224,8 @@ public: // Variables
     int timeB;
 
     int start;
+
+    QString context;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 };

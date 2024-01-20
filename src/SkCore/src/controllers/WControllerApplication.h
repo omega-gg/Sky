@@ -295,6 +295,10 @@ public: // Static functions
                                                            const QString & after,
                                                            int             from = 0);
 
+    // NOTE: This version of split skips the empty parts by default.
+    Q_INVOKABLE static QStringList split(const QString & string, const QString & separator);
+    Q_INVOKABLE static QStringList split(const QString & string, const QChar   & separator);
+
     //---------------------------------------------------------------------------------------------
     // NOTE: Insert a line on the next line(s) after the matched 'pattern'.
 

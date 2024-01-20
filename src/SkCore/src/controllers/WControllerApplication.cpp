@@ -963,14 +963,10 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     return '"' + string + '"';
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE static */ QString WControllerApplication::tabs(int count, int size)
 {
     return QString().fill(' ', count * size);
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ void WControllerApplication::replaceFirst(QString       * string,
                                                                    const QString & before,
@@ -978,6 +974,22 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
                                                                    int             from)
 {
     string->replace(string->indexOf(before, from), before.length(), after);
+}
+
+/* Q_INVOKABLE static */ QStringList WControllerApplication::split(const QString & string,
+                                                                   const QString & separator)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    return string.split(separator, Qt::SkipEmptyParts);
+#else
+    return string.split(separator, QString::SkipEmptyParts);
+#endif
+}
+
+/* Q_INVOKABLE static */ QStringList WControllerApplication::split(const QString & string,
+                                                                   const QChar   & separator)
+{
+    return split(string, QString(separator));
 }
 
 //-------------------------------------------------------------------------------------------------
