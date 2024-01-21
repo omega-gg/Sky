@@ -192,7 +192,10 @@ public: // Static functions
 
     static QList<WControllerMediaObject>
     generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
-                     const QString                                  & context);
+                     const QString                                  & context,
+                     const QStringList                              & tags);
+
+    static QString generateContext(const QList<WControllerMediaObject> & timeline);
 
     static WControllerMediaSource *
     getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);

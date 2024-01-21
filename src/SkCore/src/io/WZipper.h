@@ -41,6 +41,8 @@ public:
 public: // Static functions
     Q_INVOKABLE static QByteArray compress(const QByteArray & array);
 
+    Q_INVOKABLE static QByteArray compressBase64(const QByteArray & array);
+
 private:
     W_DECLARE_PRIVATE(WZipper)
 };

@@ -174,6 +174,19 @@ void WUnzipperPrivate::init() {}
     return device.readAll();
 }
 
+/* Q_INVOKABLE static */ QByteArray WUnzipper::extractBase64(const QByteArray & array)
+{
+#ifdef QT_4
+    // FIXME Qt4: This version does not support encoding flags.
+    QByteArray data = QByteArray::fromBase64(array);
+#else
+    QByteArray data = QByteArray::fromBase64(array, QByteArray::Base64UrlEncoding |
+                                                    QByteArray::OmitTrailingEquals);
+#endif
+
+    return extract(data);
+}
+
 /* Q_INVOKABLE static */ void WUnzipper::extract(const QString     & fileName,
                                                  const QString     & destination,
                                                  const QStringList & fileNames)

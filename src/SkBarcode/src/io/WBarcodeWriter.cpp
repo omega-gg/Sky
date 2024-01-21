@@ -307,14 +307,7 @@ void WBarcodeWriterPrivate::init() {}
 
     if (type == Vbml)
     {
-        QByteArray data = WZipper::compress(text.toUtf8());
-
-#ifdef QT_4
-        // FIXME Qt4: This version does not support encoding flags.
-        data = data.toBase64();
-#else
-        data = data.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
-#endif
+        QByteArray data = WZipper::compressBase64(text.toUtf8());
 
         if (prefix.isEmpty())
         {

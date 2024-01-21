@@ -92,4 +92,16 @@ void WZipperPrivate::init() {}
     return buffer.readAll();
 }
 
+/* Q_INVOKABLE static */ QByteArray WZipper::compressBase64(const QByteArray & array)
+{
+    QByteArray data = compress(array);
+
+#ifdef QT_4
+    // FIXME Qt4: This version does not support encoding flags.
+    return data.toBase64();
+#else
+    return data.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
+#endif
+}
+
 #endif // SK_NO_ZIPPER

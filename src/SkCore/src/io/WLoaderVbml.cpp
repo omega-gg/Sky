@@ -148,15 +148,7 @@ void WLoaderVbmlPrivate::onLoaded(WLoaderVbmlRead * action, const QByteArray & d
     // NOTE: Removing the 'vbml:' part.
     string = string.remove(0, 5);
 
-#ifdef QT_4
-    // FIXME Qt4: This version does not support encoding flags.
-    QByteArray data = QByteArray::fromBase64(string.toUtf8());
-#else
-    QByteArray data = QByteArray::fromBase64(string.toUtf8(), QByteArray::Base64UrlEncoding |
-                                                              QByteArray::OmitTrailingEquals);
-#endif
-
-    return WUnzipper::extract(data);
+    return WUnzipper::extractBase64(string.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------

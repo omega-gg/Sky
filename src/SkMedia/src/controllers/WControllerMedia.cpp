@@ -34,6 +34,8 @@
 #include <WControllerDownload>
 #include <WControllerPlaylist>
 #include <WRegExp>
+#include <WZipper>
+#include <WUnzipper>
 #ifndef SK_NO_PLAYER
 #include <WVlcEngine>
 #include <WVlcPlayer>
@@ -377,6 +379,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (contextBase.isEmpty() == false)
             {
+                QStringList tags = reader.extractList("tags");
+
                 QList<WControllerMediaSource> sources = extractSources(reader);
 
                 QHash<QString, WControllerMediaSource *> hash = generateHash(sources);
@@ -385,15 +389,25 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (context.isEmpty())
                 {
-                    timeline = generateTimeline(hash, contextBase);
+                    timeline = generateTimeline(hash, contextBase, tags);
+
+                    context = generateContext(timeline);
                 }
-                else if (context.isEmpty())
+                else
                 {
-                    timeline = generateTimeline(hash, context);
+                    timeline = generateTimeline(hash,
+                                                WUnzipper::extractBase64(context.toUtf8()), tags);
 
                     if (timeline.isEmpty())
                     {
-                        timeline = generateTimeline(hash, contextBase);
+                        timeline = generateTimeline(hash, contextBase, tags);
+                    }
+
+                    QString contextNew = generateContext(timeline);
+
+                    if (context != contextNew)
+                    {
+                        context = contextNew;
                     }
                 }
 
@@ -682,7 +696,8 @@ WControllerMediaData::generateHash(QList<WControllerMediaSource> & sources)
 
 /* static */ QList<WControllerMediaObject>
 WControllerMediaData::generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
-                                       const QString                                  & context)
+                                       const QString                                  & context,
+                                       const QStringList                              & tags)
 {
     QList<WControllerMediaObject> timeline;
 
@@ -696,6 +711,9 @@ WControllerMediaData::generateTimeline(const QHash<QString, WControllerMediaSour
 
         if (media == NULL)
         {
+            // NOTE: When the tag is unknown we skip it entirely.
+            if (tags.contains(id) == false) continue;
+
             WControllerMediaObject object;
 
             object.id    = id;
@@ -726,6 +744,23 @@ WControllerMediaData::generateTimeline(const QHash<QString, WControllerMediaSour
     }
 
     return timeline;
+}
+
+/* static */
+QString WControllerMediaData::generateContext(const QList<WControllerMediaObject> & timeline)
+{
+    QString context;
+
+    foreach (const WControllerMediaObject & object, timeline)
+    {
+        context.append(object.id + ',');
+    }
+
+    if (context.isEmpty()) return context;
+
+    context.chop(1);
+
+    return WZipper::compressBase64(context.toUtf8());
 }
 
 /* static */ WControllerMediaSource *
