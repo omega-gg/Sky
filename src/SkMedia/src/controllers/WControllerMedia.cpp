@@ -397,6 +397,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                     }
                 }
 
+                QList<const WYamlNode *> children;
+
                 QList<int> starts;
                 QList<int> durations;
 
@@ -404,18 +406,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 int startSource = start;
 
-                int index = 0;
-
-                while (index < timeline.count())
+                foreach (const WControllerMediaObject & object, timeline)
                 {
-                    WControllerMediaSource * media = timeline.at(index).media;
-
-                    if (media == NULL)
-                    {
-                        timeline.removeAt(index);
-
-                        continue;
-                    }
+                    WControllerMediaSource * media = object.media;
 
                     startSource += media->at;
 
@@ -425,25 +418,63 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                     durations.append(durationSource);
 
-                    if (durationSource <= 0)
+                    if (durationSource > 0)
                     {
-                        startSource = -durationSource;
+                        startSource = 0;
 
-                        index++;
-
-                        continue;
+                        duration += durationSource;
                     }
+                    else startSource = -durationSource;
 
-                    startSource = 0;
-
-                    duration += durationSource;
-
-                    index++;
+                    children.append(media->node);
                 }
 
                 if (duration == 0)
                 {
                     duration = -1;
+
+                    return;
+                }
+
+                for (int i = 0; i < durations.length(); i++)
+                {
+                    start = starts.at(i);
+
+                    int durationSource = durations.at(i);
+
+                    if (durationSource <= 0)
+                    {
+                        start = -durationSource;
+
+                        continue;
+                    }
+
+                    int time = timeA + durationSource;
+
+                    if (currentTime >= time)
+                    {
+                        timeA = time;
+
+                        start = 0;
+
+                        continue;
+                    }
+
+                    const WYamlNode & child = *(children.at(i));
+
+                    const WYamlNode * node = child.at("source");
+
+                    if (node == NULL) return;
+
+                    const QList<WYamlNode> & nodes = node->children;
+
+                    if (nodes.isEmpty())
+                    {
+                        applySource(child, node->value, durationSource);
+                    }
+                    else extractSource(nodes);
+
+                    if (source.isEmpty()) applyEmpty();
 
                     return;
                 }
@@ -473,16 +504,13 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 durations.append(durationSource);
 
-                if (durationSource <= 0)
+                if (durationSource > 0)
                 {
-                    startSource = -durationSource;
+                    startSource = 0;
 
-                    continue;
+                    duration += durationSource;
                 }
-
-                startSource = 0;
-
-                duration += durationSource;
+                else startSource = -durationSource;
             }
 
             if (duration == 0)
