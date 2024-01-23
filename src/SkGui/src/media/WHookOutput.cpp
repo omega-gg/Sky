@@ -442,6 +442,12 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         q->setQualityActive(WAbstractBackend::qualityFromString(reply.parameters.first()));
     }
+    else if (type == WBroadcastReply::CONTEXT)
+    {
+        Q_Q(WHookOutput);
+
+        q->setContext(reply.parameters.first());
+    }
     else if (type == WBroadcastReply::VIDEOS)
     {
         Q_Q(WHookOutput);

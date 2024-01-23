@@ -257,6 +257,12 @@ void WBackendManagerPrivate::applySources(bool play)
 
             q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
         }
+        else if (typeRoot == WTrack::Interactive)
+        {
+            type = Interactive;
+
+            q->setContext(reply->context());
+        }
         else
         {
             type = MultiTrack;
@@ -560,8 +566,6 @@ void WBackendManagerPrivate::clearReply()
 
 void WBackendManagerPrivate::clearMedia()
 {
-    Q_Q(WBackendManager);
-
     stopClock      ();
     stopSynchronize();
 
@@ -572,8 +576,6 @@ void WBackendManagerPrivate::clearMedia()
     loop   = false;
 
     currentMedia = QString();
-
-    q->setVbml(false);
 }
 
 //-------------------------------------------------------------------------------------------------

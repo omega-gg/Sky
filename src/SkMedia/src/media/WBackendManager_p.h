@@ -64,7 +64,7 @@ struct WBackendManagerItem
 class SK_MEDIA_EXPORT WBackendManagerPrivate : public WAbstractBackendPrivate
 {
 public: // Enums
-    enum Type { Track, MultiTrack, Channel };
+    enum Type { Track, MultiTrack, Channel, Interactive };
 
 public:
     WBackendManagerPrivate(WBackendManager * p);

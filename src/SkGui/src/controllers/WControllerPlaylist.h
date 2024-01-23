@@ -142,6 +142,7 @@ public: // Enums
         Live,
         Hub,
         Channel,
+        Interactive,
         Playlist,
         Feed,
         Index,

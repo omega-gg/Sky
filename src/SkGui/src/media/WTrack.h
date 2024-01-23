@@ -38,7 +38,7 @@ class WPlaylist;
 class SK_GUI_EXPORT WTrack : public WPrivatable
 {
 public: // Enums
-    enum Type { Unknown, Track, Live, Hub, Channel, Lite };
+    enum Type { Unknown, Track, Live, Hub, Channel, Interactive, Lite };
 
     enum State { Default, Loading, Loaded, LoadCover };
 

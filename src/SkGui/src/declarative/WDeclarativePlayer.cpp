@@ -728,6 +728,7 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress   ()));
         QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
         QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
+        QObject::connect(backend, SIGNAL(contextChanged      ()), q, SLOT(onContext    ()));
         QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
         QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
     }
@@ -751,6 +752,7 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress   ()));
         QObject::disconnect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
         QObject::disconnect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
+        QObject::disconnect(backend, SIGNAL(contextChanged      ()), q, SLOT(onContext    ()));
         QObject::disconnect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
         QObject::disconnect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
     }
@@ -1048,6 +1050,11 @@ void WDeclarativePlayerPrivate::onQuality()
 {
     server->sendReply(WBroadcastReply::QUALITY,
                       WAbstractBackend::qualityToString(backend->qualityActive()));
+}
+
+void WDeclarativePlayerPrivate::onContext()
+{
+    server->sendReply(WBroadcastReply::CONTEXT, backend->context());
 }
 
 void WDeclarativePlayerPrivate::onVideos()
@@ -1890,6 +1897,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(subtitleChanged()), this, SIGNAL(subtitleChanged()));
 
+    connect(backend, SIGNAL(contextChanged()), this, SIGNAL(contextChanged()));
+
     connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
 
     connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
@@ -2697,6 +2706,17 @@ void WDeclarativePlayer::setSubtitle(const QString & subtitle)
 
         emit subtitleChanged();
     }
+}
+
+QString WDeclarativePlayer::context() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->context();
+    }
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------

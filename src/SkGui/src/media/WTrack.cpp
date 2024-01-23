@@ -130,19 +130,21 @@ void WTrack::applyDataTo(WTrack * other) const
 
 /* Q_INVOKABLE static */ WTrack::Type WTrack::typeFromString(const QString & string)
 {
-    if      (string == "track")   return Track;
-    else if (string == "live")    return Live;
-    else if (string == "hub")     return Hub;
-    else if (string == "channel") return Channel;
-    else                          return Unknown;
+    if      (string == "track")       return Track;
+    else if (string == "live")        return Live;
+    else if (string == "hub")         return Hub;
+    else if (string == "channel")     return Channel;
+    else if (string == "interactive") return Interactive;
+    else                              return Unknown;
 }
 
 /* Q_INVOKABLE static */ QString WTrack::typeToString(Type type)
 {
-    if      (type == Live)    return "live";
-    else if (type == Hub)     return "hub";
-    else if (type == Channel) return "channel";
-    else                      return "track";
+    if      (type == Live)        return "live";
+    else if (type == Hub)         return "hub";
+    else if (type == Channel)     return "channel";
+    else if (type == Interactive) return "interactive";
+    else                          return "track";
 }
 
 //-------------------------------------------------------------------------------------------------

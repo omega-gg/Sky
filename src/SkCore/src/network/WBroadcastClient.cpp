@@ -590,6 +590,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "PROGRESS")   return PROGRESS;
     else if (string == "OUTPUT")     return OUTPUT;
     else if (string == "QUALITY")    return QUALITY;
+    else if (string == "CONTEXT")    return CONTEXT;
     else if (string == "VIDEOS")     return VIDEOS;
     else if (string == "AUDIOS")     return AUDIOS;
     else if (string == "VOLUME")     return VOLUME;
@@ -616,6 +617,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == PROGRESS)   return "PROGRESS";
     else if (type == OUTPUT)     return "OUTPUT";
     else if (type == QUALITY)    return "QUALITY";
+    else if (type == CONTEXT)    return "CONTEXT";
     else if (type == VIDEOS)     return "VIDEOS";
     else if (type == AUDIOS)     return "AUDIOS";
     else if (type == VOLUME)     return "VOLUME";

@@ -1000,10 +1000,11 @@ void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
         {
             QString key = child.key;
 
-            if      (key == "track")   parsePlaylistTrack(child, WTrack::Track);
-            else if (key == "live")    parsePlaylistTrack(child, WTrack::Live);
-            else if (key == "hub")     parsePlaylistTrack(child, WTrack::Hub);
-            else if (key == "channel") parsePlaylistTrack(child, WTrack::Channel);
+            if      (key == "track")       parsePlaylistTrack(child, WTrack::Track);
+            else if (key == "live")        parsePlaylistTrack(child, WTrack::Live);
+            else if (key == "hub")         parsePlaylistTrack(child, WTrack::Hub);
+            else if (key == "channel")     parsePlaylistTrack(child, WTrack::Channel);
+            else if (key == "interactive") parsePlaylistTrack(child, WTrack::Interactive);
         }
     }
 }
@@ -6111,20 +6112,23 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 /* Q_INVOKABLE static */
 WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString & string)
 {
-    if      (string == "track")    return Track;
-    else if (string == "live")     return Live;
-    else if (string == "hub")      return Hub;
-    else if (string == "channel")  return Channel;
-    else if (string == "playlist") return Playlist;
-    else if (string == "feed")     return Feed;
-    else if (string == "index")    return Index;
-    else if (string == "backend")  return Backend;
-    else                           return Unknown;
+    if      (string == "track")       return Track;
+    else if (string == "live")        return Live;
+    else if (string == "hub")         return Hub;
+    else if (string == "channel")     return Channel;
+    else if (string == "interactive") return Interactive;
+    else if (string == "playlist")    return Playlist;
+    else if (string == "feed")        return Feed;
+    else if (string == "index")       return Index;
+    else if (string == "backend")     return Backend;
+    else                              return Unknown;
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypeTrack(Type type)
 {
-    return (type == Track || type == Live || type == Hub || type == Channel);
+    return (type == Track || type == Live || type == Hub || type == Channel
+            ||
+            type == Interactive);
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypePlaylist(Type type)

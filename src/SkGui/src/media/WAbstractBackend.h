@@ -224,6 +224,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
+    Q_PROPERTY(QString context READ context NOTIFY contextChanged)
+
 public:
     enum State
     {
@@ -439,6 +441,8 @@ protected: // Functions
     void setOutputActive (Output  output);
     void setQualityActive(Quality quality);
 
+    void setContext(const QString & context);
+
     void deleteNow();
 
     //---------------------------------------------------------------------------------------------
@@ -558,6 +562,8 @@ signals:
 
     void subtitleChanged();
 
+    void contextChanged();
+
 public: // Properties
 #ifndef SK_NO_QML
     WDeclarativePlayer * player() const;
@@ -640,6 +646,8 @@ public: // Properties
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
+
+    QString context() const;
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
@@ -751,6 +759,8 @@ public:
     virtual void filterScanOutput(bool * enabled); // {}
 
     virtual void filterCurrentOutput(int * index); // {}
+
+    virtual void filterContext(QString * context); // {}
 };
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false

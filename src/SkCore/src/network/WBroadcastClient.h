@@ -147,6 +147,7 @@ public: // Enums
         PROGRESS,
         OUTPUT,
         QUALITY,
+        CONTEXT,
         VIDEOS,
         AUDIOS,
         VOLUME,

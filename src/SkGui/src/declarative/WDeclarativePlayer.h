@@ -140,6 +140,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
+    Q_PROPERTY(QString context READ context NOTIFY contextChanged)
+
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
@@ -328,6 +330,8 @@ signals:
 
     void subtitleChanged();
 
+    void contextChanged();
+
     void pauseTimeoutChanged();
 
     void countChanged();
@@ -439,6 +443,8 @@ public: // Properties
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
 
+    QString context() const;
+
     int  pauseTimeout() const;
     void setPauseTimeout(int msec);
 
@@ -512,6 +518,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onProgress   ())
     Q_PRIVATE_SLOT(d_func(), void onOutput     ())
     Q_PRIVATE_SLOT(d_func(), void onQuality    ())
+    Q_PRIVATE_SLOT(d_func(), void onContext    ())
     Q_PRIVATE_SLOT(d_func(), void onVideos     ())
     Q_PRIVATE_SLOT(d_func(), void onAudios     ())
     Q_PRIVATE_SLOT(d_func(), void onScreen     ())

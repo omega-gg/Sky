@@ -120,6 +120,7 @@ public: // Slots
     void onProgress   ();
     void onOutput     ();
     void onQuality    ();
+    void onContext    ();
     void onVideos     ();
     void onAudios     ();
     void onScreen     ();

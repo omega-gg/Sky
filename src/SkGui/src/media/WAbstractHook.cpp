@@ -298,6 +298,13 @@ void WAbstractHook::setQualityActive(WAbstractBackend::Quality quality)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WAbstractHook::setContext(const QString & context)
+{
+    Q_D(WAbstractHook); d->backend->setContext(context);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Backend abstract functions
 
 bool WAbstractHook::backendSetSource(const QString & url, const WMediaReply * reply)

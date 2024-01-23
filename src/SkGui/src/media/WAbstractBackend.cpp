@@ -1110,6 +1110,23 @@ void WAbstractBackend::setQualityActive(Quality quality)
 
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractBackend::setContext(const QString & context)
+{
+    Q_D(WAbstractBackend);
+
+    QString string = context;
+
+    if (d->filter) d->filter->filterContext(&string);
+
+    if (d->context == string) return;
+
+    d->context = string;
+
+    emit contextChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractBackend::deleteNow()
 {
     Q_D(WAbstractBackend);
@@ -1723,6 +1740,11 @@ void WAbstractBackend::setSubtitle(const QString & subtitle)
     emit subtitleChanged();
 }
 
+QString WAbstractBackend::context() const
+{
+    Q_D(const WAbstractBackend); return d->context;
+}
+
 //=================================================================================================
 // WBackendTrack
 //=================================================================================================
@@ -1852,5 +1874,7 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 /* virtual */ void WBackendFilter::filterScanOutput(bool *) {}
 
 /* virtual */ void WBackendFilter::filterCurrentOutput(int *) {}
+
+/* virtual */ void WBackendFilter::filterContext(QString *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND
