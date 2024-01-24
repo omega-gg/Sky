@@ -261,7 +261,7 @@ WControllerMediaData::WControllerMediaData()
     timeA =  0;
     timeB = -1;
 
-    start = -1;
+    start = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -774,7 +774,7 @@ WControllerMediaData::getMediaSource(const QHash<QString, WControllerMediaSource
 
     source->duration = node->extractMsecs("duration", -1);
 
-    source->at = node->extractMsecs("at", -1);
+    source->at = node->extractMsecs("at");
 
     if (source->duration != -1) return source;
 
@@ -1308,7 +1308,7 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.timeA = -1;
         slice.timeB = -1;
 
-        slice.start = -1;
+        slice.start = 0;
 
         appendSlice(slice, media->url, mode);
 
@@ -2094,7 +2094,7 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
     reply->_timeA = -1;
     reply->_timeB = -1;
 
-    reply->_start = -1;
+    reply->_start = 0;
 
     reply->_backend = NULL;
 

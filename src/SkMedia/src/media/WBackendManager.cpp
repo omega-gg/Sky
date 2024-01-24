@@ -92,7 +92,7 @@ void WBackendManagerPrivate::init()
     timeA = -1;
     timeB = -1;
 
-    start = -1;
+    start = 0;
 
     timerClock       = -1;
     timerSynchronize = -1;
