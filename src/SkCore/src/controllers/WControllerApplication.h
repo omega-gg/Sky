@@ -426,6 +426,8 @@ public: // Static functions
 
 #ifdef Q_OS_ANDROID
     Q_INVOKABLE static QString getIntentText();
+
+    Q_INVOKABLE static void clearIntent();
 #endif
 
     //---------------------------------------------------------------------------------------------

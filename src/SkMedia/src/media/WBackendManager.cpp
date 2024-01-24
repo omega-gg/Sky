@@ -360,7 +360,18 @@ void WBackendManagerPrivate::applyTime(int currentTime)
 
     if (currentTime >= duration)
     {
-        if (loop == false)
+        if (type == Interactive)
+        {
+            // NOTE: When the last media is a hub we loop the playback on it.
+            if (clock == false && timeB == duration)
+            {
+                stopBackend();
+
+                q->setEnded(true);
+            }
+            else q->seek(timeA);
+        }
+        else if (loop == false)
         {
             stopBackend();
 

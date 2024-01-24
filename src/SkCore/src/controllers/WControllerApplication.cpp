@@ -1721,6 +1721,19 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     return jni.callObjectMethod<jstring>("getIntentText").toString();
 }
 
+/* Q_INVOKABLE static */ QString WControllerApplication::clearIntent()
+{
+#ifdef QT_5
+    QAndroidJniObject jni = QtAndroid::androidActivity();
+#else
+    QJniObject jni = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (jni.isValid() == false) return;
+
+    return jni.callObjectMethod<void>("clearIntent");
+}
+
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -2276,6 +2289,17 @@ QString WControllerApplication::message() const
     return getIntentText();
 #else
     return QString();
+#endif
+}
+
+void WControllerApplication::clearMessage()
+{
+#ifdef Q_OS_MAC
+    Q_D(const WControllerApplication);
+
+    d->message = QString();
+#elif defined(Q_OS_ANDROID)
+    clearIntent();
 #endif
 }
 
