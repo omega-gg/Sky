@@ -1024,6 +1024,77 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlQuery(const QString & string,
+                                                                     const QString & key, int from)
+{
+    from += key.length() + 1;
+
+    int index = string.indexOf('&', from);
+
+    if (index == -1)
+    {
+         return string.mid(from);
+    }
+    else return string.mid(from, index - from);
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::applyUrlQuery(const QString & string,
+                                                                   const QString & key,
+                                                                   const QString & value, int from)
+{
+    from = string.indexOf(key + '=', from + 1);
+
+    if (from == -1)
+    {
+        return string + '&' + key + '=' + value;
+    }
+
+    from += key.length() + 1;
+
+    int index = string.indexOf('&', from);
+
+    QString result = string;
+
+    if (index == -1)
+    {
+         result.replace(from, result.length() - from, value);
+    }
+    else result.replace(from, index - from, value);
+
+    return result;
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlQuery(const QString & string,
+                                                                    const QString & key, int from)
+{
+    from = string.indexOf(key + '=', from + 1);
+
+    if (from == -1) return string;
+
+    int index = string.indexOf('&', from);
+
+    QString result = string;
+
+    if (index == -1)
+    {
+        // NOTE: We have to remove the '#' or '&' prior to the key.
+        from--;
+
+         result.remove(from, result.length() - from);
+    }
+    else
+    {
+        // NOTE: We have to remove the '&' after the value.
+        index++;
+
+        result.remove(from, index - from);
+    }
+
+    return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ int WControllerNetwork::fragmentIndex(const QString & string,
                                                                const QString & key)
 {
@@ -1040,85 +1111,38 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractFragmentValue(const QString & string,
                                                                           const QString & key)
 {
-    int indexA = fragmentIndex(string, key);
+    int index = fragmentIndex(string, key);
 
-    if (indexA == -1) return QString();
-
-    indexA += key.length() + 1;
-
-    int indexB = string.indexOf('&', indexA);
-
-    if (indexB == -1)
+    if (index == -1)
     {
-         return string.mid(indexA);
+        return QString();
     }
-    else return string.mid(indexA, indexB - indexA);
+    else return extractUrlQuery(string, key, index);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::applyFragmentValue(const QString & string,
                                                                         const QString & key,
                                                                         const QString & value)
 {
-    int indexA = string.lastIndexOf('#');
+    int index = string.lastIndexOf('#');
 
-    if (indexA == -1)
+    if (index == -1)
     {
         return string + '#' + key + '=' + value;
     }
-
-    indexA = string.indexOf(key + '=', indexA + 1);
-
-    if (indexA == -1)
-    {
-        return string + '&' + key + '=' + value;
-    }
-
-    indexA += key.length() + 1;
-
-    int indexB = string.indexOf('&', indexA);
-
-    QString result = string;
-
-    if (indexB == -1)
-    {
-         result.replace(indexA, result.length() - indexA, value);
-    }
-    else result.replace(indexA, indexB - indexA, value);
-
-    return result;
+    else return applyUrlQuery(string, key, value, index);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeFragmentValue(const QString & string,
                                                                          const QString & key)
 {
-    int indexA = string.lastIndexOf('#');
+    int index = string.lastIndexOf('#');
 
-    if (indexA == -1) return string;
-
-    indexA = string.indexOf(key + '=', indexA + 1);
-
-    if (indexA == -1) return string;
-
-    int indexB = string.indexOf('&', indexA);
-
-    QString result = string;
-
-    if (indexB == -1)
+    if (index == -1)
     {
-        // NOTE: We have to remove the '#' or '&' prior to the key.
-        indexA--;
-
-         result.remove(indexA, result.length() - indexA);
+        return string;
     }
-    else
-    {
-        // NOTE: We have to remove the '&' after the value.
-        indexB++;
-
-        result.remove(indexA, indexB - indexA);
-    }
-
-    return result;
+    else return removeUrlQuery(string, key, index);
 }
 
 //-------------------------------------------------------------------------------------------------

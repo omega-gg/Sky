@@ -108,6 +108,16 @@ public: // Static functions
     Q_INVOKABLE static QString extractUrlFileName (const QString & string);
     Q_INVOKABLE static QString extractUrlExtension(const QString & string);
 
+    Q_INVOKABLE static QString extractUrlQuery(const QString & string,
+                                               const QString & key, int from = 0);
+
+    Q_INVOKABLE static QString applyUrlQuery(const QString & string,
+                                             const QString & key,
+                                             const QString & value, int from = 0);
+
+    Q_INVOKABLE static QString removeUrlQuery(const QString & string,
+                                              const QString & key, int from = 0);
+
     // NOTE: Index of a fragment value with the '#key=value' format.
     Q_INVOKABLE static int fragmentIndex(const QString & string, const QString & key);
 

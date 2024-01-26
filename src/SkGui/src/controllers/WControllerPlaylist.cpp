@@ -511,12 +511,6 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         {
             type = WControllerPlaylist::Related;
         }
-        // NOTE: When the playlist is invalid we add the url itself given it could be a media.
-        //       The url should not be a vbml run uri.
-        else if (WControllerPlaylist::urlIsVbmlRun(url) == false)
-        {
-            addMedia(url, WControllerNetwork::extractUrlFileName(url));
-        }
     }
 }
 
@@ -4315,7 +4309,24 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
     }
 
-    if (urlTracks.count() == 1)
+    // NOTE: When our related results are less than 10 we try without the currentTime.
+    if (playlist->count() < 10)
+    {
+        QString url = playlist->source();
+
+        if (WControllerNetwork::extractUrlValue(url, "method") == "related")
+        {
+            source = WControllerNetwork::removeUrlQuery(url, "t");
+
+            if (source != url)
+            {
+                playlist->applySource(source);
+
+                if (applyNextPlaylist(playlist, source, QString(), indexNext)) return;
+            }
+        }
+    }
+    else if (urlTracks.count() == 1)
     {
         int index = playlist->count() - 1;
 
