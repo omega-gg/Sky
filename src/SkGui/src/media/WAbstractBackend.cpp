@@ -755,7 +755,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
 
     if (d->currentTime == msec) return;
 
-    d->currentTime = msec;
+    d->currentTime = qBound(0, msec, d->duration);
 
     if (d->started) backendSeek(msec);
 

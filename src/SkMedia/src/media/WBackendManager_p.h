@@ -154,6 +154,7 @@ public: // Variables
     bool connected;
     bool clock;
     bool loop;
+    bool freeze;
 
     QString urlSource;
 

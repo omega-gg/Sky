@@ -86,6 +86,7 @@ void WBackendManagerPrivate::init()
     connected = false;
     clock     = false;
     loop      = false;
+    freeze    = false;
 
     type = Track;
 
@@ -212,6 +213,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
     if (timeA == -1)
     {
+        freeze = false;
+
         if (currentMedia.isEmpty())
         {
             q->stop();
@@ -387,6 +390,8 @@ void WBackendManagerPrivate::applyTime(int currentTime)
     else if (currentTime > timeB)
     {
         q->setCurrentTime(currentTime);
+
+        freeze = true;
 
         stopBackend();
 
@@ -681,6 +686,8 @@ void WBackendManagerPrivate::onStateLoad()
     qDebug("STATE LOAD %d", stateLoad);
 
     q->setStateLoad(stateLoad);
+
+    freeze = false;
 
     if (clock == false) return;
 
@@ -1070,6 +1077,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (msec < d->timeA || msec > d->timeB)
     {
+        d->freeze = true;
+
         d->stopBackend();
 
         d->loadSources(isPlaying());
@@ -1190,6 +1199,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
+    if (d->freeze) return;
+
     d->backend->synchronize(frame);
 }
 
@@ -1213,6 +1224,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 /* virtual */ void WBackendManager::backendUpdateFrame()
 {
     Q_D(WBackendManager);
+
+    if (d->freeze) return;
 
     d->backend->updateFrame();
 }
