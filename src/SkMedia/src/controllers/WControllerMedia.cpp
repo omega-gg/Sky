@@ -222,7 +222,8 @@ WControllerMediaSource::WControllerMediaSource(const WYamlNode * node, int index
 
     this->node = node;
 
-    id = node->extractString("id");
+    // NOTE: An interactive id has a maximum length of 10 characters.
+    id = node->extractString("id").left(10);
 
     this->index = index;
 
@@ -377,7 +378,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         {
             QString contextBase = reader.extractString("context");
 
-            QStringList tags = reader.extractList("tags");
+            QStringList tags = extractTags(reader);
 
             QList<WControllerMediaSource> sources = extractSources(reader);
 
@@ -647,6 +648,23 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
+
+/* static */ QStringList WControllerMediaData::extractTags(const WYamlReader & reader)
+{
+    QStringList tags;
+
+    QStringList list = reader.extractList("tags");
+
+    foreach (const QString & tag, list)
+    {
+        if (tags.contains(tag)) continue;
+
+        // NOTE: An interactive id has a maximum length of 10 characters.
+        tags.append(tag.left(10));
+    }
+
+    return tags;
+}
 
 /* static */ QList<WControllerMediaSource>
 WControllerMediaData::extractSources(const WYamlReader & reader)
@@ -1164,7 +1182,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     media->start = 0;
 
-    media->context = WControllerNetwork::extractFragmentValue(url, "c");
+    media->context = WControllerNetwork::extractFragmentValue(url, "ctx");
 
     media->backend = NULL;
     media->query   = query;

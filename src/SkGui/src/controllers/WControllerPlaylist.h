@@ -374,6 +374,9 @@ public: // Static functions
     // NOTE: This function returns a vbml uri from a vbml. based url without prefix.
     Q_INVOKABLE static QString vbmlUriFromUrl(const QString & url);
 
+    // NOTE: This function extracts a hash value with the #value format.
+    Q_INVOKABLE static QString vbmlHash(const QString & text);
+
 signals:
     void filesCleared(const QList<int> & idFull);
     void filesDeleted(const QList<int> & idFull);

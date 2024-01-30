@@ -6208,6 +6208,26 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     else return "vbml:" + result;
 }
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlHash(const QString & text)
+{
+    QString string = text.simplified().toLower();
+
+    if (string.startsWith('#') == false) return QString();
+
+    QString result;
+
+    foreach (const QChar & character, string)
+    {
+        if (character.isSpace()
+            ||
+            (character.isLetterOrNumber() == false && character != ',')) continue;
+
+        result.append(character);
+    }
+
+    return result;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

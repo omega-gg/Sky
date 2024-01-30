@@ -185,6 +185,8 @@ public: // Interface
     void applyM3u (const QByteArray & array, const QString & url);
 
 public: // Static functions
+    static QStringList extractTags(const WYamlReader & reader);
+
     static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
 
     static QHash<QString, WControllerMediaSource *>
