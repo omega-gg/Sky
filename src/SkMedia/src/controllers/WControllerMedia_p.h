@@ -77,6 +77,7 @@ struct WPrivateMediaData
     int start;
 
     QString context;
+    QString argument;
 
     WBackendNet * backend;
 
@@ -162,7 +163,8 @@ public: // Functions
                  int                      duration,
                  int                      timeA,
                  int                      start,
-                 const QString          & context) const;
+                 const QString          & context,
+                 const QString          & argument) const;
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
 

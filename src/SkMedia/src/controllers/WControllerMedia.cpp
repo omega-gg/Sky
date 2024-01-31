@@ -268,7 +268,8 @@ WControllerMediaData::WControllerMediaData()
 //-------------------------------------------------------------------------------------------------
 // Interface
 
-void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url)
+void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url,
+                                                               const QString & argument)
 {
     QString content = Sk::readBml(array);
 
@@ -300,7 +301,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         {
             WControllerPlaylist::vbmlPatch(content, api);
 
-            applyVbml(content.toUtf8(), url);
+            applyVbml(content.toUtf8(), url, argument);
 
             return;
         }
@@ -386,13 +387,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             QList<WControllerMediaObject> timeline;
 
-            if (context.isEmpty())
-            {
-                timeline = generateTimeline(hash, contextBase, tags);
-
-                context = generateContext(timeline);
-            }
-            else
+            if (context.isEmpty() == false)
             {
                 timeline = generateTimeline(hash,
                                             WUnzipper::extractBase64(context.toUtf8()), tags);
@@ -403,14 +398,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                     if (timeline.isEmpty()) return;
                 }
-
-                QString contextNew = generateContext(timeline);
-
-                if (context != contextNew)
-                {
-                    context = contextNew;
-                }
             }
+            else timeline = generateTimeline(hash, contextBase, tags);
 
             QList<const WYamlNode *> children;
 
@@ -444,54 +433,21 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 children.append(media->node);
             }
 
+            int index;
+
             if (duration == 0)
             {
                 duration = -1;
 
-                return;
+                index = 0;
             }
+            else index = extractSourceTimeline(children, durations, starts);
 
-            for (int i = 0; i < durations.length(); i++)
+            QString contextNew = generateContext(timeline);
+
+            if (context != contextNew)
             {
-                start = starts.at(i);
-
-                int durationSource = durations.at(i);
-
-                if (durationSource <= 0)
-                {
-                    start = -durationSource;
-
-                    continue;
-                }
-
-                int time = timeA + durationSource;
-
-                if (currentTime >= time)
-                {
-                    timeA = time;
-
-                    start = 0;
-
-                    continue;
-                }
-
-                const WYamlNode & child = *(children.at(i));
-
-                const WYamlNode * node = child.at("source");
-
-                if (node == NULL) return;
-
-                const QList<WYamlNode> & nodes = node->children;
-
-                if (nodes.isEmpty())
-                {
-                    applySource(child, node->value, durationSource);
-                }
-                else extractSource(nodes);
-
-                if (source.isEmpty()) applyEmpty();
-
-                return;
+                context = contextNew;
             }
 
             return;
@@ -530,52 +486,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             if (duration == 0)
             {
                 duration = -1;
-
-                return;
             }
-
-            for (int i = 0; i < durations.length(); i++)
-            {
-                start = starts.at(i);
-
-                int durationSource = durations.at(i);
-
-                if (durationSource <= 0)
-                {
-                    start = -durationSource;
-
-                    continue;
-                }
-
-                int time = timeA + durationSource;
-
-                if (currentTime >= time)
-                {
-                    timeA = time;
-
-                    start = 0;
-
-                    continue;
-                }
-
-                const WYamlNode & child = children.at(i);
-
-                const WYamlNode * node = child.at("source");
-
-                if (node == NULL) return;
-
-                const QList<WYamlNode> & nodes = node->children;
-
-                if (nodes.isEmpty())
-                {
-                    applySource(child, node->value, durationSource);
-                }
-                else extractSource(nodes);
-
-                if (source.isEmpty()) applyEmpty();
-
-                return;
-            }
+            else extractSourceDuration(children, durations, starts);
 
             return;
         }
@@ -805,6 +717,110 @@ WControllerMediaData::getMediaSource(const QHash<QString, WControllerMediaSource
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WControllerMediaData::extractSourceDuration(const QList<WYamlNode> & children,
+                                                 const QList<int>       & durations,
+                                                 const QList<int>       & starts)
+{
+    for (int i = 0; i < durations.length(); i++)
+    {
+        start = starts.at(i);
+
+        int durationSource = durations.at(i);
+
+        if (durationSource <= 0)
+        {
+            start = -durationSource;
+
+            continue;
+        }
+
+        int time = timeA + durationSource;
+
+        if (currentTime >= time)
+        {
+            timeA = time;
+
+            start = 0;
+
+            continue;
+        }
+
+        const WYamlNode & child = children.at(i);
+
+        const WYamlNode * node = child.at("source");
+
+        if (node == NULL) return;
+
+        const QList<WYamlNode> & nodes = node->children;
+
+        if (nodes.isEmpty())
+        {
+            applySource(child, node->value, durationSource);
+        }
+        else extractSource(nodes);
+
+        if (source.isEmpty()) applyEmpty();
+
+        return;
+    }
+}
+
+int WControllerMediaData::extractSourceTimeline(const QList<const WYamlNode *> & children,
+                                                const QList<int>               & durations,
+                                                const QList<int>               & starts)
+{
+    int index = 0;
+
+    while (index < durations.length())
+    {
+        start = starts.at(index);
+
+        int durationSource = durations.at(index);
+
+        if (durationSource <= 0)
+        {
+            start = -durationSource;
+
+            index++;
+
+            continue;
+        }
+
+        int time = timeA + durationSource;
+
+        if (currentTime >= time)
+        {
+            timeA = time;
+
+            start = 0;
+
+            index++;
+
+            continue;
+        }
+
+        const WYamlNode & child = *(children.at(index));
+
+        const WYamlNode * node = child.at("source");
+
+        if (node == NULL) break;
+
+        const QList<WYamlNode> & nodes = node->children;
+
+        if (nodes.isEmpty())
+        {
+            applySource(child, node->value, durationSource);
+        }
+        else extractSource(nodes);
+
+        if (source.isEmpty()) applyEmpty();
+
+        break;
+    }
+
+    return index;
+}
+
 void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 {
     foreach (const WYamlNode & child, children)
@@ -927,7 +943,8 @@ public: // Interface
                                  int             duration,
                                  int             timeA,
                                  int             start,
-                                 const QString & context);
+                                 const QString & context,
+                                 const QString & argument);
 
     Q_INVOKABLE void extractM3u(QIODevice * device, const QString & url);
 
@@ -943,7 +960,8 @@ signals:
                                                           int             duration,
                                                           int             timeA,
                                                           int             start,
-                                                          const QString & context)
+                                                          const QString & context,
+                                                          const QString & argument)
 {
     WControllerMediaData data;
 
@@ -956,7 +974,7 @@ signals:
 
     data.context = context;
 
-    data.applyVbml(WControllerFile::readAll(device), url);
+    data.applyVbml(WControllerFile::readAll(device), url, argument);
 
     emit loaded(device, data);
 
@@ -1037,7 +1055,7 @@ void WControllerMediaPrivate::init(const QStringList & options)
     const QMetaObject * meta = WControllerMediaReply().metaObject();
 
     methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,int,int,int,int,"
-                                                              "QString)"));
+                                                              "QString,QString)"));
 
     methodM3u = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
 
@@ -1182,7 +1200,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     media->start = 0;
 
-    media->context = WControllerNetwork::extractFragmentValue(url, "ctx");
+    media->context  = WControllerNetwork::extractFragmentValue(url, "ctx");
+    media->argument = WControllerNetwork::extractFragmentValue(url, "arg");
 
     media->backend = NULL;
     media->query   = query;
@@ -1201,7 +1220,8 @@ void WControllerMediaPrivate::loadUrl(QIODevice              * device,
                                       int                      duration,
                                       int                      timeA,
                                       int                      start,
-                                      const QString          & context) const
+                                      const QString          & context,
+                                      const QString          & argument) const
 {
     Q_Q(const WControllerMedia);
 
@@ -1222,7 +1242,8 @@ void WControllerMediaPrivate::loadUrl(QIODevice              * device,
                                   Q_ARG(int,             duration),
                                   Q_ARG(int,             timeA),
                                   Q_ARG(int,             start),
-                                  Q_ARG(const QString &, context));
+                                  Q_ARG(const QString &, context),
+                                  Q_ARG(const QString &, argument));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1766,7 +1787,7 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
                                 q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
         }
         else loadUrl(reply, *backendQuery, media->currentTime, media->duration, media->timeA,
-                     media->start, media->context);
+                     media->start, media->context, media->argument);
     }
 
     delete data;

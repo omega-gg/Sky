@@ -181,8 +181,10 @@ public:
     WControllerMediaData();
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url);
-    void applyM3u (const QByteArray & array, const QString & url);
+    void applyVbml(const QByteArray & array, const QString & url,
+                                             const QString & argument);
+
+    void applyM3u(const QByteArray & array, const QString & url);
 
 public: // Static functions
     static QStringList extractTags(const WYamlReader & reader);
@@ -203,6 +205,14 @@ public: // Static functions
     getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
 
 private: // Functions
+    void extractSourceDuration(const QList<WYamlNode> & children,
+                               const QList<int>       & durations,
+                               const QList<int>       & starts);
+
+    int extractSourceTimeline(const QList<const WYamlNode *> & children,
+                              const QList<int>               & durations,
+                              const QList<int>               & starts);
+
     void extractSource(const QList<WYamlNode> & children);
 
     void applySource(const WYamlNode & node, const QString & url, int duration);
