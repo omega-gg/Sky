@@ -6220,7 +6220,8 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     {
         if (character.isSpace()
             ||
-            (character.isLetterOrNumber() == false && character != ',')) continue;
+            (character.isLetterOrNumber() == false && character != '.'
+                                                   && character != ',')) continue;
 
         result.append(character);
     }
