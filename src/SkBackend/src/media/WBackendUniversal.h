@@ -26,11 +26,154 @@
 // Sk includes
 #include <WBackendNet>
 #include <WControllerPlaylist>
+#ifndef SK_NO_TORRENT
+#include <WControllerTorrent>
+#endif
+#include <WRegExp>
 
 #ifndef SK_NO_BACKENDUNIVERSAL
 
 // Forward declarations
-class WBackendUniversalPrivate;
+class  WBackendUniversalPrivate;
+class  WBackendUniversalParameters;
+struct WBackendUniversalData;
+
+//-------------------------------------------------------------------------------------------------
+// WBackendUniversalNode
+//-------------------------------------------------------------------------------------------------
+
+class SK_BACKEND_EXPORT WBackendUniversalNode
+{
+public: // Enums
+    enum Type
+    {
+        String,
+        Variable,
+        Function
+    };
+
+public:
+    WBackendUniversalNode();
+    WBackendUniversalNode(Type type);
+
+public: // Interface
+    QVariant run(WBackendUniversalParameters * parameters) const;
+
+    void dump(int indent = 0) const;
+
+    void applySlice(WControllerPlaylistData * data, const QStringList & list) const;
+
+    QVariant getVariant(WBackendUniversalParameters * parameters, int index) const;
+
+    int   getInt (WBackendUniversalParameters * parameters, int index) const;
+    qreal getReal(WBackendUniversalParameters * parameters, int index) const;
+
+    QByteArray getByteArray(WBackendUniversalParameters * parameters, int index) const;
+    QString    getString   (WBackendUniversalParameters * parameters, int index) const;
+
+    QVariantList getList(WBackendUniversalParameters * parameters, int index) const;
+
+#ifndef SK_NO_TORRENT
+    QVariantList getTorrentItems  (const QList<WTorrentItemData>   & items)   const;
+    QVariantList getTorrentFolders(const QList<WTorrentItemFolder> & folders) const;
+#endif
+
+    QStringList getStringList(WBackendUniversalParameters * parameters, int index) const;
+
+    QList<WRegExp> getRegExps(const QVariantList & variants) const;
+
+    QHash<QString, QVariant> getHash(WBackendUniversalParameters * parameters, int index) const;
+
+    QHash<QString, QVariant> getHtml(const WControllerPlaylistData & data) const;
+
+    QVariantList getPlaylists(const QList<WControllerPlaylistUrl> & urls) const;
+
+    QVariant * getKey(WBackendUniversalParameters * parameters, int index) const;
+
+    const QVariantList variants(const QStringList & list) const;
+
+#ifndef SK_NO_TORRENT
+    QList<WTorrentItemData> torrentItems(WBackendUniversalParameters * parameters,
+                                         int                           index) const;
+#endif
+
+public: // Variables
+    Type type;
+
+    QString data;
+
+    QList<WBackendUniversalNode> nodes;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendUniversalScript
+//-------------------------------------------------------------------------------------------------
+
+class SK_BACKEND_EXPORT WBackendUniversalScript
+{
+public:
+    WBackendUniversalScript(const QString & data);
+
+public: // Interface
+    bool isValid() const;
+
+    QVariant run(WBackendUniversalParameters * parameters) const;
+
+    void dump() const;
+
+private: // Functions
+    void load(const QString & data);
+
+    bool loadParameters(WBackendUniversalNode * node,
+                        QString               * string, const WRegExp & regExp) const;
+
+    bool loadFunction(WBackendUniversalNode * node,
+                      QString               * string, const WRegExp & regExp) const;
+
+    QString extractWord(QString * string) const;
+
+    QString extractString(QString * string, const QChar & character) const;
+
+    bool skipCondition(int * index) const;
+
+    void skipLoop(int * index) const;
+    bool skipEnd (int * index) const;
+
+    void skipOperators(int * index) const;
+
+    bool getCondition(WBackendUniversalParameters * parameters,
+                      const WBackendUniversalNode & node, int * index) const;
+
+public: // Properties
+    QList<WBackendUniversalNode> nodes;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendUniversalParameters
+//-------------------------------------------------------------------------------------------------
+
+class SK_BACKEND_EXPORT WBackendUniversalParameters
+{
+public:
+    WBackendUniversalParameters(const WBackendUniversalScript & script,
+                                const QVariant                & global = QVariant());
+
+public: // Interface
+    void add(const QString & name, const QVariant & value = QVariant());
+
+    QVariant       * value     (const QString & name);
+    const QVariant * valueConst(const QString & name) const;
+
+private: // Functions
+    void extract(QStringList * list, const WBackendUniversalNode & node);
+
+public: // Variables
+    QHash<QString, QVariant> parameters;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendUniversal
+//-------------------------------------------------------------------------------------------------
 
 class SK_BACKEND_EXPORT WBackendUniversal : public WBackendNet
 {

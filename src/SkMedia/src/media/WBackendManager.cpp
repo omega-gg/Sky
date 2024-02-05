@@ -387,7 +387,7 @@ void WBackendManagerPrivate::applyTime(int currentTime)
         }
         else q->seek(0);
     }
-    else if (currentTime > timeB)
+    else if (currentTime >= timeB)
     {
         q->setCurrentTime(currentTime);
 

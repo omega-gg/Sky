@@ -2015,6 +2015,39 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     else return false;
 }
 
+/* Q_INVOKABLE */ bool WPlaylist::trackIsChannel(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+        return track->isChannel();
+    }
+    else return false;
+}
+
+/* Q_INVOKABLE */ bool WPlaylist::trackIsInteractive(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+        return track->isInteractive();
+    }
+    else return false;
+}
+
+/* Q_INVOKABLE */ bool WPlaylist::trackIsLite(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+        return track->isLite();
+    }
+    else return false;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WTrack::State WPlaylist::trackState(int index) const

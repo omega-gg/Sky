@@ -319,6 +319,16 @@ bool WTrack::isHub() const
     Q_D(const WTrack); return (d->type == Hub);
 }
 
+bool WTrack::isChannel() const
+{
+    Q_D(const WTrack); return (d->type == Channel);
+}
+
+bool WTrack::isInteractive() const
+{
+    Q_D(const WTrack); return (d->type == Interactive);
+}
+
 bool WTrack::isLite() const
 {
     Q_D(const WTrack); return (d->type == Lite);

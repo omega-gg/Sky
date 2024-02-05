@@ -74,8 +74,10 @@ public: // Properties
     Type type() const;
     void setType(Type type);
 
-    bool isHub () const;
-    bool isLite() const;
+    bool isHub        () const;
+    bool isChannel    () const;
+    bool isInteractive() const;
+    bool isLite       () const;
 
     State state() const;
     void  setState(State state);

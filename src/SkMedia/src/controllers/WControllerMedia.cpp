@@ -33,6 +33,7 @@
 #include <WControllerNetwork>
 #include <WControllerDownload>
 #include <WControllerPlaylist>
+#include <WBackendUniversal>
 #include <WRegExp>
 #include <WZipper>
 #include <WUnzipper>
@@ -443,6 +444,44 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             }
             else index = extractSourceTimeline(children, durations, starts);
 
+            if (argument.isEmpty() == false)
+            {
+                QStringList list = extractResult(reader, argument);
+
+                /*if (list.isEmpty() == false)
+                {
+                    WControllerMediaSource * media = getMediaSource(hash, list.first());
+
+                    if (media)
+                    {
+                        timeA = timeB;
+
+                        currentTime = timeA;
+
+                        startSource = media->at;
+
+                        int durationSource = media->getDuration(startSource);
+
+                        const WYamlNode & child = *(media->node);
+
+                        const WYamlNode * node = child.at("source");
+
+                        if (node)
+                        {
+                            const QList<WYamlNode> & nodes = node->children;
+
+                            if (nodes.isEmpty())
+                            {
+                                applySource(child, node->value, durationSource);
+                            }
+                            else extractSource(nodes);
+
+                            if (source.isEmpty()) applyEmpty();
+                        }
+                    }
+                }*/
+            }
+
             QString contextNew = generateContext(timeline);
 
             if (context != contextNew)
@@ -606,6 +645,34 @@ WControllerMediaData::extractSources(const WYamlReader & reader)
     }
 
     return list;
+}
+
+/* static */ QStringList WControllerMediaData::extractResult(const WYamlReader & reader,
+                                                             const QString     & argument)
+{
+    QStringList list = argument.split(',');
+
+    if (list.isEmpty()) return QStringList();
+
+    // NOTE: A routine name has a maximum length of 16 characters.
+    QString routine = list.takeFirst().left(16).toUpper();
+
+    WBackendUniversalScript script(reader.extractString(routine));
+
+    if (script.isValid() == false) return QStringList();
+
+    WBackendUniversalParameters parameters(script);
+
+    parameters.add("argument", list.first());
+    parameters.add("args",     list);
+
+    QVariant result = script.run(&parameters).toString();
+
+    if (result.type() == QVariant::List)
+    {
+        return result.toStringList();
+    }
+    else return QStringList() << result.toString();
 }
 
 /* static */ QHash<QString, WControllerMediaSource *>

@@ -2295,7 +2295,7 @@ QString WControllerApplication::message() const
 void WControllerApplication::clearMessage()
 {
 #ifdef Q_OS_MAC
-    Q_D(const WControllerApplication);
+    Q_D(WControllerApplication);
 
     d->message = QString();
 #elif defined(Q_OS_ANDROID)
