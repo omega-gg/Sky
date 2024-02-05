@@ -585,6 +585,8 @@ public: // Properties
 #if defined(Q_OS_MACX) || defined(SK_MOBILE)
     // NOTE android: This returns the 'intent' text.
     QString message() const;
+
+    void clearMessage();
 #endif
 
 #ifdef SK_DESKTOP
