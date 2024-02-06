@@ -445,7 +445,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             int index = extractSourceTimeline(children, durations, starts);
 
-            if (source.isEmpty() || argument.isEmpty()) return;
+            if (timeB != -1 || argument.isEmpty()) return;
 
             QString result = extractResult(reader, argument);
 
