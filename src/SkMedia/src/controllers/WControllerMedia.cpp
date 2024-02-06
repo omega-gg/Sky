@@ -415,6 +415,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             {
                 WControllerMediaSource * media = object.media;
 
+                if (media == NULL) continue;
+
                 startSource += media->at;
 
                 starts.append(startSource);
@@ -434,60 +436,64 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 children.append(media->node);
             }
 
-            int index;
-
             if (duration == 0)
             {
                 duration = -1;
 
-                index = 0;
+                return;
             }
-            else index = extractSourceTimeline(children, durations, starts);
 
-            if (argument.isEmpty() == false)
+            int index = extractSourceTimeline(children, durations, starts);
+
+            if (source.isEmpty() || argument.isEmpty()) return;
+
+            QString result = extractResult(reader, argument);
+
+            QList<WControllerMediaObject> timelineNew = generateTimeline(hash, result, tags);
+
+            if (timelineNew.isEmpty() == false)
             {
-                QStringList list = extractResult(reader, argument);
+                context = generateContext(timeline);
 
-                /*if (list.isEmpty() == false)
+                return;
+            }
+
+            foreach (const WControllerMediaObject & object, timelineNew)
+            {
+                WControllerMediaSource * media = object.media;
+
+                if (media == NULL) continue;
+
+                const WYamlNode & child = *(media->node);
+
+                const WYamlNode * node = child.at("source");
+
+                if (node == NULL) break;
+
+                timeA = timeB;
+
+                currentTime = timeA;
+
+                int durationSource = media->getDuration(media->at);
+
+                const QList<WYamlNode> & nodes = node->children;
+
+                if (nodes.isEmpty())
                 {
-                    WControllerMediaSource * media = getMediaSource(hash, list.first());
+                    applySource(child, node->value, durationSource);
+                }
+                else extractSource(nodes);
 
-                    if (media)
-                    {
-                        timeA = timeB;
+                if (source.isEmpty()) applyEmpty();
 
-                        currentTime = timeA;
+                timeline.erase(timeline.begin() + index, timeline.end());
 
-                        startSource = media->at;
+                timeline.append(timelineNew);
 
-                        int durationSource = media->getDuration(startSource);
-
-                        const WYamlNode & child = *(media->node);
-
-                        const WYamlNode * node = child.at("source");
-
-                        if (node)
-                        {
-                            const QList<WYamlNode> & nodes = node->children;
-
-                            if (nodes.isEmpty())
-                            {
-                                applySource(child, node->value, durationSource);
-                            }
-                            else extractSource(nodes);
-
-                            if (source.isEmpty()) applyEmpty();
-                        }
-                    }
-                }*/
+                break;
             }
 
-            QString contextNew = generateContext(timeline);
-
-            if (context != contextNew)
-            {
-                context = contextNew;
-            }
+            context = generateContext(timeline);
 
             return;
         }
@@ -647,32 +653,26 @@ WControllerMediaData::extractSources(const WYamlReader & reader)
     return list;
 }
 
-/* static */ QStringList WControllerMediaData::extractResult(const WYamlReader & reader,
-                                                             const QString     & argument)
+/* static */ QString WControllerMediaData::extractResult(const WYamlReader & reader,
+                                                         const QString     & argument)
 {
     QStringList list = argument.split(',');
 
-    if (list.isEmpty()) return QStringList();
+    if (list.isEmpty()) return QString();
 
     // NOTE: A routine name has a maximum length of 16 characters.
     QString routine = list.takeFirst().left(16).toUpper();
 
     WBackendUniversalScript script(reader.extractString(routine));
 
-    if (script.isValid() == false) return QStringList();
+    if (script.isValid() == false) return QString();
 
     WBackendUniversalParameters parameters(script);
 
     parameters.add("argument", list.first());
     parameters.add("args",     list);
 
-    QVariant result = script.run(&parameters).toString();
-
-    if (result.type() == QVariant::List)
-    {
-        return result.toStringList();
-    }
-    else return QStringList() << result.toString();
+    return script.run(&parameters).toString();
 }
 
 /* static */ QHash<QString, WControllerMediaSource *>

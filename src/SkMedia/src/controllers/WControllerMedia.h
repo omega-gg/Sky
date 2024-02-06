@@ -191,7 +191,7 @@ public: // Static functions
 
     static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
 
-    static QStringList extractResult(const WYamlReader & reader, const QString & argument);
+    static QString extractResult(const WYamlReader & reader, const QString & argument);
 
     static QHash<QString, WControllerMediaSource *>
     generateHash(QList<WControllerMediaSource> & sources);
