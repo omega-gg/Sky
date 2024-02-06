@@ -215,6 +215,11 @@ private: // Functions
                               const QList<int>               & durations,
                               const QList<int>               & starts);
 
+    QList<const WYamlNode *>
+    extractDurations(const QList<WControllerMediaObject> & timeline, QList<int> * starts,
+                                                                     QList<int> * durations,
+                                                                     int          start);
+
     void extractSource(const QList<WYamlNode> & children);
 
     void applySource(const WYamlNode & node, const QString & url, int duration);

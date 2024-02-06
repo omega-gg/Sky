@@ -29,7 +29,8 @@ contains(QT_MAJOR_VERSION, 4) {
     CONFIG += c++1z
 }
 
-DEFINES += SK_MEDIA_LIBRARY
+# NOTE: We skip torrent since it's not required for WControllerMedia.
+DEFINES += SK_MEDIA_LIBRARY SK_NO_TORRENT
 
 !win32-msvc*:!ios:!android:DEFINES += CAN_COMPILE_SSE2
 
@@ -46,6 +47,8 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
+               $$SK/include/SkBackend \
+               $$SK/include/SkBackend/private \
                $$SK/include/SkMedia \
                $$SK/include/SkMedia/private \
                $$SK/include
@@ -54,19 +57,23 @@ android {
     CONFIG(debug, debug|release) {
 
         LIBS += -L$$SK/lib -lSkCoreD_$$ABI \
-                -L$$SK/lib -lSkGuiD_$$ABI
+                -L$$SK/lib -lSkGuiD_$$ABI \
+                -L$$SK/lib -lSkBackendD_$$ABI
     } else {
         LIBS += -L$$SK/lib -lSkCore_$$ABI \
-                -L$$SK/lib -lSkGui_$$ABI
+                -L$$SK/lib -lSkGui_$$ABI \
+                -L$$SK/lib -lSkBackend_$$ABI
     }
 } else {
     CONFIG(debug, debug|release) {
 
         LIBS += -L$$SK/lib -lSkCoreD \
-                -L$$SK/lib -lSkGuiD
+                -L$$SK/lib -lSkGuiD \
+                -L$$SK/lib -lSkBackendD
     } else {
         LIBS += -L$$SK/lib -lSkCore \
-                -L$$SK/lib -lSkGui
+                -L$$SK/lib -lSkGui \
+                -L$$SK/lib -lSkBackend
     }
 }
 
