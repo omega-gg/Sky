@@ -191,6 +191,10 @@ public: // Static functions
 
     static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
 
+    static int extractDuration(const QList<WControllerMediaObject> & timeline,
+                               QList<int>                          * starts,
+                               QList<int>                          * durations, int start);
+
     static QString extractResult(const WYamlReader & reader, const QString & argument);
 
     static QHash<QString, WControllerMediaSource *>
@@ -211,14 +215,9 @@ private: // Functions
                                const QList<int>       & durations,
                                const QList<int>       & starts);
 
-    int extractSourceTimeline(const QList<const WYamlNode *> & children,
-                              const QList<int>               & durations,
-                              const QList<int>               & starts);
-
-    QList<const WYamlNode *>
-    extractDurations(const QList<WControllerMediaObject> & timeline, QList<int> * starts,
-                                                                     QList<int> * durations,
-                                                                     int          start);
+    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+                              const QList<int>                    & durations,
+                              const QList<int>                    & starts);
 
     void extractSource(const QList<WYamlNode> & children);
 

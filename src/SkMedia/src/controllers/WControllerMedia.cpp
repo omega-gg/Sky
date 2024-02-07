@@ -407,19 +407,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             QList<int> starts;
             QList<int> durations;
 
-            duration = 0;
+            duration = extractDuration(timeline, &starts, &durations, start);
 
-            QList<const WYamlNode *> children = extractDurations(timeline,
-                                                                 &starts, &durations, start);
+            if (duration == -1) return;
 
-            if (duration == 0)
-            {
-                duration = -1;
-
-                return;
-            }
-
-            int index = extractSourceTimeline(children, durations, starts);
+            int index = extractSourceTimeline(timeline, durations, starts);
 
             if (timeB != -1 || argument.isEmpty()) return;
 
@@ -437,9 +429,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             starts   .clear();
             durations.clear();
 
-            children = extractDurations(timelineNew, &starts, &durations, 0);
+            int durationNew = extractDuration(timelineNew, &starts, &durations, 0);
 
-            if (children.isEmpty())
+            if (durationNew == -1)
             {
                 context = generateContext(timeline);
 
@@ -450,22 +442,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             currentTime = timeA;
 
-            const WYamlNode * child = children.first();
+            duration = timeA + durationNew;
 
-            const WYamlNode * node = child->at("source");
-
-            if (node)
-            {
-                const QList<WYamlNode> & nodes = node->children;
-
-                if (nodes.isEmpty())
-                {
-                    applySource(*child, node->value, durations.first());
-                }
-                else extractSource(nodes);
-            }
-
-            if (source.isEmpty()) applyEmpty();
+            extractSourceTimeline(timelineNew, durations, starts);
 
             timeline.erase(timeline.begin() + index, timeline.end());
 
@@ -629,6 +608,44 @@ WControllerMediaData::extractSources(const WYamlReader & reader)
     }
 
     return list;
+}
+
+/* static */
+int WControllerMediaData::extractDuration(const QList<WControllerMediaObject> & timeline,
+                                          QList<int>                          * starts,
+                                          QList<int>                          * durations,
+                                          int                                   start)
+{
+    int duration = 0;
+
+    foreach (const WControllerMediaObject & object, timeline)
+    {
+        WControllerMediaSource * media = object.media;
+
+        if (media == NULL) continue;
+
+        start += media->at;
+
+        starts->append(start);
+
+        int durationSource = media->getDuration(start);
+
+        durations->append(durationSource);
+
+        if (durationSource > 0)
+        {
+            start = 0;
+
+            duration += durationSource;
+        }
+        else start = -durationSource;
+    }
+
+    if (duration == 0)
+    {
+        return -1;
+    }
+    else return duration;
 }
 
 /* static */ QString WControllerMediaData::extractResult(const WYamlReader & reader,
@@ -810,17 +827,17 @@ void WControllerMediaData::extractSourceDuration(const QList<WYamlNode> & childr
     }
 }
 
-int WControllerMediaData::extractSourceTimeline(const QList<const WYamlNode *> & children,
-                                                const QList<int>               & durations,
-                                                const QList<int>               & starts)
+int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+                                                const QList<int>                    & durations,
+                                                const QList<int>                    & starts)
 {
     int index = 0;
 
-    for (int i = 0; i < children.count(); i++)
+    for (int i = 0; i < timeline.count(); i++)
     {
-        const WYamlNode * child = children.at(i);
+        WControllerMediaSource * media = timeline.at(i).media;
 
-        if (child == NULL) continue;
+        if (media == NULL) continue;
 
         start = starts.at(index);
 
@@ -846,6 +863,8 @@ int WControllerMediaData::extractSourceTimeline(const QList<const WYamlNode *> &
             continue;
         }
 
+        const WYamlNode * child = media->node;
+
         const WYamlNode * node = child->at("source");
 
         if (node == NULL) break;
@@ -865,48 +884,6 @@ int WControllerMediaData::extractSourceTimeline(const QList<const WYamlNode *> &
 
     return -1;
 }
-
-QList<const WYamlNode *>
-WControllerMediaData::extractDurations(const QList<WControllerMediaObject> & timeline,
-                                       QList<int>                          * starts,
-                                       QList<int>                          * durations,
-                                       int                                   start)
-{
-    QList<const WYamlNode *> children;
-
-    foreach (const WControllerMediaObject & object, timeline)
-    {
-        WControllerMediaSource * media = object.media;
-
-        if (media == NULL)
-        {
-            children.append(NULL);
-
-            continue;
-        }
-
-        start += media->at;
-
-        starts->append(start);
-
-        int durationSource = media->getDuration(start);
-
-        durations->append(durationSource);
-
-        if (durationSource > 0)
-        {
-            start = 0;
-
-            duration += durationSource;
-        }
-        else start = -durationSource;
-
-        children.append(media->node);
-    }
-
-    return children;
-}
-
 
 void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 {
