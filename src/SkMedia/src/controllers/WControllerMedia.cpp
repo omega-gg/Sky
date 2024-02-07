@@ -816,17 +816,21 @@ int WControllerMediaData::extractSourceTimeline(const QList<const WYamlNode *> &
 {
     int index = 0;
 
-    while (index < durations.length())
+    for (int i = 0; i < children.count(); i++)
     {
+        const WYamlNode * child = children.at(i);
+
+        if (child == NULL) continue;
+
         start = starts.at(index);
 
         int durationSource = durations.at(index);
 
+        index++;
+
         if (durationSource <= 0)
         {
             start = -durationSource;
-
-            index++;
 
             continue;
         }
@@ -839,14 +843,10 @@ int WControllerMediaData::extractSourceTimeline(const QList<const WYamlNode *> &
 
             start = 0;
 
-            index++;
-
             continue;
         }
 
-        const WYamlNode & child = *(children.at(index));
-
-        const WYamlNode * node = child.at("source");
+        const WYamlNode * node = child->at("source");
 
         if (node == NULL) break;
 
@@ -854,16 +854,16 @@ int WControllerMediaData::extractSourceTimeline(const QList<const WYamlNode *> &
 
         if (nodes.isEmpty())
         {
-            applySource(child, node->value, durationSource);
+            applySource(*child, node->value, durationSource);
         }
         else extractSource(nodes);
 
         if (source.isEmpty()) applyEmpty();
 
-        break;
+        return i;
     }
 
-    return index;
+    return -1;
 }
 
 QList<const WYamlNode *>
@@ -878,7 +878,12 @@ WControllerMediaData::extractDurations(const QList<WControllerMediaObject> & tim
     {
         WControllerMediaSource * media = object.media;
 
-        if (media == NULL) continue;
+        if (media == NULL)
+        {
+            children.append(NULL);
+
+            continue;
+        }
 
         start += media->at;
 
