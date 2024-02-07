@@ -5,7 +5,6 @@ CONFIG += ordered
 isEmpty(TOOLS) {
     SUBDIRS = src/SkCore \
               src/SkGui \
-              src/SkMedia \
               src/SkBarcode \
 
     greaterThan(QT_MAJOR_VERSION, 4) {
@@ -20,7 +19,8 @@ isEmpty(TOOLS) {
     # NOTE iOS: Torrents are not available.
     !ios: SUBDIRS += src/SkTorrent
 
-    SUBDIRS += src/SkBackend
+    SUBDIRS += src/SkBackend \
+               src/SkMedia \
 
     !ios:!android:SUBDIRS += tools
 } else {
