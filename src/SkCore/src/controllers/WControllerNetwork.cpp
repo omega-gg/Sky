@@ -346,6 +346,7 @@ static const ushort CONTROLLERNETWORK_EXTENDED[0xA0 - 0x80] =
 
 //-------------------------------------------------------------------------------------------------
 // Inline functions
+//-------------------------------------------------------------------------------------------------
 
 inline bool operator<(const QString & string, const WControllerNetworkEntity & entity)
 {
@@ -356,6 +357,23 @@ inline bool operator<(const WControllerNetworkEntity & entity, const QString & s
 {
     return entity.name < string;
 }
+
+#ifndef SK_NO_TORRENT
+
+//-------------------------------------------------------------------------------------------------
+// Torrent
+
+inline bool sortA(const WTorrentItemData & itemA, const WTorrentItemData & itemB)
+{
+    return (itemA.name.toLower() < itemB.name.toLower());
+}
+
+inline bool sortB(const WTorrentItemData & itemA, const WTorrentItemData & itemB)
+{
+    return (itemA.index < itemB.index);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -411,6 +429,7 @@ void WControllerNetworkPrivate::checkConnection()
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
+// Json
 
 /* static */ int WControllerNetworkPrivate::indexJsonEndA(const QString & text, int at)
 {
@@ -496,6 +515,203 @@ void WControllerNetworkPrivate::checkConnection()
 
     return -1;
 }
+
+//-------------------------------------------------------------------------------------------------
+// Bencode
+
+/* static */ int WControllerNetworkPrivate::listAfter(const QString & text,
+                                                      const QString & string, int * at)
+{
+    int from = *at;
+
+    from++;
+
+    while (from < text.length())
+    {
+        QChar character = text.at(from);
+
+        if (character == 'e')
+        {
+            *at = from + 1;
+
+            return -1;
+        }
+
+        WControllerNetwork::BencodeType type = WControllerNetwork::getBencodeType(character);
+
+        if (type == WControllerNetwork::Null)
+        {
+            *at = -1;
+
+            return -1;
+        }
+
+        if (type == WControllerNetwork::String)
+        {
+            int index = text.indexOf(':', from);
+
+            if (index == -1)
+            {
+                 *at = -1;
+
+                 return -1;
+            }
+
+            int length = text.mid(from, index - from).toInt();
+
+            index++;
+
+            from = index + length;
+
+            if (string.length() == length && string == text.mid(index, length))
+            {
+                 return from;
+            }
+        }
+        else if (type == WControllerNetwork::Integer)
+        {
+            from = WControllerNetwork::skipBencodeInteger(text, from);
+        }
+        else // if (type == WControllerNetwork::List || type == WControllerNetwork::Dictionary)
+        {
+            int index = listAfter(text, string, &from);
+
+            if (index != -1)
+            {
+                 return index;
+            }
+            else if (from == -1)
+            {
+                 *at = -1;
+
+                 return -1;
+            }
+        }
+    }
+
+    *at = from;
+
+    return -1;
+}
+
+/* static */ int WControllerNetworkPrivate::extractString(QString       * string,
+                                                          const QString & data, int at)
+{
+    int index = data.indexOf(':', at);
+
+    if (index == -1) return -1;
+
+    int length = data.mid(at, index - at).toInt();
+
+    if (length == 0) return -1;
+
+    index++;
+
+    *string = data.mid(index, length);
+
+    return index + length;
+}
+
+/* static */ int WControllerNetworkPrivate::getIndex(const QString & name)
+{
+    QString string;
+
+    for (int i = 0; i < name.length(); i++)
+    {
+        QChar character = name.at(i);
+
+        if (character.isDigit() == false) break;
+
+        string.append(character);
+    }
+
+    if (string.isEmpty())
+    {
+        return -1;
+    }
+    else return string.toInt();
+}
+
+#ifndef SK_NO_TORRENT
+
+//-------------------------------------------------------------------------------------------------
+// Torrent
+
+/* static */ int WControllerNetworkPrivate::extractItem(WTorrentItemData * item,
+                                                        const QString    & data, int at)
+{
+    int index = data.indexOf(':', at);
+
+    if (index == -1) return -1;
+
+    int length = data.mid(at, index - at).toInt();
+
+    if (length == 0) return -1;
+
+    index++;
+
+    QString string = data.mid(index, length);
+
+    at = index + length;
+
+    if (at < data.length())
+    {
+        if (data.at(at) == 'e')
+        {
+            item->name  = string;
+            item->index = getIndex(string);
+
+            at++;
+        }
+        else
+        {
+            item->path.append(string);
+
+            return extractItem(item, data, at);
+        }
+    }
+
+    return at;
+}
+
+/* static */
+WTorrentItemFolder WControllerNetworkPrivate::extractFolder(QList<WTorrentItemData> * items)
+{
+    QList<WTorrentItemData> list;
+
+    WTorrentItemData item = items->takeAt(0);
+
+    QString path = item.path;
+
+    list.append(item);
+
+    int index = 0;
+
+    while (index < items->length())
+    {
+        if (items->at(index).path == path)
+        {
+            item = items->takeAt(index);
+
+            list.append(item);
+        }
+        else index++;
+    }
+
+    if (list.first().index == -1)
+    {
+        std::sort(list.begin(), list.end(), sortA);
+    }
+    else std::sort(list.begin(), list.end(), sortB);
+
+    WTorrentItemFolder folder;
+
+    folder.items = list;
+
+    return folder;
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
@@ -2146,6 +2362,340 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     return fixHtml(result);
 }
+
+//-------------------------------------------------------------------------------------------------
+// Bencode
+
+/* Q_INVOKABLE static */
+WControllerNetwork::BencodeType WControllerNetwork::extractBencodeType(const QString & text,
+                                                                       int             at)
+{
+    if (at < 0 || at >= text.length())
+    {
+         return Null;
+    }
+    else return getBencodeType(text.at(at));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractBencodeString(const QString & text,
+                                                                          int             at)
+{
+    int index = text.indexOf(':', at);
+
+    if (index == -1) return QString();
+
+    int length = text.mid(at, index - at).toInt();
+
+    if (length)
+    {
+         return text.mid(index + 1, length);
+    }
+    else return QString();
+}
+
+/* Q_INVOKABLE static */ int WControllerNetwork::extractBencodeInteger(const QString & text,
+                                                                       int             at)
+{
+    at++;
+
+    int index = text.indexOf('e', at);
+
+    if (index == -1)
+    {
+         return -1;
+    }
+    else return text.mid(at, index - at).toInt();
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractBencodeList(const QString & text,
+                                                                        int             at)
+{
+    int index = skipBencodeList(text, at);
+
+    if (index != -1)
+    {
+        at++;
+
+        return text.mid(at, index - at);
+    }
+    else return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ int WControllerNetwork::indexBencodeAfter(const QString & text,
+                                                                   const QString & string,
+                                                                   int             at)
+{
+    while (at < text.length())
+    {
+         QChar character = text.at(at);
+
+         if (character == 'e')
+         {
+            at++;
+
+            continue;
+         }
+
+         BencodeType type = getBencodeType(character);
+
+         if (type == Null) return -1;
+
+         if (type == String)
+         {
+            int index = text.indexOf(':', at);
+
+            if (index == -1) return -1;
+
+            int length = text.mid(at, index - at).toInt();
+
+            index++;
+
+            at = index + length;
+
+            if (string.length() == length && string == text.mid(index, length))
+            {
+                return at;
+            }
+         }
+         else if (type == Integer)
+         {
+            at = skipBencodeInteger(text, at);
+         }
+         else // if (type == List || type == Dictionary)
+         {
+            int index = WControllerNetworkPrivate::listAfter(text, string, &at);
+
+            if (index != -1)
+            {
+                return index;
+            }
+            else if (at == -1)
+            {
+                return -1;
+            }
+         }
+    }
+
+    return -1;
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::stringBencodeAfter(const QString & text,
+                                                                        const QString & string,
+                                                                        int             at)
+{
+    int index = indexBencodeAfter(text, string, at);
+
+    if (index == -1)
+    {
+         return QString();
+    }
+    else return extractBencodeString(text, index);
+}
+
+/* Q_INVOKABLE static */ int WControllerNetwork::integerBencodeAfter(const QString & text,
+                                                                     const QString & string,
+                                                                     int             at)
+{
+    int index = indexBencodeAfter(text, string, at);
+
+    if (index == -1)
+    {
+         return -1;
+    }
+    else return extractBencodeInteger(text, index);
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::listBencodeAfter(const QString & text,
+                                                                      const QString & string,
+                                                                      int             at)
+{
+    int index = indexBencodeAfter(text, string, at);
+
+    if (index == -1)
+    {
+         return QString();
+    }
+    else return extractBencodeList(text, index);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ int WControllerNetwork::skipBencodeString(const QString & text, int at)
+{
+    int index = text.indexOf(':', at);
+
+    if (index == -1) return at;
+
+    QString length = text.mid(at, index - at);
+
+    return index + 1 + length.toInt();
+}
+
+/* Q_INVOKABLE static */ int WControllerNetwork::skipBencodeInteger(const QString & text, int at)
+{
+    at++;
+
+    int index = text.indexOf('e', at);
+
+    if (index == -1)
+    {
+         return at;
+    }
+    else return index + 1;
+}
+
+/* Q_INVOKABLE static */ int WControllerNetwork::skipBencodeList(const QString & text, int at)
+{
+    at++;
+
+    while (at < text.length())
+    {
+         QChar character = text.at(at);
+
+         if (character == 'e')
+         {
+            return at + 1;
+         }
+
+         BencodeType type = getBencodeType(character);
+
+         if (type == Null) return at;
+
+         if (type == String)
+         {
+            at = skipBencodeString(text, at);
+         }
+         else if (type == Integer)
+         {
+            at = skipBencodeInteger(text, at);
+         }
+         else // if (type == List || type == Dictionary)
+         {
+            at = skipBencodeList(text, at);
+         }
+    }
+
+    return at;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QStringList WControllerNetwork::splitBencodeList(const QString & text)
+{
+    QStringList list;
+
+    int index = 0;
+
+    int at = skipBencodeList(text);
+
+    while (at < text.length())
+    {
+         QString string = text.mid(index, at - index);
+
+         list.append(string);
+
+         index = at;
+
+         at = skipBencodeList(text, index);
+    }
+
+    return list;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+WControllerNetwork::BencodeType WControllerNetwork::getBencodeType(const QChar & character)
+{
+    if      (character == 'i')    return WControllerNetwork::Integer;
+    else if (character == 'l')    return WControllerNetwork::List;
+    else if (character == 'd')    return WControllerNetwork::Dictionary;
+    else if (character.isDigit()) return WControllerNetwork::String;
+    else                          return WControllerNetwork::Null;
+}
+
+#ifndef SK_NO_TORRENT
+
+//-------------------------------------------------------------------------------------------------
+// Torrent
+
+/* Q_INVOKABLE static */
+QList<WTorrentItemData> WControllerNetwork::torrentItems(const QString & data)
+{
+    QList<WTorrentItemData> items;
+
+    QString list = listBencodeAfter(data, "files");
+
+    int index = indexBencodeAfter(list, "path");
+
+    int id = 1;
+
+    while (index != -1)
+    {
+         WTorrentItemData item;
+
+         item.id = id;
+
+         QChar character = list.at(index);
+
+         if (character == 'l')
+         {
+            index++;
+
+            index = WControllerNetworkPrivate::extractItem(&item, list, index);
+
+            if (index == -1) return items;
+
+            if (item.name.isEmpty() == false)
+            {
+                items.append(item);
+            }
+         }
+         else
+         {
+            QString name;
+
+            index = WControllerNetworkPrivate::extractString(&name, list, index);
+
+            if (index == -1) return items;
+
+            if (name.isEmpty() == false)
+            {
+                item.name  = name;
+                item.index = WControllerNetworkPrivate::getIndex(name);
+
+                items.append(item);
+            }
+         }
+
+         index = indexBencodeAfter(list, "path", index);
+
+         id++;
+    }
+
+    return items;
+}
+
+/* Q_INVOKABLE static */
+QList<WTorrentItemFolder> WControllerNetwork::torrentFolders(const QList<WTorrentItemData> & items)
+{
+    QList<WTorrentItemFolder> list;
+
+    QList<WTorrentItemData> data = items;
+
+    while (data.isEmpty() == false)
+    {
+         list.append(WControllerNetworkPrivate::extractFolder(&data));
+    }
+
+    return list;
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

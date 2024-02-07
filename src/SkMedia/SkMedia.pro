@@ -29,8 +29,7 @@ contains(QT_MAJOR_VERSION, 4) {
     CONFIG += c++1z
 }
 
-# NOTE: We skip torrent since it's not required for WControllerMedia.
-DEFINES += SK_MEDIA_LIBRARY SK_NO_TORRENT
+DEFINES += SK_MEDIA_LIBRARY
 
 !win32-msvc*:!ios:!android:DEFINES += CAN_COMPILE_SSE2
 

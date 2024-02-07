@@ -39,6 +39,37 @@ class WPage;
 // Defines
 #define wControllerNetwork WControllerNetwork::instance()
 
+#ifndef SK_NO_TORRENT
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentItemData
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentItemData
+{
+    int id;
+
+    QString path;
+    QString name;
+
+    int index;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentItemFolder
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentItemFolder
+{
+    QList<WTorrentItemData> items;
+};
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+// WControllerNetwork
+//-------------------------------------------------------------------------------------------------
+
 class SK_CORE_EXPORT WControllerNetwork : public WController
 {
     Q_OBJECT
@@ -47,6 +78,16 @@ class SK_CORE_EXPORT WControllerNetwork : public WController
 
     Q_PROPERTY(bool checkConnected READ isCheckingConnected WRITE setCheckConnected
                NOTIFY checkConnectedChanged)
+
+public: // Enums
+    enum BencodeType
+    {
+        Null,
+        String,
+        Integer,
+        List,
+        Dictionary
+    };
 
 private:
     WControllerNetwork();
@@ -246,6 +287,7 @@ public: // Static functions
     Q_INVOKABLE static QString extractAttributeUtf8At(const QString & text, int at);
 
     //---------------------------------------------------------------------------------------------
+    // Json
 
     Q_INVOKABLE static int indexJson(const QString & text, const QString & attribute,
                                      int             from = 0);
@@ -291,6 +333,46 @@ public: // Static functions
 
     Q_INVOKABLE static QString extractScriptHtml(const QString & text,
                                                  const QString & name, int from = 0);
+
+    //---------------------------------------------------------------------------------------------
+    // Bencode
+
+    Q_INVOKABLE static BencodeType extractBencodeType(const QString & text, int at = 0);
+
+    Q_INVOKABLE static QString extractBencodeString (const QString & text, int at = 0);
+    Q_INVOKABLE static int     extractBencodeInteger(const QString & text, int at = 0);
+    Q_INVOKABLE static QString extractBencodeList   (const QString & text, int at = 0);
+
+    Q_INVOKABLE static int indexBencodeAfter(const QString & text,
+                                             const QString & string, int at = 0);
+
+    Q_INVOKABLE static QString stringBencodeAfter(const QString & text,
+                                                  const QString & string, int at = 0);
+
+    Q_INVOKABLE static int integerBencodeAfter(const QString & text,
+                                               const QString & string, int at = 0);
+
+    Q_INVOKABLE static QString listBencodeAfter(const QString & text,
+                                                const QString & string, int at = 0);
+
+    Q_INVOKABLE static int skipBencodeString (const QString & text, int at = 0);
+    Q_INVOKABLE static int skipBencodeInteger(const QString & text, int at = 0);
+    Q_INVOKABLE static int skipBencodeList   (const QString & text, int at = 0);
+
+    Q_INVOKABLE static QStringList splitBencodeList(const QString & text);
+
+    Q_INVOKABLE static BencodeType getBencodeType(const QChar & character);
+
+#ifndef SK_NO_TORRENT
+    //---------------------------------------------------------------------------------------------
+    // Torrent
+
+    Q_INVOKABLE
+    static QList<WTorrentItemData> torrentItems(const QString & data);
+
+    Q_INVOKABLE
+    static QList<WTorrentItemFolder> torrentFolders(const QList<WTorrentItemData> & items);
+#endif
 
 signals:
     void connectedChanged(bool connected);

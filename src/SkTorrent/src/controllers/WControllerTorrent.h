@@ -245,29 +245,6 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
-// WTorrentItemData
-//-------------------------------------------------------------------------------------------------
-
-struct WTorrentItemData
-{
-    int id;
-
-    QString path;
-    QString name;
-
-    int index;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WTorrentItemFolder
-//-------------------------------------------------------------------------------------------------
-
-struct WTorrentItemFolder
-{
-    QList<WTorrentItemData> items;
-};
-
-//-------------------------------------------------------------------------------------------------
 // WTorrentEvent
 //-------------------------------------------------------------------------------------------------
 
@@ -407,16 +384,6 @@ class SK_TORRENT_EXPORT WControllerTorrent : public WController
 
     Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
 
-public: // Enums
-    enum Type
-    {
-        Null,
-        String,
-        Integer,
-        List,
-        Dictionary
-    };
-
 private:
     WControllerTorrent();
 
@@ -451,42 +418,6 @@ public: // Interface
     Q_INVOKABLE void registerLoader   (WBackendNetQuery::Type type, WAbstractLoader * loader);
     Q_INVOKABLE void unregisterLoader (WBackendNetQuery::Type type);
     Q_INVOKABLE void unregisterLoaders();
-
-public: // Static functions
-    Q_INVOKABLE
-    static QList<WTorrentItemData> torrentItems(const QString & data);
-
-    Q_INVOKABLE
-    static QList<WTorrentItemFolder> torrentFolders(const QList<WTorrentItemData> & items);
-
-    //---------------------------------------------------------------------------------------------
-    // Bencode
-
-    Q_INVOKABLE static Type extractType(const QString & text, int at = 0);
-
-    Q_INVOKABLE static QString extractString (const QString & text, int at = 0);
-    Q_INVOKABLE static int     extractInteger(const QString & text, int at = 0);
-    Q_INVOKABLE static QString extractList   (const QString & text, int at = 0);
-
-    Q_INVOKABLE static int indexAfter(const QString & text,
-                                      const QString & string, int at = 0);
-
-    Q_INVOKABLE static QString stringAfter(const QString & text,
-                                           const QString & string, int at = 0);
-
-    Q_INVOKABLE static int integerAfter(const QString & text,
-                                        const QString & string, int at = 0);
-
-    Q_INVOKABLE static QString listAfter(const QString & text,
-                                         const QString & string, int at = 0);
-
-    Q_INVOKABLE static int skipString (const QString & text, int at = 0);
-    Q_INVOKABLE static int skipInteger(const QString & text, int at = 0);
-    Q_INVOKABLE static int skipList   (const QString & text, int at = 0);
-
-    Q_INVOKABLE static QStringList splitList(const QString & text);
-
-    Q_INVOKABLE static Type getType(const QChar & character);
 
 signals:
     void portChanged();

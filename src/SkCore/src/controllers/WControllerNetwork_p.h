@@ -55,8 +55,29 @@ public: // Functions
     void checkConnection();
 
 public: // Static functions
+    //---------------------------------------------------------------------------------------------
+    // Json
+
     static int indexJsonEndA(const QString & text, int at);
     static int indexJsonEndB(const QString & text, int at, const QChar & charA);
+
+    //---------------------------------------------------------------------------------------------
+    // Bencode
+
+    static int listAfter(const QString & text, const QString & string, int * at);
+
+    static int extractString(QString * string, const QString & data, int at);
+
+    static int getIndex(const QString & name);
+
+#ifndef SK_NO_TORRENT
+    //---------------------------------------------------------------------------------------------
+    // Torrent
+
+    static int extractItem(WTorrentItemData * item, const QString & data, int at);
+
+    static WTorrentItemFolder extractFolder(QList<WTorrentItemData> * items);
+#endif
 
 public: // Slots
     void onStateChanged(QAbstractSocket::SocketState socketState);

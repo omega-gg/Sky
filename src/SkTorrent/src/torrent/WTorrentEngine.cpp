@@ -208,13 +208,13 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
     QString content = Sk::readAscii(file.readAll());
 
-    int index = WControllerTorrent::indexAfter(content, "pieces");
+    int index = WControllerNetwork::indexBencodeAfter(content, "pieces");
 
-    QString finished = WControllerTorrent::extractString(content, index);
+    QString finished = WControllerNetwork::extractBencodeString(content, index);
 
-    index = WControllerTorrent::indexAfter(content, "unfinished");
+    index = WControllerNetwork::indexBencodeAfter(content, "unfinished");
 
-    QString unfinished = WControllerTorrent::extractList(content, index);
+    QString unfinished = WControllerNetwork::extractBencodeList(content, index);
 
     int lengthA = finished  .length();
     int lengthB = unfinished.length();
@@ -248,17 +248,17 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
     QBitArray * blocks = &(data->blocks);
 
-    QStringList list = WControllerTorrent::splitList(unfinished);
+    QStringList list = WControllerNetwork::splitBencodeList(unfinished);
 
     foreach (const QString & string, list)
     {
-        int piece = WControllerTorrent::integerAfter(string, "piece");
+        int piece = WControllerNetwork::integerBencodeAfter(string, "piece");
 
         if (piece >= count) continue;
 
         int block = piece * data->blockCount;
 
-        QString bitmask = WControllerTorrent::stringAfter(string, "bitmask");
+        QString bitmask = WControllerNetwork::stringBencodeAfter(string, "bitmask");
 
         const char * bits = bitmask.C_STR;
 

@@ -2276,12 +2276,12 @@ inline QVariant torrentStringAfter(const WBackendUniversalNode * node,
 
     if (count == 2)
     {
-         return WControllerTorrent::stringAfter(node->getString(parameters, 0),
-                                                node->getString(parameters, 1));
+         return WControllerNetwork::stringBencodeAfter(node->getString(parameters, 0),
+                                                       node->getString(parameters, 1));
     }
-    else return WControllerTorrent::stringAfter(node->getString(parameters, 0),
-                                                node->getString(parameters, 1),
-                                                node->getInt(parameters, 2));
+    else return WControllerNetwork::stringBencodeAfter(node->getString(parameters, 0),
+                                                       node->getString(parameters, 1),
+                                                       node->getInt(parameters, 2));
 }
 
 inline QVariant torrentIntegerAfter(const WBackendUniversalNode * node,
@@ -2297,12 +2297,12 @@ inline QVariant torrentIntegerAfter(const WBackendUniversalNode * node,
 
     if (count == 2)
     {
-         return WControllerTorrent::integerAfter(node->getString(parameters, 0),
-                                                 node->getString(parameters, 1));
+         return WControllerNetwork::integerBencodeAfter(node->getString(parameters, 0),
+                                                        node->getString(parameters, 1));
     }
-    else return WControllerTorrent::integerAfter(node->getString(parameters, 0),
-                                                 node->getString(parameters, 1),
-                                                 node->getInt(parameters, 2));
+    else return WControllerNetwork::integerBencodeAfter(node->getString(parameters, 0),
+                                                        node->getString(parameters, 1),
+                                                        node->getInt(parameters, 2));
 }
 
 inline QVariant torrentListAfter(const WBackendUniversalNode * node,
@@ -2318,12 +2318,12 @@ inline QVariant torrentListAfter(const WBackendUniversalNode * node,
 
     if (count == 2)
     {
-         return WControllerTorrent::listAfter(node->getString(parameters, 0),
-                                              node->getString(parameters, 1));
+         return WControllerNetwork::listBencodeAfter(node->getString(parameters, 0),
+                                                     node->getString(parameters, 1));
     }
-    else return WControllerTorrent::listAfter(node->getString(parameters, 0),
-                                              node->getString(parameters, 1),
-                                              node->getInt(parameters, 2));
+    else return WControllerNetwork::listBencodeAfter(node->getString(parameters, 0),
+                                                     node->getString(parameters, 1),
+                                                     node->getInt(parameters, 2));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2339,7 +2339,7 @@ inline QVariant torrentItems(const WBackendUniversalNode * node,
 
     QString data = node->getString(parameters, 0);
 
-    QList<WTorrentItemData> items = WControllerTorrent::torrentItems(data);
+    QList<WTorrentItemData> items = WControllerNetwork::torrentItems(data);
 
     return node->getTorrentItems(items);
 }
@@ -2357,7 +2357,7 @@ inline QVariant torrentFolders(const WBackendUniversalNode * node,
 
     QList<WTorrentItemData> items = node->torrentItems(parameters, 0);
 
-    QList<WTorrentItemFolder> folder = WControllerTorrent::torrentFolders(items);
+    QList<WTorrentItemFolder> folder = WControllerNetwork::torrentFolders(items);
 
     return node->getTorrentFolders(folder);
 }

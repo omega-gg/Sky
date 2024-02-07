@@ -27,7 +27,7 @@
 #include <WBackendNet>
 #include <WControllerPlaylist>
 #ifndef SK_NO_TORRENT
-#include <WControllerTorrent>
+#include <WControllerNetwork>
 #endif
 #include <WRegExp>
 
