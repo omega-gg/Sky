@@ -1721,7 +1721,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     return jni.callObjectMethod<jstring>("getIntentText").toString();
 }
 
-/* Q_INVOKABLE static */ QString WControllerApplication::clearIntent()
+/* Q_INVOKABLE static */ void WControllerApplication::clearIntent()
 {
 #ifdef QT_5
     QAndroidJniObject jni = QtAndroid::androidActivity();
@@ -1731,7 +1731,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
     if (jni.isValid() == false) return;
 
-    return jni.callObjectMethod<void>("clearIntent");
+    jni.callObjectMethod<void>("clearIntent");
 }
 
 #endif
