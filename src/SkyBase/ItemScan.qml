@@ -125,7 +125,7 @@ Scanner
 
             timer.restart();
         }
-        else pClearHover()
+        else clearHover()
     }
 //#END
 
@@ -148,7 +148,7 @@ Scanner
         /* QML_CONNECTION */ function onLoaded() { pRestart() }
 
         // NOTE: Clear the rectangle when we switch between the player and the cover.
-        /* QML_CONNECTION */ function onVisibleChanged() { pClearHover() }
+        /* QML_CONNECTION */ function onVisibleChanged() { clearHover() }
     }
 //#END
 
@@ -175,6 +175,13 @@ Scanner
         else pClick = scanFrame(x, y, 1, 5);
 
         return pClick;
+    }
+
+    function clearHover()
+    {
+        timer.stop();
+
+        rectangleTag.hovered = false;
     }
 
     function getTextHovered()
@@ -223,13 +230,6 @@ Scanner
 
         scanFrame(position.x, position.y);
     }
-
-    function pClearHover()
-    {
-        timer.stop();
-
-        rectangleTag.hovered = false;
-    }
 //#END
 
     //---------------------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ Scanner
         cursor: Qt.PointingHandCursor
 
         // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
-        onHoverActiveChanged: if (hoverActive == false) pClearHover()
+        onHoverActiveChanged: if (hoverActive == false) clearHover()
 
         /* QML_EVENT */ onPositionChanged: function(mouse) { itemScan.positionChanged(mouse); }
     }

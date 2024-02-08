@@ -937,6 +937,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         d->stopBackend();
 
         d->loadSources(true);
+
+        setStateLoad(WAbstractBackend::StateLoadBuffering);
     }
     else d->stopBackend();
 
