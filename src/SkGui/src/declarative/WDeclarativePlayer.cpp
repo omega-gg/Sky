@@ -1411,7 +1411,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     if (bookmark)
     {
-        d->loadSource(bookmark->source(), bookmark->duration(), bookmark->currentTime());
+        d->loadSource(bookmark->source(), duration(), currentTime());
     }
     else if (d->backend && d->backendInterface->source().isEmpty() == false)
     {

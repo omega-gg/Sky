@@ -1265,8 +1265,10 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     media->vbml = false;
 
-    media->currentTime = currentTime;
-    media->duration    = -1;
+    // NOTE: currentTime starts at zero to match the WControllerMediaData constraints.
+    media->currentTime = qMax(0, currentTime);
+
+    media->duration = -1;
 
     media->timeA =  0;
     media->timeB = -1;
