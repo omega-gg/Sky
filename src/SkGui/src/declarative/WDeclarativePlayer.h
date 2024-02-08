@@ -209,6 +209,8 @@ public: // Interface
     Q_INVOKABLE void setPreviousTrack();
     Q_INVOKABLE void setNextTrack    ();
 
+    Q_INVOKABLE void reloadSource();
+
 #ifdef QT_NEW
     Q_INVOKABLE void updateFrame();
 #endif

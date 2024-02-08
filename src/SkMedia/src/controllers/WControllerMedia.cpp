@@ -413,13 +413,13 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             int index = extractSourceTimeline(timeline, durations, starts);
 
-            if (timeB != -1 || argument.isEmpty()) return;
+            if (timeB == -1 || argument.isEmpty()) return;
 
             QString result = extractResult(reader, argument);
 
             QList<WControllerMediaObject> timelineNew = generateTimeline(hash, result, tags);
 
-            if (timelineNew.isEmpty() == false)
+            if (timelineNew.isEmpty())
             {
                 context = generateContext(timeline);
 
@@ -441,12 +441,16 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             timeA = timeB;
 
             currentTime = timeA;
-
-            duration = timeA + durationNew;
+            duration    = timeA + durationNew;
 
             extractSourceTimeline(timelineNew, durations, starts);
 
-            timeline.erase(timeline.begin() + index, timeline.end());
+            index++;
+
+            if (index < timeline.count())
+            {
+                timeline.erase(timeline.begin() + index, timeline.end());
+            }
 
             timeline.append(timelineNew);
 
@@ -664,8 +668,11 @@ int WControllerMediaData::extractDuration(const QList<WControllerMediaObject> & 
 
     WBackendUniversalParameters parameters(script);
 
-    parameters.add("argument", list.first());
-    parameters.add("args",     list);
+    if (list.isEmpty() == false)
+    {
+        parameters.add("argument", list.first());
+        parameters.add("args",     list);
+    }
 
     return script.run(&parameters).toString();
 }
@@ -725,6 +732,8 @@ WControllerMediaData::generateTimeline(const QHash<QString, WControllerMediaSour
 
             return timeline;
         }
+
+        lastIndex = index;
 
         WControllerMediaObject object;
 

@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WControllerMedia>
 #include <WBackendVlc>
@@ -256,6 +257,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
             q->setLive(true);
 
+            q->setDuration(reply->duration());
+
             QDateTime date = WControllerApplication::currentDateUtc(timeZone);
 
             q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
@@ -264,6 +267,10 @@ void WBackendManagerPrivate::applySources(bool play)
         {
             type = Interactive;
 
+            q->setDuration(reply->duration());
+
+            q->setCurrentTime(reply->currentTime());
+
             q->setContext(reply->context());
         }
         else
@@ -271,6 +278,8 @@ void WBackendManagerPrivate::applySources(bool play)
             type = MultiTrack;
 
             loop = (typeRoot == WTrack::Hub);
+
+            q->setDuration(reply->duration());
         }
 
         this->timeA = timeA;
@@ -278,8 +287,6 @@ void WBackendManagerPrivate::applySources(bool play)
         timeB = reply->timeB();
 
         start = reply->start();
-
-        q->setDuration(reply->duration());
 
         qDebug("Current source: %s timeA %d timeB %d start %d duration %d clock %d", source.C_STR,
                timeA, timeB, start, duration, clock);
@@ -624,6 +631,9 @@ void WBackendManagerPrivate::onLoaded()
     }
     else applySources(q->isPlaying());
 
+    // NOTE: We clear the arg fragment so we don't apply it when seeking on the video source.
+    source = WControllerNetwork::removeFragmentValue(source, "arg");
+
     reply->deleteLater();
 
     reply = NULL;
@@ -905,18 +915,30 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    d->stopBackend();
-
-    if (url.isEmpty())
+    if (WControllerNetwork::extractFragmentValue(url, "arg").isEmpty())
     {
-        d->clearActive();
+        d->stopBackend();
+
+        if (url.isEmpty())
+        {
+            d->clearActive();
+        }
+        else if (d->state == StatePlaying)
+        {
+            d->loadSources(true);
+
+            d->updateLoading();
+        }
     }
     else if (d->state == StatePlaying)
     {
-        d->loadSources(true);
+        d->freeze = true;
 
-        d->updateLoading();
+        d->stopBackend();
+
+        d->loadSources(true);
     }
+    else d->stopBackend();
 
     return true;
 }

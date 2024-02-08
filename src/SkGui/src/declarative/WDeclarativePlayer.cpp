@@ -1403,6 +1403,22 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     }
 }
 
+/* Q_INVOKABLE */ void WDeclarativePlayer::reloadSource()
+{
+    Q_D(WDeclarativePlayer);
+
+    const WBookmarkTrack * bookmark = d->tab->currentBookmark();
+
+    if (bookmark)
+    {
+        d->loadSource(bookmark->source(), bookmark->duration(), bookmark->currentTime());
+    }
+    else if (d->backend && d->backendInterface->source().isEmpty() == false)
+    {
+        d->backendInterface->loadSource(QString());
+    }
+}
+
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_NEW
