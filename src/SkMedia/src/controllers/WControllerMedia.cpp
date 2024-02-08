@@ -398,11 +398,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 if (timeline.isEmpty())
                 {
                     timeline = generateTimeline(hash, contextBase, tags);
-
-                    if (timeline.isEmpty()) return;
                 }
             }
             else timeline = generateTimeline(hash, contextBase, tags);
+
+            if (timeline.isEmpty()) return;
 
             QList<int> starts;
             QList<int> durations;
@@ -415,7 +415,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (timeB == -1 || argument.isEmpty()) return;
 
-            QString result = extractResult(reader, argument);
+            QString result = extractResult(reader, argument, getContextList(timeline, index));
 
             QList<WControllerMediaObject> timelineNew = generateTimeline(hash, result, tags);
 
@@ -653,7 +653,8 @@ int WControllerMediaData::extractDuration(const QList<WControllerMediaObject> & 
 }
 
 /* static */ QString WControllerMediaData::extractResult(const WYamlReader & reader,
-                                                         const QString     & argument)
+                                                         const QString     & argument,
+                                                         const QStringList & context)
 {
     QStringList list = argument.split(',');
 
@@ -673,6 +674,8 @@ int WControllerMediaData::extractDuration(const QList<WControllerMediaObject> & 
         parameters.add("argument", list.first());
         parameters.add("args",     list);
     }
+
+    parameters.add("context", context);
 
     return script.run(&parameters).toString();
 }
@@ -999,6 +1002,21 @@ void WControllerMediaData::applyEmpty()
     timeB = duration;
 
     start = 0;
+}
+
+QStringList WControllerMediaData::getContextList(const QList<WControllerMediaObject> & timeline,
+                                                 int                                   index) const
+{
+    QStringList result;
+
+    while (index < timeline.count())
+    {
+        result.append(timeline.at(index).id);
+
+        index++;
+    }
+
+    return result;
 }
 
 //=================================================================================================

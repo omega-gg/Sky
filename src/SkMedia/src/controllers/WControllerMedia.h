@@ -195,7 +195,8 @@ public: // Static functions
                                QList<int>                          * starts,
                                QList<int>                          * durations, int start);
 
-    static QString extractResult(const WYamlReader & reader, const QString & argument);
+    static QString extractResult(const WYamlReader & reader, const QString     & argument,
+                                                             const QStringList & context);
 
     static QHash<QString, WControllerMediaSource *>
     generateHash(QList<WControllerMediaSource> & sources);
@@ -226,6 +227,8 @@ private: // Functions
     void applyMedia(const WYamlNodeBase & node, const QString & url);
 
     void applyEmpty();
+
+    QStringList getContextList(const QList<WControllerMediaObject> & timeline, int index) const;
 
 public: // Variables
     WTrack::Type type;
