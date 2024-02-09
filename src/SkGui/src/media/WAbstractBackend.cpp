@@ -25,6 +25,7 @@
 #ifndef SK_NO_ABSTRACTBACKEND
 
 // Sk includes
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #ifndef SK_NO_QML
 #include <WDeclarativePlayer>
@@ -1123,6 +1124,14 @@ void WAbstractBackend::setContext(const QString & context)
     d->context = string;
 
     emit contextChanged();
+
+    QString source = WControllerNetwork::applyFragmentValue(d->source, "ctx", string);
+
+    if (d->source == source) return;
+
+    d->source = source;
+
+    emit sourceChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

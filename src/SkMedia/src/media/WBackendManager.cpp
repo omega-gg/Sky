@@ -1115,7 +1115,10 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         if (duration < 0) return;
 
-        d->backendInterface->seek(msec - duration * (int) (msec / duration));
+        msec -= d->timeA;
+
+        // NOTE: Parenthesis are required to avoid integer overflow.
+        d->backendInterface->seek(msec - duration * (msec / duration) + d->start);
     }
     else if (d->currentMedia.isEmpty() == false)
     {

@@ -413,7 +413,12 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             int index = extractSourceTimeline(timeline, durations, starts);
 
-            if (timeB == -1 || argument.isEmpty()) return;
+            if (timeB == -1 || argument.isEmpty())
+            {
+                context = generateContext(timeline);
+
+                return;
+            }
 
             QString result = extractResult(reader, argument, getContextList(timeline, index));
 
@@ -728,13 +733,6 @@ WControllerMediaData::generateTimeline(const QHash<QString, WControllerMediaSour
         int index = media->index;
 
         if (index == lastIndex) continue;
-
-        if (index < lastIndex)
-        {
-            qWarning("WControllerMediaData::generateTimeline: Partial timeline.");
-
-            return timeline;
-        }
 
         lastIndex = index;
 
