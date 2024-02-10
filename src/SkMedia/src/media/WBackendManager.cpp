@@ -368,6 +368,8 @@ void WBackendManagerPrivate::applyTime(int currentTime)
 {
     Q_Q(WBackendManager);
 
+    time.restart();
+
     if (currentTime >= duration)
     {
         if (type == Interactive)
@@ -698,8 +700,6 @@ void WBackendManagerPrivate::onStateLoad()
     q->setStateLoad(stateLoad);
 
     freeze = false;
-
-    if (clock == false) return;
 
     if (stateLoad == WAbstractBackend::StateLoadDefault)
     {
@@ -1285,11 +1285,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (id == d->timerClock)
     {
-        int currentTime = d->currentTime + d->time.elapsed();
-
-        d->time.restart();
-
-        d->applyTime(currentTime);
+        d->applyTime(d->currentTime + d->time.elapsed());
     }
     else if (id == d->timerSynchronize)
     {
