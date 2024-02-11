@@ -90,6 +90,10 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
                 else data.replace("\nmedia", "\nsource");
             }
         }
+        else if (WControllerPlaylist::vbmlTypePlaylist(type))
+        {
+            data.replace("\nsource", "\norigin");
+        }
     }
 
     //---------------------------------------------------------------------------------------------
