@@ -362,24 +362,14 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     type = WTrack::typeFromString(reader.extractString("type"));
 
-    start += reader.extractMsecs("at");
-
     if (duration == -1)
     {
-        // NOTE: The Channel type is only taken into account for the root source.
-        if (type == WTrack::Channel)
-        {
-            timeZone = reader.extractString("timezone");
-
-            QDateTime date = WControllerApplication::currentDateUtc(timeZone);
-
-            currentTime = WControllerApplication::getMsecsWeek(date);
-
-            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
-        }
         // NOTE: The Interactive type is only taken into account for the root source.
-        else if (type == WTrack::Interactive)
+        if (type == WTrack::Interactive)
         {
+            // NOTE: The interactive mode ignores the root start property.
+            start = 0;
+
             QString contextBase = reader.extractString("context");
 
             QStringList tags = extractTags(reader);
@@ -464,45 +454,62 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             return;
         }
 
-        duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
+        start += reader.extractMsecs("at");
 
-        if (duration == 0)
+        // NOTE: The Channel type is only taken into account for the root source.
+        if (type == WTrack::Channel)
         {
-            QList<int> starts;
-            QList<int> durations;
+            timeZone = reader.extractString("timezone");
 
-            duration = 0;
+            QDateTime date = WControllerApplication::currentDateUtc(timeZone);
 
-            int startSource = start;
+            currentTime = WControllerApplication::getMsecsWeek(date);
 
-            foreach (const WYamlNode & child, children)
-            {
-                startSource += child.extractMsecs("at");
-
-                starts.append(startSource);
-
-                int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
-
-                durations.append(durationSource);
-
-                if (durationSource > 0)
-                {
-                    startSource = 0;
-
-                    duration += durationSource;
-                }
-                else startSource = -durationSource;
-            }
+            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
+        }
+        else
+        {
+            duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
 
             if (duration == 0)
             {
-                duration = -1;
-            }
-            else extractSourceDuration(children, durations, starts);
+                QList<int> starts;
+                QList<int> durations;
 
-            return;
+                duration = 0;
+
+                int startSource = start;
+
+                foreach (const WYamlNode & child, children)
+                {
+                    startSource += child.extractMsecs("at");
+
+                    starts.append(startSource);
+
+                    int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
+
+                    durations.append(durationSource);
+
+                    if (durationSource > 0)
+                    {
+                        startSource = 0;
+
+                        duration += durationSource;
+                    }
+                    else startSource = -durationSource;
+                }
+
+                if (duration == 0)
+                {
+                    duration = -1;
+                }
+                else extractSourceDuration(children, durations, starts);
+
+                return;
+            }
         }
     }
+    else start += reader.extractMsecs("at");
 
     extractSource(children);
 
