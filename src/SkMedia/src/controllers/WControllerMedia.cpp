@@ -394,10 +394,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (timeline.isEmpty()) return;
 
-            QList<int> starts;
-            QList<int> durations;
-
-            duration = extractDuration(timeline, &starts, &durations, start);
+            duration = applyDuration(&timeline);
 
             if (duration == -1)
             {
@@ -406,7 +403,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 return;
             }
 
-            int index = extractSourceTimeline(timeline, durations, starts);
+            int index = extractSourceTimeline(timeline);
 
             if (timeB == -1 || argument.isEmpty())
             {
@@ -426,10 +423,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 return;
             }
 
-            starts   .clear();
-            durations.clear();
-
-            int durationNew = extractDuration(timelineNew, &starts, &durations, 0);
+            int durationNew = applyDuration(&timelineNew);
 
             if (durationNew == -1)
             {
@@ -443,7 +437,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             currentTime = timeA;
             duration    = timeA + durationNew;
 
-            extractSourceTimeline(timelineNew, durations, starts);
+            extractSourceTimeline(timelineNew);
 
             index++;
 
@@ -487,11 +481,23 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 foreach (const WYamlNode & child, children)
                 {
-                    startSource += child.extractMsecs("at");
+                    int at = child.extractMsecs("at");
+
+                    int durationSource = WControllerPlaylist::vbmlDuration(child, at);
+
+                    // NOTE: When the duration is invalid we skip it entirely.
+                    if (durationSource <= 0)
+                    {
+                        starts   .append(0);
+                        durations.append(0);
+
+                        continue;
+                    }
+
+                    startSource    += at;
+                    durationSource -= at;
 
                     starts.append(startSource);
-
-                    int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
 
                     durations.append(durationSource);
 
@@ -631,44 +637,6 @@ WControllerMediaData::extractSources(const WYamlReader & reader)
     return list;
 }
 
-/* static */
-int WControllerMediaData::extractDuration(const QList<WControllerMediaObject> & timeline,
-                                          QList<int>                          * starts,
-                                          QList<int>                          * durations,
-                                          int                                   start)
-{
-    int duration = 0;
-
-    foreach (const WControllerMediaObject & object, timeline)
-    {
-        WControllerMediaSource * media = object.media;
-
-        if (media == NULL) continue;
-
-        start += media->at;
-
-        starts->append(start);
-
-        int durationSource = media->getDuration(start);
-
-        durations->append(durationSource);
-
-        if (durationSource > 0)
-        {
-            start = 0;
-
-            duration += durationSource;
-        }
-        else start = -durationSource;
-    }
-
-    if (duration == 0)
-    {
-        return -1;
-    }
-    else return duration;
-}
-
 /* static */ QString WControllerMediaData::extractResult(const WYamlReader & reader,
                                                          const QString     & argument,
                                                          const QStringList & context)
@@ -695,6 +663,44 @@ int WControllerMediaData::extractDuration(const QList<WControllerMediaObject> & 
     parameters.add("context", context);
 
     return script.run(&parameters).toString();
+}
+
+/* static */
+int WControllerMediaData::applyDuration(QList<WControllerMediaObject> * timeline)
+{
+    Q_ASSERT(timeline);
+
+    int duration = 0;
+
+    for (int i = 0; i < timeline->count(); i++)
+    {
+        WControllerMediaObject & object = (*timeline)[i];
+
+        WControllerMediaSource * media = object.media;
+
+        if (media == NULL) continue;
+
+        int at = media->at;
+
+        int durationSource = media->getDuration(media->at);
+
+        // NOTE: When the duration is invalid we skip it entirely.
+        if (durationSource <= 0)
+        {
+            object.start    = 0;
+            object.duration = 0;
+
+            continue;
+        }
+
+        object.start    = at;
+        object.duration = durationSource;
+
+        duration += durationSource;
+    }
+
+    if (duration) return duration;
+    else          return -1;
 }
 
 /* static */ QHash<QString, WControllerMediaSource *>
@@ -807,24 +813,17 @@ void WControllerMediaData::extractSourceDuration(const QList<WYamlNode> & childr
 {
     for (int i = 0; i < durations.length(); i++)
     {
-        start = starts.at(i);
-
         int durationSource = durations.at(i);
 
-        if (durationSource <= 0)
-        {
-            start = -durationSource;
+        if (durationSource <= 0) continue;
 
-            continue;
-        }
+        start = starts.at(i);
 
         int time = timeA + durationSource;
 
         if (currentTime >= time)
         {
             timeA = time;
-
-            start = 0;
 
             continue;
         }
@@ -849,38 +848,25 @@ void WControllerMediaData::extractSourceDuration(const QList<WYamlNode> & childr
     }
 }
 
-int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
-                                                const QList<int>                    & durations,
-                                                const QList<int>                    & starts)
+int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObject> & timeline)
 {
-    int index = 0;
-
     for (int i = 0; i < timeline.count(); i++)
     {
-        WControllerMediaSource * media = timeline.at(i).media;
+        const WControllerMediaObject & object = timeline.at(i);
+
+        WControllerMediaSource * media = object.media;
 
         if (media == NULL) continue;
 
-        start = starts.at(index);
+        int durationSource = object.duration;
 
-        int durationSource = durations.at(index);
-
-        index++;
-
-        if (durationSource <= 0)
-        {
-            start = -durationSource;
-
-            continue;
-        }
+        if (durationSource <= 0) continue;
 
         int time = timeA + durationSource;
 
         if (currentTime >= time)
         {
             timeA = time;
-
-            start = 0;
 
             continue;
         }
@@ -890,6 +876,8 @@ int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObje
         const WYamlNode * node = child->at("source");
 
         if (node == NULL) break;
+
+        start = object.start;
 
         const QList<WYamlNode> & nodes = node->children;
 
@@ -911,9 +899,15 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
 {
     foreach (const WYamlNode & child, children)
     {
-        start += child.extractMsecs("at");
+        int at = child.extractMsecs("at");
 
-        int durationSource = WControllerPlaylist::vbmlDuration(child, start);
+        int durationSource = WControllerPlaylist::vbmlDuration(child, at);
+
+        // NOTE: When the duration is invalid we skip it entirely.
+        if (durationSource <= 0) continue;
+
+        start          += at;
+        durationSource -= at;
 
         if (durationSource <= 0)
         {
