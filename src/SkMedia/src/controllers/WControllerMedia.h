@@ -204,20 +204,26 @@ public: // Static functions
 
     static QList<WControllerMediaObject>
     generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
-                     const QString                                  & context,
+                     const QStringList                              & context,
                      const QStringList                              & tags);
 
-    static QString generateContext(const QList<WControllerMediaObject> & timeline);
+    static QString generateContext(const QList<WControllerMediaObject> & timeline,
+                                   const QString                       & currentId);
 
     static WControllerMediaSource *
     getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
+
+    // NOTE: This function extracts the context as a list and populates the currentId. Both
+    //       curentId:value,value and value,value formats are supported.
+    static QStringList getContextList(const QString & context, QString & currentId);
 
 private: // Functions
     void extractSourceDuration(const QList<WYamlNode> & children,
                                const QList<int>       & durations,
                                const QList<int>       & starts);
 
-    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline);
+    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+                              QString                             & currentId);
 
     void extractSource(const QList<WYamlNode> & children);
 
@@ -227,7 +233,9 @@ private: // Functions
 
     void applyEmpty();
 
-    QStringList getContextList(const QList<WControllerMediaObject> & timeline, int index) const;
+    void updateCurrentTime(const QList<WControllerMediaObject> & timeline, QString & currentId);
+
+    QStringList getContext(const QList<WControllerMediaObject> & timeline, int index) const;
 
 public: // Variables
     WTrack::Type type;
