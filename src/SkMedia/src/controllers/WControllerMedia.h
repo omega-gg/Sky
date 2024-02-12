@@ -174,8 +174,8 @@ struct WControllerMediaObject
 
     WControllerMediaSource * media;
 
-    int start;
     int duration;
+    int at;
 };
 
 class WControllerMediaData
@@ -197,7 +197,7 @@ public: // Static functions
     static QString extractResult(const WYamlReader & reader, const QString     & argument,
                                                              const QStringList & context);
 
-    static int applyDuration(QList<WControllerMediaObject> * timeline);
+    static int applyDurations(QList<WControllerMediaObject> * timeline);
 
     static QHash<QString, WControllerMediaSource *>
     generateHash(QList<WControllerMediaSource> & sources);
