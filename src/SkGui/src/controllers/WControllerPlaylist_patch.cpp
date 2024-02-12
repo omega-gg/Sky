@@ -92,7 +92,12 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
         }
         else if (WControllerPlaylist::vbmlTypePlaylist(type))
         {
-            data.replace("\nsource", "\norigin");
+            WYamlReader reader(data.toUtf8());
+
+            if (reader.at("origin") == NULL)
+            {
+                data.replace("\nsource", "\norigin");
+            }
         }
     }
 
