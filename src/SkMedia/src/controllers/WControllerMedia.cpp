@@ -399,7 +399,12 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             duration = extractDuration(timeline, &starts, &durations, start);
 
-            if (duration == -1) return;
+            if (duration == -1)
+            {
+                context = generateContext(timeline);
+
+                return;
+            }
 
             int index = extractSourceTimeline(timeline, durations, starts);
 
