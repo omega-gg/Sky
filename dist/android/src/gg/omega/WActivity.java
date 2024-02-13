@@ -183,7 +183,7 @@ public class WActivity extends QtActivity
         return message;
     }
 
-    public String clearIntent()
+    public void clearIntent()
     {
         message = null;
     }
