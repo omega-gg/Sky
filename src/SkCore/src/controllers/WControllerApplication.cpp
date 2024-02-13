@@ -1731,7 +1731,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
     if (jni.isValid() == false) return;
 
-    jni.callObjectMethod<void>("clearIntent");
+    jni.callMethod<void>("clearIntent");
 }
 
 #endif
