@@ -218,6 +218,8 @@ public: // Static functions
     //       curentId:value,value and value,value formats are supported.
     static QStringList getContextList(const QString & context, QString & currentId);
 
+    static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
+
 private: // Functions
     void extractSourceDuration(const QList<WYamlNode> & children,
                                const QList<int>       & durations,
@@ -236,7 +238,16 @@ private: // Functions
 
     void updateCurrentTime(const QList<WControllerMediaObject> & timeline, QString & currentId);
 
+    // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
+    QString cleanTimeline(QList<WControllerMediaObject> & timeline,
+                          const QString                 & currentId, int index);
+
     QStringList getContext(const QList<WControllerMediaObject> & timeline, int index) const;
+
+    int getRedundancy(const QList<WControllerMediaObject> & timeline, int index) const;
+
+    int getIndexFromId(const QList<WControllerMediaObject> & timeline,
+                       const QString                       & id, int from) const;
 
 public: // Variables
     WTrack::Type type;

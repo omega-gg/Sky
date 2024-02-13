@@ -410,7 +410,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (duration == -1)
             {
-                context = generateContext(timeline, currentId);
+                context = cleanTimeline(timeline, currentId, -1);
 
                 return;
             }
@@ -429,7 +429,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (timeB == -1 || argument.isEmpty())
             {
-                context = generateContext(timeline, currentId);
+                context = cleanTimeline(timeline, currentId, index);
 
                 return;
             }
@@ -443,7 +443,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (timelineNew.isEmpty())
             {
-                context = generateContext(timeline, currentId);
+                context = cleanTimeline(timeline, currentId, index);
 
                 return;
             }
@@ -452,7 +452,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (durationNew == -1)
             {
-                context = generateContext(timeline, currentId);
+                context = cleanTimeline(timeline, currentId, index);
 
                 return;
             }
@@ -475,7 +475,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             timeline.append(timelineNew);
 
-            context = generateContext(timeline, currentId);
+            context = cleanTimeline(timeline, currentId, index);
 
             return;
         }
@@ -856,6 +856,21 @@ WControllerMediaData::getMediaSource(const QHash<QString, WControllerMediaSource
     return list;
 }
 
+/* static */
+void WControllerMediaData::dumpTimeline(const QList<WControllerMediaObject> & timeline)
+{
+    QString context;
+
+    foreach (const WControllerMediaObject & object, timeline)
+    {
+        context.append(object.id + ',');
+    }
+
+    if (context.isEmpty()) return;
+
+    qDebug("%s", context.chopped(1).C_STR);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
@@ -1006,6 +1021,71 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children)
     }
 }
 
+void WControllerMediaData::applySource(const WYamlNode & node, const QString & url, int duration)
+{
+    if (WControllerFile::urlIsImage(url) == false)
+    {
+        QString type = node.extractString("type");
+
+        if (type.isEmpty())
+        {
+            typeSource = WTrack::typeFromString(node.key);
+        }
+        else typeSource = WTrack::typeFromString(type);
+    }
+    // NOTE: By default, an image is played like a hub.
+    else typeSource = WTrack::Hub;
+
+    source = url;
+
+    timeB = timeA + duration;
+}
+
+void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url)
+{
+    int durationSource = WControllerPlaylist::vbmlDuration(node, 0, -1);
+
+    if (durationSource == -1)
+    {
+        source = url;
+
+        return;
+    }
+
+    int at = node.extractMsecs("at");
+
+    if (at)
+    {
+        durationSource -= at;
+
+        start += at;
+    }
+
+    if (durationSource <= 0) return;
+
+    if (duration == -1)
+    {
+        if (type == WTrack::Channel)
+        {
+            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
+        }
+        else duration = durationSource;
+    }
+
+    source = url;
+
+    timeB = timeA + durationSource;
+}
+
+void WControllerMediaData::applyEmpty()
+{
+    if (currentTime >= duration) return;
+
+    timeB = duration;
+
+    start = 0;
+}
+
 void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject> & timeline,
                                              QString                             & currentId)
 {
@@ -1083,69 +1163,51 @@ void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject>
     if (source.isEmpty()) applyEmpty();
 }
 
-void WControllerMediaData::applySource(const WYamlNode & node, const QString & url, int duration)
+QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & timeline,
+                                            const QString                 & currentId,
+                                            int                             index)
 {
-    if (WControllerFile::urlIsImage(url) == false)
-    {
-        QString type = node.extractString("type");
+    int gap = 0;
 
-        if (type.isEmpty())
+    for (int i = 0; i < timeline.count(); i++)
+    {
+        int at = getRedundancy(timeline, i);
+
+        if (at == -1) continue;
+
+        int count = at - i;
+
+        while (count)
         {
-             typeSource = WTrack::typeFromString(node.key);
+            const WControllerMediaObject & object = timeline.at(at);
+
+            if (at == index)
+            {
+
+            }
+            else if (at < index)
+            {
+                gap += object.duration;
+
+                index--;
+            }
+
+            timeline.removeAt(at);
+
+            count--;
         }
-        else typeSource = WTrack::typeFromString(type);
     }
-    // NOTE: By default, an image is played like a hub.
-    else typeSource = WTrack::Hub;
 
-    source = url;
-
-    timeB = timeA + duration;
-}
-
-void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url)
-{
-    int durationSource = WControllerPlaylist::vbmlDuration(node, 0, -1);
-
-    if (durationSource == -1)
+    if (gap)
     {
-        source = url;
+        currentTime -= gap;
+        duration    -= gap;
 
-        return;
+        timeA -= gap;
+        timeB -= gap;
     }
 
-    int at = node.extractMsecs("at");
-
-    if (at)
-    {
-        durationSource -= at;
-
-        start += at;
-    }
-
-    if (durationSource <= 0) return;
-
-    if (duration == -1)
-    {
-        if (type == WTrack::Channel)
-        {
-            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
-        }
-        else duration = durationSource;
-    }
-
-    source = url;
-
-    timeB = timeA + durationSource;
-}
-
-void WControllerMediaData::applyEmpty()
-{
-    if (currentTime >= duration) return;
-
-    timeB = duration;
-
-    start = 0;
+    return generateContext(timeline, currentId);
 }
 
 QStringList WControllerMediaData::getContext(const QList<WControllerMediaObject> & timeline,
@@ -1161,6 +1223,50 @@ QStringList WControllerMediaData::getContext(const QList<WControllerMediaObject>
     }
 
     return result;
+}
+
+int WControllerMediaData::getRedundancy(const QList<WControllerMediaObject> & timeline,
+                                        int                                   index) const
+{
+    QString id = timeline.at(index).id;
+
+    index++;
+
+    int indexB = getIndexFromId(timeline, id, index);
+
+    if (indexB == -1) return -1;
+
+    int indexC = indexB + 1;
+
+    int count = indexC - index - 1;
+
+    if (indexC + count > timeline.count()) return -1;
+
+    while (count)
+    {
+        if (timeline.at(index).id != timeline.at(indexC).id) return -1;
+
+        index++;
+
+        indexC++;
+
+        count--;
+    }
+
+    return indexB;
+}
+
+int WControllerMediaData::getIndexFromId(const QList<WControllerMediaObject> & timeline,
+                                         const QString                       & id, int from) const
+{
+    while (from < timeline.count())
+    {
+        if (timeline.at(from).id == id) return from;
+
+        from++;
+    }
+
+    return -1;
 }
 
 //=================================================================================================
