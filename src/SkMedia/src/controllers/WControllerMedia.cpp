@@ -434,7 +434,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 return;
             }
 
-            QString result = extractResult(reader, argument, getContext(timeline, index));
+            QString result = extractResult(reader, argument, getContext(timeline, index),
+                                           currentId);
 
             list = Sk::split(result.toLower(), ',');
 
@@ -665,7 +666,8 @@ WControllerMediaData::extractSources(const WYamlReader & reader)
 
 /* static */ QString WControllerMediaData::extractResult(const WYamlReader & reader,
                                                          const QString     & argument,
-                                                         const QStringList & context)
+                                                         const QStringList & context,
+                                                         const QString     & currentId)
 {
     QStringList list = argument.split(',');
 
@@ -687,6 +689,7 @@ WControllerMediaData::extractSources(const WYamlReader & reader)
     }
 
     parameters.add("context", context);
+    parameters.add("current", currentId);
 
     return script.run(&parameters).toString();
 }

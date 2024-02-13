@@ -195,7 +195,8 @@ public: // Static functions
     static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
 
     static QString extractResult(const WYamlReader & reader, const QString     & argument,
-                                                             const QStringList & context);
+                                                             const QStringList & context,
+                                                             const QString     & currentId);
 
     static int applyDurations(QList<WControllerMediaObject> * timeline);
 
