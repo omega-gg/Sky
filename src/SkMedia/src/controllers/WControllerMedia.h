@@ -214,6 +214,9 @@ public: // Static functions
     static WControllerMediaSource *
     getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
 
+    static QString getContext(const QList<WControllerMediaObject> & timeline,
+                              const QString                       & currentId);
+
     // NOTE: This function extracts the context as a list and populates the currentId. Both
     //       curentId:value,value and value,value formats are supported.
     static QStringList getContextList(const QString & context, QString & currentId);
@@ -243,7 +246,7 @@ public: // Functions
                           const QString                 & currentId, int index);
 
 private: // Functions
-    QStringList getContext(const QList<WControllerMediaObject> & timeline, int index) const;
+    QStringList getContext(const QList<WControllerMediaObject> & timeline, int count) const;
 
     int getRedundancy(const QList<WControllerMediaObject> & timeline, int index) const;
 

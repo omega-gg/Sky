@@ -406,6 +406,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (timeline.isEmpty()) return;
 
+            //qDebug("CONTEXT BEFORE %s", getContext(timeline, currentId).C_STR);
+
             duration = applyDurations(&timeline);
 
             if (duration == -1)
@@ -437,7 +439,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 return;
             }
 
-            QString result = extractResult(reader, argument, getContext(timeline, index),
+            // NOTE: We want to provide the context up until now.
+            QString result = extractResult(reader, argument, getContext(timeline, index + 1),
                                            currentId);
 
             list = Sk::split(result.toLower(), ',');
@@ -799,23 +802,7 @@ WControllerMediaData::generateTimeline(const QHash<QString, WControllerMediaSour
 QString WControllerMediaData::generateContext(const QList<WControllerMediaObject> & timeline,
                                               const QString                       & currentId)
 {
-    QString context;
-
-    foreach (const WControllerMediaObject & object, timeline)
-    {
-        context.append(object.id + ',');
-    }
-
-    if (context.isEmpty()) return context;
-
-    context.chop(1);
-
-    if (currentId.isEmpty() == false)
-    {
-        context.prepend(currentId + ':');
-    }
-
-    return WZipper::compressBase64(context.toUtf8());
+    return WZipper::compressBase64(getContext(timeline, currentId).toUtf8());
 }
 
 /* static */ WControllerMediaSource *
@@ -837,6 +824,29 @@ WControllerMediaData::getMediaSource(const QHash<QString, WControllerMediaSource
     source->end = node->extractMsecs("end", -1);
 
     return source;
+}
+
+/* static */
+QString WControllerMediaData::getContext(const QList<WControllerMediaObject> & timeline,
+                                         const QString                       & currentId)
+{
+    QString context;
+
+    foreach (const WControllerMediaObject & object, timeline)
+    {
+        context.append(object.id + ',');
+    }
+
+    if (context.isEmpty()) return context;
+
+    context.chop(1);
+
+    if (currentId.isEmpty() == false)
+    {
+        context.prepend(currentId + ':');
+    }
+
+    return context;
 }
 
 /* static */ QStringList WControllerMediaData::getContextList(const QString & context,
@@ -1252,6 +1262,8 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
         timeB -= gap;
     }
 
+    //qDebug("CONTEXT AFTER %s", getContext(timeline, currentId).C_STR);
+
     return generateContext(timeline, currentId);
 }
 
@@ -1260,15 +1272,13 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
 //-------------------------------------------------------------------------------------------------
 
 QStringList WControllerMediaData::getContext(const QList<WControllerMediaObject> & timeline,
-                                             int                                   index) const
+                                             int                                   count) const
 {
     QStringList result;
 
-    while (index < timeline.count())
+    for (int i = 0; i < count; i++)
     {
-        result.append(timeline.at(index).id);
-
-        index++;
+        result.append(timeline.at(i).id);
     }
 
     return result;
