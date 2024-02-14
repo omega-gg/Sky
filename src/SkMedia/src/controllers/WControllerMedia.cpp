@@ -1169,33 +1169,60 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
 {
     int gap = 0;
 
-    for (int i = 0; i < timeline.count(); i++)
+    int i = 0;
+
+    while (i < timeline.count())
     {
         int at = getRedundancy(timeline, i);
 
-        if (at == -1) continue;
+        if (at == -1)
+        {
+            i++;
+
+            continue;
+        }
 
         int count = at - i;
 
-        while (count)
+        int from = at;
+
+        for (int j = 0; j < count; j++)
+        {
+            if (from != index)
+            {
+                from++;
+
+                continue;
+            }
+
+            //-------------------------------------------------------------------------------------
+            // NOTE: We move our index to the prior index and adjust the duration accordingly.
+
+            index -= count;
+
+            for (int k = 0; k < count; k++)
+            {
+                gap += timeline.at(index - k).duration;
+            }
+
+            break;
+        }
+
+        for (int j = 0; j < count; j++)
         {
             const WControllerMediaObject & object = timeline.at(at);
 
-            if (at == index)
+            if (at < index)
             {
-
-            }
-            else if (at < index)
-            {
-                gap += object.duration;
-
                 index--;
+
+                gap += object.duration;
             }
 
             timeline.removeAt(at);
-
-            count--;
         }
+
+        i = 0;
     }
 
     if (gap)
@@ -1209,6 +1236,10 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
 
     return generateContext(timeline, currentId);
 }
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
 
 QStringList WControllerMediaData::getContext(const QList<WControllerMediaObject> & timeline,
                                              int                                   index) const

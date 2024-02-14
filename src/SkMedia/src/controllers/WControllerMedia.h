@@ -220,7 +220,7 @@ public: // Static functions
 
     static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
 
-private: // Functions
+public: // Functions
     void extractSourceDuration(const QList<WYamlNode> & children,
                                const QList<int>       & durations,
                                const QList<int>       & starts);
@@ -242,6 +242,7 @@ private: // Functions
     QString cleanTimeline(QList<WControllerMediaObject> & timeline,
                           const QString                 & currentId, int index);
 
+private: // Functions
     QStringList getContext(const QList<WControllerMediaObject> & timeline, int index) const;
 
     int getRedundancy(const QList<WControllerMediaObject> & timeline, int index) const;
