@@ -225,8 +225,7 @@ public: // Functions
                                const QList<int>       & durations,
                                const QList<int>       & starts);
 
-    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
-                              QString                             & currentId);
+    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline, QString * currentId);
 
     void extractSource(const QList<WYamlNode> & children);
 
@@ -236,7 +235,8 @@ public: // Functions
 
     void applyEmpty();
 
-    void updateCurrentTime(const QList<WControllerMediaObject> & timeline, QString & currentId);
+    QString updateCurrentTime(const QList<WControllerMediaObject> & timeline,
+                              const QString                       & currentId);
 
     // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
     QString cleanTimeline(QList<WControllerMediaObject> & timeline,

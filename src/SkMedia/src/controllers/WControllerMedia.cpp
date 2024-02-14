@@ -419,13 +419,16 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (currentId.isEmpty() == false)
             {
-                index = extractSourceTimeline(timeline, currentId);
+                index = extractSourceTimeline(timeline, &currentId);
 
                 // NOTE: We found no source, so we try to update the currentTime based on the
                 //       currentId.
-                if (index == -1) updateCurrentTime(timeline, currentId);
+                if (index == -1)
+                {
+                    currentId = updateCurrentTime(timeline, currentId);
+                }
             }
-            else index = extractSourceTimeline(timeline, currentId);
+            else index = extractSourceTimeline(timeline, &currentId);
 
             if (timeB == -1 || argument.isEmpty())
             {
@@ -464,7 +467,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             currentId = QString();
 
-            extractSourceTimeline(timelineNew, currentId);
+            extractSourceTimeline(timelineNew, &currentId);
 
             index++;
 
@@ -917,7 +920,7 @@ void WControllerMediaData::extractSourceDuration(const QList<WYamlNode> & childr
 }
 
 int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
-                                                QString                             & currentId)
+                                                QString                             * currentId)
 {
     for (int i = 0; i < timeline.count(); i++)
     {
@@ -948,12 +951,12 @@ int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObje
 
         QString id = object.id;
 
-        if (currentId.isEmpty())
+        if (currentId->isEmpty())
         {
-            currentId = id;
+            *currentId = id;
         }
         // NOTE: When the currentId do not match we consider that the currentTime is invalid.
-        else if (currentId != id) break;
+        else if (*currentId != id) break;
 
         start = object.at;
 
@@ -1086,8 +1089,8 @@ void WControllerMediaData::applyEmpty()
     start = 0;
 }
 
-void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject> & timeline,
-                                             QString                             & currentId)
+QString WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject> & timeline,
+                                                const QString                       & currentId)
 {
     int index = -1;
 
@@ -1100,15 +1103,25 @@ void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject>
     {
         const WControllerMediaObject & object = timeline.at(i);
 
-        if (currentId != object.id) continue;
+        if (currentId != object.id)
+        {
+            duration += object.duration;
+
+            continue;
+        }
 
         WControllerMediaSource * media = object.media;
 
-        if (media == NULL) continue;
+        if (media == NULL)
+        {
+            duration += object.duration;
+
+            continue;
+        }
 
         int currentGap = qAbs(currentTime - duration);
 
-        if (gap >= currentGap)
+        if (currentGap <= gap)
         {
             gap = currentGap;
 
@@ -1120,6 +1133,9 @@ void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject>
         duration += object.duration;
     }
 
+    QString result = currentId;
+
+    // NOTE: When we can't find a valid id we return the first media.
     if (index == -1)
     {
         for (int i = 0; i < timeline.count(); i++)
@@ -1130,14 +1146,14 @@ void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject>
 
             if (media == NULL) continue;
 
-            currentId = object.id;
+            result = object.id;
 
             index = i;
 
             break;
         }
 
-        if (index == -1) return;
+        if (index == -1) return result;
     }
 
     const WControllerMediaObject & object = timeline.at(index);
@@ -1146,7 +1162,7 @@ void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject>
 
     const WYamlNode * node = child->at("source");
 
-    if (node == NULL) return;
+    if (node == NULL) return result;
 
     currentTime = time;
 
@@ -1161,6 +1177,8 @@ void WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject>
     else extractSource(nodes);
 
     if (source.isEmpty()) applyEmpty();
+
+    return result;
 }
 
 QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & timeline,
