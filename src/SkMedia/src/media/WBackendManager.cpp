@@ -272,6 +272,17 @@ void WBackendManagerPrivate::applySources(bool play)
             q->setCurrentTime(reply->currentTime());
 
             q->setContext(reply->context());
+
+            // NOTE: We clear the arg so we don't apply it when seeking to another video slice.
+            source = WControllerNetwork::removeFragmentValue(source, "arg");
+
+            // NOTE: We apply the currentTime to ensure WControllerMedia caching is relevant.
+            if (currentTime > 0)
+            {
+                source
+                    = WControllerNetwork::applyFragmentValue(source, "t",
+                                                             QString::number(currentTime / 1000));
+            }
         }
         else
         {
@@ -632,9 +643,6 @@ void WBackendManagerPrivate::onLoaded()
         q->stop();
     }
     else applySources(q->isPlaying());
-
-    // NOTE: We clear the arg fragment so we don't apply it when seeking on the video source.
-    source = WControllerNetwork::removeFragmentValue(source, "arg");
 
     reply->deleteLater();
 

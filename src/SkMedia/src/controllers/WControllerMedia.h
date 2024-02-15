@@ -219,7 +219,7 @@ public: // Static functions
 
     // NOTE: This function extracts the context as a list and populates the currentId. Both
     //       curentId:value,value and value,value formats are supported.
-    static QStringList getContextList(const QString & context, QString & currentId);
+    static QStringList getContextList(const QString & context, QString * currentId);
 
     static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
 
