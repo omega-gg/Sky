@@ -890,7 +890,9 @@ void WControllerMediaData::dumpTimeline(const QList<WControllerMediaObject> & ti
 
     if (context.isEmpty()) return;
 
-    qDebug("%s", context.chopped(1).C_STR);
+    context.chop(1);
+
+    qDebug("%s", context.C_STR);
 }
 
 //-------------------------------------------------------------------------------------------------
