@@ -137,6 +137,9 @@ void WBackendManagerPrivate::loadSources(bool play)
 
             backendInterface->loadSource(source, duration, currentTime, NULL);
 
+            // NOTE: We clear the arg so we don't apply it when seeking to another video slice.
+            source = WControllerNetwork::removeFragmentValue(source, "arg");
+
             if (play == false) return;
 
             backendInterface->play();
@@ -150,6 +153,9 @@ void WBackendManagerPrivate::loadSources(bool play)
     }
 
     loadMedia();
+
+    // NOTE: We clear the arg so we don't apply it when seeking to another video slice.
+    source = WControllerNetwork::removeFragmentValue(source, "arg");
 
     if (reply == NULL) return;
 
@@ -273,9 +279,6 @@ void WBackendManagerPrivate::applySources(bool play)
 
             q->setContext(reply->context());
 
-            // NOTE: We clear the arg so we don't apply it when seeking to another video slice.
-            source = WControllerNetwork::removeFragmentValue(source, "arg");
-
             // NOTE: We apply the currentTime to ensure WControllerMedia caching is relevant.
             if (currentTime > 0)
             {
@@ -283,6 +286,7 @@ void WBackendManagerPrivate::applySources(bool play)
                     = WControllerNetwork::applyFragmentValue(source, "t",
                                                              QString::number(currentTime / 1000));
             }
+            else source = WControllerNetwork::removeFragmentValue(source, "t");
         }
         else
         {
@@ -414,6 +418,11 @@ void WBackendManagerPrivate::applyTime(int currentTime)
         freeze = true;
 
         stopBackend();
+
+        if (type == Interactive)
+        {
+            source = WControllerNetwork::applyFragmentValue(source, "arg", "clear");
+        }
 
         loadSources(q->isPlaying());
     }
@@ -707,7 +716,16 @@ void WBackendManagerPrivate::onStateLoad()
 
     q->setStateLoad(stateLoad);
 
+#ifdef SK_NO_QML
     freeze = false;
+#else
+    if (freeze)
+    {
+        freeze = false;
+
+        q->updateFrame();
+    }
+#endif
 
     if (stateLoad == WAbstractBackend::StateLoadDefault)
     {
@@ -1112,6 +1130,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         d->freeze = true;
 
         d->stopBackend();
+
+        if (d->type == WBackendManagerPrivate::Interactive)
+        {
+            d->source = WControllerNetwork::applyFragmentValue(d->source, "arg", "clear");
+        }
 
         d->loadSources(isPlaying());
     }

@@ -386,20 +386,21 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (context.isEmpty() == false)
             {
-                list = getContextList(WUnzipper::extractBase64(context.toUtf8()), &currentId);
+                list = getContextList(WUnzipper::extractBase64(context.toUtf8()), argument,
+                                      &currentId);
 
                 timeline = generateTimeline(hash, list, tags);
 
                 if (timeline.isEmpty())
                 {
-                    list = getContextList(contextBase, &currentId);
+                    list = getContextList(contextBase, argument, &currentId);
 
                     timeline = generateTimeline(hash, list, tags);
                 }
             }
             else
             {
-                list = getContextList(contextBase, &currentId);
+                list = getContextList(contextBase, argument, &currentId);
 
                 timeline = generateTimeline(hash, list, tags);
             }
@@ -851,6 +852,7 @@ QString WControllerMediaData::getContext(const QList<WControllerMediaObject> & t
 }
 
 /* static */ QStringList WControllerMediaData::getContextList(const QString & context,
+                                                              const QString & argument,
                                                               QString       * currentId)
 {
     QStringList list = Sk::split(context.toLower(), ',');
@@ -863,7 +865,10 @@ QString WControllerMediaData::getContext(const QList<WControllerMediaObject> & t
 
     if (index != -1)
     {
-        *currentId = string.left(index);
+        if (argument != "clear")
+        {
+            *currentId = string.left(index);
+        }
 
         string = string.right(string.length() - index - 1);
 
@@ -936,8 +941,6 @@ void WControllerMediaData::extractSourceDuration(const QList<WYamlNode> & childr
 int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
                                                 QString                             * currentId)
 {
-    QString lastId;
-
     for (int i = 0; i < timeline.count(); i++)
     {
         const WControllerMediaObject & object = timeline.at(i);
@@ -956,8 +959,6 @@ int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObje
         {
             timeA = time;
 
-            lastId = object.id;
-
             continue;
         }
 
@@ -973,10 +974,6 @@ int WControllerMediaData::extractSourceTimeline(const QList<WControllerMediaObje
         {
             *currentId = id;
         }
-        /*else if (lastId == *currentId)
-        {
-            *currentId = id;
-        }*/
         // NOTE: When the currentId do not match we consider that the currentTime is invalid.
         else if (*currentId != id) break;
 
@@ -1116,10 +1113,10 @@ QString WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObje
 {
     int index = -1;
 
+    int time     = 0;
     int duration = 0;
-    int gap      = 0;
 
-    int time = 0;
+    int gap = -1;
 
     for (int i = 0; i < timeline.count(); i++)
     {
@@ -1143,7 +1140,7 @@ QString WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObje
 
         int currentGap = qAbs(currentTime - duration);
 
-        if (currentGap <= gap)
+        if (gap == -1 || currentGap <= gap)
         {
             gap = currentGap;
 
@@ -1760,7 +1757,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.expiry = source.expiry;
 
-        slice.duration = -1;
+        slice.currentTime = -1;
+        slice.duration    = -1;
 
         slice.timeA = -1;
         slice.timeB = -1;
@@ -1801,7 +1799,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         QString timeZone = media->timeZone;
 
-        int duration = media->duration;
+        int currentTime = media->currentTime;
+        int duration    = media->duration;
 
         int timeA = media->timeA;
         int timeB = media->timeB;
@@ -1824,7 +1823,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.expiry = source.expiry;
 
-        slice.duration = duration;
+        slice.currentTime = currentTime;
+        slice.duration    = duration;
 
         slice.timeA = timeA;
         slice.timeB = timeB;
@@ -1848,7 +1848,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_timeZone = timeZone;
 
-            reply->_duration = duration;
+            reply->_currentTime = currentTime;
+            reply->_duration    = duration;
 
             reply->_timeA = timeA;
             reply->_timeB = timeB;
@@ -2581,7 +2582,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
             reply->_timeZone = slice->timeZone;
 
-            reply->_duration = slice->duration;
+            reply->_currentTime = slice->currentTime;
+            reply->_duration    = slice->duration;
 
             reply->_timeA = slice->timeA;
             reply->_timeB = slice->timeB;

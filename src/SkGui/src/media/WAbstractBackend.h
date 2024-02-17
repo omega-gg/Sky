@@ -367,7 +367,6 @@ public: // Interface
     Q_INVOKABLE void unregisterWatcher(WBackendWatcher * watcher);
 
 public: // Static functions
-
     Q_INVOKABLE static State         stateFromString    (const QString & string);
     Q_INVOKABLE static StateLoad     stateLoadFromString(const QString & string);
     Q_INVOKABLE static Output        outputFromString   (const QString & string);
