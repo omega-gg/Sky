@@ -377,10 +377,11 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
     {
         if (WControllerPlaylist::textIsRedirect(content, url))
         {
-            type = WControllerPlaylist::Redirect;
+            origin = wControllerPlaylist->sourceRelatedTracks(content, QString(), currentTime);
 
-            origin = WControllerPlaylist::createSource("vbml", "related", "tracks", content,
-                                                       WBackendNet::timeToString(currentTime));
+            if (origin.isEmpty()) return;
+
+            type = WControllerPlaylist::Redirect;
 
             return;
         }
@@ -390,13 +391,13 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         {
             origin = WControllerPlaylistData::extractHtmlLink(array, url);
 
-            if (origin.isEmpty() == false)
-            {
-                type = WControllerPlaylist::Redirect;
+            if (origin.isEmpty()) return;
 
-                origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin,
-                                                           WBackendNet::timeToString(currentTime));
-            }
+            origin = wControllerPlaylist->sourceRelatedTracks(origin, QString(), currentTime);
+
+            if (origin.isEmpty()) return;
+
+            type = WControllerPlaylist::Redirect;
 
             return;
         }
@@ -430,10 +431,11 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         // NOTE: The origin has to be different than the current URL.
         WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
     {
-        type = WControllerPlaylist::Redirect;
+        origin = wControllerPlaylist->sourceRelatedTracks(string, QString(), currentTime);
 
-        origin = WControllerPlaylist::createSource("vbml", "related", "tracks", string,
-                                                   WBackendNet::timeToString(currentTime));
+        if (origin.isEmpty()) return;
+
+        type = WControllerPlaylist::Redirect;
 
         return;
     }
@@ -5134,9 +5136,15 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         backend->tryDelete();
 
-        if      (query.isValid()) return createSource(id, "related", "tracks", trackId, t);
-        else if (title.isEmpty()) return createSource(id, "related", "tracks", url,     t);
-        else                      return createSource(id, "related", "tracks", title,   t);
+        if (query.isValid())
+        {
+            return createSource(id, "related", "tracks", trackId, t);
+        }
+        else if (title.isEmpty() == false)
+        {
+            return createSource(id, "related", "tracks", title, t);
+        }
+        else return QString();
     }
 
     if (url.isEmpty()) return QString();
