@@ -1104,6 +1104,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->clearReply();
 
+        // NOTE: When reloading we clear the contextId in case it's an interactive track.
+        d->source = WControllerNetwork::removeFragmentValue(d->source, "id");
+
         d->loadSources(isPlaying());
 
         return;
