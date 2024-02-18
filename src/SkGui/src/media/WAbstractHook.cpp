@@ -299,9 +299,9 @@ void WAbstractHook::setQualityActive(WAbstractBackend::Quality quality)
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractHook::setContext(const QString & context)
+void WAbstractHook::setContext(const QString & context, const QString & contextId)
 {
-    Q_D(WAbstractHook); d->backend->setContext(context);
+    Q_D(WAbstractHook); d->backend->setContext(context, contextId);
 }
 
 //-------------------------------------------------------------------------------------------------

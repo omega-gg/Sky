@@ -446,7 +446,9 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
     {
         Q_Q(WHookOutput);
 
-        q->setContext(reply.parameters.first());
+        const QStringList & parameters = reply.parameters;
+
+        q->setContext(parameters.first(), parameters.last());
     }
     else if (type == WBroadcastReply::VIDEOS)
     {

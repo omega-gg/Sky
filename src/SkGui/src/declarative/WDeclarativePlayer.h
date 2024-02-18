@@ -140,7 +140,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
-    Q_PROPERTY(QString context READ context NOTIFY contextChanged)
+    Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
+    Q_PROPERTY(QString contextId READ contextId NOTIFY contextChanged)
 
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
@@ -447,7 +448,8 @@ public: // Properties
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
 
-    QString context() const;
+    QString context  () const;
+    QString contextId() const;
 
     int  pauseTimeout() const;
     void setPauseTimeout(int msec);

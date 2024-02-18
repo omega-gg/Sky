@@ -117,6 +117,7 @@ public: // Variable
     QString subtitle;
 
     QString context;
+    QString contextId;
 
     QSizeF size;
 

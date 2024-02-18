@@ -277,16 +277,7 @@ void WBackendManagerPrivate::applySources(bool play)
 
             q->setCurrentTime(reply->currentTime());
 
-            q->setContext(reply->context());
-
-            // NOTE: We apply the currentTime to ensure WControllerMedia caching is relevant.
-            if (currentTime > 0)
-            {
-                source
-                    = WControllerNetwork::applyFragmentValue(source, "t",
-                                                             QString::number(currentTime / 1000));
-            }
-            else source = WControllerNetwork::removeFragmentValue(source, "t");
+            q->setContext(reply->context(), reply->contextId());
         }
         else
         {
@@ -421,7 +412,7 @@ void WBackendManagerPrivate::applyTime(int currentTime)
 
         if (type == Interactive)
         {
-            source = WControllerNetwork::applyFragmentValue(source, "arg", "clear");
+            source = WControllerNetwork::removeFragmentValue(source, "id");
         }
 
         loadSources(q->isPlaying());
@@ -1133,7 +1124,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         if (d->type == WBackendManagerPrivate::Interactive)
         {
-            d->source = WControllerNetwork::applyFragmentValue(d->source, "arg", "clear");
+            d->source = WControllerNetwork::removeFragmentValue(d->source, "id");
         }
 
         d->loadSources(isPlaying());

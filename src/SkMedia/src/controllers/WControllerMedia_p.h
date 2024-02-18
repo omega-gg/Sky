@@ -77,6 +77,8 @@ struct WPrivateMediaData
     int start;
 
     QString context;
+    QString contextId;
+
     QString argument;
 
     WBackendNet * backend;
@@ -112,6 +114,7 @@ struct WPrivateMediaSlice
     int start;
 
     QString context;
+    QString contextId;
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
@@ -165,6 +168,7 @@ public: // Functions
                  int                      timeA,
                  int                      start,
                  const QString          & context,
+                 const QString          & contextId,
                  const QString          & argument) const;
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);

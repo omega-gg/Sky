@@ -534,7 +534,7 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     //---------------------------------------------------------------------------------------------
     // NOTE: Checking parameters according to the expected API.
 
-    if (type == SCREEN)
+    if (type == CONTEXT || type == SCREEN)
     {
         if (parameters.count() == 2) return;
     }
@@ -549,6 +549,10 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
         if (parameters.count() == 1) return;
     }
     else if (parameters.isEmpty()) return;
+
+    //---------------------------------------------------------------------------------------------
+
+    type = Unknown;
 }
 
 WBroadcastReply::WBroadcastReply()

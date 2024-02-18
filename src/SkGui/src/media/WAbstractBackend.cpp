@@ -447,6 +447,40 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WAbstractBackend::applyContext(const QString & source,
+                                                                const QString & context,
+                                                                const QString & contextId,
+                                                                int             currentTime)
+{
+    QString result;
+
+    if (context.isEmpty())
+    {
+        result = WControllerNetwork::removeFragmentValue(source, "ctx");
+        result = WControllerNetwork::removeFragmentValue(result, "id");
+    }
+    else
+    {
+        result = WControllerNetwork::applyFragmentValue(source, "ctx", context);
+
+        if (contextId.isEmpty())
+        {
+            result = WControllerNetwork::removeFragmentValue(result, "id");
+        }
+        else result = WControllerNetwork::applyFragmentValue(result, "id", contextId);
+    }
+
+    // NOTE: We apply the currentTime to ensure the WControllerMedia caching is relevant.
+    if (currentTime > 0)
+    {
+        result = WControllerNetwork::applyFragmentValue(result, "t",
+                                                        QString::number(currentTime / 1000));
+    }
+    else result = WControllerNetwork::removeFragmentValue(result, "t");
+
+    return result;
+}
+
 /* Q_INVOKABLE static */
 WAbstractBackend::State WAbstractBackend::stateFromString(const QString & string)
 {
@@ -1111,21 +1145,23 @@ void WAbstractBackend::setQualityActive(Quality quality)
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractBackend::setContext(const QString & context)
+void WAbstractBackend::setContext(const QString & context, const QString & contextId)
 {
     Q_D(WAbstractBackend);
 
-    QString string = context;
+    QString stringA = context;
+    QString stringB = contextId;
 
-    if (d->filter) d->filter->filterContext(&string);
+    if (d->filter) d->filter->filterContext(&stringA, &stringB);
 
-    if (d->context == string) return;
+    if (d->context == stringA && d->contextId == stringB) return;
 
-    d->context = string;
+    d->context   = stringA;
+    d->contextId = stringB;
 
     emit contextChanged();
 
-    QString source = WControllerNetwork::applyFragmentValue(d->source, "ctx", string);
+    QString source = applyContext(d->source, context, contextId, d->currentTime);
 
     if (d->source == source) return;
 
@@ -1754,6 +1790,11 @@ QString WAbstractBackend::context() const
     Q_D(const WAbstractBackend); return d->context;
 }
 
+QString WAbstractBackend::contextId() const
+{
+    Q_D(const WAbstractBackend); return d->contextId;
+}
+
 //=================================================================================================
 // WBackendTrack
 //=================================================================================================
@@ -1884,6 +1925,6 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 
 /* virtual */ void WBackendFilter::filterCurrentOutput(int *) {}
 
-/* virtual */ void WBackendFilter::filterContext(QString *) {}
+/* virtual */ void WBackendFilter::filterContext(QString *, QString *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND

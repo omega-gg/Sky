@@ -224,7 +224,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
-    Q_PROPERTY(QString context READ context NOTIFY contextChanged)
+    Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
+    Q_PROPERTY(QString contextId READ contextId NOTIFY contextChanged)
 
 public:
     enum State
@@ -367,6 +368,10 @@ public: // Interface
     Q_INVOKABLE void unregisterWatcher(WBackendWatcher * watcher);
 
 public: // Static functions
+    Q_INVOKABLE static QString applyContext(const QString & source,
+                                            const QString & context,
+                                            const QString & contextId, int currentTime);
+
     Q_INVOKABLE static State         stateFromString    (const QString & string);
     Q_INVOKABLE static StateLoad     stateLoadFromString(const QString & string);
     Q_INVOKABLE static Output        outputFromString   (const QString & string);
@@ -440,7 +445,7 @@ protected: // Functions
     void setOutputActive (Output  output);
     void setQualityActive(Quality quality);
 
-    void setContext(const QString & context);
+    void setContext(const QString & context, const QString & contextId);
 
     void deleteNow();
 
@@ -646,7 +651,8 @@ public: // Properties
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
 
-    QString context() const;
+    QString context  () const;
+    QString contextId() const;
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
@@ -759,7 +765,7 @@ public:
 
     virtual void filterCurrentOutput(int * index); // {}
 
-    virtual void filterContext(QString * context); // {}
+    virtual void filterContext(QString * context, QString * contextId); // {}
 };
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false

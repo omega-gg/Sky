@@ -93,7 +93,8 @@ public: // Properties
 
     int start() const;
 
-    QString context() const;
+    QString context  () const;
+    QString contextId() const;
 
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
@@ -126,6 +127,7 @@ private: // Variables
     int _start;
 
     QString _context;
+    QString _contextId;
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
@@ -196,7 +198,7 @@ public: // Static functions
 
     static QString extractResult(const WYamlReader & reader, const QString     & argument,
                                                              const QStringList & context,
-                                                             const QString     & currentId);
+                                                             const QString     & contextId);
 
     static int applyDurations(QList<WControllerMediaObject> * timeline);
 
@@ -208,20 +210,15 @@ public: // Static functions
                      const QStringList                              & context,
                      const QStringList                              & tags);
 
-    static QString generateContext(const QList<WControllerMediaObject> & timeline,
-                                   const QString                       & currentId);
+    static QString generateContext(const QList<WControllerMediaObject> & timeline);
 
     static WControllerMediaSource *
     getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
 
-    static QString getContext(const QList<WControllerMediaObject> & timeline,
-                              const QString                       & currentId);
+    static QString getContext(const QList<WControllerMediaObject> & timeline);
 
-    // NOTE: This function extracts the context as a list and populates the currentId. Both
-    //       curentId:value,value and value,value formats are supported. Passing the 'clear'
-    //       argument sets the currentId to "".
-    static QStringList getContextList(const QString & context,
-                                      const QString & argument, QString * currentId);
+    // NOTE: This functions extracts the context as a list with the value,value format.
+    static QStringList getContextList(const QString & context);
 
     static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
 
@@ -230,7 +227,7 @@ public: // Functions
                                const QList<int>       & durations,
                                const QList<int>       & starts);
 
-    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline, QString * currentId);
+    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline);
 
     void extractSource(const QList<WYamlNode> & children);
 
@@ -240,12 +237,10 @@ public: // Functions
 
     void applyEmpty();
 
-    QString updateCurrentTime(const QList<WControllerMediaObject> & timeline,
-                              const QString                       & currentId);
+    QString updateCurrentTime(const QList<WControllerMediaObject> & timeline);
 
     // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
-    QString cleanTimeline(QList<WControllerMediaObject> & timeline,
-                          const QString                 & currentId, int index);
+    QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index);
 
 private: // Functions
     QStringList getContext(const QList<WControllerMediaObject> & timeline, int count) const;
@@ -275,6 +270,7 @@ public: // Variables
     int start;
 
     QString context;
+    QString contextId;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 };

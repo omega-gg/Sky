@@ -108,7 +108,7 @@ protected: // Functions
     void setOutputActive (WAbstractBackend::Output  output);
     void setQualityActive(WAbstractBackend::Quality quality);
 
-    void setContext(const QString & context);
+    void setContext(const QString & context, const QString & contextId);
 
     //---------------------------------------------------------------------------------------------
     // Backend abstract functions

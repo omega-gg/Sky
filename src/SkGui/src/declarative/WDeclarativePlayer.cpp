@@ -1054,7 +1054,12 @@ void WDeclarativePlayerPrivate::onQuality()
 
 void WDeclarativePlayerPrivate::onContext()
 {
-    server->sendReply(WBroadcastReply::CONTEXT, backend->context());
+    QStringList parameters;
+
+    parameters.append(backend->context  ());
+    parameters.append(backend->contextId());
+
+    server->sendReply(WBroadcastReply::CONTEXT, parameters);
 }
 
 void WDeclarativePlayerPrivate::onVideos()
@@ -2731,6 +2736,17 @@ QString WDeclarativePlayer::context() const
     if (d->backend)
     {
         return d->backend->context();
+    }
+    else return QString();
+}
+
+QString WDeclarativePlayer::contextId() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->contextId();
     }
     else return QString();
 }
