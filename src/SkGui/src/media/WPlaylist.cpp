@@ -799,7 +799,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 
     pController->abortQueryTrack(track);
 
-    pController->applySourceTrack(q, track, p->source, 0);
+    pController->applySourceTrack(q, track, p->source, p->source, 0);
 #else
     // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
     //        is not responding well.
@@ -812,7 +812,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 
         pController->abortQueryTrack(track);
 
-        pController->applySourceTrack(q, track, p->source, 0);
+        pController->applySourceTrack(q, track, p->source, p->source, 0);
     }
 
     WTrack::State state = p->state;
@@ -2741,7 +2741,7 @@ void WPlaylist::endTracksRemove() const
 {
     clearTracks();
 
-    return wControllerPlaylist->d_func()->applySourcePlaylist(this, source, QString(), 0);
+    return wControllerPlaylist->d_func()->applySourcePlaylist(this, source, source, 0);
 }
 
 /* virtual */ bool WPlaylist::onApplyQuery(const WBackendNetQuery & query)

@@ -95,7 +95,9 @@ public: // Interface
 
     //-------------------------------------------------------------------------------------------------
 
-    bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url, int index);
+    bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url,
+                                                                const QString & urlBase,
+                                                                int             index);
 
     bool applySourcePlaylist(WPlaylist * playlist, const QString & url,
                                                    const QString & urlBase, int index);
@@ -107,7 +109,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    bool applyNextTrack(WPlaylist * playlist, WTrack * track, const QString & url, int index);
+    bool applyNextTrack(WPlaylist * playlist, WTrack * track, const QString & url,
+                                                              const QString & urlBase, int index);
 
     bool applyNextPlaylist(WPlaylist * playlist, const QString & url,
                                                  const QString & urlBase, int index);
@@ -174,7 +177,6 @@ public: // Functions
     void applyCurrentIndex(WPlaylist * playlist) const;
 
     void loadUrls(QIODevice * device, const WBackendNetQuery & query,
-                                      const QString          & url,
                                       const char             * signal, const char * slot) const;
 
     void scanItems(QList<WLibraryFolderItem> * items) const;
