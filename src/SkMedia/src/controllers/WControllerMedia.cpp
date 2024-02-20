@@ -32,7 +32,6 @@
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
-#include <WControllerPlaylist>
 #include <WBackendUniversal>
 #include <WRegExp>
 #include <WZipper>
@@ -219,38 +218,6 @@ QString WMediaReply::error() const
 }
 
 //=================================================================================================
-// WControllerMediaSource
-//=================================================================================================
-
-WControllerMediaSource::WControllerMediaSource(const WYamlNode * node, int index)
-{
-    Q_ASSERT(node);
-
-    this->node = node;
-
-    // NOTE: An interactive id has a maximum length of 10 characters.
-    id = node->extractString("id").left(10);
-
-    this->index = index;
-
-    duration = -2;
-
-    at  = -1;
-    end = -1;
-}
-
-int WControllerMediaSource::getDuration(int at) const
-{
-    if (duration != -1) return duration;
-
-    if (end == -1)
-    {
-        return 0;
-    }
-    else return end - at;
-}
-
-//=================================================================================================
 // WControllerMediaData
 //=================================================================================================
 
@@ -375,36 +342,41 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             // NOTE: The interactive mode ignores the root start property.
             start = 0;
 
-            QString contextBase = reader.extractString("context");
+            QStringList tags = WControllerPlaylist::vbmlTags(reader);
 
-            QStringList tags = extractTags(reader);
+            QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(reader);
 
-            QList<WControllerMediaSource> sources = extractSources(reader);
-
-            QHash<QString, WControllerMediaSource *> hash = generateHash(sources);
+            QHash<QString, WControllerMediaSource *> hash
+                = WControllerMediaSource::generateHash(sources);
 
             QList<WControllerMediaObject> timeline;
 
             QStringList list;
 
-            if (context.isEmpty() == false)
+            if (context.isEmpty())
             {
-                list = getContextList(WUnzipper::extractBase64(context.toUtf8()));
+                QString contextBase = reader.extractString("context");
 
-                timeline = generateTimeline(hash, list, tags);
+                list = WControllerMediaSource::getContextList(contextBase);
 
-                if (timeline.isEmpty())
-                {
-                    list = getContextList(contextBase);
-
-                    timeline = generateTimeline(hash, list, tags);
-                }
+                timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
             }
             else
             {
-                list = getContextList(contextBase);
+                QByteArray array = WUnzipper::extractBase64(context.toUtf8());
 
-                timeline = generateTimeline(hash, list, tags);
+                list = WControllerMediaSource::getContextList(array);
+
+                timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
+
+                if (timeline.isEmpty())
+                {
+                    QString contextBase = reader.extractString("context");
+
+                    list = WControllerMediaSource::getContextList(contextBase);
+
+                    timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
+                }
             }
 
             if (timeline.isEmpty()) return;
@@ -449,7 +421,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             list = Sk::split(result.toLower(), ',');
 
-            QList<WControllerMediaObject> timelineNew = generateTimeline(hash, list, tags);
+            QList<WControllerMediaObject> timelineNew
+                = WControllerMediaSource::generateTimeline(hash, list, tags);
 
             if (timelineNew.isEmpty())
             {
@@ -627,53 +600,6 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QStringList WControllerMediaData::extractTags(const WYamlReader & reader)
-{
-    QStringList tags;
-
-    QStringList list = reader.extractList("tags");
-
-    foreach (const QString & tag, list)
-    {
-        if (tags.contains(tag)) continue;
-
-        // NOTE: An interactive id has a maximum length of 10 characters.
-        tags.append(tag.left(10));
-    }
-
-    return tags;
-}
-
-/* static */ QList<WControllerMediaSource>
-WControllerMediaData::extractSources(const WYamlReader & reader)
-{
-    QList<WControllerMediaSource> list;
-
-    const WYamlNode * node = reader.at("source");
-
-    if (node == NULL) return list;
-
-    const QList<WYamlNode> & children = node->children;
-
-    if (children.isEmpty())
-    {
-        WControllerMediaSource source(node, list.count());
-
-        list.append(source);
-
-        return list;
-    }
-
-    foreach (const WYamlNode & child, children)
-    {
-        WControllerMediaSource source(&child, list.count());
-
-        list.append(source);
-    }
-
-    return list;
-}
-
 /* static */ QString WControllerMediaData::extractResult(const WYamlReader & reader,
                                                          const QString     & argument,
                                                          const QStringList & context,
@@ -721,7 +647,7 @@ int WControllerMediaData::applyDurations(QList<WControllerMediaObject> * timelin
 
         int at = media->at;
 
-        int durationSource = media->getDuration(media->at);
+        int durationSource = media->getDuration(at);
 
         // NOTE: When the duration is invalid we skip it entirely.
         if (durationSource <= 0)
@@ -742,91 +668,10 @@ int WControllerMediaData::applyDurations(QList<WControllerMediaObject> * timelin
     else          return -1;
 }
 
-/* static */ QHash<QString, WControllerMediaSource *>
-WControllerMediaData::generateHash(QList<WControllerMediaSource> & sources)
-{
-    QHash<QString, WControllerMediaSource *> hash;
-
-    for (int i = 0; i < sources.count(); i++)
-    {
-        WControllerMediaSource & source = sources[i];
-
-        hash.insert(source.id, &source);
-    }
-
-    return hash;
-}
-
-/* static */ QList<WControllerMediaObject>
-WControllerMediaData::generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
-                                       const QStringList                              & context,
-                                       const QStringList                              & tags)
-{
-    QList<WControllerMediaObject> timeline;
-
-    int lastIndex = -1;
-
-    foreach (const QString & id, context)
-    {
-        WControllerMediaSource * media = getMediaSource(hash, id);
-
-        if (media == NULL)
-        {
-            // NOTE: When the tag is unknown we skip it entirely.
-            if (tags.contains(id) == false) continue;
-
-            WControllerMediaObject object;
-
-            object.id    = id;
-            object.media = NULL;
-
-            timeline.append(object);
-
-            continue;
-        }
-
-        int index = media->index;
-
-        if (index == lastIndex) continue;
-
-        lastIndex = index;
-
-        WControllerMediaObject object;
-
-        object.id    = id;
-        object.media = media;
-
-        timeline.append(object);
-    }
-
-    return timeline;
-}
-
 /* static */
 QString WControllerMediaData::generateContext(const QList<WControllerMediaObject> & timeline)
 {
     return WZipper::compressBase64(getContext(timeline).toUtf8());
-}
-
-/* static */ WControllerMediaSource *
-WControllerMediaData::getMediaSource(const QHash<QString, WControllerMediaSource *> & hash,
-                                     const QString                                  & id)
-{
-    WControllerMediaSource * source = hash.value(id);
-
-    if (source == NULL || source->duration != -2) return source;
-
-    const WYamlNode * node = source->node;
-
-    source->duration = node->extractMsecs("duration", -1);
-
-    source->at = node->extractMsecs("at");
-
-    if (source->duration != -1) return source;
-
-    source->end = node->extractMsecs("end", -1);
-
-    return source;
 }
 
 /* static */
@@ -844,11 +689,6 @@ QString WControllerMediaData::getContext(const QList<WControllerMediaObject> & t
     context.chop(1);
 
     return context;
-}
-
-/* static */ QStringList WControllerMediaData::getContextList(const QString & context)
-{
-    return Sk::split(context.toLower(), ',');
 }
 
 /* static */

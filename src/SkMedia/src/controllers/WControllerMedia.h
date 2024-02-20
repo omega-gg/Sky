@@ -29,7 +29,7 @@
 #endif
 
 // Sk includes
-#include <WController>
+#include <WControllerPlaylist>
 #include <WBackendNet>
 #include <WYamlReader>
 
@@ -149,37 +149,6 @@ private:
 // WControllerMediaData
 //-------------------------------------------------------------------------------------------------
 
-class WControllerMediaSource
-{
-public:
-    WControllerMediaSource(const WYamlNode * node, int index);
-
-public: // Interface
-    int getDuration(int at) const;
-
-public: // Variables
-    const WYamlNode * node;
-
-    QString id;
-
-    int index;
-
-    int duration;
-
-    int at;
-    int end;
-};
-
-struct WControllerMediaObject
-{
-    QString id;
-
-    WControllerMediaSource * media;
-
-    int duration;
-    int at;
-};
-
 class WControllerMediaData
 {
 public:
@@ -192,33 +161,15 @@ public: // Interface
     void applyM3u(const QByteArray & array, const QString & url);
 
 public: // Static functions
-    static QStringList extractTags(const WYamlReader & reader);
-
-    static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
-
     static QString extractResult(const WYamlReader & reader, const QString     & argument,
                                                              const QStringList & context,
                                                              const QString     & contextId);
 
     static int applyDurations(QList<WControllerMediaObject> * timeline);
 
-    static QHash<QString, WControllerMediaSource *>
-    generateHash(QList<WControllerMediaSource> & sources);
-
-    static QList<WControllerMediaObject>
-    generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
-                     const QStringList                              & context,
-                     const QStringList                              & tags);
-
     static QString generateContext(const QList<WControllerMediaObject> & timeline);
 
-    static WControllerMediaSource *
-    getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
-
     static QString getContext(const QList<WControllerMediaObject> & timeline);
-
-    // NOTE: This functions extracts the context as a list with the value,value format.
-    static QStringList getContextList(const QString & context);
 
     static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
 

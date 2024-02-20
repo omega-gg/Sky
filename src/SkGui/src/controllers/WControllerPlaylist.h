@@ -35,6 +35,7 @@
 // Forward declarations
 class WControllerPlaylistPrivate;
 class WControllerPlaylistData;
+class WControllerMediaSource;
 class WControllerFileReply;
 class WAbstractLoader;
 class WYamlReader;
@@ -71,7 +72,7 @@ struct WControllerPlaylistSource
 };
 
 //-------------------------------------------------------------------------------------------------
-// WControllerPlaylistSource
+// WControllerPlaylistMedia
 //-------------------------------------------------------------------------------------------------
 
 struct WControllerPlaylistMedia
@@ -107,6 +108,62 @@ struct WControllerPlaylistItem
     QByteArray data;
 
     QString extension;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerMediaObject
+//-------------------------------------------------------------------------------------------------
+
+struct WControllerMediaObject
+{
+    QString id;
+
+    WControllerMediaSource * media;
+
+    int duration;
+    int at;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerMediaSource
+//-------------------------------------------------------------------------------------------------
+
+class WControllerMediaSource
+{
+public:
+    WControllerMediaSource(const WYamlNode * node, int index);
+
+public: // Interface
+    int getDuration(int at) const;
+
+public: // Static functions
+    static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
+
+    static QHash<QString, WControllerMediaSource *>
+    generateHash(QList<WControllerMediaSource> & sources);
+
+    static QList<WControllerMediaObject>
+    generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
+                     const QStringList                              & context,
+                     const QStringList                              & tags);
+
+    static WControllerMediaSource *
+    getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
+
+    // NOTE: This functions extracts the context as a list with the value,value format.
+    static QStringList getContextList(const QString & context);
+
+public: // Variables
+    const WYamlNode * node;
+
+    QString id;
+
+    int index;
+
+    int duration;
+
+    int at;
+    int end;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -379,6 +436,9 @@ public: // Static functions
 
     // NOTE: This function extracts a hash value with the #value format.
     Q_INVOKABLE static QString vbmlHash(const QString & text);
+
+    // NOTE: This function extracts the vbml tags.
+    Q_INVOKABLE static QStringList vbmlTags(const WYamlReader & reader);
 
 signals:
     void filesCleared(const QList<int> & idFull);

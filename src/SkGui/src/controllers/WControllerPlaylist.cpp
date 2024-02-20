@@ -49,6 +49,7 @@
 #include <WTabTrack>
 #include <WBackendLoader>
 #include <WYamlReader>
+#include <WUnzipper>
 
 // macOS includes
 #ifdef Q_OS_MACX
@@ -1346,6 +1347,162 @@ signals:
     emit loadedItem(device, item);
 
     deleteLater();
+}
+
+//=================================================================================================
+// WControllerMediaSource
+//=================================================================================================
+
+WControllerMediaSource::WControllerMediaSource(const WYamlNode * node, int index)
+{
+    Q_ASSERT(node);
+
+    this->node = node;
+
+    // NOTE: An interactive id has a maximum length of 10 characters.
+    id = node->extractString("id").left(10);
+
+    this->index = index;
+
+    duration = -2;
+
+    at  = -1;
+    end = -1;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+int WControllerMediaSource::getDuration(int at) const
+{
+    if (duration != -1) return duration;
+
+    if (end == -1)
+    {
+        return 0;
+    }
+    else return end - at;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QList<WControllerMediaSource>
+WControllerMediaSource::extractSources(const WYamlReader & reader)
+{
+    QList<WControllerMediaSource> list;
+
+    const WYamlNode * node = reader.at("source");
+
+    if (node == NULL) return list;
+
+    const QList<WYamlNode> & children = node->children;
+
+    if (children.isEmpty())
+    {
+        WControllerMediaSource source(node, 0);
+
+        list.append(source);
+
+        return list;
+    }
+
+    foreach (const WYamlNode & child, children)
+    {
+        WControllerMediaSource source(&child, list.count());
+
+        list.append(source);
+    }
+
+    return list;
+}
+
+/* static */ QHash<QString, WControllerMediaSource *>
+WControllerMediaSource::generateHash(QList<WControllerMediaSource> & sources)
+{
+    QHash<QString, WControllerMediaSource *> hash;
+
+    for (int i = 0; i < sources.count(); i++)
+    {
+        WControllerMediaSource & source = sources[i];
+
+        hash.insert(source.id, &source);
+    }
+
+    return hash;
+}
+
+/* static */ QList<WControllerMediaObject>
+WControllerMediaSource::generateTimeline(const QHash<QString, WControllerMediaSource *> & hash,
+                                         const QStringList                              & context,
+                                         const QStringList                              & tags)
+{
+    QList<WControllerMediaObject> timeline;
+
+    int lastIndex = -1;
+
+    foreach (const QString & id, context)
+    {
+        WControllerMediaSource * media = getMediaSource(hash, id);
+
+        if (media == NULL)
+        {
+            // NOTE: When the tag is unknown we skip it entirely.
+            if (tags.contains(id) == false) continue;
+
+            WControllerMediaObject object;
+
+            object.id    = id;
+            object.media = NULL;
+
+            timeline.append(object);
+
+            continue;
+        }
+
+        int index = media->index;
+
+        if (index == lastIndex) continue;
+
+        lastIndex = index;
+
+        WControllerMediaObject object;
+
+        object.id    = id;
+        object.media = media;
+
+        timeline.append(object);
+    }
+
+    return timeline;
+}
+
+/* static */ WControllerMediaSource *
+WControllerMediaSource::getMediaSource(const QHash<QString, WControllerMediaSource *> & hash,
+                                       const QString                                  & id)
+{
+    WControllerMediaSource * source = hash.value(id);
+
+    if (source == NULL || source->duration != -2) return source;
+
+    const WYamlNode * node = source->node;
+
+    source->duration = node->extractMsecs("duration", -1);
+
+    source->at = node->extractMsecs("at");
+
+    if (source->duration != -1) return source;
+
+    source->end = node->extractMsecs("end", -1);
+
+    return source;
+}
+
+/* static */ QStringList WControllerMediaSource::getContextList(const QString & context)
+{
+    return Sk::split(context.toLower(), ',');
 }
 
 //=================================================================================================
@@ -6136,10 +6293,59 @@ int WControllerPlaylist::vbmlDurationSource(const WYamlNode & node, int at, int 
 /* Q_INVOKABLE static */
 int WControllerPlaylist::vbmlDurationInteractive(const WYamlReader & reader, const QString & url)
 {
-
     QString context = WControllerNetwork::extractFragmentValue(url, "ctx");
 
-    return -1;
+    QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(reader);
+
+    QHash<QString, WControllerMediaSource *> hash = WControllerMediaSource::generateHash(sources);
+
+    QStringList tags = WControllerPlaylist::vbmlTags(reader);
+
+    QList<WControllerMediaObject> timeline;
+
+    QStringList list;
+
+    if (context.isEmpty())
+    {
+        context = reader.extractString("context");
+
+        list = WControllerMediaSource::getContextList(context);
+
+        timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
+    }
+    else
+    {
+        QByteArray array = WUnzipper::extractBase64(context.toUtf8());
+
+        list = WControllerMediaSource::getContextList(array);
+
+        timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
+
+        if (timeline.isEmpty())
+        {
+            context = reader.extractString("context");
+
+            list = WControllerMediaSource::getContextList(context);
+
+            timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
+        }
+    }
+
+    if (timeline.isEmpty()) return -1;
+
+    int duration = 0;
+
+    foreach (const WControllerMediaObject & object, timeline)
+    {
+        WControllerMediaSource * media = object.media;
+
+        if (media == NULL) continue;
+
+        duration += media->getDuration(media->at);
+    }
+
+    if (duration == 0) return -1;
+    else               return duration;
 }
 
 /* Q_INVOKABLE static */
@@ -6249,6 +6455,23 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     }
 
     return result;
+}
+
+/* Q_INVOKABLE static */ QStringList WControllerPlaylist::vbmlTags(const WYamlReader & reader)
+{
+    QStringList tags;
+
+    QStringList list = reader.extractList("tags");
+
+    foreach (const QString & tag, list)
+    {
+        if (tags.contains(tag)) continue;
+
+        // NOTE: An interactive id has a maximum length of 10 characters.
+        tags.append(tag.left(10));
+    }
+
+    return tags;
 }
 
 //-------------------------------------------------------------------------------------------------
