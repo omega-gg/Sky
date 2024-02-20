@@ -175,19 +175,23 @@ public: // Static functions
 public: // Functions
     void extractSourceDuration(const QList<WYamlNode> & children,
                                const QList<int>       & durations,
-                               const QList<int>       & starts);
+                               const QList<int>       & starts,
+                               const QString          & baseUrl);
 
-    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline);
+    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+                              const QString                       & baseUrl);
 
-    void extractSource(const QList<WYamlNode> & children);
+    void extractSource(const QList<WYamlNode> & children, const QString & baseUrl);
 
-    void applySource(const WYamlNode & node, const QString & url, int duration);
+    void applySource(const WYamlNode & node, const QString & url,
+                                             const QString & baseUrl, int duration);
 
-    void applyMedia(const WYamlNodeBase & node, const QString & url);
+    void applyMedia(const WYamlNodeBase & node, const QString & url, const QString & baseUrl);
 
     void applyEmpty();
 
-    QString updateCurrentTime(const QList<WControllerMediaObject> & timeline);
+    QString updateCurrentTime(const QList<WControllerMediaObject> & timeline,
+                              const QString                       & baseUrl);
 
     // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
     QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index);

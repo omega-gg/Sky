@@ -6251,6 +6251,16 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     return vbmlTypeFromString(line.toLower());
 }
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlSource(const QString & url,
+                                                                 const QString & baseUrl)
+{
+    if (url.startsWith('/'))
+    {
+        return baseUrl + url;
+    }
+    else return url;
+}
+
 /* Q_INVOKABLE static */
 int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node, int at, int defaultValue)
 {

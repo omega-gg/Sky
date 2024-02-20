@@ -2486,11 +2486,9 @@ signals:
 
     QString cover = reader.extractString("cover");
 
-    if (WControllerNetwork::textIsUrl(cover))
-    {
-         data.cover = cover;
-    }
-    else data.cover = WControllerNetwork::extractBaseUrl(data.origin) + '/' + cover;
+    QString baseUrl = WControllerNetwork::extractBaseUrl(data.origin);
+
+    data.cover = WControllerPlaylist::vbmlSource(cover, baseUrl);
 
     data.hub = reader.extractString("hub");
 
