@@ -79,8 +79,6 @@ struct WPrivateMediaData
     QString context;
     QString contextId;
 
-    QString argument;
-
     WBackendNet * backend;
 
     WBackendNetQuery query;
@@ -163,13 +161,11 @@ public: // Functions
 
     void loadUrl(QIODevice              * device,
                  const WBackendNetQuery & query,
+                 const QString          & urlBase,
                  int                      currentTime,
                  int                      duration,
                  int                      timeA,
-                 int                      start,
-                 const QString          & context,
-                 const QString          & contextId,
-                 const QString          & argument) const;
+                 int                      start) const;
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
 

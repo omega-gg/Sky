@@ -155,8 +155,7 @@ public:
     WControllerMediaData();
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url,
-                                             const QString & argument);
+    void applyVbml(const QByteArray & array, const QString & url, const QString & urlBase);
 
     void applyM3u(const QByteArray & array, const QString & url);
 

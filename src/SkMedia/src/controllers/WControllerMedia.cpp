@@ -242,7 +242,7 @@ WControllerMediaData::WControllerMediaData()
 // Interface
 
 void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url,
-                                                               const QString & argument)
+                                                               const QString & urlBase)
 {
     QString content = Sk::readBml(array);
 
@@ -274,7 +274,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         {
             WControllerPlaylist::vbmlPatch(content, api);
 
-            applyVbml(content.toUtf8(), url, argument);
+            applyVbml(content.toUtf8(), url, urlBase);
 
             return;
         }
@@ -353,6 +353,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             QStringList list;
 
+            context = WControllerNetwork::extractFragmentValue(urlBase, "ctx");
+
             if (context.isEmpty())
             {
                 QString contextBase = reader.extractString("context");
@@ -363,6 +365,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             }
             else
             {
+                contextId = WControllerNetwork::extractFragmentValue(urlBase, "id");
+
                 QByteArray array = WUnzipper::extractBase64(context.toUtf8());
 
                 list = WControllerMediaSource::getContextList(array);
@@ -381,8 +385,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (timeline.isEmpty()) return;
 
-            qDebug("CONTEXT BEFORE %s %s [%s]",
-                   getContext(timeline).C_STR, contextId.C_STR, argument.C_STR);
+            qDebug("CONTEXT BEFORE %s %s", getContext(timeline).C_STR, contextId.C_STR);
 
             duration = applyDurations(&timeline);
 
@@ -408,7 +411,16 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             }
             else index = extractSourceTimeline(timeline);
 
-            if (timeB == -1 || argument.isEmpty())
+            if (timeB == -1)
+            {
+                context = cleanTimeline(timeline, index);
+
+                return;
+            }
+
+            QString argument = WControllerNetwork::extractFragmentValue(urlBase, "arg");
+
+            if (argument.isEmpty())
             {
                 context = cleanTimeline(timeline, index);
 
@@ -1163,13 +1175,11 @@ class WControllerMediaReply : public QObject
 public: // Interface
     Q_INVOKABLE void extractVbml(QIODevice     * device,
                                  const QString & url,
+                                 const QString & urlBase,
                                  int             currentTime,
                                  int             duration,
                                  int             timeA,
-                                 int             start,
-                                 const QString & context,
-                                 const QString & contextId,
-                                 const QString & argument);
+                                 int             start);
 
     Q_INVOKABLE void extractM3u(QIODevice * device, const QString & url);
 
@@ -1181,13 +1191,11 @@ signals:
 
 /* Q_INVOKABLE */ void WControllerMediaReply::extractVbml(QIODevice     * device,
                                                           const QString & url,
+                                                          const QString & urlBase,
                                                           int             currentTime,
                                                           int             duration,
                                                           int             timeA,
-                                                          int             start,
-                                                          const QString & context,
-                                                          const QString & contextId,
-                                                          const QString & argument)
+                                                          int             start)
 {
     WControllerMediaData data;
 
@@ -1198,10 +1206,7 @@ signals:
 
     data.start = start;
 
-    data.context   = context;
-    data.contextId = contextId;
-
-    data.applyVbml(WControllerFile::readAll(device), url, argument);
+    data.applyVbml(WControllerFile::readAll(device), url, urlBase);
 
     emit loaded(device, data);
 
@@ -1281,8 +1286,8 @@ void WControllerMediaPrivate::init(const QStringList & options)
 
     const QMetaObject * meta = WControllerMediaReply().metaObject();
 
-    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,int,int,int,int,"
-                                                              "QString,QString,QString)"));
+    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString,"
+                                                              "int,int,int,int)"));
 
     methodM3u = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
 
@@ -1429,17 +1434,6 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     media->start = 0;
 
-    QString context = WControllerNetwork::extractFragmentValue(url, "ctx");
-
-    media->context = context;
-
-    if (context.isEmpty() == false)
-    {
-        media->contextId = WControllerNetwork::extractFragmentValue(url, "id");
-
-        media->argument = WControllerNetwork::extractFragmentValue(url, "arg");
-    }
-
     media->backend = NULL;
     media->query   = query;
     media->reply   = NULL;
@@ -1453,13 +1447,11 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
 void WControllerMediaPrivate::loadUrl(QIODevice              * device,
                                       const WBackendNetQuery & query,
+                                      const QString          & urlBase,
                                       int                      currentTime,
                                       int                      duration,
                                       int                      timeA,
-                                      int                      start,
-                                      const QString          & context,
-                                      const QString          & contextId,
-                                      const QString          & argument) const
+                                      int                      start) const
 {
     Q_Q(const WControllerMedia);
 
@@ -1476,13 +1468,11 @@ void WControllerMediaPrivate::loadUrl(QIODevice              * device,
     }
     else methodVbml.invoke(reply, Q_ARG(QIODevice     *, device),
                                   Q_ARG(const QString &, query.url),
+                                  Q_ARG(const QString &, urlBase),
                                   Q_ARG(int,             currentTime),
                                   Q_ARG(int,             duration),
                                   Q_ARG(int,             timeA),
-                                  Q_ARG(int,             start),
-                                  Q_ARG(const QString &, context),
-                                  Q_ARG(const QString &, contextId),
-                                  Q_ARG(const QString &, argument));
+                                  Q_ARG(int,             start));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2033,8 +2023,8 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
             backend->loadSource(reply, *backendQuery,
                                 q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
         }
-        else loadUrl(reply, *backendQuery, media->currentTime, media->duration, media->timeA,
-                     media->start, media->context, media->contextId, media->argument);
+        else loadUrl(reply, *backendQuery, media->url, media->currentTime, media->duration,
+                     media->timeA, media->start);
     }
 
     delete data;
