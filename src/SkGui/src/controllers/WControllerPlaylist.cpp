@@ -321,6 +321,8 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
         }
     }
 
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
+
     WYamlReader reader(content.toUtf8());
 
     //---------------------------------------------------------------------------------------------
@@ -343,15 +345,15 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
         // NOTE: We keep a base url for our track source and make it compliant.
-        parseTrack(reader, string, WControllerPlaylist::generateSource(urlBase));
+        parseTrack(reader, string, baseUrl, WControllerPlaylist::generateSource(urlBase));
     }
     else if (WControllerPlaylist::vbmlTypePlaylist(type))
     {
-        parsePlaylist(reader);
+        parsePlaylist(reader, baseUrl);
     }
     else // NOTE: We default to the playlist type.
     {
-        parsePlaylist(reader);
+        parsePlaylist(reader, baseUrl);
 
         // NOTE: When the playlist is invalid we add the url itself given it could be a media.
         if (title.isEmpty() && tracks.isEmpty()
@@ -420,6 +422,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         }
     }
 
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
+
     WYamlReader reader(content.toUtf8());
 
     //---------------------------------------------------------------------------------------------
@@ -449,6 +453,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         {
             type = WControllerPlaylist::Related;
 
+            origin = WControllerPlaylist::vbmlSource(origin, baseUrl);
+
             return;
         }
 
@@ -472,9 +478,10 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             if (children.isEmpty())
             {
-                applySource(reader.node(), node->value, CONTROLLERPLAYLIST_CHANNEL_DURATION);
+                applySource(reader.node(), node->value, baseUrl,
+                            CONTROLLERPLAYLIST_CHANNEL_DURATION);
             }
-            else extractSource(node->children);
+            else extractSource(node->children, baseUrl);
         }
         else if (children.isEmpty())
         {
@@ -483,7 +490,7 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
             int duration = WControllerPlaylist::vbmlDuration(nodeBase,
                                                              nodeBase.extractMsecs("at"), -1);
 
-            applySource(nodeBase, node->value, duration);
+            applySource(nodeBase, node->value, baseUrl, duration);
         }
         else
         {
@@ -503,7 +510,7 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             currentTime += start;
 
-            extractSource(node->children);
+            extractSource(node->children, baseUrl);
         }
     }
     else
@@ -513,6 +520,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         if (origin.isEmpty() == false)
         {
             type = WControllerPlaylist::Related;
+
+            origin = WControllerPlaylist::vbmlSource(origin, baseUrl);
         }
     }
 }
@@ -894,10 +903,12 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 //-------------------------------------------------------------------------------------------------
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & type,
-                                                               const QString & url)
+                                                               const QString & url,
+                                                               const QString & baseUrl)
 {
     title = reader.extractString("title");
-    cover = reader.extractString("cover");
+
+    cover = WControllerPlaylist::vbmlSource(reader.extractString("cover"), baseUrl);
 
     WTrack::Type typeTrack = WTrack::typeFromString(type);
 
@@ -934,7 +945,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
             else if (node->children.isEmpty())
             {
                 // NOTE: That's useful for the next query part of onUrlPlaylist and onUrlFolder.
-                source = node->value;
+                source = WControllerPlaylist::vbmlSource(node->value, baseUrl);
 
                 track.setType(typeTrack);
 
@@ -962,24 +973,27 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     {
         track.setType(typeTrack);
 
-        track.setSource(origin);
+        track.setSource(WControllerPlaylist::vbmlSource(origin, baseUrl));
     }
 
     track.setTitle(title);
-    track.setCover(cover);
+
+    track.setCover(WControllerPlaylist::vbmlSource(cover, baseUrl));
 
     track.setAuthor(reader.extractString("author"));
-    track.setFeed  (reader.extractString("feed"));
+
+    track.setFeed(WControllerPlaylist::vbmlSource(reader.extractString("feed"), baseUrl));
 
     track.setDate(reader.extractDate("date"));
 
     tracks.append(track);
 }
 
-void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
+void WControllerPlaylistData::parsePlaylist(WYamlReader & reader, const QString & baseUrl)
 {
     title = reader.extractString("title");
-    cover = reader.extractString("cover");
+
+    cover = WControllerPlaylist::vbmlSource(reader.extractString("cover"), baseUrl);
 
     const WYamlNode * node = reader.at("tracks");
 
@@ -993,7 +1007,8 @@ void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
 
         foreach (const QString & string, list)
         {
-            WTrack track(string.trimmed(), WTrack::Default);
+            WTrack track(WControllerPlaylist::vbmlSource(string.trimmed(), baseUrl),
+                         WTrack::Default);
 
             tracks.append(track);
         }
@@ -1004,16 +1019,17 @@ void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
         {
             QString key = child.key;
 
-            if      (key == "track")       parsePlaylistTrack(child, WTrack::Track);
-            else if (key == "live")        parsePlaylistTrack(child, WTrack::Live);
-            else if (key == "hub")         parsePlaylistTrack(child, WTrack::Hub);
-            else if (key == "channel")     parsePlaylistTrack(child, WTrack::Channel);
-            else if (key == "interactive") parsePlaylistTrack(child, WTrack::Interactive);
+            if      (key == "track")       parsePlaylistTrack(child, WTrack::Track,       baseUrl);
+            else if (key == "live")        parsePlaylistTrack(child, WTrack::Live,        baseUrl);
+            else if (key == "hub")         parsePlaylistTrack(child, WTrack::Hub,         baseUrl);
+            else if (key == "channel")     parsePlaylistTrack(child, WTrack::Channel,     baseUrl);
+            else if (key == "interactive") parsePlaylistTrack(child, WTrack::Interactive, baseUrl);
         }
     }
 }
 
-void WControllerPlaylistData::parsePlaylistTrack(const WYamlNode & node, WTrack::Type type)
+void WControllerPlaylistData::parsePlaylistTrack(const WYamlNode & node, WTrack::Type    type,
+                                                                         const QString & baseUrl)
 {
     WTrack track;
 
@@ -1025,14 +1041,16 @@ void WControllerPlaylistData::parsePlaylistTrack(const WYamlNode & node, WTrack:
     {
         track.setState(WTrack::Default);
 
-        track.setSource(source);
+        track.setSource(WControllerPlaylist::vbmlSource(source, baseUrl));
     }
 
     track.setTitle(node.extractString("title"));
-    track.setCover(node.extractString("cover"));
+
+    track.setCover(WControllerPlaylist::vbmlSource(node.extractString("cover"), baseUrl));
 
     track.setAuthor(node.extractString("author"));
-    track.setFeed  (node.extractString("feed"));
+
+    track.setFeed(WControllerPlaylist::vbmlSource(node.extractString("feed"), baseUrl));
 
     track.setDuration(node.extractInt("duration", -1));
 
@@ -1131,7 +1149,8 @@ bool WControllerPlaylistData::addUrl(QStringList * urls, const QString & url) co
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
+void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children,
+                                            const QString          & baseUrl)
 {
     foreach (const WYamlNode & child, children)
     {
@@ -1154,7 +1173,7 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
             {
                 type = WControllerPlaylist::Related;
 
-                origin = related;
+                origin = WControllerPlaylist::vbmlSource(related, baseUrl);
             }
 
             return;
@@ -1171,23 +1190,24 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
             {
                 type = WControllerPlaylist::Related;
 
-                origin = related;
+                origin = WControllerPlaylist::vbmlSource(related, baseUrl);
 
                 return;
             }
 
             type = WControllerPlaylist::Source;
 
-            origin = node->value;
+            origin = WControllerPlaylist::vbmlSource(node->value, baseUrl);
         }
-        else extractSource(nodes);
+        else extractSource(nodes, baseUrl);
 
         return;
     }
 }
 
 void WControllerPlaylistData::applySource(const WYamlNodeBase & node,
-                                          const QString       & url, int duration)
+                                          const QString       & url,
+                                          const QString       & baseUrl, int duration)
 {
     // NOTE: If the duration is invalid we assume that the track is long enough.
     if (duration != -1 && currentTime >= duration)
@@ -1204,7 +1224,7 @@ void WControllerPlaylistData::applySource(const WYamlNodeBase & node,
     {
         type = WControllerPlaylist::Redirect;
 
-        origin = related;
+        origin = WControllerPlaylist::vbmlSource(related, baseUrl);
 
         return;
     }
@@ -1213,7 +1233,7 @@ void WControllerPlaylistData::applySource(const WYamlNodeBase & node,
 
     type = WControllerPlaylist::Source;
 
-    origin = url;
+    origin = WControllerPlaylist::vbmlSource(url, baseUrl);
 }
 
 QString WControllerPlaylistData::extractRelated(const WYamlNodeBase & node)

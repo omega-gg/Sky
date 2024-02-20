@@ -314,7 +314,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         return;
     }
 
-    QString baseUrl = WControllerNetwork::extractBaseUrl(urlBase);
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
 
     const QList<WYamlNode> & children = node->children;
 

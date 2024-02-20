@@ -531,10 +531,12 @@ public: // Static functions
     static QString generateTitle(const QString & url, const QString & urlName);
 
 private: // Functions
-    void parseTrack   (WYamlReader & reader, const QString & type, const QString & url);
-    void parsePlaylist(WYamlReader & reader);
+    void parseTrack(WYamlReader & reader, const QString & type, const QString & url,
+                                                                const QString & baseUrl);
 
-    void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);
+    void parsePlaylist(WYamlReader & reader, const QString & baseUrl);
+
+    void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type, const QString & baseUrl);
 
     void addSource(const QString & url, const QString & title);
     void addMedia (const QString & url, const QString & title);
@@ -543,9 +545,10 @@ private: // Functions
 
     bool addUrl(QStringList * urls, const QString & url) const;
 
-    void extractSource(const QList<WYamlNode> & children);
+    void extractSource(const QList<WYamlNode> & children, const QString & baseUrl);
 
-    void applySource(const WYamlNodeBase & node, const QString & url, int duration);
+    void applySource(const WYamlNodeBase & node, const QString & url,
+                                                 const QString & baseUrl, int duration);
 
     QString extractRelated(const WYamlNodeBase & node);
 
