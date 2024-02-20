@@ -345,7 +345,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
         // NOTE: We keep a base url for our track source and make it compliant.
-        parseTrack(reader, string, baseUrl, WControllerPlaylist::generateSource(urlBase));
+        parseTrack(reader, string, WControllerPlaylist::generateSource(urlBase), baseUrl);
     }
     else if (WControllerPlaylist::vbmlTypePlaylist(type))
     {
@@ -919,7 +919,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     // NOTE: The origin is prioritized over the source.
     if (origin.isEmpty())
     {
-        track.setSource(url);
+        track.setSource(WControllerPlaylist::vbmlSource(url, baseUrl));
 
         if (typeTrack == WTrack::Channel)
         {
@@ -6333,13 +6333,11 @@ int WControllerPlaylist::vbmlDurationInteractive(const WYamlReader & reader, con
 
     QList<WControllerMediaObject> timeline;
 
-    QStringList list;
-
     if (context.isEmpty())
     {
         context = reader.extractString("context");
 
-        list = WControllerMediaSource::getContextList(context);
+        QStringList list = WControllerMediaSource::getContextList(context);
 
         timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
     }
@@ -6347,7 +6345,7 @@ int WControllerPlaylist::vbmlDurationInteractive(const WYamlReader & reader, con
     {
         QByteArray array = WUnzipper::extractBase64(context.toUtf8());
 
-        list = WControllerMediaSource::getContextList(array);
+        QStringList list = WControllerMediaSource::getContextList(array);
 
         timeline = WControllerMediaSource::generateTimeline(hash, list, tags);
 
