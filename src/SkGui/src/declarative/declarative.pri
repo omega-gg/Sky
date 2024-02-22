@@ -23,6 +23,8 @@ HEADERS += src/declarative/WDeclarativeApplication.h \
            src/declarative/WDeclarativeAnimated_p.h \
            src/declarative/WDeclarativePlayer.h \
            src/declarative/WDeclarativePlayer_p.h \
+           src/declarative/WDeclarativeAmbient.h \
+           src/declarative/WDeclarativeAmbient_p.h \
            src/declarative/WDeclarativeNoise.h \
            src/declarative/WDeclarativeNoise_p.h \
            src/declarative/WDeclarativeListView.h \
@@ -52,6 +54,7 @@ SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativeTextSvg.cpp \
            src/declarative/WDeclarativeAnimated.cpp \
            src/declarative/WDeclarativePlayer.cpp \
+           src/declarative/WDeclarativeAmbient.cpp \
            src/declarative/WDeclarativeNoise.cpp \
            src/declarative/WDeclarativeListView.cpp \
            src/declarative/WDeclarativeContextualPage.cpp \

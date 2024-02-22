@@ -195,6 +195,14 @@ public:
     explicit WDeclarativePlayer(QQuickItem * parent = NULL);
 #endif
 
+protected:
+#ifdef QT_4
+    WDeclarativePlayer(WDeclarativePlayerPrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem * parent = NULL);
+#endif
+
+
 public: // Interface
     Q_INVOKABLE void play  ();
     Q_INVOKABLE void replay();

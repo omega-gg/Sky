@@ -128,7 +128,7 @@ struct WControllerMediaObject
 // WControllerMediaSource
 //-------------------------------------------------------------------------------------------------
 
-class WControllerMediaSource
+class SK_GUI_EXPORT WControllerMediaSource
 {
 public:
     WControllerMediaSource(const WYamlNode * node, int index);

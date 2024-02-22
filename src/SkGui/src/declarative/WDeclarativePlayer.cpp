@@ -1196,6 +1196,23 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected
+
+#ifdef QT_4
+WDeclarativePlayer::WDeclarativePlayer(WDeclarativePlayerPrivate * p, QDeclarativeItem * parent)
+#else
+WDeclarativePlayer::WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem * parent)
+#endif
+#ifdef SK_SOFTWARE
+    : WDeclarativeItemPaint(p, parent)
+#else
+    : WDeclarativeItem(p, parent)
+#endif
+{
+    Q_D(WDeclarativePlayer); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
