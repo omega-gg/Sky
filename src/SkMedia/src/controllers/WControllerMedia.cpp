@@ -198,6 +198,11 @@ QHash<WAbstractBackend::Quality, QString> WMediaReply::audios() const
     return _audios;
 }
 
+QString WMediaReply::ambient() const
+{
+    return _ambient;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WMediaReply::isLoaded() const
@@ -894,6 +899,8 @@ void WControllerMediaData::applySource(const WYamlNode & node, const QString & u
     source = WControllerPlaylist::vbmlSource(url, baseUrl);
 
     timeB = timeA + duration;
+
+    ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
 }
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url,
@@ -904,6 +911,8 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
     if (durationSource == -1)
     {
         source = WControllerPlaylist::vbmlSource(url, baseUrl);
+
+        ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
 
         return;
     }
@@ -931,6 +940,8 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
     source = WControllerPlaylist::vbmlSource(url, baseUrl);
 
     timeB = timeA + durationSource;
+
+    ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
 }
 
 void WControllerMediaData::applyEmpty()
@@ -1507,6 +1518,11 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->typeSource = type;
     }
 
+    if (media->ambient.isEmpty())
+    {
+        media->ambient = data.ambient;
+    }
+
     int timeB = data.timeB;
 
     if (timeB == -1) return;
@@ -1634,6 +1650,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         QString context   = media->context;
         QString contextId = media->contextId;
 
+        QString ambient = media->ambient;
+
         slice.urlSource = urlSource;
 
         slice.type       = type;
@@ -1658,6 +1676,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.context   = context;
         slice.contextId = contextId;
+
+        slice.ambient = ambient;
 
         appendSlice(slice, media->url, mode);
 
@@ -1687,6 +1707,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_medias = medias;
             reply->_audios = audios;
+
+            reply->_ambient = ambient;
 
             emit reply->loaded(reply);
         }
@@ -2422,6 +2444,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
             reply->_medias = slice->medias;
             reply->_audios = slice->audios;
+
+            reply->_ambient = slice->ambient;
 
             reply->_loaded = true;
 

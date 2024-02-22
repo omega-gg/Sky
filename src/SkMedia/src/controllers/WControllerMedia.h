@@ -99,6 +99,8 @@ public: // Properties
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
 
+    QString ambient() const;
+
     bool isLoaded() const;
 
     bool hasError() const;
@@ -131,6 +133,8 @@ private: // Variables
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
+
+    QString _ambient;
 
     bool _loaded;
 
@@ -227,6 +231,8 @@ public: // Variables
     QString contextId;
 
     QHash<WAbstractBackend::Quality, QString> medias;
+
+    QString ambient;
 };
 
 //-------------------------------------------------------------------------------------------------
