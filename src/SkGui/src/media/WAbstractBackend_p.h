@@ -119,6 +119,8 @@ public: // Variable
     QString context;
     QString contextId;
 
+    QString ambient;
+
     QSizeF size;
 
     bool deleting;

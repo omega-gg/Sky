@@ -227,6 +227,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
     Q_PROPERTY(QString contextId READ contextId NOTIFY contextChanged)
 
+    Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
+
 public:
     enum State
     {
@@ -447,6 +449,8 @@ protected: // Functions
 
     void setContext(const QString & context, const QString & contextId);
 
+    void setAmbient(const QString & ambient);
+
     void deleteNow();
 
     //---------------------------------------------------------------------------------------------
@@ -568,6 +572,8 @@ signals:
 
     void contextChanged();
 
+    void ambientChanged();
+
 public: // Properties
 #ifndef SK_NO_QML
     WDeclarativePlayer * player() const;
@@ -653,6 +659,8 @@ public: // Properties
 
     QString context  () const;
     QString contextId() const;
+
+    QString ambient() const;
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
@@ -766,6 +774,8 @@ public:
     virtual void filterCurrentOutput(int * index); // {}
 
     virtual void filterContext(QString * context, QString * contextId); // {}
+
+    virtual void filterAmbient(QString * ambient); // {}
 };
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false

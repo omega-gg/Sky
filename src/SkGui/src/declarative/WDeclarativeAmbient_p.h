@@ -45,6 +45,18 @@ public:
 
     void init();
 
+public: // Slots
+    void onSourceChanged();
+
+    void onUpdate();
+
+public: // Variables
+    WDeclarativePlayer * player;
+
+    QString currentSource;
+
+    QHash<QString, int> hash;
+
 protected:
     W_DECLARE_PUBLIC(WDeclarativeAmbient)
 };

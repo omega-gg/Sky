@@ -542,9 +542,9 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
              ||
              type == STARTED || type == ENDED || type == TIME || type == DURATION
              ||
-             type == PROGRESS || type == OUTPUT || type == QUALITY || type == VOLUME
+             type == PROGRESS || type == OUTPUT || type == QUALITY || type == AMBIENT
              ||
-             type == FULLSCREEN || type == VIDEOTAG)
+             type == VOLUME || type == FULLSCREEN || type == VIDEOTAG)
     {
         if (parameters.count() == 1) return;
     }
@@ -597,6 +597,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "CONTEXT")    return CONTEXT;
     else if (string == "VIDEOS")     return VIDEOS;
     else if (string == "AUDIOS")     return AUDIOS;
+    else if (string == "AMBIENT")    return AMBIENT;
     else if (string == "VOLUME")     return VOLUME;
     else if (string == "SCREEN")     return SCREEN;
     else if (string == "FULLSCREEN") return FULLSCREEN;
@@ -624,6 +625,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == CONTEXT)    return "CONTEXT";
     else if (type == VIDEOS)     return "VIDEOS";
     else if (type == AUDIOS)     return "AUDIOS";
+    else if (type == AMBIENT)    return "AMBIENT";
     else if (type == VOLUME)     return "VOLUME";
     else if (type == SCREEN)     return "SCREEN";
     else if (type == FULLSCREEN) return "FULLSCREEN";

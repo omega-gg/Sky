@@ -24,6 +24,9 @@
 
 #ifndef SK_NO_DECLARATIVEAMBIENT
 
+// Sk includes
+#include <WControllerPlaylist>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -31,7 +34,59 @@
 WDeclarativeAmbientPrivate::WDeclarativeAmbientPrivate(WDeclarativeAmbient * p)
     : WDeclarativePlayerPrivate(p) {}
 
-void WDeclarativeAmbientPrivate::init() {}
+void WDeclarativeAmbientPrivate::init()
+{
+    player = NULL;
+
+    repeat = WDeclarativePlayer::RepeatOne;
+
+    output = WAbstractBackend::OutputAudio;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeAmbientPrivate::onSourceChanged()
+{
+    QString source = WControllerPlaylist::cleanSource(player->source());
+
+    if (currentSource == source) return;
+
+    currentSource = source;
+
+    hash.clear();
+
+    hash.insert(source, -1);
+}
+
+void WDeclarativeAmbientPrivate::onUpdate()
+{
+    Q_Q(WDeclarativeAmbient);
+
+    QString ambient = player->ambient();
+
+    if (ambient.isEmpty() == false && backend
+        &&
+        player->state() == WAbstractBackend::StatePlaying && player->hasOutput() == false)
+    {
+        q->setSource(ambient);
+
+        int msec = hash.value(currentSource);
+
+        if (msec != -1) q->seek(msec);
+
+        q->play();
+
+        return;
+    }
+
+    if (q->hasStarted() == false) return;
+
+    hash.insert(currentSource, q->currentTime());
+
+    q->clear();
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
@@ -45,6 +100,51 @@ void WDeclarativeAmbientPrivate::init() {}
     : WDeclarativePlayer(new WDeclarativeAmbientPrivate(this), parent)
 {
     Q_D(WDeclarativeAmbient); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativePlayer * WDeclarativeAmbient::player() const
+{
+    Q_D(const WDeclarativeAmbient); return d->player;
+}
+
+void WDeclarativeAmbient::setPlayer(WDeclarativePlayer * player)
+{
+    Q_D(WDeclarativeAmbient);
+
+    if (d->player == player) return;
+
+    if (player)
+    {
+        disconnect(player, 0, this, 0);
+
+        clear();
+
+        d->currentSource = QString();
+
+        d->hash.clear();
+    }
+
+    d->player = player;
+
+    if (player)
+    {
+        connect(player, SIGNAL(sourceChanged()), this, SLOT(onSourceChanged()));
+
+        connect(player, SIGNAL(backendChanged      ()), this, SLOT(onUpdate()));
+        connect(player, SIGNAL(stateChanged        ()), this, SLOT(onUpdate()));
+        connect(player, SIGNAL(currentOutputChanged()), this, SLOT(onUpdate()));
+        connect(player, SIGNAL(ambientChanged      ()), this, SLOT(onUpdate()));
+
+        d->onSourceChanged();
+
+        d->onUpdate();
+    }
+
+    emit playerChanged();
 }
 
 #endif // SK_NO_DECLARATIVEAMBIENT

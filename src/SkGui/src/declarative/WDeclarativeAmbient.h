@@ -34,6 +34,8 @@ class SK_GUI_EXPORT WDeclarativeAmbient : public WDeclarativePlayer
 {
     Q_OBJECT
 
+    Q_PROPERTY(WDeclarativePlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
+
 public:
 #ifdef QT_4
     explicit WDeclarativeAmbient(QDeclarativeItem * parent = NULL);
@@ -41,8 +43,18 @@ public:
     explicit WDeclarativeAmbient(QQuickItem * parent = NULL);
 #endif
 
+signals:
+    void playerChanged();
+
+public: // Properties
+    WDeclarativePlayer * player() const;
+    void                 setPlayer(WDeclarativePlayer * player);
+
 private:
     W_DECLARE_PRIVATE(WDeclarativeAmbient)
+
+    Q_PRIVATE_SLOT(d_func(), void onSourceChanged())
+    Q_PRIVATE_SLOT(d_func(), void onUpdate       ())
 };
 
 #include <private/WDeclarativeAmbient_p>

@@ -123,6 +123,7 @@ public: // Slots
     void onContext    ();
     void onVideos     ();
     void onAudios     ();
+    void onAmbient    ();
     void onScreen     ();
     void onFullScreen ();
 #ifdef SK_DESKTOP

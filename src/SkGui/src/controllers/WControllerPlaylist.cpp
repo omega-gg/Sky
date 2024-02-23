@@ -1847,22 +1847,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
 
     if (backend)
     {
-        QString backendId = backend->id();
-
-        WBackendNetQuery query = backend->getQueryPlaylist(source);
-
-        if (resolvePlaylist(backendId, query))
-        {
-            backend->tryDelete();
-
-            query.urlBase   = urlBase;
-            query.indexNext = index;
-
-            getDataPlaylist(playlist, query);
-
-            return true;
-        }
-
+        // NOTE: When the url is both a track and a playlist, we load the track.
         QString id = backend->getTrackId(source);
 
         if (id.isEmpty() == false)
@@ -1887,6 +1872,22 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
                 getDataPlaylist(playlist, query);
             }
             else backend->tryDelete();
+
+            return true;
+        }
+
+        QString backendId = backend->id();
+
+        WBackendNetQuery query = backend->getQueryPlaylist(source);
+
+        if (resolvePlaylist(backendId, query))
+        {
+            backend->tryDelete();
+
+            query.urlBase   = urlBase;
+            query.indexNext = index;
+
+            getDataPlaylist(playlist, query);
 
             return true;
         }

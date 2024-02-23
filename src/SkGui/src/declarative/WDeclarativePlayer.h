@@ -67,7 +67,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
 
-    Q_PROPERTY(WAbstractBackend::State currentState READ state NOTIFY stateChanged)
+    Q_PROPERTY(WAbstractBackend::State     currentState READ state     NOTIFY stateChanged)
+    Q_PROPERTY(WAbstractBackend::StateLoad stateLoad    READ stateLoad NOTIFY stateLoadChanged)
 
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY stateLoadChanged)
 
@@ -142,6 +143,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
     Q_PROPERTY(QString contextId READ contextId NOTIFY contextChanged)
+
+    Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
 
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
@@ -345,6 +348,8 @@ signals:
 
     void contextChanged();
 
+    void ambientChanged();
+
     void pauseTimeoutChanged();
 
     void countChanged();
@@ -374,7 +379,8 @@ public: // Properties
     WPlaylist * playlist() const;
     void        setPlaylist(WPlaylist * playlist);
 
-    WAbstractBackend::State state() const;
+    WAbstractBackend::State     state    () const;
+    WAbstractBackend::StateLoad stateLoad() const;
 
     bool isLoading() const;
 
@@ -459,6 +465,8 @@ public: // Properties
     QString context  () const;
     QString contextId() const;
 
+    QString ambient() const;
+
     int  pauseTimeout() const;
     void setPauseTimeout(int msec);
 
@@ -537,6 +545,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onContext    ())
     Q_PRIVATE_SLOT(d_func(), void onVideos     ())
     Q_PRIVATE_SLOT(d_func(), void onAudios     ())
+    Q_PRIVATE_SLOT(d_func(), void onAmbient    ())
     Q_PRIVATE_SLOT(d_func(), void onScreen     ())
     Q_PRIVATE_SLOT(d_func(), void onFullScreen ())
 #ifdef SK_DESKTOP

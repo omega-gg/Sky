@@ -1094,6 +1094,11 @@ void WDeclarativePlayerPrivate::onAudios()
     server->sendReply(WBroadcastReply::AUDIOS, parameters);
 }
 
+void WDeclarativePlayerPrivate::onAmbient()
+{
+    server->sendReply(WBroadcastReply::AMBIENT, backend->ambient());
+}
+
 void WDeclarativePlayerPrivate::onScreen()
 {
     QStringList parameters;
@@ -1937,6 +1942,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(contextChanged()), this, SIGNAL(contextChanged()));
 
+    connect(backend, SIGNAL(ambientChanged()), this, SIGNAL(ambientChanged()));
+
     connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
 
     connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
@@ -2087,6 +2094,17 @@ void WDeclarativePlayer::setPlaylist(WPlaylist * playlist)
 WAbstractBackend::State WDeclarativePlayer::state() const
 {
     Q_D(const WDeclarativePlayer); return d->state;
+}
+
+WAbstractBackend::StateLoad WDeclarativePlayer::stateLoad() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->stateLoad();
+    }
+    else return WAbstractBackend::StateLoadDefault;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2764,6 +2782,17 @@ QString WDeclarativePlayer::contextId() const
     if (d->backend)
     {
         return d->backend->contextId();
+    }
+    else return QString();
+}
+
+QString WDeclarativePlayer::ambient() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->ambient();
     }
     else return QString();
 }

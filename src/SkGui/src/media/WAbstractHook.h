@@ -110,6 +110,8 @@ protected: // Functions
 
     void setContext(const QString & context, const QString & contextId);
 
+    void setAmbient(const QString & ambient);
+
     //---------------------------------------------------------------------------------------------
     // Backend abstract functions
 

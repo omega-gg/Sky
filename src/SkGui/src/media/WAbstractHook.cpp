@@ -304,6 +304,11 @@ void WAbstractHook::setContext(const QString & context, const QString & contextI
     Q_D(WAbstractHook); d->backend->setContext(context, contextId);
 }
 
+void WAbstractHook::setAmbient(const QString & ambient)
+{
+    Q_D(WAbstractHook); d->backend->setAmbient(ambient);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Backend abstract functions
 

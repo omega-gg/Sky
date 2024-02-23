@@ -150,6 +150,7 @@ public: // Enums
         CONTEXT,
         VIDEOS,
         AUDIOS,
+        AMBIENT,
         VOLUME,
         SCREEN,
         FULLSCREEN,

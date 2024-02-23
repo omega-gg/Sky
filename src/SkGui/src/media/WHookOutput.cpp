@@ -484,6 +484,12 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         q->applyAudios(audios, id);
     }
+    else if (type == WBroadcastReply::AMBIENT)
+    {
+        Q_Q(WHookOutput);
+
+        q->setAmbient(reply.parameters.first());
+    }
     else if (type == WBroadcastReply::VOLUME)
     {
         applyVolume(reply.parameters.first().toFloat());

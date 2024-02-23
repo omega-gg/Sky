@@ -222,6 +222,8 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         freeze = false;
 
+        q->setAmbient(QString());
+
         if (currentMedia.isEmpty())
         {
             q->stop();
@@ -240,85 +242,87 @@ void WBackendManagerPrivate::applySources(bool play)
         backendInterface->play();
 
         connectBackend();
+
+        return;
+    }
+
+    QString url = reply->urlSource();
+
+    WTrack::Type typeRoot = reply->type();
+
+    loaded = true;
+
+    clock = (reply->typeSource() == WTrack::Hub);
+
+    if (typeRoot == WTrack::Channel)
+    {
+        type = Channel;
+
+        urlSource = url;
+
+        timeZone = reply->timeZone();
+
+        loop = true;
+
+        q->setLive(true);
+
+        q->setDuration(reply->duration());
+
+        QDateTime date = WControllerApplication::currentDateUtc(timeZone);
+
+        q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
+    }
+    else if (typeRoot == WTrack::Interactive)
+    {
+        type = Interactive;
+
+        q->setDuration(reply->duration());
+
+        q->setCurrentTime(reply->currentTime());
+
+        q->setContext(reply->context(), reply->contextId());
     }
     else
     {
-        QString url = reply->urlSource();
+        type = MultiTrack;
 
-        WTrack::Type typeRoot = reply->type();
+        loop = (typeRoot == WTrack::Hub);
 
-        loaded = true;
+        q->setDuration(reply->duration());
+    }
 
-        clock = (reply->typeSource() == WTrack::Hub);
+    q->setAmbient(reply->ambient());
 
-        if (typeRoot == WTrack::Channel)
+    this->timeA = timeA;
+
+    timeB = reply->timeB();
+
+    start = reply->start();
+
+    qDebug("Current source: %s timeA %d timeB %d start %d duration %d clock %d", source.C_STR,
+           timeA, timeB, start, duration, clock);
+
+    if (currentMedia.isEmpty() == false)
+    {
+        loadSource(url, currentMedia, currentTime - timeA + start);
+
+        if (play == false) return;
+
+        backendInterface->play();
+
+        connectBackend();
+    }
+    else if (play)
+    {
+        startClock();
+
+        if (type == Channel)
         {
-            type = Channel;
-
-            urlSource = url;
-
-            timeZone = reply->timeZone();
-
-            loop = true;
-
-            q->setLive(true);
-
-            q->setDuration(reply->duration());
-
-            QDateTime date = WControllerApplication::currentDateUtc(timeZone);
-
-            q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
-        }
-        else if (typeRoot == WTrack::Interactive)
-        {
-            type = Interactive;
-
-            q->setDuration(reply->duration());
-
-            q->setCurrentTime(reply->currentTime());
-
-            q->setContext(reply->context(), reply->contextId());
-        }
-        else
-        {
-            type = MultiTrack;
-
-            loop = (typeRoot == WTrack::Hub);
-
-            q->setDuration(reply->duration());
+            timerSynchronize = q->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
+            timerReload      = q->startTimer(BACKENDMANAGER_TIMEOUT_RELOAD);
         }
 
-        this->timeA = timeA;
-
-        timeB = reply->timeB();
-
-        start = reply->start();
-
-        qDebug("Current source: %s timeA %d timeB %d start %d duration %d clock %d", source.C_STR,
-               timeA, timeB, start, duration, clock);
-
-        if (currentMedia.isEmpty() == false)
-        {
-            loadSource(url, currentMedia, currentTime - timeA + start);
-
-            if (play == false) return;
-
-            backendInterface->play();
-
-            connectBackend();
-        }
-        else if (play)
-        {
-            startClock();
-
-            if (type == Channel)
-            {
-                timerSynchronize = q->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
-                timerReload      = q->startTimer(BACKENDMANAGER_TIMEOUT_RELOAD);
-            }
-
-            q->setStateLoad(WAbstractBackend::StateLoadDefault);
-        }
+        q->setStateLoad(WAbstractBackend::StateLoadDefault);
     }
 }
 
@@ -640,6 +644,10 @@ void WBackendManagerPrivate::onLoaded()
 
     if (reply->hasError())
     {
+        freeze = false;
+
+        q->setAmbient(QString());
+
         q->stop();
     }
     else applySources(q->isPlaying());

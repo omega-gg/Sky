@@ -788,11 +788,26 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
 {
     Q_D(WAbstractBackend);
 
+    if (d->started)
+    {
+        msec = qBound(0, msec, d->duration);
+
+        if (d->currentTime == msec) return;
+
+        d->currentTime = msec;
+
+        backendSeek(msec);
+
+        emit currentTimeChanged();
+
+        return;
+    }
+
+    msec = qMax(0, msec);
+
     if (d->currentTime == msec) return;
 
-    d->currentTime = qBound(0, msec, d->duration);
-
-    if (d->started) backendSeek(msec);
+    d->currentTime = msec;
 
     emit currentTimeChanged();
 }
@@ -1159,15 +1174,31 @@ void WAbstractBackend::setContext(const QString & context, const QString & conte
     d->context   = stringA;
     d->contextId = stringB;
 
+    QString source = applyContext(d->source, stringA, stringB, d->currentTime);
+
+    if (d->source != source)
+    {
+        d->source = source;
+
+        emit sourceChanged();
+    }
+
     emit contextChanged();
+}
 
-    QString source = applyContext(d->source, context, contextId, d->currentTime);
+void WAbstractBackend::setAmbient(const QString & ambient)
+{
+    Q_D(WAbstractBackend);
 
-    if (d->source == source) return;
+    QString string = ambient;
 
-    d->source = source;
+    if (d->filter) d->filter->filterAmbient(&string);
 
-    emit sourceChanged();
+    if (d->ambient == string) return;
+
+    d->ambient = ambient;
+
+    emit ambientChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1795,6 +1826,11 @@ QString WAbstractBackend::contextId() const
     Q_D(const WAbstractBackend); return d->contextId;
 }
 
+QString WAbstractBackend::ambient() const
+{
+    Q_D(const WAbstractBackend); return d->ambient;
+}
+
 //=================================================================================================
 // WBackendTrack
 //=================================================================================================
@@ -1926,5 +1962,7 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 /* virtual */ void WBackendFilter::filterCurrentOutput(int *) {}
 
 /* virtual */ void WBackendFilter::filterContext(QString *, QString *) {}
+
+/* virtual */ void WBackendFilter::filterAmbient(QString *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND
