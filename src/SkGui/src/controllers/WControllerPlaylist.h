@@ -137,7 +137,7 @@ public: // Interface
     int getDuration(int at) const;
 
 public: // Static functions
-    static QList<WControllerMediaSource> extractSources(const WYamlReader & reader);
+    static QList<WControllerMediaSource> extractSources(const WYamlNodeBase & node);
 
     static QHash<QString, WControllerMediaSource *>
     generateHash(QList<WControllerMediaSource> & sources);
@@ -418,11 +418,11 @@ public: // Static functions
     Q_INVOKABLE static int vbmlDuration(const WYamlNodeBase & node, int at           = 0,
                                                                     int defaultValue = 0);
 
-    Q_INVOKABLE static int vbmlDurationSource(const WYamlNode & node, int at           = 0,
-                                                                      int defaultValue = 0);
+    Q_INVOKABLE static int vbmlDurationSource(const WYamlNodeBase & node, int at           = 0,
+                                                                          int defaultValue = 0);
 
-    Q_INVOKABLE static int vbmlDurationInteractive(const WYamlReader & reader,
-                                                   const QString     & url);
+    Q_INVOKABLE static int vbmlDurationInteractive(const WYamlNodeBase & node,
+                                                   const QString       & url);
 
     Q_INVOKABLE static Type vbmlTypeFromString(const QString & string);
 
@@ -440,7 +440,7 @@ public: // Static functions
     Q_INVOKABLE static QString vbmlHash(const QString & text);
 
     // NOTE: This function extracts the vbml tags.
-    Q_INVOKABLE static QStringList vbmlTags(const WYamlReader & reader);
+    Q_INVOKABLE static QStringList vbmlTags(const WYamlNodeBase & node);
 
 signals:
     void filesCleared(const QList<int> & idFull);

@@ -101,6 +101,8 @@ public: // Properties
 
     QString ambient() const;
 
+    QStringList subtitles() const;
+
     bool isLoaded() const;
 
     bool hasError() const;
@@ -135,6 +137,8 @@ private: // Variables
     QHash<WAbstractBackend::Quality, QString> _audios;
 
     QString _ambient;
+
+    QStringList _subtitles;
 
     bool _loaded;
 

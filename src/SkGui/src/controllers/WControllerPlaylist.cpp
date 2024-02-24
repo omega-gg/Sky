@@ -931,7 +931,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
         {
             track.setType(WTrack::Interactive);
 
-            track.setDuration(WControllerPlaylist::vbmlDurationInteractive(reader, url));
+            track.setDuration(WControllerPlaylist::vbmlDurationInteractive(reader.node(), url));
         }
         else
         {
@@ -1410,19 +1410,19 @@ int WControllerMediaSource::getDuration(int at) const
 //-------------------------------------------------------------------------------------------------
 
 /* static */ QList<WControllerMediaSource>
-WControllerMediaSource::extractSources(const WYamlReader & reader)
+WControllerMediaSource::extractSources(const WYamlNodeBase & node)
 {
     QList<WControllerMediaSource> list;
 
-    const WYamlNode * node = reader.at("source");
+    const WYamlNode * child = node.at("source");
 
-    if (node == NULL) return list;
+    if (child == NULL) return list;
 
-    const QList<WYamlNode> & children = node->children;
+    const QList<WYamlNode> & children = child->children;
 
     if (children.isEmpty())
     {
-        WControllerMediaSource source(node, 0);
+        WControllerMediaSource source(child, 0);
 
         list.append(source);
 
@@ -6299,7 +6299,7 @@ int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node, int at, int de
 }
 
 /* Q_INVOKABLE static */
-int WControllerPlaylist::vbmlDurationSource(const WYamlNode & node, int at, int defaultValue)
+int WControllerPlaylist::vbmlDurationSource(const WYamlNodeBase & node, int at, int defaultValue)
 {
     const QList<WYamlNode> & children = node.children;
 
@@ -6322,21 +6322,21 @@ int WControllerPlaylist::vbmlDurationSource(const WYamlNode & node, int at, int 
 }
 
 /* Q_INVOKABLE static */
-int WControllerPlaylist::vbmlDurationInteractive(const WYamlReader & reader, const QString & url)
+int WControllerPlaylist::vbmlDurationInteractive(const WYamlNodeBase & node, const QString & url)
 {
     QString context = WControllerNetwork::extractFragmentValue(url, "ctx");
 
-    QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(reader);
+    QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(node);
 
     QHash<QString, WControllerMediaSource *> hash = WControllerMediaSource::generateHash(sources);
 
-    QStringList tags = WControllerPlaylist::vbmlTags(reader);
+    QStringList tags = WControllerPlaylist::vbmlTags(node);
 
     QList<WControllerMediaObject> timeline;
 
     if (context.isEmpty())
     {
-        context = reader.extractString("context");
+        context = node.extractString("context");
 
         QStringList list = WControllerMediaSource::getContextList(context);
 
@@ -6352,7 +6352,7 @@ int WControllerPlaylist::vbmlDurationInteractive(const WYamlReader & reader, con
 
         if (timeline.isEmpty())
         {
-            context = reader.extractString("context");
+            context = node.extractString("context");
 
             list = WControllerMediaSource::getContextList(context);
 
@@ -6486,11 +6486,11 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     return result;
 }
 
-/* Q_INVOKABLE static */ QStringList WControllerPlaylist::vbmlTags(const WYamlReader & reader)
+/* Q_INVOKABLE static */ QStringList WControllerPlaylist::vbmlTags(const WYamlNodeBase & node)
 {
     QStringList tags;
 
-    QStringList list = reader.extractList("tags");
+    QStringList list = node.extractList("tags");
 
     foreach (const QString & tag, list)
     {

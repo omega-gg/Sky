@@ -203,6 +203,11 @@ QString WMediaReply::ambient() const
     return _ambient;
 }
 
+QStringList WMediaReply::subtitles() const
+{
+    return _subtitles;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WMediaReply::isLoaded() const
@@ -349,9 +354,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             // NOTE: The interactive mode ignores the root start property.
             start = 0;
 
-            QStringList tags = WControllerPlaylist::vbmlTags(reader);
+            const WYamlNodeBase & node = reader.node();
 
-            QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(reader);
+            QStringList tags = WControllerPlaylist::vbmlTags(node);
+
+            QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(node);
 
             QHash<QString, WControllerMediaSource *> hash
                 = WControllerMediaSource::generateHash(sources);
