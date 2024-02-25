@@ -731,6 +731,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(contextChanged      ()), q, SLOT(onContext    ()));
         QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
         QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
+        QObject::connect(backend, SIGNAL(ambientChanged      ()), q, SLOT(onAmbient    ()));
+        QObject::connect(backend, SIGNAL(subtitlesChanged    ()), q, SLOT(onSubtitles  ()));
     }
     else
     {
@@ -755,6 +757,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(contextChanged      ()), q, SLOT(onContext    ()));
         QObject::disconnect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
         QObject::disconnect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
+        QObject::disconnect(backend, SIGNAL(ambientChanged      ()), q, SLOT(onAmbient    ()));
+        QObject::disconnect(backend, SIGNAL(subtitlesChanged    ()), q, SLOT(onSubtitles  ()));
     }
 }
 
@@ -1097,6 +1101,11 @@ void WDeclarativePlayerPrivate::onAudios()
 void WDeclarativePlayerPrivate::onAmbient()
 {
     server->sendReply(WBroadcastReply::AMBIENT, backend->ambient());
+}
+
+void WDeclarativePlayerPrivate::onSubtitles()
+{
+    server->sendReply(WBroadcastReply::SUBTITLES, backend->subtitles());
 }
 
 void WDeclarativePlayerPrivate::onScreen()

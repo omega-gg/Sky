@@ -6503,6 +6503,25 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     return tags;
 }
 
+/* Q_INVOKABLE static */
+QStringList WControllerPlaylist::vbmlSubtitles(const WYamlNodeBase & node, const QString & baseUrl)
+{
+    const WYamlNode * child = node.at("subtitles");
+
+    if (child == NULL || child->children.isEmpty()) return QStringList();
+
+    QStringList result;
+
+    QStringList list = child->value.split('\n');
+
+    foreach (const QString & string, list)
+    {
+        result.append(WControllerPlaylist::vbmlSource(string.trimmed(), baseUrl));
+    }
+
+    return result;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

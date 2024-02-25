@@ -309,6 +309,11 @@ void WAbstractHook::setAmbient(const QString & ambient)
     Q_D(WAbstractHook); d->backend->setAmbient(ambient);
 }
 
+void WAbstractHook::setSubtitles(const QStringList & subtitles)
+{
+    Q_D(WAbstractHook); d->backend->setSubtitles(subtitles);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Backend abstract functions
 

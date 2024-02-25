@@ -490,6 +490,12 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         q->setAmbient(reply.parameters.first());
     }
+    else if (type == WBroadcastReply::SUBTITLES)
+    {
+        Q_Q(WHookOutput);
+
+        q->setSubtitles(reply.parameters);
+    }
     else if (type == WBroadcastReply::VOLUME)
     {
         applyVolume(reply.parameters.first().toFloat());

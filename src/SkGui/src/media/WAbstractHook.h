@@ -112,6 +112,8 @@ protected: // Functions
 
     void setAmbient(const QString & ambient);
 
+    void setSubtitles(const QStringList & subtitles);
+
     //---------------------------------------------------------------------------------------------
     // Backend abstract functions
 

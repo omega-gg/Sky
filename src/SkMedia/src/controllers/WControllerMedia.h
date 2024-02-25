@@ -237,6 +237,8 @@ public: // Variables
     QHash<WAbstractBackend::Quality, QString> medias;
 
     QString ambient;
+
+    QStringList subtitles;
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -1201,6 +1201,21 @@ void WAbstractBackend::setAmbient(const QString & ambient)
     emit ambientChanged();
 }
 
+void WAbstractBackend::setSubtitles(const QStringList & subtitles)
+{
+    Q_D(WAbstractBackend);
+
+    QStringList list = subtitles;
+
+    if (d->filter) d->filter->filterSubtitles(&list);
+
+    if (d->subtitles == list) return;
+
+    d->subtitles = list;
+
+    emit subtitlesChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WAbstractBackend::deleteNow()
@@ -1816,6 +1831,8 @@ void WAbstractBackend::setSubtitle(const QString & subtitle)
     emit subtitleChanged();
 }
 
+//-------------------------------------------------------------------------------------------------
+
 QString WAbstractBackend::context() const
 {
     Q_D(const WAbstractBackend); return d->context;
@@ -1829,6 +1846,11 @@ QString WAbstractBackend::contextId() const
 QString WAbstractBackend::ambient() const
 {
     Q_D(const WAbstractBackend); return d->ambient;
+}
+
+QStringList WAbstractBackend::subtitles() const
+{
+    Q_D(const WAbstractBackend); return d->subtitles;
 }
 
 //=================================================================================================
@@ -1964,5 +1986,7 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 /* virtual */ void WBackendFilter::filterContext(QString *, QString *) {}
 
 /* virtual */ void WBackendFilter::filterAmbient(QString *) {}
+
+/* virtual */ void WBackendFilter::filterSubtitles(QStringList *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND

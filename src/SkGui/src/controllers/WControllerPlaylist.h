@@ -439,8 +439,10 @@ public: // Static functions
     // NOTE: This function extracts a hash value with the #value format.
     Q_INVOKABLE static QString vbmlHash(const QString & text);
 
-    // NOTE: This function extracts the vbml tags.
     Q_INVOKABLE static QStringList vbmlTags(const WYamlNodeBase & node);
+
+    Q_INVOKABLE static QStringList vbmlSubtitles(const WYamlNodeBase & node,
+                                                 const QString       & baseUrl);
 
 signals:
     void filesCleared(const QList<int> & idFull);

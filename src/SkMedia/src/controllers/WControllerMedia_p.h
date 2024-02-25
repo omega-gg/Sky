@@ -81,6 +81,8 @@ struct WPrivateMediaData
 
     QString ambient;
 
+    QStringList subtitles;
+
     WBackendNet * backend;
 
     WBackendNetQuery query;
@@ -120,6 +122,8 @@ struct WPrivateMediaSlice
     QHash<WAbstractBackend::Quality, QString> audios;
 
     QString ambient;
+
+    QStringList subtitles;
 
     QDateTime expiry;
 };

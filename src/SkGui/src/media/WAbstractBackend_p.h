@@ -121,6 +121,8 @@ public: // Variable
 
     QString ambient;
 
+    QStringList subtitles;
+
     QSizeF size;
 
     bool deleting;

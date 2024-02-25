@@ -546,6 +546,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onVideos     ())
     Q_PRIVATE_SLOT(d_func(), void onAudios     ())
     Q_PRIVATE_SLOT(d_func(), void onAmbient    ())
+    Q_PRIVATE_SLOT(d_func(), void onSubtitles  ())
     Q_PRIVATE_SLOT(d_func(), void onScreen     ())
     Q_PRIVATE_SLOT(d_func(), void onFullScreen ())
 #ifdef SK_DESKTOP

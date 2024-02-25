@@ -908,6 +908,8 @@ void WControllerMediaData::applySource(const WYamlNode & node, const QString & u
     timeB = timeA + duration;
 
     ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
+
+    subtitles = WControllerPlaylist::vbmlSubtitles(node, baseUrl);
 }
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url,
@@ -920,6 +922,8 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
         source = WControllerPlaylist::vbmlSource(url, baseUrl);
 
         ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
+
+        subtitles = WControllerPlaylist::vbmlSubtitles(node, baseUrl);
 
         return;
     }
@@ -949,6 +953,8 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
     timeB = timeA + durationSource;
 
     ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
+
+    subtitles = WControllerPlaylist::vbmlSubtitles(node, baseUrl);
 }
 
 void WControllerMediaData::applyEmpty()
@@ -1525,9 +1531,14 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->typeSource = type;
     }
 
-    if (media->ambient.isEmpty())
+    if (data.ambient.isEmpty() == false)
     {
         media->ambient = data.ambient;
+    }
+
+    if (data.subtitles.isEmpty() == false)
+    {
+        media->subtitles = data.subtitles;
     }
 
     int timeB = data.timeB;
@@ -1659,6 +1670,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         QString ambient = media->ambient;
 
+        QStringList subtitles = media->subtitles;
+
         slice.urlSource = urlSource;
 
         slice.type       = type;
@@ -1685,6 +1698,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.contextId = contextId;
 
         slice.ambient = ambient;
+
+        slice.subtitles = subtitles;
 
         appendSlice(slice, media->url, mode);
 
@@ -1716,6 +1731,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             reply->_audios = audios;
 
             reply->_ambient = ambient;
+
+            reply->_subtitles = subtitles;
 
             emit reply->loaded(reply);
         }
@@ -2453,6 +2470,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
             reply->_audios = slice->audios;
 
             reply->_ambient = slice->ambient;
+
+            reply->_subtitles = slice->subtitles;
 
             reply->_loaded = true;
 

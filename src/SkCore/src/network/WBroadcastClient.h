@@ -151,6 +151,7 @@ public: // Enums
         VIDEOS,
         AUDIOS,
         AMBIENT,
+        SUBTITLES,
         VOLUME,
         SCREEN,
         FULLSCREEN,

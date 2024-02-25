@@ -124,6 +124,7 @@ public: // Slots
     void onVideos     ();
     void onAudios     ();
     void onAmbient    ();
+    void onSubtitles  ();
     void onScreen     ();
     void onFullScreen ();
 #ifdef SK_DESKTOP

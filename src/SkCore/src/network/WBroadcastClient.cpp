@@ -598,6 +598,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "VIDEOS")     return VIDEOS;
     else if (string == "AUDIOS")     return AUDIOS;
     else if (string == "AMBIENT")    return AMBIENT;
+    else if (string == "SUBTITLES")  return SUBTITLES;
     else if (string == "VOLUME")     return VOLUME;
     else if (string == "SCREEN")     return SCREEN;
     else if (string == "FULLSCREEN") return FULLSCREEN;
@@ -626,6 +627,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == VIDEOS)     return "VIDEOS";
     else if (type == AUDIOS)     return "AUDIOS";
     else if (type == AMBIENT)    return "AMBIENT";
+    else if (type == SUBTITLES)  return "SUBTITLES";
     else if (type == VOLUME)     return "VOLUME";
     else if (type == SCREEN)     return "SCREEN";
     else if (type == FULLSCREEN) return "FULLSCREEN";
