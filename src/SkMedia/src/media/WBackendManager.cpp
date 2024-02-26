@@ -224,6 +224,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setAmbient(QString());
 
+        q->setSubtitles(QStringList());
+
         if (currentMedia.isEmpty())
         {
             q->stop();
@@ -292,6 +294,8 @@ void WBackendManagerPrivate::applySources(bool play)
     }
 
     q->setAmbient(reply->ambient());
+
+    q->setSubtitles(reply->subtitles());
 
     this->timeA = timeA;
 
@@ -647,6 +651,8 @@ void WBackendManagerPrivate::onLoaded()
         freeze = false;
 
         q->setAmbient(QString());
+
+        q->setSubtitles(QStringList());
 
         q->stop();
     }
