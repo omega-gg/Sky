@@ -51,6 +51,8 @@ class SK_MEDIA_EXPORT WBackendSubtitle : public QObject, public WPrivatable
 
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentTimeChanged)
 
+    Q_PROPERTY(int delay READ delay WRITE setDelay NOTIFY delayChanged)
+
     Q_PROPERTY(QString text READ text NOTIFY textChanged)
 
 public:
@@ -72,6 +74,8 @@ signals:
 
     void currentTimeChanged();
 
+    void delayChanged();
+
     void textChanged();
 
 public: // Properties
@@ -89,6 +93,9 @@ public: // Properties
 
     int  currentTime() const;
     void setCurrentTime(int msec);
+
+    int  delay() const;
+    void setDelay(int msec);
 
     QString text() const;
 

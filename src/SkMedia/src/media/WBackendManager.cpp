@@ -220,22 +220,28 @@ void WBackendManagerPrivate::applySources(bool play)
 
     if (timeA == -1)
     {
-        freeze = false;
-
-        q->setAmbient(QString());
-
-        q->setSubtitles(QStringList());
-
         if (currentMedia.isEmpty())
         {
             q->stop();
 
+            freeze = false;
+
+            q->setAmbient(QString());
+
+            q->setSubtitles(QStringList());
+
             return;
         }
+
+        freeze = false;
 
         loaded = true;
 
         type = Track;
+
+        q->setAmbient(reply->ambient());
+
+        q->setSubtitles(reply->subtitles());
 
         loadSource(source, currentMedia, currentTime);
 
@@ -255,6 +261,12 @@ void WBackendManagerPrivate::applySources(bool play)
     loaded = true;
 
     clock = (reply->typeSource() == WTrack::Hub);
+
+    this->timeA = timeA;
+
+    timeB = reply->timeB();
+
+    start = reply->start();
 
     if (typeRoot == WTrack::Channel)
     {
@@ -296,12 +308,6 @@ void WBackendManagerPrivate::applySources(bool play)
     q->setAmbient(reply->ambient());
 
     q->setSubtitles(reply->subtitles());
-
-    this->timeA = timeA;
-
-    timeB = reply->timeB();
-
-    start = reply->start();
 
     qDebug("Current source: %s timeA %d timeB %d start %d duration %d clock %d", source.C_STR,
            timeA, timeB, start, duration, clock);
@@ -648,13 +654,13 @@ void WBackendManagerPrivate::onLoaded()
 
     if (reply->hasError())
     {
+        q->stop();
+
         freeze = false;
 
         q->setAmbient(QString());
 
         q->setSubtitles(QStringList());
-
-        q->stop();
     }
     else applySources(q->isPlaying());
 
@@ -918,6 +924,20 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     : WAbstractBackend(p, parent)
 {
     Q_D(WBackendManager); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WBackendManager::getTimeA() const
+{
+    Q_D(const WBackendManager); return d->timeA;
+}
+
+/* Q_INVOKABLE */ int WBackendManager::getTimeB() const
+{
+    Q_D(const WBackendManager); return d->timeB;
 }
 
 //-------------------------------------------------------------------------------------------------

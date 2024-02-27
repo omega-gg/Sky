@@ -1953,6 +1953,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(ambientChanged()), this, SIGNAL(ambientChanged()));
 
+    connect(backend, SIGNAL(subtitlesChanged()), this, SIGNAL(subtitlesChanged()));
+
     connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
 
     connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
@@ -2804,6 +2806,17 @@ QString WDeclarativePlayer::ambient() const
         return d->backend->ambient();
     }
     else return QString();
+}
+
+QStringList WDeclarativePlayer::subtitles() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->subtitles();
+    }
+    else return QStringList();
 }
 
 //-------------------------------------------------------------------------------------------------

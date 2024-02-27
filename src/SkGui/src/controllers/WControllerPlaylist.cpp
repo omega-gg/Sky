@@ -6508,7 +6508,7 @@ QStringList WControllerPlaylist::vbmlSubtitles(const WYamlNodeBase & node, const
 {
     const WYamlNode * child = node.at("subtitles");
 
-    if (child == NULL || child->children.isEmpty()) return QStringList();
+    if (child == NULL || child->children.isEmpty() == false) return QStringList();
 
     QStringList result;
 

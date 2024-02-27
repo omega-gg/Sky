@@ -46,6 +46,8 @@ TextBase
 
     property alias currentTime: backend.currentTime
 
+    property alias delay: backend.delay
+
     //---------------------------------------------------------------------------------------------
 
     property alias backend: backend

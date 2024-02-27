@@ -101,7 +101,11 @@ public: // Variables
     int retry;
     int retryCount;
 
+    int cursor;
+
     int currentTime;
+
+    int delay;
 
     int index;
 

@@ -41,6 +41,10 @@ public:
 protected:
     WBackendManager(WBackendManagerPrivate * p, QObject * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE int getTimeA() const;
+    Q_INVOKABLE int getTimeB() const;
+
 protected: // Virtual functions
     virtual WAbstractHook * createHook(WAbstractBackend * backend); // {}
 

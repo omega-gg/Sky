@@ -177,7 +177,11 @@ void WBackendSubtitlePrivate::init()
     retry      =  1;
     retryCount = -1;
 
+    cursor = -1;
+
     currentTime = -1;
+
+    delay = 0;
 
     index = -1;
 
@@ -205,7 +209,7 @@ void WBackendSubtitlePrivate::updateText()
 
     int index = this->index;
 
-    if (index == count || (currentTime >= start && currentTime <= end)) return;
+    if (index == count || (cursor >= start && cursor <= end)) return;
 
     if (index > -1)
     {
@@ -215,7 +219,7 @@ void WBackendSubtitlePrivate::updateText()
         {
             const WBackendSubtitleData & data = list.at(index);
 
-            if (currentTime >= data.start && currentTime <= data.end)
+            if (cursor >= data.start && cursor <= data.end)
             {
                 this->index = index;
 
@@ -243,7 +247,7 @@ void WBackendSubtitlePrivate::updateText()
     {
         const WBackendSubtitleData & data = list.at(i);
 
-        if (currentTime < data.start)
+        if (cursor < data.start)
         {
             this->index = -2;
 
@@ -255,7 +259,7 @@ void WBackendSubtitlePrivate::updateText()
             return;
         }
 
-        if (currentTime <= data.end)
+        if (cursor <= data.end)
         {
             this->index = i;
 
@@ -314,21 +318,21 @@ bool WBackendSubtitlePrivate::checkIndex()
 
     if (index == count)
     {
-        if (currentTime > list.at(count - 1).end)
+        if (cursor > list.at(count - 1).end)
         {
             return false;
         }
     }
-    else if (currentTime >= start)
+    else if (cursor >= start)
     {
-        if (currentTime <= end)
+        if (cursor <= end)
         {
             return false;
         }
 
         index++;
 
-        if (index != list.count() && currentTime <= list.at(index).end)
+        if (index != list.count() && cursor <= list.at(index).end)
         {
             return true;
         }
@@ -384,7 +388,7 @@ void WBackendSubtitlePrivate::setText(const QString & text)
 
     stopTimer();
 
-    if (enabled && currentTime != -1 && list.isEmpty() == false)
+    if (enabled && cursor != -1 && list.isEmpty() == false)
     {
         time.restart();
 
@@ -488,7 +492,11 @@ void WBackendSubtitlePrivate::onLoaded(const QList<WBackendSubtitleData> & list)
 {
     Q_D(WBackendSubtitle);
 
-    d->currentTime += d->time.elapsed();
+    int elapsed = d->time.elapsed();
+
+    d->cursor += elapsed;
+
+    d->currentTime += elapsed;
 
     d->time.restart();
 
@@ -611,6 +619,8 @@ void WBackendSubtitle::setCurrentTime(int msec)
 
     d->currentTime = msec;
 
+    d->cursor = msec + d->delay;
+
     if (d->enabled)
     {
         if (msec == -1)
@@ -624,6 +634,36 @@ void WBackendSubtitle::setCurrentTime(int msec)
     }
 
     emit currentTimeChanged();
+}
+
+int WBackendSubtitle::delay() const
+{
+    Q_D(const WBackendSubtitle); return d->currentTime;
+}
+
+void WBackendSubtitle::setDelay(int msec)
+{
+    Q_D(WBackendSubtitle);
+
+    if (d->delay == msec) return;
+
+    d->delay = msec;
+
+    d->cursor = d->currentTime + msec;
+
+    if (d->enabled)
+    {
+        if (msec == -1)
+        {
+            d->clearText();
+        }
+        else if (d->checkIndex())
+        {
+            d->updateText();
+        }
+    }
+
+    emit delayChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -146,6 +146,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
 
+    Q_PROPERTY(QStringList subtitles READ subtitles NOTIFY subtitlesChanged)
+
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
@@ -204,7 +206,6 @@ protected:
 #else
     WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem * parent = NULL);
 #endif
-
 
 public: // Interface
     Q_INVOKABLE void play  ();
@@ -350,6 +351,8 @@ signals:
 
     void ambientChanged();
 
+    void subtitlesChanged();
+
     void pauseTimeoutChanged();
 
     void countChanged();
@@ -466,6 +469,8 @@ public: // Properties
     QString contextId() const;
 
     QString ambient() const;
+
+    QStringList subtitles() const;
 
     int  pauseTimeout() const;
     void setPauseTimeout(int msec);
