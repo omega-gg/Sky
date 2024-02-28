@@ -466,9 +466,43 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
     if (node)
     {
+        WTrack::Type type = WTrack::typeFromString(reader.extractString("type"));
+
+        if (type == WTrack::Interactive)
+        {
+            const WYamlNodeBase & node = reader.node();
+
+            QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(node);
+
+            QHash<QString, WControllerMediaSource *> hash
+                = WControllerMediaSource::generateHash(sources);
+
+            QList<WControllerMediaObject> timeline;
+
+            QStringList list;
+
+            QString context = WControllerNetwork::extractFragmentValue(urlBase, "ctx");
+
+            if (context.isEmpty())
+            {
+                context = reader.extractString("context");
+            }
+            else context = WUnzipper::extractBase64(context.toUtf8());
+
+            list = WControllerMediaSource::getContextList(context);
+
+            timeline = WControllerMediaSource::generateTimeline(hash, list, QStringList());
+
+            if (timeline.isEmpty()) return;
+
+            extractSourceTimeline(timeline, baseUrl);
+
+            return;
+        }
+
         const QList<WYamlNode> & children = node->children;
 
-        if (WTrack::typeFromString(reader.extractString("type")) == WTrack::Channel)
+        if (type == WTrack::Channel)
         {
             QString timeZone = reader.extractString("timezone");
 
@@ -1163,46 +1197,78 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children,
             continue;
         }
 
-        const WYamlNode * node = child.at("source");
+        extractSourceNode(child, baseUrl);
+;
+        return;
+    }
+}
 
-        if (node == NULL)
+void WControllerPlaylistData::extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+                                                    const QString                       & baseUrl)
+{
+    for (int i = 0; i < timeline.count(); i++)
+    {
+        const WControllerMediaObject & object = timeline.at(i);
+
+        WControllerMediaSource * media = object.media;
+
+        if (media == NULL) continue;
+
+        int durationSource = object.duration;
+
+        if (currentTime >= durationSource)
         {
-            QString related = extractRelated(child);
+            currentTime -= durationSource;
 
-            if (related.isEmpty() == false)
-            {
-                type = WControllerPlaylist::Related;
+            continue;
+        }
 
-                origin = WControllerPlaylist::vbmlSource(related, baseUrl);
-            }
+        extractSourceNode(*(media->node), baseUrl);
+
+        return;
+    }
+}
+
+void WControllerPlaylistData::extractSourceNode(const WYamlNodeBase & node,
+                                                const QString       & baseUrl)
+{
+    const WYamlNode * child = node.at("source");
+
+    if (child == NULL)
+    {
+        QString related = extractRelated(node);
+
+        if (related.isEmpty() == false)
+        {
+            type = WControllerPlaylist::Related;
+
+            origin = WControllerPlaylist::vbmlSource(related, baseUrl);
+        }
+
+        return;
+    }
+
+    const QList<WYamlNode> & nodes = child->children;
+
+    if (nodes.isEmpty())
+    {
+        // NOTE: The related is prioritized over the source.
+        QString related = extractRelated(node);
+
+        if (related.isEmpty() == false)
+        {
+            type = WControllerPlaylist::Related;
+
+            origin = WControllerPlaylist::vbmlSource(related, baseUrl);
 
             return;
         }
 
-        const QList<WYamlNode> & nodes = node->children;
+        type = WControllerPlaylist::Source;
 
-        if (nodes.isEmpty())
-        {
-            // NOTE: The related is prioritized over the source.
-            QString related = extractRelated(child);
-
-            if (related.isEmpty() == false)
-            {
-                type = WControllerPlaylist::Related;
-
-                origin = WControllerPlaylist::vbmlSource(related, baseUrl);
-
-                return;
-            }
-
-            type = WControllerPlaylist::Source;
-
-            origin = WControllerPlaylist::vbmlSource(node->value, baseUrl);
-        }
-        else extractSource(nodes, baseUrl);
-
-        return;
+        origin = WControllerPlaylist::vbmlSource(child->value, baseUrl);
     }
+    else extractSource(nodes, baseUrl);
 }
 
 void WControllerPlaylistData::applySource(const WYamlNodeBase & node,

@@ -506,54 +506,60 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         {
             duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
 
-            if (duration == 0)
+            if (duration)
             {
-                QList<int> starts;
-                QList<int> durations;
+                extractSource(children, baseUrl);
 
-                duration = 0;
-
-                int startSource = start;
-
-                foreach (const WYamlNode & child, children)
-                {
-                    int at = child.extractMsecs("at");
-
-                    int durationSource = WControllerPlaylist::vbmlDuration(child, at);
-
-                    // NOTE: When the duration is invalid we skip it entirely.
-                    if (durationSource <= 0)
-                    {
-                        starts   .append(0);
-                        durations.append(0);
-
-                        continue;
-                    }
-
-                    startSource    += at;
-                    durationSource -= at;
-
-                    starts.append(startSource);
-
-                    durations.append(durationSource);
-
-                    if (durationSource > 0)
-                    {
-                        startSource = 0;
-
-                        duration += durationSource;
-                    }
-                    else startSource = -durationSource;
-                }
-
-                if (duration == 0)
-                {
-                    duration = -1;
-                }
-                else extractSourceDuration(children, durations, starts, baseUrl);
+                if (source.isEmpty()) applyEmpty();
 
                 return;
             }
+
+            QList<int> starts;
+            QList<int> durations;
+
+            duration = 0;
+
+            int startSource = start;
+
+            foreach (const WYamlNode & child, children)
+            {
+                int at = child.extractMsecs("at");
+
+                int durationSource = WControllerPlaylist::vbmlDuration(child, at);
+
+                // NOTE: When the duration is invalid we skip it entirely.
+                if (durationSource <= 0)
+                {
+                    starts   .append(0);
+                    durations.append(0);
+
+                    continue;
+                }
+
+                startSource    += at;
+                durationSource -= at;
+
+                starts.append(startSource);
+
+                durations.append(durationSource);
+
+                if (durationSource > 0)
+                {
+                    startSource = 0;
+
+                    duration += durationSource;
+                }
+                else startSource = -durationSource;
+            }
+
+            if (duration == 0)
+            {
+                duration = -1;
+            }
+            else extractSourceDuration(children, durations, starts, baseUrl);
+
+            return;
         }
     }
     else start += reader.extractMsecs("at");

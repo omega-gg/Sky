@@ -549,6 +549,11 @@ private: // Functions
 
     void extractSource(const QList<WYamlNode> & children, const QString & baseUrl);
 
+    void extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+                               const QString                       & baseUrl);
+
+    void extractSourceNode(const WYamlNodeBase & node, const QString & baseUrl);
+
     void applySource(const WYamlNodeBase & node, const QString & url,
                                                  const QString & baseUrl, int duration);
 
