@@ -1726,6 +1726,9 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     Q_D(WBackendVlc);
 
     d->player->seek(msec);
+
+    // NOTE: Sometimes the buffering event is not sent or delayed, so we apply it manually.
+    setStateLoad(StateLoadBuffering);
 }
 
 //-------------------------------------------------------------------------------------------------
