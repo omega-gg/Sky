@@ -103,6 +103,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoaded  ())
     Q_PRIVATE_SLOT(d_func(), void onReloaded())
 
+    Q_PRIVATE_SLOT(d_func(), void onNext())
+
 #ifndef SK_NO_QML
     Q_PRIVATE_SLOT(d_func(), void onPlayerChanged())
 #endif

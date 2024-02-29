@@ -1311,6 +1311,12 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerNetwork::hasFragment(const QString & string,
+                                                              const QString & key)
+{
+    return (fragmentIndex(string, key) != -1);
+}
+
 /* Q_INVOKABLE static */ int WControllerNetwork::fragmentIndex(const QString & string,
                                                                const QString & key)
 {

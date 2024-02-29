@@ -159,6 +159,9 @@ public: // Static functions
     Q_INVOKABLE static QString removeUrlQuery(const QString & string,
                                               const QString & key, int from = 0);
 
+    // NOTE: Check if the fragment exists with the '#key=value' format.
+    Q_INVOKABLE static bool hasFragment(const QString & string, const QString & key);
+
     // NOTE: Index of a fragment value with the '#key=value' format.
     Q_INVOKABLE static int fragmentIndex(const QString & string, const QString & key);
 

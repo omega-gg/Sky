@@ -35,6 +35,7 @@
 
 // Qt includes
 #include <QElapsedTimer>
+#include <QTimer>
 
 // Sk includes
 #include <WTrack>
@@ -87,7 +88,7 @@ public: // Functions
 
     void applyDefault();
 
-    void applyTime(int currentTime);
+    bool applyNext(int currentTime);
 
     void updateLoading();
 
@@ -112,6 +113,8 @@ public: // Functions
 public: // Slots
     void onLoaded  ();
     void onReloaded();
+
+    void onNext();
 
 #ifndef SK_NO_QML
     void onPlayerChanged();
@@ -152,7 +155,7 @@ public: // Variables
 
     bool loaded;
     bool connected;
-    bool clock;
+    bool hub;
     bool loop;
     bool freeze;
 
@@ -176,6 +179,8 @@ public: // Variables
     int timerReload;
 
     QElapsedTimer time;
+
+    QTimer timer;
 
     QList<const WBackendOutput *> outputs;
 

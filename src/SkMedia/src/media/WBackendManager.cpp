@@ -85,7 +85,7 @@ void WBackendManagerPrivate::init()
 
     loaded    = false;
     connected = false;
-    clock     = false;
+    hub       = false;
     loop      = false;
     freeze    = false;
 
@@ -100,11 +100,17 @@ void WBackendManagerPrivate::init()
     timerSynchronize = -1;
     timerReload      = -1;
 
+    timer.setSingleShot(true);
+
+    timer.setTimerType(Qt::PreciseTimer);
+
 #ifndef SK_NO_QML
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
 #endif
 
     QObject::connect(q, SIGNAL(repeatChanged()), q, SLOT(onRepeatChanged()));
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onNext()));
 
     //---------------------------------------------------------------------------------------------
     // NOTE: We use the first backend for Chromecast output detection.
@@ -260,7 +266,7 @@ void WBackendManagerPrivate::applySources(bool play)
 
     loaded = true;
 
-    clock = (reply->typeSource() == WTrack::Hub);
+    hub = (reply->typeSource() == WTrack::Hub);
 
     this->timeA = timeA;
 
@@ -309,8 +315,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
     q->setSubtitles(reply->subtitles());
 
-    qDebug("Current source: %s timeA %d timeB %d start %d duration %d clock %d", source.C_STR,
-           timeA, timeB, start, duration, clock);
+    qDebug("Current source: %s timeA %d timeB %d start %d duration %d hub %d",
+           source.C_STR, timeA, timeB, start, duration, hub);
 
     if (currentMedia.isEmpty() == false)
     {
@@ -384,17 +390,15 @@ void WBackendManagerPrivate::applyDefault()
     qDebug("Clear source: timeA %d timeB %d start %d", timeA, timeB, start);
 }
 
-void WBackendManagerPrivate::applyTime(int currentTime)
+bool WBackendManagerPrivate::applyNext(int currentTime)
 {
     Q_Q(WBackendManager);
-
-    time.restart();
 
     if (currentTime >= duration)
     {
         if (type == Interactive)
         {
-            if (clock == false && timeB == duration)
+            if (hub == false && timeB == duration)
             {
                 stopBackend();
 
@@ -417,6 +421,8 @@ void WBackendManagerPrivate::applyTime(int currentTime)
             q->setEnded(true);
         }
         else q->seek(0);
+
+        return true;
     }
     else if (currentTime >= timeB)
     {
@@ -432,8 +438,11 @@ void WBackendManagerPrivate::applyTime(int currentTime)
         }
 
         loadSources(q->isPlaying());
+
+        return true;
     }
-    else q->setCurrentTime(currentTime);
+
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -463,6 +472,8 @@ void WBackendManagerPrivate::stopClock()
     q_func()->killTimer(timerClock);
 
     timerClock = -1;
+
+    timer.stop();
 }
 
 void WBackendManagerPrivate::startSynchronize()
@@ -629,7 +640,7 @@ void WBackendManagerPrivate::clearMedia()
     clearReply();
 
     loaded = false;
-    clock  = false;
+    hub    = false;
     loop   = false;
 
     currentMedia = QString();
@@ -685,6 +696,11 @@ void WBackendManagerPrivate::onReloaded()
     reply->deleteLater();
 
     reply = NULL;
+}
+
+void WBackendManagerPrivate::onNext()
+{
+    applyNext(timeB);
 }
 
 #ifndef SK_NO_QML
@@ -770,7 +786,7 @@ void WBackendManagerPrivate::onLive()
 
     if (backend->isLive() == false) return;
 
-    clock = true;
+    hub = true;
 }
 
 void WBackendManagerPrivate::onStarted()
@@ -802,22 +818,35 @@ void WBackendManagerPrivate::onEnded()
 
 void WBackendManagerPrivate::onCurrentTime()
 {
+    Q_Q(WBackendManager);
+
     if (type == Track)
     {
-        Q_Q(WBackendManager);
-
         q->setCurrentTime(backend->currentTime());
 
         return;
     }
 
-    if (clock) return;
+    if (hub)
+    {
+        timer.start(timeB - currentTime - time.elapsed());
+
+        return;
+    }
 
     int currentTime = backend->currentTime();
 
     if (currentTime == -1) return;
 
-    applyTime(timeA + qMax(0, currentTime - start));
+    currentTime = timeA + qMax(0, currentTime - start);
+
+    if (applyNext(currentTime)) return;
+
+    q->setCurrentTime(currentTime);
+
+    time.restart();
+
+    timer.start(timeB - currentTime);
 }
 
 void WBackendManagerPrivate::onDuration()
@@ -831,7 +860,7 @@ void WBackendManagerPrivate::onDuration()
         return;
     }
 
-    if (clock || currentTime - timeA < backend->duration() - start) return;
+    if (hub || currentTime - timeA < backend->duration() - start) return;
 
     applyDefault();
 }
@@ -1030,9 +1059,10 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->connectBackend();
 
-        if (d->clock) d->startClock();
+        d->startClock();
     }
-    else d->startClock();
+
+    d->startClock();
 
     if (d->type == WBackendManagerPrivate::Channel)
     {
@@ -1168,7 +1198,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->loadSources(isPlaying());
     }
-    else if (d->clock)
+    else if (d->hub)
     {
         if (d->backend->isLive()) return;
 
@@ -1346,7 +1376,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (id == d->timerClock)
     {
-        d->applyTime(d->currentTime + d->time.elapsed());
+        int currentTime = d->currentTime + d->time.elapsed();
+
+        if (d->applyNext(currentTime)) return;
+
+        setCurrentTime(currentTime);
+
+        d->time.restart();
     }
     else if (id == d->timerSynchronize)
     {
