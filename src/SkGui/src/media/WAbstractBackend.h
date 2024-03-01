@@ -33,6 +33,9 @@
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
 #include <QSGGeometryNode>
 #endif
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Sk includes
 #include <Sk>
