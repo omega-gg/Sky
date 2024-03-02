@@ -460,6 +460,8 @@ void WBackendManagerPrivate::updateLoading()
 
 void WBackendManagerPrivate::startClock()
 {
+    if (timerClock != -1) return;
+
     time.restart();
 
     timerClock = q_func()->startTimer(BACKENDMANAGER_TIMEOUT_CLOCK);
@@ -478,6 +480,8 @@ void WBackendManagerPrivate::stopClock()
 
 void WBackendManagerPrivate::startSynchronize()
 {
+    if (timerSynchronize != -1) return;
+
     Q_Q(WBackendManager);
 
     QDateTime date = WControllerApplication::currentDateUtc(timeZone);
@@ -758,10 +762,6 @@ void WBackendManagerPrivate::onStateLoad()
 
     if (stateLoad == WAbstractBackend::StateLoadDefault)
     {
-        if (timerClock != -1) return;
-
-        qDebug("CLOCK");
-
         startClock();
 
         if (type == Channel) startSynchronize();
@@ -827,26 +827,31 @@ void WBackendManagerPrivate::onCurrentTime()
         return;
     }
 
+    int backendTime = backend->currentTime();
+
+    if (backendTime == -1) return;
+
+    int at;
+
     if (hub)
     {
-        timer.start(timeB - currentTime - time.elapsed());
+        if (backend->isLive()) return;
 
-        return;
+        int duration = backend->duration() - start;
+
+        if (duration < 0) return;
+
+        at = timeA + ((currentTime - timeA) / duration) * duration + (backendTime - start);
     }
+    else at = timeA + qMax(0, backendTime - start);
 
-    int currentTime = backend->currentTime();
+    if (applyNext(at)) return;
 
-    if (currentTime == -1) return;
-
-    currentTime = timeA + qMax(0, currentTime - start);
-
-    if (applyNext(currentTime)) return;
-
-    q->setCurrentTime(currentTime);
+    q->setCurrentTime(at);
 
     time.restart();
 
-    timer.start(timeB - currentTime);
+    timer.start(timeB - at);
 }
 
 void WBackendManagerPrivate::onDuration()
@@ -1058,8 +1063,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         d->backendInterface->play();
 
         d->connectBackend();
-
-        d->startClock();
     }
 
     d->startClock();
