@@ -332,12 +332,6 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         startClock();
 
-        if (type == Channel)
-        {
-            timerSynchronize = q->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
-            timerReload      = q->startTimer(BACKENDMANAGER_TIMEOUT_RELOAD);
-        }
-
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
     }
 }
@@ -465,22 +459,8 @@ void WBackendManagerPrivate::startClock()
     time.restart();
 
     timerClock = q_func()->startTimer(BACKENDMANAGER_TIMEOUT_CLOCK);
-}
 
-void WBackendManagerPrivate::stopClock()
-{
-    if (timerClock == -1) return;
-
-    q_func()->killTimer(timerClock);
-
-    timerClock = -1;
-
-    timer.stop();
-}
-
-void WBackendManagerPrivate::startSynchronize()
-{
-    if (timerSynchronize != -1) return;
+    if (type != Channel) return;
 
     Q_Q(WBackendManager);
 
@@ -499,9 +479,17 @@ void WBackendManagerPrivate::startSynchronize()
     timerReload      = q->startTimer(BACKENDMANAGER_TIMEOUT_RELOAD);
 }
 
-void WBackendManagerPrivate::stopSynchronize()
+void WBackendManagerPrivate::stopClock()
 {
-    if (timerSynchronize == -1) return;
+    if (timerClock == -1) return;
+
+    timer.stop();
+
+    q_func()->killTimer(timerClock);
+
+    timerClock = -1;
+
+    if (type != Channel) return;
 
     Q_Q(WBackendManager);
 
@@ -638,8 +626,7 @@ void WBackendManagerPrivate::clearReply()
 
 void WBackendManagerPrivate::clearMedia()
 {
-    stopClock      ();
-    stopSynchronize();
+    stopClock();
 
     clearReply();
 
@@ -763,14 +750,8 @@ void WBackendManagerPrivate::onStateLoad()
     if (stateLoad == WAbstractBackend::StateLoadDefault)
     {
         startClock();
-
-        if (type == Channel) startSynchronize();
     }
-    else
-    {
-        stopClock      ();
-        stopSynchronize();
-    }
+    else stopClock();
 }
 
 void WBackendManagerPrivate::onLive()
@@ -841,7 +822,9 @@ void WBackendManagerPrivate::onCurrentTime()
 
         if (duration < 0) return;
 
-        at = timeA + ((currentTime - timeA) / duration) * duration + (backendTime - start);
+        at = timeA + ((currentTime - timeA) / duration) * duration
+             +
+             qMax(0, backendTime - start);
     }
     else at = timeA + qMax(0, backendTime - start);
 
@@ -1067,11 +1050,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     d->startClock();
 
-    if (d->type == WBackendManagerPrivate::Channel)
-    {
-        d->startSynchronize();
-    }
-
     return true;
 }
 
@@ -1088,8 +1066,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         return d->backend->isPaused();
     }
 
-    d->stopClock      ();
-    d->stopSynchronize();
+    d->stopClock();
 
     if (d->currentMedia.isEmpty() == false)
     {
@@ -1116,8 +1093,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->currentMedia.isEmpty())
     {
-        d->stopClock      ();
-        d->stopSynchronize();
+        d->stopClock();
     }
     else d->stopBackend();
 

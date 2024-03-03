@@ -95,9 +95,6 @@ public: // Functions
     void startClock();
     void stopClock ();
 
-    void startSynchronize();
-    void stopSynchronize ();
-
     void connectBackend   ();
     void disconnectBackend();
 

@@ -451,75 +451,65 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             {
                 QVariantList variants = result.toList();
 
-                if (variants.isEmpty() == false)
+                int count = variants.count();
+
+                if (count < 2)
                 {
-                    int count = variants.count();
+                    context = cleanTimeline(timeline, index);
 
-                    QString name = variants.first().toString().toLower();
-
-                    if (name == "swap" && count > 1)
-                    {
-                        list = Sk::split(variants.at(1).toString().toLower(), ',');
-
-                        timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
-
-                        int durationNew = applyDurations(&timelineNew);
-
-                        if (durationNew == -1)
-                        {
-                            context = cleanTimeline(timeline, index);
-
-                            return;
-                        }
-
-                        duration = timeA + durationNew;
-
-                        contextId = QString();
-
-                        int indexNew = extractSourceTimeline(timelineNew, baseUrl);
-
-                        if (indexNew == -1)
-                        {
-                            context = cleanTimeline(timeline, index);
-
-                            return;
-                        }
-
-                        if (index < timeline.count())
-                        {
-                            timeline.erase(timeline.begin() + index, timeline.end());
-                        }
-
-                        index += indexNew;
-
-                        timeline.append(timelineNew);
-                    }
+                    return;
                 }
 
-                context = cleanTimeline(timeline, index);
+                QString name = variants.first().toString().toLower();
 
-                return;
+                if (name != "swap")
+                {
+                    context = cleanTimeline(timeline, index);
+
+                    return;
+                }
+
+                list = Sk::split(variants.at(1).toString().toLower(), ',');
+
+                timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
+
+                int durationNew = applyDurations(&timelineNew);
+
+                if (durationNew == -1)
+                {
+                    context = cleanTimeline(timeline, index);
+
+                    return;
+                }
+
+                duration = timeA + durationNew;
+
+                contextId = QString();
             }
-
-            list = Sk::split(result.toString().toLower(), ',');
-
-            timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
-
-            int durationNew = applyDurations(&timelineNew);
-
-            if (durationNew == -1)
+            else
             {
-                context = cleanTimeline(timeline, index);
+                list = Sk::split(result.toString().toLower(), ',');
 
-                return;
+                timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
+
+                int durationNew = applyDurations(&timelineNew);
+
+                if (durationNew == -1)
+                {
+                    context = cleanTimeline(timeline, index);
+
+                    return;
+                }
+
+                timeA = timeB;
+
+                currentTime = timeA;
+                duration    = timeA + durationNew;
+
+                contextId = QString();
+
+                index++;
             }
-
-            timeA = timeB;
-
-            currentTime = timeA;
-            duration    = timeA + durationNew;
-
-            contextId = QString();
 
             int indexNew = extractSourceTimeline(timelineNew, baseUrl);
 
@@ -530,16 +520,14 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 return;
             }
 
-            index++;
-
             if (index < timeline.count())
             {
                 timeline.erase(timeline.begin() + index, timeline.end());
             }
 
-            timeline.append(timelineNew);
-
             index += indexNew;
+
+            timeline.append(timelineNew);
 
             context = cleanTimeline(timeline, index);
 
