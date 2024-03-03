@@ -168,9 +168,9 @@ public: // Interface
     void applyM3u(const QByteArray & array, const QString & url);
 
 public: // Static functions
-    static QString extractResult(const WYamlReader & reader, const QString     & argument,
-                                                             const QStringList & context,
-                                                             const QString     & contextId);
+    static QVariant extractResult(const WYamlReader & reader, const QString     & argument,
+                                                              const QStringList & context,
+                                                              const QString     & contextId);
 
     static int applyDurations(QList<WControllerMediaObject> * timeline);
 
@@ -198,8 +198,7 @@ public: // Functions
 
     void applyEmpty();
 
-    QString updateCurrentTime(const QList<WControllerMediaObject> & timeline,
-                              const QString                       & baseUrl);
+    int updateCurrentTime(const QList<WControllerMediaObject> & timeline, const QString & baseUrl);
 
     // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
     QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index);

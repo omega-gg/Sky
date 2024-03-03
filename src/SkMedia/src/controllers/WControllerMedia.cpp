@@ -420,12 +420,12 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 //       contextId.
                 if (index == -1)
                 {
-                    contextId = updateCurrentTime(timeline, baseUrl);
+                    index = updateCurrentTime(timeline, baseUrl);
                 }
             }
             else index = extractSourceTimeline(timeline, baseUrl);
 
-            if (timeB == -1)
+            if (index == -1)
             {
                 context = cleanTimeline(timeline, index);
 
@@ -442,20 +442,68 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             }
 
             // NOTE: We want to provide the context up until now.
-            QString result = extractResult(reader, argument, getContext(timeline, index + 1),
-                                           contextId);
+            QVariant result = extractResult(reader, argument, getContext(timeline, index + 1),
+                                            contextId);
 
-            list = Sk::split(result.toLower(), ',');
+            QList<WControllerMediaObject> timelineNew;
 
-            QList<WControllerMediaObject> timelineNew
-                = WControllerMediaSource::generateTimeline(hash, list, tags);
-
-            if (timelineNew.isEmpty())
+            if (result.canConvert<QVariantList>())
             {
+                QVariantList variants = result.toList();
+
+                if (variants.isEmpty() == false)
+                {
+                    int count = variants.count();
+
+                    QString name = variants.first().toString().toLower();
+
+                    if (name == "swap" && count > 1)
+                    {
+                        list = Sk::split(variants.at(1).toString().toLower(), ',');
+
+                        timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
+
+                        int durationNew = applyDurations(&timelineNew);
+
+                        if (durationNew == -1)
+                        {
+                            context = cleanTimeline(timeline, index);
+
+                            return;
+                        }
+
+                        duration = timeA + durationNew;
+
+                        contextId = QString();
+
+                        int indexNew = extractSourceTimeline(timelineNew, baseUrl);
+
+                        if (indexNew == -1)
+                        {
+                            context = cleanTimeline(timeline, index);
+
+                            return;
+                        }
+
+                        if (index < timeline.count())
+                        {
+                            timeline.erase(timeline.begin() + index, timeline.end());
+                        }
+
+                        index += indexNew;
+
+                        timeline.append(timelineNew);
+                    }
+                }
+
                 context = cleanTimeline(timeline, index);
 
                 return;
             }
+
+            list = Sk::split(result.toString().toLower(), ',');
+
+            timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
 
             int durationNew = applyDurations(&timelineNew);
 
@@ -473,7 +521,14 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             contextId = QString();
 
-            extractSourceTimeline(timelineNew, baseUrl);
+            int indexNew = extractSourceTimeline(timelineNew, baseUrl);
+
+            if (indexNew == -1)
+            {
+                context = cleanTimeline(timeline, index);
+
+                return;
+            }
 
             index++;
 
@@ -483,6 +538,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             }
 
             timeline.append(timelineNew);
+
+            index += indexNew;
 
             context = cleanTimeline(timeline, index);
 
@@ -632,21 +689,21 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QString WControllerMediaData::extractResult(const WYamlReader & reader,
-                                                         const QString     & argument,
-                                                         const QStringList & context,
-                                                         const QString     & contextId)
+/* static */ QVariant WControllerMediaData::extractResult(const WYamlReader & reader,
+                                                          const QString     & argument,
+                                                          const QStringList & context,
+                                                          const QString     & contextId)
 {
     QStringList list = argument.split(',');
 
-    if (list.isEmpty()) return QString();
+    if (list.isEmpty()) return QVariant();
 
     // NOTE: A routine name has a maximum length of 16 characters.
     QString routine = list.takeFirst().left(16).toUpper();
 
     WBackendUniversalScript script(reader.extractString(routine));
 
-    if (script.isValid() == false) return QString();
+    if (script.isValid() == false) return QVariant();
 
     WBackendUniversalParameters parameters(script);
 
@@ -659,7 +716,7 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
     parameters.add("context", context);
     parameters.add("id",      contextId);
 
-    return script.run(&parameters).toString();
+    return script.run(&parameters);
 }
 
 /* static */
@@ -972,8 +1029,8 @@ void WControllerMediaData::applyEmpty()
     start = 0;
 }
 
-QString WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject> & timeline,
-                                                const QString                       & baseUrl)
+int WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObject> & timeline,
+                                            const QString                       & baseUrl)
 {
     int index = -1;
 
@@ -1038,7 +1095,7 @@ QString WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObje
             break;
         }
 
-        if (index == -1) return result;
+        if (index == -1) return -1;
     }
 
     const WControllerMediaObject & object = timeline.at(index);
@@ -1047,13 +1104,15 @@ QString WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObje
 
     const WYamlNode * node = child->at("source");
 
-    if (node == NULL) return result;
+    if (node == NULL) return -1;
 
     currentTime = time;
 
     timeA = time;
 
     start = object.at;
+
+    contextId = result;
 
     const QList<WYamlNode> & nodes = node->children;
 
@@ -1065,7 +1124,7 @@ QString WControllerMediaData::updateCurrentTime(const QList<WControllerMediaObje
 
     if (source.isEmpty()) applyEmpty();
 
-    return result;
+    return index;
 }
 
 QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & timeline, int index)

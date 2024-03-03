@@ -408,9 +408,9 @@ bool WBackendManagerPrivate::applyNext(int currentTime)
             //       entire hub, we let the backend handle the loop for smoother playback.
             else if (backend->duration() != timeB - timeA)
             {
-                freeze = true;
-
                 q->seek(timeA);
+
+                if (backend->isBuffering()) freeze = true;
             }
             else q->setCurrentTime(timeA);
         }
@@ -845,7 +845,7 @@ void WBackendManagerPrivate::onCurrentTime()
     }
     else at = timeA + qMax(0, backendTime - start);
 
-    if (applyNext(at)) return;
+    if (currentTime == at || applyNext(at)) return;
 
     q->setCurrentTime(at);
 
@@ -1379,11 +1379,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (id == d->timerClock)
     {
-        int currentTime = d->currentTime + d->time.elapsed();
+        int at = d->currentTime + d->time.elapsed();
 
-        if (d->applyNext(currentTime)) return;
+        if (d->currentTime == at || d->applyNext(at)) return;
 
-        setCurrentTime(currentTime);
+        setCurrentTime(at);
 
         d->time.restart();
     }
