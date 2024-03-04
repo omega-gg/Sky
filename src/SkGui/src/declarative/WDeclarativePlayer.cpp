@@ -2941,6 +2941,28 @@ WTrack::Type WDeclarativePlayer::trackType() const
     else return WTrack::Track;
 }
 
+bool WDeclarativePlayer::trackIsHub() const
+{
+    return (trackType() == WTrack::Hub);
+}
+
+bool WDeclarativePlayer::trackIsChannel() const
+{
+    return (trackType() == WTrack::Channel);
+}
+
+bool WDeclarativePlayer::trackIsInteractive() const
+{
+    return (trackType() == WTrack::Interactive);
+}
+
+bool WDeclarativePlayer::trackIsLite() const
+{
+    return (trackType() == WTrack::Lite);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 WTrack::State WDeclarativePlayer::trackState() const
 {
     Q_D(const WDeclarativePlayer);
@@ -2961,30 +2983,6 @@ WTrack::State WDeclarativePlayer::trackState() const
     }
     else return WTrack::Default;
 }
-
-//-------------------------------------------------------------------------------------------------
-
-bool WDeclarativePlayer::trackIsHub() const
-{
-    return (trackType() == WTrack::Hub);
-}
-
-bool WDeclarativePlayer::trackIsChannel() const
-{
-    return (trackType() == WTrack::Channel);
-}
-
-bool WDeclarativePlayer::trackIsInteractive() const
-{
-    return (trackType() == WTrack::Hub);
-}
-
-bool WDeclarativePlayer::trackIsLite() const
-{
-    return (trackType() == WTrack::Lite);
-}
-
-//-------------------------------------------------------------------------------------------------
 
 bool WDeclarativePlayer::trackIsDefault() const
 {

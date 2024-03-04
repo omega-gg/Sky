@@ -1857,6 +1857,26 @@ WTrack::Type WTabTrack::type() const
     else return WTrack::Track;
 }
 
+bool WTabTrack::isHub() const
+{
+    return (type() == WTrack::Hub);
+}
+
+bool WTabTrack::isChannel() const
+{
+    return (type() == WTrack::Channel);
+}
+
+bool WTabTrack::isInteractive() const
+{
+    return (type() == WTrack::Interactive);
+}
+
+bool WTabTrack::isLite() const
+{
+    return (type() == WTrack::Lite);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WTrack::State WTabTrack::state() const
@@ -1881,6 +1901,22 @@ QString WTabTrack::source() const
          return d->currentBookmark->source();
     }
     else return QString();
+}
+
+void WTabTrack::setSource(const QString & source)
+{
+    Q_D(WTabTrack);
+
+    if (d->playlist)
+    {
+        d->playlist->setTrackSource(trackIndex(), source);
+    }
+    else if (d->currentBookmark)
+    {
+        d->currentBookmark->d_func()->source = source;
+
+        save();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

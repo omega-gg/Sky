@@ -85,11 +85,16 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(int type READ type NOTIFY currentBookmarkUpdated)
 
+    Q_PROPERTY(bool isHub         READ isHub         NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(bool isChannel     READ isChannel     NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(bool isInteractive READ isInteractive NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(bool isLite        READ isLite        NOTIFY currentBookmarkUpdated)
+
     Q_PROPERTY(int state READ state NOTIFY currentBookmarkUpdated)
 
     //---------------------------------------------------------------------------------------------
 
-    Q_PROPERTY(QString source READ source NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(QString title READ title NOTIFY currentBookmarkUpdated)
     Q_PROPERTY(QString cover READ cover NOTIFY currentBookmarkUpdated)
@@ -211,9 +216,18 @@ public: // Properties
 
     WTrack::Type type() const;
 
+    bool isHub        () const;
+    bool isChannel    () const;
+    bool isInteractive() const;
+    bool isLite       () const;
+
     WTrack::State state() const;
 
     QString source() const;
+
+    // NOTE: When a playlist is available we update its track source, otherwise we update the
+    //       current bookmark.
+    void setSource(const QString & source);
 
     QString title() const;
     QString cover() const;
