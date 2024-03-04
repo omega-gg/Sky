@@ -1734,11 +1734,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.timeZone = timeZone;
 
-        slice.medias = medias;
-        slice.audios = audios;
-
-        slice.expiry = source.expiry;
-
         slice.currentTime = currentTime;
         slice.duration    = duration;
 
@@ -1750,9 +1745,14 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.context   = context;
         slice.contextId = contextId;
 
+        slice.medias = medias;
+        slice.audios = audios;
+
         slice.ambient = ambient;
 
         slice.subtitles = subtitles;
+
+        slice.expiry = source.expiry;
 
         appendSlice(slice, media->url, mode);
 
