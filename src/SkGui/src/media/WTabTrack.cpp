@@ -1913,9 +1913,15 @@ void WTabTrack::setSource(const QString & source)
     }
     else if (d->currentBookmark)
     {
-        d->currentBookmark->d_func()->source = source;
+        WBookmarkTrackPrivate * p = d->currentBookmark->d_func();
+
+        if (p->source == source) return;
+
+        p->source = source;
 
         save();
+
+        emit currentBookmarkUpdated();
     }
 }
 
