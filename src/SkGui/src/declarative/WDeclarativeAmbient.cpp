@@ -64,28 +64,59 @@ void WDeclarativeAmbientPrivate::onUpdate()
 {
     Q_Q(WDeclarativeAmbient);
 
-    QString ambient = player->ambient();
-
-    if (ambient.isEmpty() == false && backend
-        &&
-        player->state() == WAbstractBackend::StatePlaying && player->hasOutput() == false)
+    if (backend == NULL || player->hasOutput())
     {
-        q->setSource(ambient);
+        if (source.isEmpty() == false) return;
 
-        int msec = hash.value(currentSource);
+        hash.insert(currentSource, q->currentTime());
 
-        if (msec != -1) q->seek(msec);
+        q->setSource(QString());
 
-        q->play();
+        q->clear();
 
         return;
     }
 
-    if (q->hasStarted() == false) return;
+    QString ambient = player->ambient();
 
-    hash.insert(currentSource, q->currentTime());
+    if (ambient.isEmpty())
+    {
+        // NOTE: We clear the ambient source as late as possible to avoid blanks.
+        if (source.isEmpty() == false || player->isDefault() == false) return;
 
-    q->clear();
+        hash.insert(currentSource, q->currentTime());
+
+        q->setSource(QString());
+
+        q->clear();
+
+        return;
+    }
+
+    if (source == ambient) return;
+
+    q->setSource(ambient);
+
+    int msec = hash.value(currentSource);
+
+    if (msec != -1) q->seek(msec);
+
+    if (player->state() != WAbstractBackend::StatePlaying) return;
+
+    q->play();
+}
+
+void WDeclarativeAmbientPrivate::onState()
+{
+    Q_Q(WDeclarativeAmbient);
+
+    if (source.isEmpty()) return;
+
+    WAbstractBackend::State state = player->state();
+
+    if      (state == WAbstractBackend::StateStopped) q->stop ();
+    else if (state == WAbstractBackend::StatePlaying) q->play ();
+    else                                              q->pause();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -135,9 +166,11 @@ void WDeclarativeAmbient::setPlayer(WDeclarativePlayer * player)
         connect(player, SIGNAL(sourceChanged()), this, SLOT(onSourceChanged()));
 
         connect(player, SIGNAL(backendChanged      ()), this, SLOT(onUpdate()));
-        connect(player, SIGNAL(stateChanged        ()), this, SLOT(onUpdate()));
+        connect(player, SIGNAL(stateLoadChanged    ()), this, SLOT(onUpdate()));
         connect(player, SIGNAL(currentOutputChanged()), this, SLOT(onUpdate()));
         connect(player, SIGNAL(ambientChanged      ()), this, SLOT(onUpdate()));
+
+        connect(player, SIGNAL(stateChanged()), this, SLOT(onState()));
 
         d->onSourceChanged();
 

@@ -716,6 +716,12 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
         setVbml(false);
         setLive(false);
 
+        setContext(QString(), QString());
+
+        setAmbient(QString());
+
+        setSubtitles(QStringList());
+
         //-----------------------------------------------------------------------------------------
 
         emit sourceChanged();

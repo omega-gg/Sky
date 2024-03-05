@@ -49,6 +49,7 @@ public: // Slots
     void onSourceChanged();
 
     void onUpdate();
+    void onState ();
 
 public: // Variables
     WDeclarativePlayer * player;

@@ -55,6 +55,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onSourceChanged())
     Q_PRIVATE_SLOT(d_func(), void onUpdate       ())
+    Q_PRIVATE_SLOT(d_func(), void onState        ())
 };
 
 #include <private/WDeclarativeAmbient_p>
