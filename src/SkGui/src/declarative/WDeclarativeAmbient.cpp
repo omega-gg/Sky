@@ -66,11 +66,9 @@ void WDeclarativeAmbientPrivate::onUpdate()
 
     if (backend == NULL || player->hasOutput())
     {
-        if (source.isEmpty() == false) return;
+        if (q->source().isEmpty()) return;
 
         hash.insert(currentSource, q->currentTime());
-
-        q->setSource(QString());
 
         q->clear();
 
@@ -82,18 +80,16 @@ void WDeclarativeAmbientPrivate::onUpdate()
     if (ambient.isEmpty())
     {
         // NOTE: We clear the ambient source as late as possible to avoid blanks.
-        if (source.isEmpty() == false || player->isDefault() == false) return;
+        if (q->source().isEmpty() || player->isDefault() == false) return;
 
         hash.insert(currentSource, q->currentTime());
-
-        q->setSource(QString());
 
         q->clear();
 
         return;
     }
 
-    if (source == ambient) return;
+    if (q->source() == ambient) return;
 
     q->setSource(ambient);
 
@@ -110,7 +106,7 @@ void WDeclarativeAmbientPrivate::onState()
 {
     Q_Q(WDeclarativeAmbient);
 
-    if (source.isEmpty()) return;
+    if (q->source().isEmpty()) return;
 
     WAbstractBackend::State state = player->state();
 

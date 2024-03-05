@@ -232,6 +232,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
             freeze = false;
 
+            q->setContext(QString(), QString());
+
             q->setAmbient(QString());
 
             q->setSubtitles(QStringList());
@@ -661,6 +663,8 @@ void WBackendManagerPrivate::onLoaded()
         q->stop();
 
         freeze = false;
+
+        q->setContext(QString(), QString());
 
         q->setAmbient(QString());
 

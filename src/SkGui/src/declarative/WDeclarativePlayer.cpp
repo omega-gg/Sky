@@ -1449,9 +1449,9 @@ WDeclarativePlayer::WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem
     {
         d->loadSource(bookmark->source(), duration(), currentTime());
     }
-    else if (d->backend && d->backendInterface->source().isEmpty() == false)
+    else if (d->backend)
     {
-        d->backendInterface->loadSource(QString());
+        d->backendInterface->loadSource(d->backendInterface->source());
     }
 }
 
