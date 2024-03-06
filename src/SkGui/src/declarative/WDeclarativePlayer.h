@@ -287,7 +287,8 @@ protected: // WPlaylistWatcher implementation
     /* virtual */ void beginTracksClear();
 
 signals:
-    void ended();
+    void loaded();
+    void ended ();
 
     void clearCache();
 

@@ -82,6 +82,8 @@ public: // Functions
 
     void applySources(bool play);
 
+    void applyEmpty();
+
     void loadSource(const QString & source, const QString & media, int currentTime);
 
     void stopBackend();

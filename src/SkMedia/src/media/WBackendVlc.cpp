@@ -1084,6 +1084,8 @@ void WBackendVlcPrivate::applySources(const WMediaReply * reply, bool play)
 
         q->stop();
     }
+
+    emit q->loaded();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1502,6 +1504,8 @@ void WBackendVlcPrivate::onLoaded()
     if (reply->hasError())
     {
         q->stop();
+
+        emit q->loaded();
     }
     else applySources(reply, q->isPlaying());
 

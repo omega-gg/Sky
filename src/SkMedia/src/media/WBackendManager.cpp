@@ -228,15 +228,7 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         if (currentMedia.isEmpty())
         {
-            q->stop();
-
-            freeze = false;
-
-            q->setContext(QString(), QString());
-
-            q->setAmbient(QString());
-
-            q->setSubtitles(QStringList());
+            applyEmpty();
 
             return;
         }
@@ -336,6 +328,25 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
     }
+
+    emit q->loaded();
+}
+
+void WBackendManagerPrivate::applyEmpty()
+{
+    Q_Q(WBackendManager);
+
+    q->stop();
+
+    freeze = false;
+
+    q->setContext(QString(), QString());
+
+    q->setAmbient(QString());
+
+    q->setSubtitles(QStringList());
+
+    emit q->loaded();
 }
 
 void WBackendManagerPrivate::loadSource(const QString & source,
@@ -656,21 +667,11 @@ void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backendNew)
 
 void WBackendManagerPrivate::onLoaded()
 {
-    Q_Q(WBackendManager);
-
     if (reply->hasError())
     {
-        q->stop();
-
-        freeze = false;
-
-        q->setContext(QString(), QString());
-
-        q->setAmbient(QString());
-
-        q->setSubtitles(QStringList());
+        applyEmpty();
     }
-    else applySources(q->isPlaying());
+    else applySources(q_func()->isPlaying());
 
     reply->deleteLater();
 

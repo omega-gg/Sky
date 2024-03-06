@@ -1907,6 +1907,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         d->loadSource(d->source, -1, -1);
     }
 
+    connect(backend, SIGNAL(loaded()), this, SIGNAL(loaded()));
+
     connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
 
     connect(backend, SIGNAL(vbmlChanged()), this, SIGNAL(vbmlChanged()));

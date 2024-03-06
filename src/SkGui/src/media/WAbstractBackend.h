@@ -518,6 +518,8 @@ protected: // Virtual functions
 #endif
 
 signals:
+    void loaded();
+
     void outputAdded(const WBackendOutput & output);
 
     void outputRemoved(int index);
