@@ -1680,8 +1680,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         foreach (WMediaReply * reply, media->replies)
         {
-            reply->_loaded = true;
-
             reply->_urlSource = urlSource;
 
             reply->_type       = type;
@@ -1691,6 +1689,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_medias = medias;
             reply->_audios = audios;
+
+            reply->_loaded = true;
 
             emit reply->loaded(reply);
         }
@@ -1758,8 +1758,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         foreach (WMediaReply * reply, media->replies)
         {
-            reply->_loaded = true;
-
             reply->_urlSource = urlSource;
 
             reply->_type       = type;
@@ -1786,6 +1784,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             reply->_ambient = ambient;
 
             reply->_subtitles = subtitles;
+
+            reply->_loaded = true;
 
             emit reply->loaded(reply);
         }

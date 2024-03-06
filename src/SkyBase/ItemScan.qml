@@ -51,6 +51,8 @@ Scanner
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias hovered: rectangleTag.hovered
+
 //#DESKTOP
     property alias mouseArea: mouseArea
 //#END
