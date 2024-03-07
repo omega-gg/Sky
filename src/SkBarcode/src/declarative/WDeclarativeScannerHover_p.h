@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WDECLARATIVESCANNER_P_H
-#define WDECLARATIVESCANNER_P_H
+#ifndef WDECLARATIVESCANNERHOVER_P_H
+#define WDECLARATIVESCANNERHOVER_P_H
 
 /*  W A R N I N G
     -------------
@@ -34,88 +34,38 @@
 */
 
 // Private includes
+#ifdef QT_4
 #include <private/WDeclarativeItem_p>
+#else
+#include <private/WDeclarativeItemPaint_p>
+#endif
 
-#ifndef SK_NO_DECLARATIVESCANNER
+#ifndef SK_NO_DECLARATIVESCANNERHOVER
 
-// Forward declarations
-class WAbstractThreadAction;
-
-//-------------------------------------------------------------------------------------------------
-// WDeclarativeScannerData
-//-------------------------------------------------------------------------------------------------
-
-struct WDeclarativeScannerData
-{
-    WAbstractThreadAction * action;
-
-    qreal ratioX;
-    qreal ratioY;
-
-    qreal rectX;
-    qreal rectY;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WDeclarativeScannerPrivate
-//-------------------------------------------------------------------------------------------------
-
-class SK_BARCODE_EXPORT WDeclarativeScannerPrivate : public WDeclarativeItemPrivate
+#ifdef QT_4
+class SK_BARCODE_EXPORT WDeclarativeScannerHoverPrivate : public WDeclarativeItemPrivate
+#else
+class SK_BARCODE_EXPORT WDeclarativeScannerHoverPrivate : public WDeclarativeItemPaintPrivate
+#endif
 {
 public:
-    WDeclarativeScannerPrivate(WDeclarativeScanner * p);
+    WDeclarativeScannerHoverPrivate(WDeclarativeScannerHover * p);
 
     void init();
 
-public: // Fuctions
-    bool scan();
-
-    void stopTimer ();
-    void clearTimer();
-
-    void clearCount ();
-    void clearResult();
-    void clearData  ();
-    void clearItem  ();
-
-public: // Slots
-    void onLoaded(const WBarcodeResult & result);
-
-    void onClearPlayer();
-    void onClearCover ();
-
 public: // Variables
-    WDeclarativePlayer * player;
-    WDeclarativeImage  * cover;
-
-    int x;
-    int y;
-
-    int size;
-
-    int timerIdA;
-    int timerIdB;
-
-    int count;
-    int currentCount;
-
-    int interval;
-    int duration;
-
-    QList<WDeclarativeScannerData> datas;
-
-    QString text;
-
-    QRectF rect;
+    bool active;
 
     QPointF topLeft;
     QPointF topRight;
     QPointF bottomLeft;
     QPointF bottomRight;
 
+    QColor color;
+
 protected:
-    W_DECLARE_PUBLIC(WDeclarativeScanner)
+    W_DECLARE_PUBLIC(WDeclarativeScannerHover)
 };
 
-#endif // SK_NO_DECLARATIVESCANNER
-#endif // WDECLARATIVESCANNER_P_H
+#endif // SK_NO_DECLARATIVESCANNERHOVER
+#endif // WDECLARATIVESCANNERHOVER_P_H

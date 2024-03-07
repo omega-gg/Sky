@@ -1625,7 +1625,7 @@ void WDeclarativePlayer::updateFrame()
 #if defined(QT_4) || defined(SK_SOFTWARE)
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4

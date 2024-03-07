@@ -49,7 +49,7 @@ Scanner
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias hovered: rectangleTag.hovered
+    property alias hovered: scannerHover.isActive
 
 //#DESKTOP
     property alias mouseArea: mouseArea
@@ -97,7 +97,7 @@ Scanner
                 rectangleTag.clickEnd();
             }
 //#DESKTOP
-            else rectangleTag.hovered = true;
+            else scannerHover.apply(topLeft, topRight, bottomLeft, bottomRight);
 //#END
         }
         else if (pClick)
@@ -107,7 +107,7 @@ Scanner
             clicked("");
         }
 //#DESKTOP
-        else rectangleTag.hovered = false;
+        else scannerHover.clear();
 //#END
     }
 
@@ -175,16 +175,17 @@ Scanner
         return pClick;
     }
 
+//#DESKTOP
     function clearHover()
     {
         timer.stop();
 
-        rectangleTag.hovered = false;
+        scannerHover.clear();
     }
 
     function getTextHovered()
     {
-        if (rectangleTag.hovered == false) return "";
+        if (hovered == false) return "";
 
         var position = window.mapToItem(rectangleTag, window.mouseX, window.mouseY);
 
@@ -197,6 +198,7 @@ Scanner
 
         return text;
     }
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Private
@@ -269,6 +271,21 @@ Scanner
         onHoverActiveChanged: if (hoverActive == false) clearHover()
 
         /* QML_EVENT */ onPositionChanged: function(mouse) { itemScan.positionChanged(mouse); }
+    }
+//#END
+
+//#DESKTOP
+    ScannerHover
+    {
+        id: scannerHover
+
+        anchors.fill: parent
+
+        visible: isActive
+
+        opacity: st.rectangleTag_opacity
+
+        color: st.color_highlight
     }
 //#END
 
