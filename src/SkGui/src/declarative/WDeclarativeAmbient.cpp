@@ -58,6 +58,8 @@ void WDeclarativeAmbientPrivate::onSourceChanged()
     hash.clear();
 
     hash.insert(source, -1);
+
+    q_func()->clear();
 }
 
 void WDeclarativeAmbientPrivate::onUpdate()
