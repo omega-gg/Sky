@@ -242,7 +242,8 @@ public: // Static functions
 
     static QRect getSlice(int width, int height, int x, int y, int size);
 
-    static QRect getMatch(const Position & position, int x, int y, int size);
+    static bool getMatch(WBarcodeResult * result,
+                         const Position & position, int x, int y, int size);
 
 protected:
     W_DECLARE_PUBLIC(WBarcodeReader)
@@ -321,8 +322,9 @@ void WBarcodeReaderPrivate::init() {}
     return QRect(rectX, rectY, size, size);
 }
 
-/* static */ QRect WBarcodeReaderPrivate::getMatch(const Position & position,
-                                                   int x, int y, int size)
+/* static */ bool WBarcodeReaderPrivate::getMatch(WBarcodeResult * result,
+                                                  const Position & position,
+                                                  int x, int y, int size)
 {
     const PointI & topLeft     = position.topLeft    ();
     const PointI & topRight    = position.topRight   ();
@@ -346,17 +348,19 @@ void WBarcodeReaderPrivate::init() {}
     {
         int sizeHalf = size / 2;
 
-        if (rect.intersects(QRect(x - sizeHalf, y - sizeHalf, size, size)))
-        {
-            return rect;
-        }
+        if (rect.intersects(QRect(x - sizeHalf,
+                                  y - sizeHalf, size, size)) == false) return false;
     }
-    else if (rect.contains(x, y))
-    {
-        return rect;
-    }
+    else if (rect.contains(x, y) == false) return false;
 
-    return QRect();
+    result->rect = rect;
+
+    result->topLeft     = QPoint(topLeft.x,     topLeft.y);
+    result->topRight    = QPoint(topRight.x,    topRight.y);
+    result->bottomLeft  = QPoint(bottomLeft.x,  bottomLeft.y);
+    result->bottomRight = QPoint(bottomRight.x, bottomRight.y);
+
+    return true;
 }
 
 //=================================================================================================
@@ -465,6 +469,8 @@ void WBarcodeReaderPrivate::init() {}
 
     precision--;
 
+    WBarcodeResult result;
+
     // NOTE: We call ReadBarcode multiple times because it's faster than ReadBarcodes.
     for (int i = 0; i < precision; i++)
     {
@@ -481,16 +487,25 @@ void WBarcodeReaderPrivate::init() {}
             int rectX = rect.x();
             int rectY = rect.y();
 
-            rect = WBarcodeReaderPrivate::getMatch(output.position(), x - rectX, y - rectY, size);
-
-            if (rect.isValid())
+            if (WBarcodeReaderPrivate::getMatch(&result,
+                                                output.position(), x - rectX, y - rectY, size))
             {
-                WBarcodeResult result;
-
                 result.text = QString::fromWCharArray(output.text().c_str());
+
+                rect = result.rect;
 
                 result.rect = QRect(rect.x() + rectX,
                                     rect.y() + rectY, rect.width(), rect.height());
+
+                QPoint topLeft     = result.topLeft;
+                QPoint topRight    = result.topRight;
+                QPoint bottomLeft  = result.bottomLeft;
+                QPoint bottomRight = result.bottomRight;
+
+                result.topLeft     = QPoint(topLeft    .x() + rectX, topLeft    .y() + rectY);
+                result.topRight    = QPoint(topRight   .x() + rectX, topRight   .y() + rectY);
+                result.bottomLeft  = QPoint(bottomLeft .x() + rectX, bottomLeft .y() + rectY);
+                result.bottomRight = QPoint(bottomRight.x() + rectX, bottomRight.y() + rectY);
 
                 return result;
             }
@@ -505,14 +520,9 @@ void WBarcodeReaderPrivate::init() {}
 
     if (output.isValid())
     {
-        QRect rect = WBarcodeReaderPrivate::getMatch(output.position(), x, y, size);
-
-        if (rect.isValid())
+        if (WBarcodeReaderPrivate::getMatch(&result, output.position(), x, y, size))
         {
-            WBarcodeResult result;
-
             result.text = QString::fromWCharArray(output.text().c_str());
-            result.rect = rect;
 
             return result;
         }

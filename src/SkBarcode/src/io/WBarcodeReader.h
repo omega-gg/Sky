@@ -45,7 +45,13 @@ class WAbstractThreadAction;
 struct WBarcodeResult
 {
     QString text;
-    QRect   rect;
+
+    QRect rect;
+
+    QPoint topLeft;
+    QPoint topRight;
+    QPoint bottomLeft;
+    QPoint bottomRight;
 };
 
 //-------------------------------------------------------------------------------------------------

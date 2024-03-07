@@ -33,8 +33,6 @@ Scanner
 
     property real ratioTouch: st.itemScan_ratioTouch
 
-    /* read */ property string text
-
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -79,10 +77,8 @@ Scanner
     // Events
     //---------------------------------------------------------------------------------------------
 
-    /* QML_EVENT */ onLoaded: function(text, rect)
+    onLoaded:
     {
-        itemScan.text = text;
-
         if (text)
         {
             rectangleTag.x      = rect.x;

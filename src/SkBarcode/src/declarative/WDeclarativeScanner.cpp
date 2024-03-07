@@ -159,6 +159,18 @@ void WDeclarativeScannerPrivate::clearCount()
     clearData();
 }
 
+void WDeclarativeScannerPrivate::clearResult()
+{
+    text = QString();
+
+    rect = QRectF();
+
+    topLeft     = QPointF();
+    topRight    = QPointF();
+    bottomLeft  = QPointF();
+    bottomRight = QPointF();
+}
+
 void WDeclarativeScannerPrivate::clearData()
 {
     foreach (const WDeclarativeScannerData & data, datas)
@@ -177,9 +189,10 @@ void WDeclarativeScannerPrivate::clearItem()
 
     Q_Q(WDeclarativeScanner);
 
-    clearCount();
+    clearCount ();
+    clearResult();
 
-    emit q->loaded(QString(), QRectF());
+    emit q->loaded();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -207,16 +220,49 @@ void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
         qreal ratioX = data.ratioX;
         qreal ratioY = data.ratioY;
 
-        emit q->loaded(text, QRectF((qreal) rect.x     () / ratioX + data.rectX,
-                                    (qreal) rect.y     () / ratioY + data.rectY,
-                                    (qreal) rect.width () / ratioX,
-                                    (qreal) rect.height() / ratioY));
+        qreal rectX = data.rectX;
+        qreal rectY = data.rectY;
+
+        this->text = text;
+
+        this->rect = QRectF((qreal) rect.x     () / ratioX + rectX,
+                            (qreal) rect.y     () / ratioY + rectY,
+                            (qreal) rect.width () / ratioX,
+                            (qreal) rect.height() / ratioY);
+
+        QPoint topLeft     = result.topLeft;
+        QPoint topRight    = result.topRight;
+        QPoint bottomLeft  = result.bottomLeft;
+        QPoint bottomRight = result.bottomRight;
+
+        this->topLeft = QPointF((qreal) topLeft.x() / ratioX + rectX,
+                                (qreal) topLeft.y() / ratioY + rectY);
+
+        this->topRight = QPointF((qreal) topRight.x() / ratioX + rectX,
+                                 (qreal) topRight.y() / ratioY + rectY);
+
+        this->bottomLeft = QPointF((qreal) bottomLeft.x() / ratioX + rectX,
+                                   (qreal) bottomLeft.y() / ratioY + rectY);
+
+        this->bottomRight = QPointF((qreal) bottomRight.x() / ratioX + rectX,
+                                    (qreal) bottomRight.y() / ratioY + rectY);
+
+        emit q->loaded();
     }
     else if (currentCount == count)
     {
         clearCount();
 
-        emit q->loaded(text, QRectF());
+        this->text = text;
+
+        rect = QRectF();
+
+        topLeft     = QPointF();
+        topRight    = QPointF();
+        bottomLeft  = QPointF();
+        bottomRight = QPointF();
+
+        emit q->loaded();
     }
 }
 
@@ -300,10 +346,11 @@ void WDeclarativeScannerPrivate::onClearCover()
 
         if (d->scan() == false)
         {
-            d->clearTimer();
-            d->clearCount();
+            d->clearTimer ();
+            d->clearCount ();
+            d->clearResult();
 
-            emit loaded(QString(), QRectF());
+            emit loaded();
         }
         else if (d->currentCount == d->count)
         {
@@ -312,10 +359,11 @@ void WDeclarativeScannerPrivate::onClearCover()
     }
     else // if (id == d->timerIdB)
     {
-        d->clearTimer();
-        d->clearCount();
+        d->clearTimer ();
+        d->clearCount ();
+        d->clearResult();
 
-        emit loaded(QString(), QRectF());
+        emit loaded();
     }
 }
 
@@ -399,6 +447,38 @@ void WDeclarativeScanner::setDuration(int duration)
     d->duration = duration;
 
     emit durationChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WDeclarativeScanner::text() const
+{
+    Q_D(const WDeclarativeScanner); return d->text;
+}
+
+QRectF WDeclarativeScanner::rect() const
+{
+    Q_D(const WDeclarativeScanner); return d->rect;
+}
+
+QPointF WDeclarativeScanner::topLeft() const
+{
+    Q_D(const WDeclarativeScanner); return d->topLeft;
+}
+
+QPointF WDeclarativeScanner::topRight() const
+{
+    Q_D(const WDeclarativeScanner); return d->topRight;
+}
+
+QPointF WDeclarativeScanner::bottomLeft() const
+{
+    Q_D(const WDeclarativeScanner); return d->bottomLeft;
+}
+
+QPointF WDeclarativeScanner::bottomRight() const
+{
+    Q_D(const WDeclarativeScanner); return d->bottomRight;
 }
 
 #endif // SK_NO_DECLARATIVESCANNER

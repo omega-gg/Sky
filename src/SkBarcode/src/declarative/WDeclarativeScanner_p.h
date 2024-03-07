@@ -72,9 +72,10 @@ public: // Fuctions
     void stopTimer ();
     void clearTimer();
 
-    void clearCount();
-    void clearData ();
-    void clearItem ();
+    void clearCount ();
+    void clearResult();
+    void clearData  ();
+    void clearItem  ();
 
 public: // Slots
     void onLoaded(const WBarcodeResult & result);
@@ -101,6 +102,15 @@ public: // Variables
     int duration;
 
     QList<WDeclarativeScannerData> datas;
+
+    QString text;
+
+    QRectF rect;
+
+    QPointF topLeft;
+    QPointF topRight;
+    QPointF bottomLeft;
+    QPointF bottomRight;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeScanner)

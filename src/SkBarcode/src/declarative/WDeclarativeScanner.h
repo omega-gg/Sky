@@ -49,6 +49,15 @@ class SK_BARCODE_EXPORT WDeclarativeScanner : public WDeclarativeItem
     Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
     Q_PROPERTY(int duration READ duration WRITE setDuration NOTIFY durationChanged)
 
+    Q_PROPERTY(QString text READ text NOTIFY loaded)
+
+    Q_PROPERTY(QRectF rect READ rect NOTIFY loaded)
+
+    Q_PROPERTY(QPointF topLeft     READ topLeft     NOTIFY loaded)
+    Q_PROPERTY(QPointF topRight    READ topRight    NOTIFY loaded)
+    Q_PROPERTY(QPointF bottomLeft  READ bottomLeft  NOTIFY loaded)
+    Q_PROPERTY(QPointF bottomRight READ bottomRight NOTIFY loaded)
+
 public:
 #ifdef QT_4
     explicit WDeclarativeScanner(QDeclarativeItem * parent = NULL);
@@ -63,7 +72,7 @@ protected: // Events
     /* virtual */ void timerEvent(QTimerEvent * event);
 
 signals:
-    void loaded(const QString & text, const QRectF rect);
+    void loaded();
 
     void playerChanged();
     void coverChanged ();
@@ -83,6 +92,15 @@ public: // Properties
 
     int  duration() const;
     void setDuration(int duration);
+
+    QString text() const;
+
+    QRectF rect() const;
+
+    QPointF topLeft    () const;
+    QPointF topRight   () const;
+    QPointF bottomLeft () const;
+    QPointF bottomRight() const;
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeScanner)
