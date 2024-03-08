@@ -45,6 +45,10 @@ public:
     explicit WBackendCache(QObject * parent = NULL);
 
 public: // Interface
+    //---------------------------------------------------------------------------------------------
+    // NOTE: These function should be called from the same thread to avoid removing scripts from
+    //       the cache while using them in another thread.
+
     Q_INVOKABLE WBackendUniversalScript * getScript(const QString & name, const QString & data);
 
     Q_INVOKABLE void removeScripts(const QString & pattern);

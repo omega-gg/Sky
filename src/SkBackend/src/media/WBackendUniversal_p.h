@@ -131,7 +131,7 @@ class SK_BACKEND_EXPORT WBackendUniversalPrivate : public WBackendNetPrivate
 public:
     WBackendUniversalPrivate(WBackendUniversal * p);
 
-    /* virtual */ ~WBackendUniversalPrivate();
+    ///* virtual */ ~WBackendUniversalPrivate();
 
     void init(const QString & id, const QString & source);
 

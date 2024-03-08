@@ -3778,10 +3778,10 @@ void WBackendUniversalParameters::extract(QStringList * list, const WBackendUniv
 WBackendUniversalPrivate::WBackendUniversalPrivate(WBackendUniversal * p)
     : WBackendNetPrivate(p) {}
 
-/* virtual */ WBackendUniversalPrivate::~WBackendUniversalPrivate()
-{
-    cache->removeScripts(id);
-}
+///* virtual */ WBackendUniversalPrivate::~WBackendUniversalPrivate()
+//{
+//    cache->removeScripts(id);
+//}
 
 //-------------------------------------------------------------------------------------------------
 
