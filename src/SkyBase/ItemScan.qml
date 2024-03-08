@@ -49,7 +49,7 @@ Scanner
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias hovered: scannerHover.isActive
+    property alias isHovered: scannerHover.isActive
 
 //#DESKTOP
     property alias mouseArea: mouseArea
@@ -185,7 +185,7 @@ Scanner
 
     function getTextHovered()
     {
-        if (hovered == false) return "";
+        if (isHovered == false) return "";
 
         var position = window.mapToItem(rectangleTag, window.mouseX, window.mouseY);
 
