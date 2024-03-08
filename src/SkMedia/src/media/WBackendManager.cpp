@@ -87,7 +87,9 @@ void WBackendManagerPrivate::init()
     connected = false;
     hub       = false;
     loop      = false;
-    freeze    = false;
+
+    freeze     = false;
+    freezeLoop = false;
 
     type = Track;
 
@@ -233,7 +235,8 @@ void WBackendManagerPrivate::applySources(bool play)
             return;
         }
 
-        freeze = false;
+        freeze     = false;
+        freezeLoop = false;
 
         loaded = true;
 
@@ -338,7 +341,8 @@ void WBackendManagerPrivate::applyEmpty()
 
     q->stop();
 
-    freeze = false;
+    freeze     = false;
+    freezeLoop = false;
 
     q->setContext(QString(), QString());
 
@@ -417,7 +421,11 @@ bool WBackendManagerPrivate::applyNext(int currentTime)
             {
                 q->seek(timeA);
 
-                if (backend->isBuffering()) freeze = true;
+                if (backend->isBuffering() == false) return true;
+
+                // NOTE: When looping we apply a harder freeze to avoid corrupted frames on seek.
+                freeze     = true;
+                freezeLoop = true;
             }
             else q->setCurrentTime(timeA);
         }
@@ -742,9 +750,9 @@ void WBackendManagerPrivate::onStateLoad()
     q->setStateLoad(stateLoad);
 
 #ifdef SK_NO_QML
-    freeze = false;
+    if (freezeLoop == false) freeze = false;
 #else
-    if (freeze)
+    if (freezeLoop == false && freeze)
     {
         freeze = false;
 
@@ -834,6 +842,22 @@ void WBackendManagerPrivate::onCurrentTime()
     else at = timeA + qMax(0, backendTime - start);
 
     if (currentTime == at || applyNext(at)) return;
+
+#ifdef SK_NO_QML
+    if (freezeLoop)
+    {
+        freeze     = false;
+        freezeLoop = false;
+    }
+#else
+    if (freezeLoop)
+    {
+        freeze     = false;
+        freezeLoop = false;
+
+        q->updateFrame();
+    }
+#endif
 
     q->setCurrentTime(at);
 
