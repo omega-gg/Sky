@@ -289,6 +289,15 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
             }
         }
 
+        if (content.startsWith('#'))
+        {
+            type = WControllerPlaylist::Redirect;
+
+            source = content;
+
+            return;
+        }
+
         // NOTE: When the content does not seem to be a text query we return.
         if (content.isEmpty() || content.contains('\n')) return;
 
@@ -4347,6 +4356,17 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     if (type == WControllerPlaylist::Redirect)
     {
+        if (source.startsWith('#'))
+        {
+            playlist->applySource(source);
+
+            emit playlist->queryEnded();
+
+            playlist->d_func()->setQueryLoaded();
+
+            return;
+        }
+
         if (source.isEmpty() == false)
         {
             playlist->applySource(source);
@@ -4707,6 +4727,21 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         playlist->tryDelete();
 
         folder->removeAt(0);
+
+        if (source.startsWith('#'))
+        {
+            playlist->applySource(source);
+
+            emit playlist->queryEnded();
+
+            playlist->d_func()->setQueryLoaded();
+
+            playlist->tryDelete();
+
+            folder->d_func()->setQueryFinished();
+
+            return;
+        }
 
         if (source.isEmpty() == false)
         {
