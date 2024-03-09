@@ -401,7 +401,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             qDebug("CONTEXT BEFORE %s %s", getContext(timeline).C_STR, contextId.C_STR);
 
-            duration = applyDurations(&timeline);
+            duration = WControllerMediaSource::applyDurations(&timeline);
 
             if (duration == -1)
             {
@@ -473,7 +473,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
 
-                int durationNew = applyDurations(&timelineNew);
+                int durationNew = WControllerMediaSource::applyDurations(&timelineNew);
 
                 if (durationNew == -1)
                 {
@@ -492,7 +492,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 timelineNew = WControllerMediaSource::generateTimeline(hash, list, tags);
 
-                int durationNew = applyDurations(&timelineNew);
+                int durationNew = WControllerMediaSource::applyDurations(&timelineNew);
 
                 if (durationNew == -1)
                 {
@@ -705,44 +705,6 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
     parameters.add("id",      contextId);
 
     return script.run(&parameters);
-}
-
-/* static */
-int WControllerMediaData::applyDurations(QList<WControllerMediaObject> * timeline)
-{
-    Q_ASSERT(timeline);
-
-    int duration = 0;
-
-    for (int i = 0; i < timeline->count(); i++)
-    {
-        WControllerMediaObject & object = (*timeline)[i];
-
-        WControllerMediaSource * media = object.media;
-
-        if (media == NULL) continue;
-
-        int at = media->at;
-
-        int durationSource = media->getDuration(at);
-
-        // NOTE: When the duration is invalid we skip it entirely.
-        if (durationSource <= 0)
-        {
-            object.at       = 0;
-            object.duration = 0;
-
-            continue;
-        }
-
-        object.at       = at;
-        object.duration = durationSource;
-
-        duration += durationSource;
-    }
-
-    if (duration) return duration;
-    else          return -1;
 }
 
 /* static */

@@ -149,6 +149,8 @@ public: // Static functions
     Q_INVOKABLE static QString extractUrlFileName (const QString & string);
     Q_INVOKABLE static QString extractUrlExtension(const QString & string);
 
+    Q_INVOKABLE static int queryIndex(const QString & string, const QString & key);
+
     Q_INVOKABLE static QString extractUrlQuery(const QString & string,
                                                const QString & key, int from = 0);
 

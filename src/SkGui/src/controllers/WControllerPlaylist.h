@@ -147,6 +147,8 @@ public: // Static functions
                      const QStringList                              & context,
                      const QStringList                              & tags);
 
+    static int applyDurations(QList<WControllerMediaObject> * timeline);
+
     static WControllerMediaSource *
     getMediaSource(const QHash<QString, WControllerMediaSource *> & hash, const QString & id);
 
@@ -312,8 +314,14 @@ public: // Static functions
     // NOTE: A source match with both fragments cleaned up.
     Q_INVOKABLE static bool cleanMatch(const QString & urlA, const QString & urlB);
 
-    // NOTE: Extract a millisecond fragment value with the '#t=value' format.
+    // NOTE: Extract a millisecond value with the '#t=value' format.
     Q_INVOKABLE static int extractTime(const QString & string, int defaultValue = 0);
+
+    // NOTE: Applies a millisecond value with the '#t=value' format.
+    Q_INVOKABLE static QString applyTime(const QString & string, int time);
+
+    // NOTE: Applies the context with the '#ctx=value" format.
+    Q_INVOKABLE static QString applyContext(const QString & string, const QString & context);
 
     Q_INVOKABLE static WControllerFileReply * copyBackends(const QString & path,
                                                            const QString & newPath);
@@ -506,7 +514,7 @@ class SK_GUI_EXPORT WControllerPlaylistData
 public:
     WControllerPlaylistData()
     {
-        currentTime = 0;
+        currentTime = -1;
 
         type = WControllerPlaylist::Unknown;
     }

@@ -456,19 +456,27 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
     if (currentTime == -1)
     {
-        origin = extractRelated(reader.node());
+        // FIXME
+        QString time = WControllerNetwork::extractUrlQuery(urlBase, "t",
+                                                           WControllerNetwork::queryIndex(urlBase, "t"));
 
-        if (origin.isEmpty() == false)
+        if (time.isEmpty())
         {
-            type = WControllerPlaylist::Related;
+            origin = extractRelated(reader.node());
 
-            origin = WControllerPlaylist::vbmlSource(origin, baseUrl);
+            if (origin.isEmpty() == false)
+            {
+                type = WControllerPlaylist::Related;
 
-            return;
+                origin = WControllerPlaylist::vbmlSource(origin, baseUrl);
+
+                return;
+            }
+
+            // NOTE: When there's no related specified we try with a default timestamp.
+            currentTime = 0;
         }
-
-        // NOTE: When there's no related specified we try with a default timestamp.
-        currentTime = 0;
+        else currentTime = time.toInt() * 1000;
     }
 
     const WYamlNode * node = reader.at("source");
@@ -503,6 +511,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
             timeline = WControllerMediaSource::generateTimeline(hash, list, QStringList());
 
             if (timeline.isEmpty()) return;
+
+            WControllerMediaSource::applyDurations(&timeline);
 
             extractSourceTimeline(timeline, baseUrl);
 
@@ -1207,7 +1217,7 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children,
         }
 
         extractSourceNode(child, baseUrl);
-;
+
         return;
     }
 }
@@ -1572,6 +1582,44 @@ WControllerMediaSource::generateTimeline(const QHash<QString, WControllerMediaSo
     }
 
     return timeline;
+}
+
+/* static */
+int WControllerMediaSource::applyDurations(QList<WControllerMediaObject> * timeline)
+{
+    Q_ASSERT(timeline);
+
+    int duration = 0;
+
+    for (int i = 0; i < timeline->count(); i++)
+    {
+        WControllerMediaObject & object = (*timeline)[i];
+
+        WControllerMediaSource * media = object.media;
+
+        if (media == NULL) continue;
+
+        int at = media->at;
+
+        int durationSource = media->getDuration(at);
+
+        // NOTE: When the duration is invalid we skip it entirely.
+        if (durationSource <= 0)
+        {
+            object.at       = 0;
+            object.duration = 0;
+
+            continue;
+        }
+
+        object.at       = at;
+        object.duration = durationSource;
+
+        duration += durationSource;
+    }
+
+    if (duration) return duration;
+    else          return -1;
 }
 
 /* static */ WControllerMediaSource *
@@ -3119,14 +3167,6 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
         query.backend = "vbml";
 
-#ifdef QT_4
-        QString t = url.queryItemValue("t");
-#else
-        QString t = urlQuery.queryItemValue("t");
-#endif
-
-        query.currentTime = WBackendNet::stringToTime(t);
-
         return query;
     }
     else if (WControllerNetwork::urlIsFile(q))
@@ -3149,14 +3189,6 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
         // NOTE: The url might be a large media file so we scope it to text.
         query.scope = WAbstractLoader::ScopeText;
-
-#ifdef QT_4
-        QString t = url.queryItemValue("t");
-#else
-        QString t = urlQuery.queryItemValue("t");
-#endif
-
-        query.currentTime = WBackendNet::stringToTime(t);
 
         return query;
     }
@@ -4422,13 +4454,15 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             backend->tryDelete();
 
-            if (getNextPlaylist(backendId, playlist, query, urlBase, indexNext)) return;
+            if (getNextPlaylist(backendId, playlist, query, query.url, indexNext)) return;
         }
         else
         {
+            QString t = WBackendNet::timeToString(data.currentTime);
+
             origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin, t);
 
-            if (applyNextPlaylist(playlist, origin, urlBase, indexNext)) return;
+            if (applyNextPlaylist(playlist, origin, origin, indexNext)) return;
         }
     }
     else if (type == WControllerPlaylist::Related)
@@ -5451,11 +5485,15 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         if (query.isValid())
         {
-            return createSource(id, "related", "tracks", trackId, t);
+            QString source = createSource(id, "related", "tracks", trackId, t);
+
+            return applyContext(source, url);
         }
         else if (title.isEmpty() == false)
         {
-            return createSource(id, "related", "tracks", title, t);
+            QString source = createSource(id, "related", "tracks", title, t);
+
+            return applyContext(source, url);
         }
         else return QString();
     }
@@ -5464,7 +5502,10 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     // NOTE: When we can't find a backend we load the url as a VBML resource and try to extract
     //       the 'related' property.
-    return createSource("vbml", "related", "tracks", url, WBackendNet::timeToString(time));
+    QString source = createSource("vbml", "related", "tracks",
+                                  url, WBackendNet::timeToString(time));
+
+    return applyContext(source, url);
 }
 
 /* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryPlaylist(const QString & url) const
@@ -5795,6 +5836,22 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 
     // NOTE: We want the time in milliseconds.
     return time.toInt() * 1000;
+}
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::applyTime(const QString & string,
+                                                                int             time)
+{
+    if (time < 1) return string;
+
+    return WControllerNetwork::applyFragmentValue(string, "t", QString::number(time / 1000));
+}
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::applyContext(const QString & string,
+                                                                   const QString & context)
+{
+    if (context.isEmpty()) return string;
+
+    return WControllerNetwork::applyFragmentValue(string, "ctx", context);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -6490,19 +6547,7 @@ int WControllerPlaylist::vbmlDurationInteractive(const WYamlNodeBase & node, con
 
     if (timeline.isEmpty()) return -1;
 
-    int duration = 0;
-
-    foreach (const WControllerMediaObject & object, timeline)
-    {
-        WControllerMediaSource * media = object.media;
-
-        if (media == NULL) continue;
-
-        duration += media->getDuration(media->at);
-    }
-
-    if (duration == 0) return -1;
-    else               return duration;
+    return WControllerMediaSource::applyDurations(&timeline);
 }
 
 /* Q_INVOKABLE static */

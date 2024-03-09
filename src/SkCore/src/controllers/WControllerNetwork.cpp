@@ -1240,6 +1240,19 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ int WControllerNetwork::queryIndex(const QString & string,
+                                                            const QString & key)
+{
+
+    int index = string.lastIndexOf('?');
+
+    if (index == -1)
+    {
+        return -1;
+    }
+    else return string.indexOf(key + '=', index + 1);
+}
+
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlQuery(const QString & string,
                                                                      const QString & key, int from)
 {

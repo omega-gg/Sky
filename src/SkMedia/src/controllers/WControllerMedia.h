@@ -172,8 +172,6 @@ public: // Static functions
                                                               const QStringList & context,
                                                               const QString     & contextId);
 
-    static int applyDurations(QList<WControllerMediaObject> * timeline);
-
     static QString generateContext(const QList<WControllerMediaObject> & timeline);
 
     static QString getContext(const QList<WControllerMediaObject> & timeline);

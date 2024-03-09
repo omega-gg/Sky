@@ -104,7 +104,9 @@ void WBackendManagerPrivate::init()
 
     timer.setSingleShot(true);
 
+#ifdef QT_NEW
     timer.setTimerType(Qt::PreciseTimer);
+#endif
 
 #ifndef SK_NO_QML
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
