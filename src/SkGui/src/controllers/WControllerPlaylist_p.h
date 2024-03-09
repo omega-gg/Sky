@@ -220,15 +220,18 @@ public: // Functions
 
     bool getNextPlaylists(const QString                 & backendId,
                           WPlaylist                     * playlist,
-                          const QList<WBackendNetQuery> & queries, int index);
+                          const QList<WBackendNetQuery> & queries,
+                          const QString                 & urlBase, int index);
 
     bool getNextFolders(const QString                 & backendId,
                         WLibraryFolder                * folder,
-                        const QList<WBackendNetQuery> & queries, int index);
+                        const QList<WBackendNetQuery> & queries,
+                        const QString                 & urlBase, int index);
 
     bool getNextItems(const QString                 & backendId,
                       WLibraryItem                  * item,
-                      const QList<WBackendNetQuery> & queries, int index);
+                      const QList<WBackendNetQuery> & queries,
+                      const QString                 & urlBase, int index);
 
     bool getNextTrack(const QString          & backendId,
                       WPlaylist              * playlist,
@@ -238,15 +241,18 @@ public: // Functions
 
     bool getNextPlaylist(const QString          & backendId,
                          WPlaylist              * playlist,
-                         const WBackendNetQuery & query, int index);
+                         const WBackendNetQuery & query,
+                         const QString          & urlBase, int index);
 
     bool getNextFolder(const QString          & backendId,
                        WLibraryFolder         * folder,
-                       const WBackendNetQuery & query, int index);
+                       const WBackendNetQuery & query,
+                       const QString          & urlBase, int index);
 
     bool getNextItem(const QString          & backendId,
                      WLibraryItem           * item,
-                     const WBackendNetQuery & query, int index);
+                     const WBackendNetQuery & query,
+                     const QString          & urlBase, int index);
 
     //---------------------------------------------------------------------------------------------
 
