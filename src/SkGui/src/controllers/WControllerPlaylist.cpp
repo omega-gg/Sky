@@ -3380,7 +3380,8 @@ void WControllerPlaylistPrivate::getDataLibraryItem(WLibraryItem                
 bool WControllerPlaylistPrivate::getNextTracks(const QString                 & backendId,
                                                WPlaylist                     * playlist,
                                                WTrack                        * track,
-                                               const QList<WBackendNetQuery> & queries, int index)
+                                               const QList<WBackendNetQuery> & queries,
+                                               const QString                 & urlBase, int index)
 {
     bool result = false;
 
@@ -3396,6 +3397,8 @@ bool WControllerPlaylistPrivate::getNextTracks(const QString                 & b
         if (resolveTrack(backendId, query) == false) continue;
 
         index++;
+
+        query.urlBase = urlBase;
 
         query.indexNext = index;
 
@@ -3498,13 +3501,14 @@ bool WControllerPlaylistPrivate::getNextItems(const QString                 & ba
 bool WControllerPlaylistPrivate::getNextTrack(const QString          & backendId,
                                               WPlaylist              * playlist,
                                               WTrack                 * track,
-                                              const WBackendNetQuery & query, int index)
+                                              const WBackendNetQuery & query,
+                                              const QString          & urlBase, int index)
 {
     QList<WBackendNetQuery> queries;
 
     queries.append(query);
 
-    return getNextTracks(backendId, playlist, track, queries, index);
+    return getNextTracks(backendId, playlist, track, queries, urlBase, index);
 }
 
 bool WControllerPlaylistPrivate::getNextPlaylist(const QString          & backendId,
@@ -3859,6 +3863,8 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         }
     }
 
+    QString urlBase = backendQuery.urlBase;
+
     int indexNext = backendQuery.indexNext;
 
     WBackendNet * backend = query->backend;
@@ -3888,7 +3894,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         addToCache(track->source(), reply.cache);
 
-        if (getNextTracks(backendId, playlist, track, reply.nextQueries, indexNext))
+        if (getNextTracks(backendId, playlist, track, reply.nextQueries, urlBase, indexNext))
         {
             playlist->updateTrack(index);
 
@@ -4287,7 +4293,7 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
                     backend->tryDelete();
 
-                    if (getNextTrack(backendId, playlist, track, query, indexNext))
+                    if (getNextTrack(backendId, playlist, track, query, urlQuery, indexNext))
                     {
                         playlist->updateTrack(index);
 
@@ -4299,7 +4305,7 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
                 query.target = WBackendNetQuery::TargetVbml;
 
-                if (getNextTrack("", playlist, track, query, indexNext))
+                if (getNextTrack("", playlist, track, query, urlQuery, indexNext))
                 {
                     playlist->updateTrack(index);
 
@@ -4336,7 +4342,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    QString urlQuery = backendQuery.urlBase;
+    QString urlBase = backendQuery.urlBase;
 
     int indexNext = backendQuery.indexNext;
 
@@ -4372,7 +4378,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             playlist->applySource(source);
         }
 
-        if (applyNextPlaylist(playlist, origin, urlQuery, indexNext)) return;
+        if (applyNextPlaylist(playlist, origin, urlBase, indexNext)) return;
     }
     else if (type == WControllerPlaylist::Source)
     {
@@ -4410,7 +4416,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         if (data.currentTime != -1 && indexNext)
         {
             // NOTE: We want a clean fragment without the timestamp.
-            playlist->addSource(WControllerPlaylist::cleanSource(urlQuery), true);
+            playlist->addSource(WControllerPlaylist::cleanSource(urlBase), true);
 
             emit playlist->queryEnded();
         }
@@ -4547,7 +4553,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             }
             else track.setCover(cover);
 
-            track.setFeed(urlQuery);
+            track.setFeed(urlBase);
 
             playlist->addTrack(track);
         }
@@ -4608,7 +4614,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         source = playlist->trackSource(index);
 
         // NOTE: Is this sufficient to avoid redundant calls ?
-        if (urlQuery != source)
+        if (urlBase != source)
         {
             source = q->sourceRelatedTracks(source, playlist->trackTitle(index));
 
@@ -4704,7 +4710,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    QString urlQuery = backendQuery.urlBase;
+    QString urlBase = backendQuery.urlBase;
 
     int indexNext = backendQuery.indexNext;
 
@@ -4748,7 +4754,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
             folder->applySource(source);
         }
 
-        if (applyNextFolder(folder, origin, urlQuery, indexNext)) return;
+        if (applyNextFolder(folder, origin, urlBase, indexNext)) return;
     }
     else
     {
@@ -4870,7 +4876,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
             }
             else track.setCover(cover);
 
-            track.setFeed(urlQuery);
+            track.setFeed(urlBase);
 
             playlist->addTrack(track);
         }
@@ -4924,7 +4930,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
                                         playlist->trackTitle (index));
 
         // NOTE: Is this sufficient to avoid redundant calls ?
-        if (urlQuery != source)
+        if (urlBase != source)
         {
             if (applyNextPlaylist(playlist, source, source, indexNext)) return;
         }

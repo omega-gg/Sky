@@ -215,7 +215,8 @@ public: // Functions
     bool getNextTracks(const QString                 & backendId,
                        WPlaylist                     * playlist,
                        WTrack                        * track,
-                       const QList<WBackendNetQuery> & queries, int index);
+                       const QList<WBackendNetQuery> & queries,
+                       const QString                 & urlBase, int index);
 
     bool getNextPlaylists(const QString                 & backendId,
                           WPlaylist                     * playlist,
@@ -232,7 +233,8 @@ public: // Functions
     bool getNextTrack(const QString          & backendId,
                       WPlaylist              * playlist,
                       WTrack                 * track,
-                      const WBackendNetQuery & query, int index);
+                      const WBackendNetQuery & query,
+                      const QString          & urlBase, int index);
 
     bool getNextPlaylist(const QString          & backendId,
                          WPlaylist              * playlist,
