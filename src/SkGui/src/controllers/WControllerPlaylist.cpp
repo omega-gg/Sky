@@ -456,9 +456,7 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
     if (currentTime == -1)
     {
-        // FIXME
-        QString time = WControllerNetwork::extractUrlQuery(urlBase, "t",
-                                                           WControllerNetwork::queryIndex(urlBase, "t"));
+        QString time = WControllerNetwork::extractUrlQuery(urlBase, "t");
 
         if (time.isEmpty())
         {
@@ -469,14 +467,12 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
                 type = WControllerPlaylist::Related;
 
                 origin = WControllerPlaylist::vbmlSource(origin, baseUrl);
-
-                return;
             }
 
-            // NOTE: When there's no related specified we try with a default timestamp.
-            currentTime = 0;
+            return;
         }
-        else currentTime = time.toInt() * 1000;
+
+        currentTime = time.toInt() * 1000;
     }
 
     const WYamlNode * node = reader.at("source");
@@ -5487,13 +5483,13 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         {
             QString source = createSource(id, "related", "tracks", trackId, t);
 
-            return applyContext(source, url);
+            return applyContext(source, WControllerNetwork::extractFragmentValue(url, "ctx"));
         }
         else if (title.isEmpty() == false)
         {
             QString source = createSource(id, "related", "tracks", title, t);
 
-            return applyContext(source, url);
+            return applyContext(source, WControllerNetwork::extractFragmentValue(url, "ctx"));
         }
         else return QString();
     }
@@ -5505,7 +5501,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     QString source = createSource("vbml", "related", "tracks",
                                   url, WBackendNet::timeToString(time));
 
-    return applyContext(source, url);
+    return applyContext(source, WControllerNetwork::extractFragmentValue(url, "ctx"));
 }
 
 /* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryPlaylist(const QString & url) const

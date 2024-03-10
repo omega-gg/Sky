@@ -149,17 +149,16 @@ public: // Static functions
     Q_INVOKABLE static QString extractUrlFileName (const QString & string);
     Q_INVOKABLE static QString extractUrlExtension(const QString & string);
 
+    Q_INVOKABLE static bool hasQuery(const QString & string, const QString & key);
+
     Q_INVOKABLE static int queryIndex(const QString & string, const QString & key);
 
-    Q_INVOKABLE static QString extractUrlQuery(const QString & string,
-                                               const QString & key, int from = 0);
+    Q_INVOKABLE static QString extractUrlQuery(const QString & string, const QString & key);
 
     Q_INVOKABLE static QString applyUrlQuery(const QString & string,
-                                             const QString & key,
-                                             const QString & value, int from = 0);
+                                             const QString & key, const QString & value);
 
-    Q_INVOKABLE static QString removeUrlQuery(const QString & string,
-                                              const QString & key, int from = 0);
+    Q_INVOKABLE static QString removeUrlQuery(const QString & string, const QString & key);
 
     // NOTE: Check if the fragment exists with the '#key=value' format.
     Q_INVOKABLE static bool hasFragment(const QString & string, const QString & key);

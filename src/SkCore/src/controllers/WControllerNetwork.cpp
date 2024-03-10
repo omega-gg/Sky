@@ -429,6 +429,86 @@ void WControllerNetworkPrivate::checkConnection()
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerNetworkPrivate::extractQuery(const QString & string,
+                                                                         const QString & key,
+                                                                         int             from)
+{
+    from += key.length() + 1;
+
+    int index = string.indexOf('&', from);
+
+    if (index == -1) index = string.indexOf('#', from);
+
+    if (index == -1)
+    {
+         return string.mid(from);
+    }
+    else return string.mid(from, index - from);
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetworkPrivate::applyQuery(const QString & string,
+                                                                       const QString & key,
+                                                                       const QString & value,
+                                                                       int             from)
+{
+    from = string.indexOf(key + '=', from + 1);
+
+    if (from == -1)
+    {
+        return string + '&' + key + '=' + value;
+    }
+
+    from += key.length() + 1;
+
+    int index = string.indexOf('&', from);
+
+    if (index == -1) index = string.indexOf('#', from);
+
+    QString result = string;
+
+    if (index == -1)
+    {
+         result.replace(from, result.length() - from, value);
+    }
+    else result.replace(from, index - from, value);
+
+    return result;
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetworkPrivate::removeQuery(const QString & string,
+                                                                        const QString & key,
+                                                                        int             from)
+{
+    from = string.indexOf(key + '=', from + 1);
+
+    if (from == -1) return string;
+
+    int index = string.indexOf('&', from);
+
+    if (index == -1) index = string.indexOf('#', from);
+
+    QString result = string;
+
+    if (index == -1)
+    {
+        // NOTE: We have to remove the '?' or '#' prior to the key.
+        from--;
+
+        result.remove(from, result.length() - from);
+    }
+    else
+    {
+        // NOTE: We have to remove the '&' after the value.
+        index++;
+
+        result.remove(from, index - from);
+    }
+
+    return result;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Json
 
 /* static */ int WControllerNetworkPrivate::indexJsonEndA(const QString & text, int at)
@@ -1240,6 +1320,12 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerNetwork::hasQuery(const QString & string,
+                                                           const QString & key)
+{
+    return (queryIndex(string, key) != -1);
+}
+
 /* Q_INVOKABLE static */ int WControllerNetwork::queryIndex(const QString & string,
                                                             const QString & key)
 {
@@ -1254,72 +1340,40 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlQuery(const QString & string,
-                                                                     const QString & key, int from)
+                                                                     const QString & key)
 {
-    from += key.length() + 1;
-
-    int index = string.indexOf('&', from);
+    int index = queryIndex(string, key);
 
     if (index == -1)
     {
-         return string.mid(from);
+        return QString();
     }
-    else return string.mid(from, index - from);
+    else return WControllerNetworkPrivate::extractQuery(string, key, index);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::applyUrlQuery(const QString & string,
                                                                    const QString & key,
-                                                                   const QString & value, int from)
+                                                                   const QString & value)
 {
-    from = string.indexOf(key + '=', from + 1);
-
-    if (from == -1)
-    {
-        return string + '&' + key + '=' + value;
-    }
-
-    from += key.length() + 1;
-
-    int index = string.indexOf('&', from);
-
-    QString result = string;
+    int index = string.lastIndexOf('?');
 
     if (index == -1)
     {
-         result.replace(from, result.length() - from, value);
+        return string + '?' + key + '=' + value;
     }
-    else result.replace(from, index - from, value);
-
-    return result;
+    else return WControllerNetworkPrivate::applyQuery(string, key, value, index);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlQuery(const QString & string,
-                                                                    const QString & key, int from)
+                                                                    const QString & key)
 {
-    from = string.indexOf(key + '=', from + 1);
-
-    if (from == -1) return string;
-
-    int index = string.indexOf('&', from);
-
-    QString result = string;
+    int index = string.lastIndexOf('?');
 
     if (index == -1)
     {
-        // NOTE: We have to remove the '#' or '&' prior to the key.
-        from--;
-
-         result.remove(from, result.length() - from);
+        return string;
     }
-    else
-    {
-        // NOTE: We have to remove the '&' after the value.
-        index++;
-
-        result.remove(from, index - from);
-    }
-
-    return result;
+    else return WControllerNetworkPrivate::removeQuery(string, key, index);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1352,7 +1406,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         return QString();
     }
-    else return extractUrlQuery(string, key, index);
+    else return WControllerNetworkPrivate::extractQuery(string, key, index);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::applyFragmentValue(const QString & string,
@@ -1365,7 +1419,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         return string + '#' + key + '=' + value;
     }
-    else return applyUrlQuery(string, key, value, index);
+    else return WControllerNetworkPrivate::applyQuery(string, key, value, index);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeFragmentValue(const QString & string,
@@ -1377,7 +1431,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         return string;
     }
-    else return removeUrlQuery(string, key, index);
+    else return WControllerNetworkPrivate::removeQuery(string, key, index);
 }
 
 //-------------------------------------------------------------------------------------------------
