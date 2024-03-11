@@ -492,7 +492,7 @@ void WControllerNetworkPrivate::checkConnection()
 
     if (index == -1)
     {
-        // NOTE: We have to remove the '?' or '#' prior to the key.
+        // NOTE: We have to remove the '?', '#' or '&' prior to the key.
         from--;
 
         result.remove(from, result.length() - from);
