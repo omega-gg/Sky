@@ -1460,7 +1460,7 @@ WControllerMediaSource::WControllerMediaSource(const WYamlNode * node, int index
 
     this->node = node;
 
-    // NOTE: An interactive id has a maximum length of 10 characters.
+    // NOTE: An id has a maximum length of 10 characters.
     id = node->extractString("id").left(10);
 
     this->index = index;
@@ -6695,7 +6695,8 @@ QStringList WControllerPlaylist::vbmlSubtitles(const WYamlNodeBase & node, const
 const WYamlNode * WControllerPlaylist::vbmlTemplate(const WYamlNodeBase & root,
                                                     const WYamlNodeBase & node)
 {
-    QString id = node.extractString("template");
+    // NOTE: An id has a maximum length of 10 characters.
+    QString id = node.extractString("template").left(10);
 
     if (id.isEmpty()) return NULL;
 
