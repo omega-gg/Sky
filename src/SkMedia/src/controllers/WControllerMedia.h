@@ -198,8 +198,7 @@ public: // Functions
 
     void applyMedia(const WYamlNodeBase & root, const QString & url, const QString & baseUrl);
 
-    void applyData(const WYamlNodeBase & root,
-                   const WYamlNodeBase & node, const QString & url, const QString & baseUrl);
+    void applyData(const WYamlNodeBase & node, const QString & url, const QString & baseUrl);
 
     void applyEmpty();
 

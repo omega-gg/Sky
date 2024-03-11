@@ -111,6 +111,21 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
         }
     }
 
+    if (_ambient.isEmpty() == false)
+    {
+        Sk::bmlPair(vbml, "ambient", _ambient, "\n\n");
+    }
+
+    if (_subtitles.isEmpty() == false)
+    {
+        Sk::bmlTag(vbml, "subtitles", "\n");
+
+        foreach (const QString & subtitle, _subtitles)
+        {
+            Sk::bmlPair(vbml, tab + subtitle, "\n\n");
+        }
+    }
+
     // NOTE: We clear the last '\n'.
     vbml.chop(1);
 
@@ -332,14 +347,14 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     {
         source = node->value;
 
+        applyMedia(reader.node(), source, baseUrl);
+
         // NOTE: By default, an image is played like a hub.
         if (WControllerFile::urlIsImage(source))
         {
             type = WTrack::Hub;
         }
         else type = WTrack::typeFromString(reader.extractString("type"));
-
-        applyMedia(reader.node(), source, baseUrl);
 
         return;
     }
@@ -778,15 +793,17 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
 
         const WYamlNode * node = child.at("source");
 
-        if (node == NULL) return;
-
-        const QList<WYamlNode> & nodes = node->children;
-
-        if (nodes.isEmpty())
+        if (node)
         {
-            applySource(root, child, node->value, baseUrl, durationSource);
+            const QList<WYamlNode> & nodes = node->children;
+
+            if (nodes.isEmpty())
+            {
+                applySource(root, child, node->value, baseUrl, durationSource);
+            }
+            else extractSource(root, nodes, baseUrl);
         }
-        else extractSource(root, nodes, baseUrl);
+        else applySource(root, child, QString(), baseUrl, durationSource);
 
         if (source.isEmpty()) applyEmpty();
 
@@ -819,12 +836,6 @@ int WControllerMediaData::extractSourceTimeline(const WYamlNodeBase             
             continue;
         }
 
-        const WYamlNode * child = media->node;
-
-        const WYamlNode * node = child->at("source");
-
-        if (node == NULL) break;
-
         QString id = object.id;
 
         if (contextId.isEmpty())
@@ -836,13 +847,21 @@ int WControllerMediaData::extractSourceTimeline(const WYamlNodeBase             
 
         start = object.at;
 
-        const QList<WYamlNode> & nodes = node->children;
+        const WYamlNode * child = media->node;
 
-        if (nodes.isEmpty())
+        const WYamlNode * node = child->at("source");
+
+        if (node)
         {
-            applySource(root, *child, node->value, baseUrl, durationSource);
+            const QList<WYamlNode> & nodes = node->children;
+
+            if (nodes.isEmpty())
+            {
+                applySource(root, *child, node->value, baseUrl, durationSource);
+            }
+            else extractSource(root, nodes, baseUrl);
         }
-        else extractSource(root, nodes, baseUrl);
+        else applySource(root, *child, QString(), baseUrl, durationSource);
 
         if (source.isEmpty()) applyEmpty();
 
@@ -888,15 +907,17 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
 
         const WYamlNode * node = child.at("source");
 
-        if (node == NULL) return;
-
-        const QList<WYamlNode> & nodes = node->children;
-
-        if (nodes.isEmpty())
+        if (node)
         {
-            applySource(root, child, node->value, baseUrl, durationSource);
+            const QList<WYamlNode> & nodes = node->children;
+
+            if (nodes.isEmpty())
+            {
+                applySource(root, child, node->value, baseUrl, durationSource);
+            }
+            else extractSource(root, nodes, baseUrl);
         }
-        else extractSource(root, nodes, baseUrl);
+        else applySource(root, child, QString(), baseUrl, durationSource);
 
         return;
     }
@@ -907,7 +928,26 @@ void WControllerMediaData::applySource(const WYamlNodeBase & root,
                                        const QString       & url,
                                        const QString       & baseUrl, int duration)
 {
-    if (WControllerFile::urlIsImage(url) == false)
+    timeB = timeA + duration;
+
+    applyData(node, url, baseUrl);
+
+    const WYamlNode * child = WControllerPlaylist::vbmlTemplate(root, node);
+
+    if (child)
+    {
+        if (source.isEmpty())
+        {
+            source = WControllerPlaylist::vbmlSource(child->extractString("source"), baseUrl);
+        }
+
+        if (ambient.isEmpty())
+        {
+            ambient = WControllerPlaylist::vbmlSource(child->extractString("ambient"), baseUrl);
+        }
+    }
+
+    if (WControllerFile::urlIsImage(source) == false)
     {
         QString type = node.extractString("type");
 
@@ -919,10 +959,6 @@ void WControllerMediaData::applySource(const WYamlNodeBase & root,
     }
     // NOTE: By default, an image is played like a hub.
     else typeSource = WTrack::Hub;
-
-    timeB = timeA + duration;
-
-    applyData(root, node, url, baseUrl);
 }
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & root,
@@ -932,7 +968,7 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & root,
 
     if (durationSource == -1)
     {
-        applyData(root, root, url, baseUrl);
+        applyData(root, url, baseUrl);
 
         return;
     }
@@ -959,32 +995,17 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & root,
 
     timeB = timeA + durationSource;
 
-    applyData(root, root, url, baseUrl);
+    applyData(root, url, baseUrl);
 }
 
-void WControllerMediaData::applyData(const WYamlNodeBase & root,
-                                     const WYamlNodeBase & node,
-                                     const QString       & url, const QString & baseUrl)
+void WControllerMediaData::applyData(const WYamlNodeBase & node, const QString & url,
+                                                                 const QString & baseUrl)
 {
     source = WControllerPlaylist::vbmlSource(url, baseUrl);
 
     ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
 
     subtitles = WControllerPlaylist::vbmlSubtitles(node, baseUrl);
-
-    const WYamlNode * child = WControllerPlaylist::vbmlTemplate(root, node);
-
-    if (child == NULL) return;
-
-    if (source.isEmpty())
-    {
-        source = WControllerPlaylist::vbmlSource(child->extractString("source"), baseUrl);
-    }
-
-    if (ambient.isEmpty())
-    {
-        ambient = WControllerPlaylist::vbmlSource(child->extractString("ambient"), baseUrl);
-    }
 }
 
 void WControllerMediaData::applyEmpty()
@@ -1068,12 +1089,6 @@ int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 
 
     const WControllerMediaObject & object = timeline.at(index);
 
-    const WYamlNode * child = object.media->node;
-
-    const WYamlNode * node = child->at("source");
-
-    if (node == NULL) return -1;
-
     currentTime = time;
 
     timeA = time;
@@ -1082,13 +1097,21 @@ int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 
 
     contextId = result;
 
-    const QList<WYamlNode> & nodes = node->children;
+    const WYamlNode * child = object.media->node;
 
-    if (nodes.isEmpty())
+    const WYamlNode * node = child->at("source");
+
+    if (node)
     {
-        applySource(root, *child, node->value, baseUrl, object.duration);
+        const QList<WYamlNode> & nodes = node->children;
+
+        if (nodes.isEmpty())
+        {
+            applySource(root, *child, node->value, baseUrl, object.duration);
+        }
+        else extractSource(root, nodes, baseUrl);
     }
-    else extractSource(root, nodes, baseUrl);
+    else applySource(root, *child, QString(), baseUrl, object.duration);
 
     if (source.isEmpty()) applyEmpty();
 
