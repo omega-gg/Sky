@@ -179,24 +179,32 @@ public: // Static functions
     static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
 
 public: // Functions
-    void extractSourceDuration(const QList<WYamlNode> & children,
+    void extractSourceDuration(const WYamlNodeBase    & root,
+                               const QList<WYamlNode> & children,
                                const QList<int>       & durations,
                                const QList<int>       & starts,
                                const QString          & baseUrl);
 
-    int extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+    int extractSourceTimeline(const WYamlNodeBase                 & root,
+                              const QList<WControllerMediaObject> & timeline,
                               const QString                       & baseUrl);
 
-    void extractSource(const QList<WYamlNode> & children, const QString & baseUrl);
+    void extractSource(const WYamlNodeBase    & root,
+                       const QList<WYamlNode> & children, const QString & baseUrl);
 
-    void applySource(const WYamlNode & node, const QString & url,
-                                             const QString & baseUrl, int duration);
+    void applySource(const WYamlNodeBase & root,
+                     const WYamlNode     & node,
+                     const QString       & url, const QString & baseUrl, int duration);
 
-    void applyMedia(const WYamlNodeBase & node, const QString & url, const QString & baseUrl);
+    void applyMedia(const WYamlNodeBase & root, const QString & url, const QString & baseUrl);
+
+    void applyData(const WYamlNodeBase & root,
+                   const WYamlNodeBase & node, const QString & url, const QString & baseUrl);
 
     void applyEmpty();
 
-    int updateCurrentTime(const QList<WControllerMediaObject> & timeline, const QString & baseUrl);
+    int updateCurrentTime(const WYamlNodeBase                 & root,
+                          const QList<WControllerMediaObject> & timeline, const QString & baseUrl);
 
     // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
     QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index);

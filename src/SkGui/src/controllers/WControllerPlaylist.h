@@ -452,6 +452,9 @@ public: // Static functions
     Q_INVOKABLE static QStringList vbmlSubtitles(const WYamlNodeBase & node,
                                                  const QString       & baseUrl);
 
+    Q_INVOKABLE static const WYamlNode * vbmlTemplate(const WYamlNodeBase & root,
+                                                      const WYamlNodeBase & node);
+
 signals:
     void filesCleared(const QList<int> & idFull);
     void filesDeleted(const QList<int> & idFull);

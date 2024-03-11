@@ -6691,6 +6691,30 @@ QStringList WControllerPlaylist::vbmlSubtitles(const WYamlNodeBase & node, const
     return result;
 }
 
+/* Q_INVOKABLE static */
+const WYamlNode * WControllerPlaylist::vbmlTemplate(const WYamlNodeBase & root,
+                                                    const WYamlNodeBase & node)
+{
+    QString id = node.extractString("template");
+
+    if (id.isEmpty()) return NULL;
+
+    const WYamlNode * children = root.at("templates");
+
+    if (children == NULL) return NULL;
+
+    foreach (const WYamlNode & child, children->children)
+    {
+        QString currentId = child.extractString("id");
+
+        if (currentId != id) continue;
+
+        return &child;
+    }
+
+    return NULL;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
