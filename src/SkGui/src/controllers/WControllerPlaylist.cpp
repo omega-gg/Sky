@@ -475,6 +475,8 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         currentTime = time.toInt() * 1000;
     }
 
+    const WYamlNodeBase & root = reader.node();
+
     const WYamlNode * node = reader.at("source");
 
     if (node)
@@ -483,9 +485,7 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
         if (type == WTrack::Interactive)
         {
-            const WYamlNodeBase & node = reader.node();
-
-            QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(node);
+            QList<WControllerMediaSource> sources = WControllerMediaSource::extractSources(root);
 
             QHash<QString, WControllerMediaSource *> hash
                 = WControllerMediaSource::generateHash(sources);
@@ -510,7 +510,7 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             WControllerMediaSource::applyDurations(&timeline);
 
-            extractSourceTimeline(timeline, baseUrl);
+            extractSourceTimeline(root, timeline, baseUrl);
 
             return;
         }
@@ -527,27 +527,21 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             if (children.isEmpty())
             {
-                applySource(reader.node(), node->value, baseUrl,
-                            CONTROLLERPLAYLIST_CHANNEL_DURATION);
+                applySource(root, node->value, baseUrl, CONTROLLERPLAYLIST_CHANNEL_DURATION);
             }
-            else extractSource(node->children, baseUrl);
+            else extractSource(root, node->children, baseUrl);
         }
         else if (children.isEmpty())
         {
-            const WYamlNodeBase & nodeBase = reader.node();
+            int duration = WControllerPlaylist::vbmlDuration(root, root.extractMsecs("at"), -1);
 
-            int duration = WControllerPlaylist::vbmlDuration(nodeBase,
-                                                             nodeBase.extractMsecs("at"), -1);
-
-            applySource(nodeBase, node->value, baseUrl, duration);
+            applySource(root, node->value, baseUrl, duration);
         }
         else
         {
-            const WYamlNodeBase & nodeBase = reader.node();
+            int start = root.extractMsecs("at");
 
-            int start = nodeBase.extractMsecs("at");
-
-            int duration = WControllerPlaylist::vbmlDuration(nodeBase, start, -1);
+            int duration = WControllerPlaylist::vbmlDuration(root, start, -1);
 
             // NOTE: If the duration is invalid we assume that the track is long enough.
             if (duration != -1 && currentTime >= duration)
@@ -559,12 +553,12 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
 
             currentTime += start;
 
-            extractSource(node->children, baseUrl);
+            extractSource(root, node->children, baseUrl);
         }
     }
     else
     {
-        origin = extractRelated(reader.node());
+        origin = extractRelated(root);
 
         if (origin.isEmpty() == false)
         {
@@ -1198,7 +1192,8 @@ bool WControllerPlaylistData::addUrl(QStringList * urls, const QString & url) co
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children,
+void WControllerPlaylistData::extractSource(const WYamlNodeBase    & root,
+                                            const QList<WYamlNode> & children,
                                             const QString          & baseUrl)
 {
     foreach (const WYamlNode & child, children)
@@ -1212,13 +1207,14 @@ void WControllerPlaylistData::extractSource(const QList<WYamlNode> & children,
             continue;
         }
 
-        extractSourceNode(child, baseUrl);
+        extractSourceNode(root, child, baseUrl);
 
         return;
     }
 }
 
-void WControllerPlaylistData::extractSourceTimeline(const QList<WControllerMediaObject> & timeline,
+void WControllerPlaylistData::extractSourceTimeline(const WYamlNodeBase                 & root,
+                                                    const QList<WControllerMediaObject> & timeline,
                                                     const QString                       & baseUrl)
 {
     for (int i = 0; i < timeline.count(); i++)
@@ -1238,13 +1234,14 @@ void WControllerPlaylistData::extractSourceTimeline(const QList<WControllerMedia
             continue;
         }
 
-        extractSourceNode(*(media->node), baseUrl);
+        extractSourceNode(root, *(media->node), baseUrl);
 
         return;
     }
 }
 
-void WControllerPlaylistData::extractSourceNode(const WYamlNodeBase & node,
+void WControllerPlaylistData::extractSourceNode(const WYamlNodeBase & root,
+                                                const WYamlNodeBase & node,
                                                 const QString       & baseUrl)
 {
     const WYamlNode * child = node.at("source");
@@ -1258,7 +1255,19 @@ void WControllerPlaylistData::extractSourceNode(const WYamlNodeBase & node,
             type = WControllerPlaylist::Related;
 
             origin = WControllerPlaylist::vbmlSource(related, baseUrl);
+
+            return;
         }
+
+        const WYamlNode * child = WControllerPlaylist::vbmlTemplate(root, node);
+
+        if (child == NULL) return;
+
+        origin = WControllerPlaylist::vbmlSource(child->extractString("source"), baseUrl);
+
+        if (origin.isEmpty()) return;
+
+        type = WControllerPlaylist::Source;
 
         return;
     }
@@ -1283,7 +1292,7 @@ void WControllerPlaylistData::extractSourceNode(const WYamlNodeBase & node,
 
         origin = WControllerPlaylist::vbmlSource(child->value, baseUrl);
     }
-    else extractSource(nodes, baseUrl);
+    else extractSource(root, nodes, baseUrl);
 }
 
 void WControllerPlaylistData::applySource(const WYamlNodeBase & node,
