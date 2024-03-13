@@ -61,10 +61,13 @@ public: // Static functions
                                 const QString & key, const QChar & character);
 
     static QString applyQuery(const QString & string,
-                              const QString & key, const QString & value, const QChar & character);
+                              const QString & key,
+                              const QString & value,
+                              const QChar   & characterA, const QChar & characterB);
 
     static QString removeQuery(const QString & string,
-                               const QString & key, const QChar & character);
+                               const QString & key,
+                               const QChar   & characterA, const QChar & characterB);
 
     //---------------------------------------------------------------------------------------------
     // Json

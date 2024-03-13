@@ -452,6 +452,101 @@ void WControllerNetworkPrivate::checkConnection()
     return at + 1;
 }
 
+/* static */ QString WControllerNetworkPrivate::applyQuery(const QString & string,
+                                                           const QString & key,
+                                                           const QString & value,
+                                                           const QChar   & characterA,
+                                                           const QChar   & characterB)
+{
+    int index = string.lastIndexOf(characterA);
+
+    if (index == -1)
+    {
+        if (characterB.isNull())
+        {
+            return string + characterA + key + '=' + value;
+        }
+
+        index = string.indexOf(characterB, index + 1);
+
+        if (index == -1)
+        {
+            return string + characterA + key + '=' + value;
+        }
+
+        QString result = string;
+
+        return result.insert(index, characterA + key + '=' + value);
+    }
+
+    QString match = key + '=';
+
+    int at = string.indexOf(characterA + match, index);
+
+    if (at == -1)
+    {
+        at = string.indexOf('&' + match, index);
+
+        if (at == -1)
+        {
+            if (characterB.isNull())
+            {
+                return string + '&' + key + '=' + value;
+            }
+
+            index = string.indexOf(characterB, index + 1);
+
+            if (index == -1)
+            {
+                return string + '&' + key + '=' + value;
+            }
+
+            QString result = string;
+
+            return result.insert(index, '&' + key + '=' + value);
+        }
+    }
+
+    if (characterB.isNull())
+    {
+        at += match.length() + 1;
+
+        index = string.indexOf('&', at);
+    }
+    else
+    {
+        int indexB = string.indexOf(characterB, index + 1);
+
+        if (indexB == -1)
+        {
+            at += match.length() + 1;
+
+            index = string.indexOf('&', at);
+        }
+        else
+        {
+            if (indexB < at) return string;
+
+            at += match.length() + 1;
+
+            index = string.indexOf('&', at);
+
+            if (index == -1 || indexB < index)
+            {
+                index = indexB;
+            }
+        }
+    }
+
+    QString result = string;
+
+    if (index == -1)
+    {
+         return result.replace(at, result.length() - at, value);
+    }
+    else return result.replace(at, index - at, value);
+}
+
 /* static */ QString WControllerNetworkPrivate::extractQuery(const QString & string,
                                                              const QString & key,
                                                              const QChar   & character)
@@ -484,88 +579,63 @@ void WControllerNetworkPrivate::checkConnection()
     else return string.mid(at, index - at);
 }
 
-/* static */ QString WControllerNetworkPrivate::applyQuery(const QString & string,
-                                                           const QString & key,
-                                                           const QString & value,
-                                                           const QChar   & character)
+/* Q_INVOKABLE static */ QString WControllerNetworkPrivate::removeQuery(const QString & string,
+                                                                        const QString & key,
+                                                                        const QChar   & characterA,
+                                                                        const QChar   & characterB)
 {
-    int index = string.lastIndexOf(character);
 
-    if (index == -1)
-    {
-        return string + character + key + '=' + value;
-    }
+    int index = string.lastIndexOf(characterA);
 
-    QString result = string;
+    if (index == -1) return string;
 
     QString match = key + '=';
 
-    int at = string.indexOf(character + match, index);
+    int at = string.indexOf(characterA + match, index);
 
     if (at == -1)
     {
-        at = string.indexOf('&' + match, index);
+         at = string.indexOf('&' + match, index);
 
-        if (at == -1)
-        {
-            // NOTE: There might be a hash after our query values.
-            at = string.indexOf('#', index + 1);
-
-            if (at == -1)
-            {
-                result.append('&' + key + '=' + value);
-            }
-            else result.insert(at, '&' + key + '=' + value);
-
-            return result;
-        }
+         if (at == -1) return string;
     }
 
-    at += match.length() + 1;
-
-    index = string.indexOf('&', at);
-
-    if (index == -1) index = string.indexOf(character, at);
-
-    if (index == -1)
+    if (characterB.isNull() == false)
     {
-         result.replace(at, result.length() - at, value);
+        int indexB = string.indexOf(characterB, index + 1);
+
+        if (indexB != 1)
+        {
+            if (indexB < at) return string;
+
+            index = string.indexOf('&', at + 1);
+
+            if (index == -1 || indexB < index)
+            {
+                QString result = string;
+
+                return result.remove(at, indexB - at);
+            }
+        }
+        else index = string.indexOf('&', at + 1);
     }
-    else result.replace(at, index - at, value);
-
-    return result;
-}
-
-/* Q_INVOKABLE static */ QString WControllerNetworkPrivate::removeQuery(const QString & string,
-                                                                        const QString & key,
-                                                                        const QChar   & character)
-{
-    int at = queryIndex(string, key, character);
-
-    if (at == -1) return string;
-
-    int index = string.indexOf('&', at);
-
-    if (index == -1) index = string.indexOf(character, at);
+    else index = string.indexOf('&', at + 1);
 
     QString result = string;
 
-    if (index == -1)
+    if (index != -1)
     {
-        // NOTE: We have to remove the '?', '#' or '&' prior to the key.
-        at--;
+        //-----------------------------------------------------------------------------------------
+        // NOTE: We remove the '&' after the value.
 
-        result.remove(at, result.length() - at);
-    }
-    else
-    {
-        // NOTE: We have to remove the '&' after the value.
+        at++;
+
         index++;
 
-        result.remove(at, index - at);
+        return result.remove(at, index - at);
     }
-
-    return result;
+    // NOTE: We have to remove the '?', '#' or '&' prior to the key.
+    else return result.remove(at, result.length() - at);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1389,29 +1459,40 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 /* Q_INVOKABLE static */ int WControllerNetwork::queryIndex(const QString & string,
                                                             const QString & key)
 {
-    return WControllerNetworkPrivate::queryIndex(string, key, '?');
+    return WControllerNetworkPrivate::queryIndex(removeFragment(string), key, '?');
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlQuery(const QString & string,
                                                                      const QString & key)
 {
-    return WControllerNetworkPrivate::extractQuery(string, key, '?');
+    return WControllerNetworkPrivate::extractQuery(removeFragment(string), key, '?');
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::applyUrlQuery(const QString & string,
                                                                    const QString & key,
                                                                    const QString & value)
 {
-    return WControllerNetworkPrivate::applyQuery(string, key, value, '?');
+    return WControllerNetworkPrivate::applyQuery(string, key, value, '?', '#');
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlQuery(const QString & string,
                                                                     const QString & key)
 {
-    return WControllerNetworkPrivate::removeQuery(string, key, '?');
+    return WControllerNetworkPrivate::removeQuery(string, key, '?', '#');
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::removeFragment(const QString & string)
+{
+    int index = string.indexOf('#');
+
+    if (index == -1)
+    {
+        return string;
+    }
+    else return string.left(index);
+}
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::hasFragment(const QString & string,
                                                               const QString & key)
@@ -1435,14 +1516,13 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
                                                                         const QString & key,
                                                                         const QString & value)
 {
-
-    return WControllerNetworkPrivate::applyQuery(string, key, value, '#');
+    return WControllerNetworkPrivate::applyQuery(string, key, value, '#', QChar());
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeFragmentValue(const QString & string,
                                                                          const QString & key)
 {
-    return WControllerNetworkPrivate::removeQuery(string, key, '#');
+    return WControllerNetworkPrivate::removeQuery(string, key, '#', QChar());
 }
 
 //-------------------------------------------------------------------------------------------------
