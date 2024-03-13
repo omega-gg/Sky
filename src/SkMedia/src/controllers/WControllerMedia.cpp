@@ -437,7 +437,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 {
                     index = updateCurrentTime(root, timeline, baseUrl);
 
-                    // NOTE: We found no source, so we try to clear the contextId.
+                    // NOTE: We found no source, so we clear the contextId and try again.
                     if (index == -1)
                     {
                         timeA = 0;
@@ -445,6 +445,16 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                         contextId = QString();
 
                         index = extractSourceTimeline(root, timeline, baseUrl);
+
+                        // NOTE: We found no source, so we clear the currentTime and try again.
+                        if (index == -1)
+                        {
+                            currentTime = 0;
+
+                            timeA = 0;
+
+                            index = extractSourceTimeline(root, timeline, baseUrl);
+                        }
 
                         context = cleanTimeline(timeline, index);
 
@@ -456,8 +466,15 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             {
                 index = extractSourceTimeline(root, timeline, baseUrl);
 
+                // NOTE: We found no source, so we clear the currentTime and try again.
                 if (index == -1)
                 {
+                    currentTime = 0;
+
+                    timeA = 0;
+
+                    index = extractSourceTimeline(root, timeline, baseUrl);
+
                     context = cleanTimeline(timeline, index);
 
                     return;
