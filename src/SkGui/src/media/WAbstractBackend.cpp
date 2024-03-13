@@ -697,7 +697,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
         backendSetSource(url, reply);
 
         //-----------------------------------------------------------------------------------------
-        // NOTE: We need to clear these when changing the source.
+        // NOTE: We need to clear these right now when changing the source.
 
         if (d->videos.isEmpty() == false)
         {
@@ -715,6 +715,10 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
 
         setVbml(false);
         setLive(false);
+
+        setContext(QString(), QString());
+
+        setSubtitles(QStringList());
 
         //-----------------------------------------------------------------------------------------
 

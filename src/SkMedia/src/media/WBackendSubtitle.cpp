@@ -388,7 +388,7 @@ void WBackendSubtitlePrivate::setText(const QString & text)
 
     stopTimer();
 
-    if (enabled && cursor != -1 && list.isEmpty() == false)
+    if (enabled && list.isEmpty() == false)
     {
         time.restart();
 
@@ -621,16 +621,9 @@ void WBackendSubtitle::setCurrentTime(int msec)
 
     d->cursor = msec + d->delay;
 
-    if (d->enabled)
+    if (d->enabled && d->checkIndex())
     {
-        if (msec == -1)
-        {
-            d->clearText();
-        }
-        else if (d->checkIndex())
-        {
-            d->updateText();
-        }
+        d->updateText();
     }
 
     emit currentTimeChanged();
@@ -651,16 +644,9 @@ void WBackendSubtitle::setDelay(int msec)
 
     d->cursor = d->currentTime + msec;
 
-    if (d->enabled)
+    if (d->enabled && d->checkIndex())
     {
-        if (msec == -1)
-        {
-            d->clearText();
-        }
-        else if (d->checkIndex())
-        {
-            d->updateText();
-        }
+        d->updateText();
     }
 
     emit delayChanged();
