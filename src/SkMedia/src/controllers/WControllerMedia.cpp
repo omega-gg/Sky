@@ -436,15 +436,32 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 if (index == -1)
                 {
                     index = updateCurrentTime(root, timeline, baseUrl);
+
+                    // NOTE: We found no source, so we try to clear the contextId.
+                    if (index == -1)
+                    {
+                        timeA = 0;
+
+                        contextId = QString();
+
+                        index = extractSourceTimeline(root, timeline, baseUrl);
+
+                        context = cleanTimeline(timeline, index);
+
+                        return;
+                    }
                 }
             }
-            else index = extractSourceTimeline(root, timeline, baseUrl);
-
-            if (index == -1)
+            else
             {
-                context = cleanTimeline(timeline, index);
+                index = extractSourceTimeline(root, timeline, baseUrl);
 
-                return;
+                if (index == -1)
+                {
+                    context = cleanTimeline(timeline, index);
+
+                    return;
+                }
             }
 
             QString argument = WControllerNetwork::extractFragmentValue(urlBase, "arg");
