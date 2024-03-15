@@ -44,6 +44,8 @@ static const int BACKENDMANAGER_TIMEOUT_RELOAD      = 30000; // 3 minutes
 
 static const int BACKENDMANAGER_MAX_DELAY = 60000; // 1 minute
 
+static const int BACKENDCACHE_TIME_SKIP = 100;
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -865,7 +867,8 @@ void WBackendManagerPrivate::onCurrentTime()
 
     time.restart();
 
-    timer.start(timeB - at);
+    // NOTE: We skip a few milliseconds to avoid the first frame from the next segment.
+    timer.start(timeB - at - BACKENDCACHE_TIME_SKIP);
 }
 
 void WBackendManagerPrivate::onDuration()

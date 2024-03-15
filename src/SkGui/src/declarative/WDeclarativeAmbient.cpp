@@ -82,7 +82,7 @@ void WDeclarativeAmbientPrivate::onUpdate()
     if (ambient.isEmpty())
     {
         // NOTE: We clear the ambient source as late as possible to avoid blanks.
-        if (q->source().isEmpty() || player->isDefault() == false) return;
+        if (q->source().isEmpty()/* || player->isDefault() == false*/) return;
 
         hash.insert(currentSource, q->currentTime());
 
