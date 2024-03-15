@@ -33,8 +33,6 @@ Rectangle
 
     property int borderSize: st.border_size
 
-    property bool hovered: false
-
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -62,7 +60,7 @@ Rectangle
 
     radius: Math.round(height / 16)
 
-    visible: hovered
+    visible: false
 
     opacity: st.rectangleTag_opacity
 
@@ -71,12 +69,6 @@ Rectangle
 //#QT_4
     smooth: true
 //#END
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onHoveredChanged: if (isAnimated == false) visible = hovered
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -115,7 +107,7 @@ Rectangle
 
     function pReset()
     {
-        if (hovered == false) visible = false;
+        visible = false;
 
         scale = 1.0;
 

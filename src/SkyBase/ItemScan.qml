@@ -49,9 +49,9 @@ Scanner
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+//#DESKTOP
     property alias isHovered: scannerHover.isActive
 
-//#DESKTOP
     property alias mouseArea: mouseArea
 //#END
 
