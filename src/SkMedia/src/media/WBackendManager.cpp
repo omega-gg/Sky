@@ -44,7 +44,7 @@ static const int BACKENDMANAGER_TIMEOUT_RELOAD      = 30000; // 3 minutes
 
 static const int BACKENDMANAGER_MAX_DELAY = 60000; // 1 minute
 
-static const int BACKENDCACHE_TIME_SKIP = 100;
+static const int BACKENDCACHE_TIME_SKIP = 50;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -827,6 +827,8 @@ void WBackendManagerPrivate::onCurrentTime()
 
     int backendTime = backend->currentTime();
 
+    int backendDuration = backend->duration();
+
     if (backendTime == -1) return;
 
     int at;
@@ -835,7 +837,7 @@ void WBackendManagerPrivate::onCurrentTime()
     {
         if (backend->isLive()) return;
 
-        int duration = backend->duration() - start;
+        int duration = backendDuration - start;
 
         if (duration < 0) return;
 
@@ -867,8 +869,15 @@ void WBackendManagerPrivate::onCurrentTime()
 
     time.restart();
 
-    // NOTE: We skip a few milliseconds to avoid the first frame from the next segment.
-    timer.start(timeB - at - BACKENDCACHE_TIME_SKIP);
+    int end = timeB - at;
+
+    // NOTE: When we're not reaching the end of the video, we skip a few milliseconds to avoid the
+    //       first frame from the next segment.
+    if (backendDuration - backendTime == end)
+    {
+        timer.start(end);
+    }
+    else timer.start(end - BACKENDCACHE_TIME_SKIP);
 }
 
 void WBackendManagerPrivate::onDuration()
@@ -1215,24 +1224,72 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         if (d->backend->isLive()) return;
 
-        int duration = d->backend->duration() - d->start;
+        int backendDuration = d->backend->duration();
+
+        int duration = backendDuration - d->start;
 
         if (duration < 0) return;
+
+        int end = d->timeB - msec;
 
         msec -= d->timeA;
 
         // NOTE: Parenthesis are required to avoid integer overflow.
-        d->backendInterface->seek(msec - duration * (msec / duration) + d->start);
+        int at = msec - duration * (msec / duration) + d->start;
+
+        // NOTE: When we're not reaching the end of the video, we skip a few milliseconds to avoid
+        //       the first frame from the next segment.
+
+        if (backendDuration - at == end)
+        {
+            d->backendInterface->seek(at);
+
+            if (isPlaying()) d->timer.start(end);
+
+            return;
+        }
+
+        if (end < BACKENDCACHE_TIME_SKIP)
+        {
+            d->applyNext(d->timeB);
+
+            return;
+        }
+
+        d->backendInterface->seek(at);
+
+        if (isPlaying()) d->timer.start(end - BACKENDCACHE_TIME_SKIP);
     }
     else if (d->currentMedia.isEmpty() == false)
     {
+        int backendDuration = d->backend->duration();
+
+        int end = d->timeB - msec;
+
         msec -= d->timeA;
 
-        if (msec < d->backend->duration() - d->start)
+        // NOTE: When we're not reaching the end of the video, we skip a few milliseconds to avoid
+        //       the first frame from the next segment.
+
+        if (end < BACKENDCACHE_TIME_SKIP && backendDuration - msec != end)
         {
-            d->backendInterface->seek(msec + d->start);
+            d->applyNext(d->timeB);
+
+            return;
         }
-        else d->applyDefault();
+
+        if (msec >= d->backend->duration() - d->start)
+        {
+            d->applyDefault();
+
+            return;
+        }
+
+        d->backendInterface->seek(msec + d->start);
+
+        if (isPlaying()) d->timer.start(end - BACKENDCACHE_TIME_SKIP);
+
+        return;
     }
 }
 
