@@ -871,7 +871,7 @@ void WBackendManagerPrivate::onCurrentTime()
 
     int end = timeB - at;
 
-    // NOTE: When we're not reaching the end of the video, we skip a few milliseconds to avoid the
+    // NOTE: Sometimes, playback is a bit in advance so we skip the last milliseconds to avoid the
     //       first frame from the next segment.
     if (backendDuration - backendTime == end)
     {
@@ -1237,9 +1237,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         // NOTE: Parenthesis are required to avoid integer overflow.
         int at = msec - duration * (msec / duration) + d->start;
 
-        // NOTE: When we're not reaching the end of the video, we skip a few milliseconds to avoid
-        //       the first frame from the next segment.
-
         if (backendDuration - at == end)
         {
             d->backendInterface->seek(at);
@@ -1249,6 +1246,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
             return;
         }
 
+        // NOTE: Sometimes, playback is a bit in advance so we skip the last milliseconds to avoid
+        //       the first frame from the next segment.
         if (end < BACKENDCACHE_TIME_SKIP)
         {
             d->applyNext(d->timeB);
@@ -1268,10 +1267,25 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         msec -= d->timeA;
 
-        // NOTE: When we're not reaching the end of the video, we skip a few milliseconds to avoid
-        //       the first frame from the next segment.
+        if (backendDuration - msec == end)
+        {
+            if (msec >= d->backend->duration() - d->start)
+            {
+                d->applyDefault();
 
-        if (end < BACKENDCACHE_TIME_SKIP && backendDuration - msec != end)
+                return;
+            }
+
+            d->backendInterface->seek(msec + d->start);
+
+            if (isPlaying()) d->timer.start(end);
+
+            return;
+        }
+
+        // NOTE: Sometimes, playback is a bit in advance so we skip the last milliseconds to avoid
+        //       the first frame from the next segment.
+        if (end < BACKENDCACHE_TIME_SKIP)
         {
             d->applyNext(d->timeB);
 
@@ -1288,8 +1302,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         d->backendInterface->seek(msec + d->start);
 
         if (isPlaying()) d->timer.start(end - BACKENDCACHE_TIME_SKIP);
-
-        return;
     }
 }
 
