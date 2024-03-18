@@ -1602,7 +1602,13 @@ int WControllerMediaSource::applyDurations(QList<WControllerMediaObject> * timel
 
         WControllerMediaSource * media = object.media;
 
-        if (media == NULL) continue;
+        if (media == NULL)
+        {
+            object.at       = 0;
+            object.duration = 0;
+
+            continue;
+        }
 
         int at = media->at;
 

@@ -427,7 +427,25 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             int index;
 
-            if (contextId.isEmpty() == false)
+            if (contextId.isEmpty())
+            {
+                index = extractSourceTimeline(root, timeline, baseUrl);
+
+                // NOTE: We found no source, so we clear the currentTime and try again.
+                if (index == -1)
+                {
+                    currentTime = 0;
+
+                    timeA = 0;
+
+                    index = extractSourceTimeline(root, timeline, baseUrl);
+
+                    context = cleanTimeline(timeline, index);
+
+                    return;
+                }
+            }
+            else
             {
                 index = extractSourceTimeline(root, timeline, baseUrl);
 
@@ -460,24 +478,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                         return;
                     }
-                }
-            }
-            else
-            {
-                index = extractSourceTimeline(root, timeline, baseUrl);
-
-                // NOTE: We found no source, so we clear the currentTime and try again.
-                if (index == -1)
-                {
-                    currentTime = 0;
-
-                    timeA = 0;
-
-                    index = extractSourceTimeline(root, timeline, baseUrl);
-
-                    context = cleanTimeline(timeline, index);
-
-                    return;
                 }
             }
 
@@ -574,11 +574,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 timeline.erase(timeline.begin() + index, timeline.end());
             }
 
-            index += indexNew;
-
             timeline.append(timelineNew);
 
-            context = cleanTimeline(timeline, index);
+            context = cleanTimeline(timeline, index + indexNew);
 
             return;
         }
@@ -1066,16 +1064,11 @@ int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 
     {
         const WControllerMediaObject & object = timeline.at(i);
 
-        if (contextId != object.id)
-        {
-            duration += object.duration;
-
-            continue;
-        }
-
         WControllerMediaSource * media = object.media;
 
-        if (media == NULL)
+        if (media == NULL) continue;
+
+        if (contextId != object.id)
         {
             duration += object.duration;
 
@@ -1154,6 +1147,8 @@ int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 
 
 QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & timeline, int index)
 {
+    qDebug("CLEAN TIMELINE");
+
     int gap = 0;
 
     int i = 0;
