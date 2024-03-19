@@ -883,6 +883,8 @@ void WTabTrackPrivate::updatePlaylistTrack()
     else playlistTrack->clearTracks();
 
     q->copyTrackTo(playlistTrack);
+
+    playlistTrack->setCurrentIndex(0);
 }
 
 void WTabTrackPrivate::checkPlaylistTrack()
