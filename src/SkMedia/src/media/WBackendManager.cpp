@@ -760,7 +760,7 @@ void WBackendManagerPrivate::onStateLoad()
     {
         freeze = false;
 
-        q->updateFrame();
+        q->applyFrame();
     }
 #endif
 
@@ -827,9 +827,9 @@ void WBackendManagerPrivate::onCurrentTime()
 
     int backendTime = backend->currentTime();
 
-    int backendDuration = backend->duration();
-
     if (backendTime == -1) return;
+
+    int backendDuration = backend->duration();
 
     int at;
 
@@ -861,7 +861,7 @@ void WBackendManagerPrivate::onCurrentTime()
         freeze     = false;
         freezeLoop = false;
 
-        q->updateFrame();
+        q->applyFrame();
     }
 #endif
 
