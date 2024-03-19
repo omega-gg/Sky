@@ -2386,6 +2386,115 @@ inline QVariant print(const WBackendUniversalNode * node, WBackendUniversalParam
     return QVariant();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+void populateHash()
+{
+    if (hash.isEmpty() == false) return;
+
+    hash.insert("EQUAL",                  equal);
+    hash.insert("NOT_EQUAL",              notEqual);
+    hash.insert("LESSER",                 lesser);
+    hash.insert("GREATER",                greater);
+    hash.insert("LESSER_EQUAL",           lesserEqual);
+    hash.insert("GREATER_EQUAL",          greaterEqual);
+    hash.insert("SET",                    set);
+    hash.insert("NUMBER",                 number);
+    hash.insert("TIME",                   time);
+    hash.insert("DATE",                   date);
+    hash.insert("ADD",                    add);
+    hash.insert("SUB",                    sub);
+    hash.insert("MULTIPLY",               multiply);
+    hash.insert("DIVIDE",                 divide);
+    hash.insert("GET_CHAR",               getChar);
+    hash.insert("PREPEND",                prepend);
+    hash.insert("APPEND",                 append);
+    hash.insert("REMOVE",                 remove);
+    hash.insert("CHOP",                   chop);
+    hash.insert("REPLACE",                replace);
+    hash.insert("MID",                    mid);
+    hash.insert("SPLIT",                  split);
+    hash.insert("JOIN",                   join);
+    hash.insert("LOWER",                  lower);
+    hash.insert("SIMPLIFY",               simplify);
+    hash.insert("READ",                   read);
+    hash.insert("LATIN_TO_UTF8",          latinToUtf8);
+    hash.insert("LENGTH",                 length);
+    hash.insert("COUNT",                  count);
+    hash.insert("COUNT_STRING",           countString);
+    hash.insert("INDEX_OF",               indexOf);
+    hash.insert("INDEX_END",              indexEnd);
+    hash.insert("INDEX_SKIP",             indexSkip);
+    hash.insert("LAST_INDEX_OF",          lastIndexOf);
+    hash.insert("LAST_INDEX_END",         lastIndexEnd);
+    hash.insert("CONTAIN",                contain);
+    hash.insert("START_WITH",             startWith);
+    hash.insert("END_WITH",               endWith);
+    hash.insert("SLICE",                  slice);
+    hash.insert("SLICE_IN",               sliceIn);
+    hash.insert("SLICES",                 slices);
+    hash.insert("SLICES_IN",              slicesIn);
+    hash.insert("LIST",                   list);
+    hash.insert("LIST_GET",               listGet);
+    hash.insert("LIST_SET",               listSet);
+    hash.insert("LIST_TAKE_AT",           listTakeAt);
+    hash.insert("LIST_APPEND",            listAppend);
+    hash.insert("LIST_INSERT",            listInsert);
+    hash.insert("LIST_REMOVE",            listRemove);
+    hash.insert("LIST_REMOVE_AT",         listRemoveAt);
+    hash.insert("LIST_INDEX",             listIndex);
+    hash.insert("LIST_CONTAIN",           listContain);
+    hash.insert("HASH_GET",               hashGet);
+    hash.insert("HASH_SET",               hashSet);
+    hash.insert("HASH_REMOVE",            hashRemove);
+    hash.insert("REGEXP",                 regExp);
+    hash.insert("REGEXP_CAP",             regExpCap);
+    hash.insert("EXTENSION_IS_MEDIA",     extensionIsMedia);
+    hash.insert("EXTENSION_IS_VIDEO",     extensionIsVideo);
+    hash.insert("EXTENSION_IS_AUDIO",     extensionIsAudio);
+    hash.insert("EXTENSION_IS_SUBTITLE",  extensionIsSubtitle);
+    hash.insert("URL_GENERATE",           urlGenerate);
+    hash.insert("URL_ENCODE",             urlEncode);
+    hash.insert("URL_DECODE",             urlDecode);
+    hash.insert("URL_NAME",               urlName);
+    hash.insert("URL_VALUE",              urlValue);
+    hash.insert("URL_FRAGMENT",           urlFragment);
+    hash.insert("URL_PATH",               urlPath);
+    hash.insert("URL_ELEMENT",            urlElement);
+    hash.insert("URL_ELEMENTS",           urlElements);
+    hash.insert("URL_EXTENSION",          urlExtension);
+    hash.insert("URL_ADD_QUERY",          urlAddQuery);
+    hash.insert("URL_REMOVE_PREFIX",      urlRemovePrefix);
+    hash.insert("URL_REMOVE_EXTENSION",   urlRemoveExtension);
+    hash.insert("HTML_TO_UTF8",           htmlToUtf8);
+    hash.insert("HTML_EXTRACT",           htmlExtract);
+    hash.insert("HTML_TRACKS",            htmlTracks);
+    hash.insert("HTML_PLAYLISTS",         htmlPlaylists);
+    hash.insert("HTML_ATTRIBUTE",         htmlAttribute);
+    hash.insert("HTML_ATTRIBUTE_AT",      htmlAttributeAt);
+    hash.insert("HTML_ATTRIBUTE_UTF8",    htmlAttributeUtf8);
+    hash.insert("HTML_ATTRIBUTE_UTF8_AT", htmlAttributeUtf8At);
+    hash.insert("JSON_EXTRACT",           jsonExtract);
+    hash.insert("JSON_EXTRACT_UTF8",      jsonExtractUtf8);
+    hash.insert("JSON_EXTRACT_HTML",      jsonExtractHtml);
+    hash.insert("JSON_SPLIT",             jsonSplit);
+    hash.insert("JS_EXTRACT",             jsExtract);
+    hash.insert("JS_CALL",                jsCall);
+    hash.insert("JS_CALLS",               jsCalls);
+    hash.insert("ZIP_FILENAMES",          zipFileNames);
+    hash.insert("ZIP_EXTRACT_FILE",       zipExtractFile);
+#ifndef SK_NO_TORRENT
+    hash.insert("TORRENT_STRING_AFTER",   torrentStringAfter);
+    hash.insert("TORRENT_INTEGER_AFTER",  torrentIntegerAfter);
+    hash.insert("TORRENT_LIST_AFTER",     torrentListAfter);
+    hash.insert("TORRENT_ITEMS",          torrentItems);
+    hash.insert("TORRENT_FOLDERS",        torrentFolders);
+#endif
+    hash.insert("PRINT",                  print);
+
+    cache = new WBackendCache(sk);
+}
+
 //=================================================================================================
 // WBackendUniversalLoop
 //=================================================================================================
@@ -2976,6 +3085,9 @@ WBackendUniversalNode::torrentItems(WBackendUniversalParameters * parameters, in
 
 WBackendUniversalScript::WBackendUniversalScript(const QString & data)
 {
+    // NOTE: We need to populate the hash here for the standalone use cases.
+    populateHash();
+
     load(data);
 }
 
@@ -3807,115 +3919,6 @@ void WBackendUniversalPrivate::init(const QString & id, const QString & source)
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
-//-------------------------------------------------------------------------------------------------
-
-void WBackendUniversalPrivate::populateHash() const
-{
-    if (hash.isEmpty() == false) return;
-
-    hash.insert("EQUAL",                  equal);
-    hash.insert("NOT_EQUAL",              notEqual);
-    hash.insert("LESSER",                 lesser);
-    hash.insert("GREATER",                greater);
-    hash.insert("LESSER_EQUAL",           lesserEqual);
-    hash.insert("GREATER_EQUAL",          greaterEqual);
-    hash.insert("SET",                    set);
-    hash.insert("NUMBER",                 number);
-    hash.insert("TIME",                   time);
-    hash.insert("DATE",                   date);
-    hash.insert("ADD",                    add);
-    hash.insert("SUB",                    sub);
-    hash.insert("MULTIPLY",               multiply);
-    hash.insert("DIVIDE",                 divide);
-    hash.insert("GET_CHAR",               getChar);
-    hash.insert("PREPEND",                prepend);
-    hash.insert("APPEND",                 append);
-    hash.insert("REMOVE",                 remove);
-    hash.insert("CHOP",                   chop);
-    hash.insert("REPLACE",                replace);
-    hash.insert("MID",                    mid);
-    hash.insert("SPLIT",                  split);
-    hash.insert("JOIN",                   join);
-    hash.insert("LOWER",                  lower);
-    hash.insert("SIMPLIFY",               simplify);
-    hash.insert("READ",                   read);
-    hash.insert("LATIN_TO_UTF8",          latinToUtf8);
-    hash.insert("LENGTH",                 length);
-    hash.insert("COUNT",                  count);
-    hash.insert("COUNT_STRING",           countString);
-    hash.insert("INDEX_OF",               indexOf);
-    hash.insert("INDEX_END",              indexEnd);
-    hash.insert("INDEX_SKIP",             indexSkip);
-    hash.insert("LAST_INDEX_OF",          lastIndexOf);
-    hash.insert("LAST_INDEX_END",         lastIndexEnd);
-    hash.insert("CONTAIN",                contain);
-    hash.insert("START_WITH",             startWith);
-    hash.insert("END_WITH",               endWith);
-    hash.insert("SLICE",                  slice);
-    hash.insert("SLICE_IN",               sliceIn);
-    hash.insert("SLICES",                 slices);
-    hash.insert("SLICES_IN",              slicesIn);
-    hash.insert("LIST",                   list);
-    hash.insert("LIST_GET",               listGet);
-    hash.insert("LIST_SET",               listSet);
-    hash.insert("LIST_TAKE_AT",           listTakeAt);
-    hash.insert("LIST_APPEND",            listAppend);
-    hash.insert("LIST_INSERT",            listInsert);
-    hash.insert("LIST_REMOVE",            listRemove);
-    hash.insert("LIST_REMOVE_AT",         listRemoveAt);
-    hash.insert("LIST_INDEX",             listIndex);
-    hash.insert("LIST_CONTAIN",           listContain);
-    hash.insert("HASH_GET",               hashGet);
-    hash.insert("HASH_SET",               hashSet);
-    hash.insert("HASH_REMOVE",            hashRemove);
-    hash.insert("REGEXP",                 regExp);
-    hash.insert("REGEXP_CAP",             regExpCap);
-    hash.insert("EXTENSION_IS_MEDIA",     extensionIsMedia);
-    hash.insert("EXTENSION_IS_VIDEO",     extensionIsVideo);
-    hash.insert("EXTENSION_IS_AUDIO",     extensionIsAudio);
-    hash.insert("EXTENSION_IS_SUBTITLE",  extensionIsSubtitle);
-    hash.insert("URL_GENERATE",           urlGenerate);
-    hash.insert("URL_ENCODE",             urlEncode);
-    hash.insert("URL_DECODE",             urlDecode);
-    hash.insert("URL_NAME",               urlName);
-    hash.insert("URL_VALUE",              urlValue);
-    hash.insert("URL_FRAGMENT",           urlFragment);
-    hash.insert("URL_PATH",               urlPath);
-    hash.insert("URL_ELEMENT",            urlElement);
-    hash.insert("URL_ELEMENTS",           urlElements);
-    hash.insert("URL_EXTENSION",          urlExtension);
-    hash.insert("URL_ADD_QUERY",          urlAddQuery);
-    hash.insert("URL_REMOVE_PREFIX",      urlRemovePrefix);
-    hash.insert("URL_REMOVE_EXTENSION",   urlRemoveExtension);
-    hash.insert("HTML_TO_UTF8",           htmlToUtf8);
-    hash.insert("HTML_EXTRACT",           htmlExtract);
-    hash.insert("HTML_TRACKS",            htmlTracks);
-    hash.insert("HTML_PLAYLISTS",         htmlPlaylists);
-    hash.insert("HTML_ATTRIBUTE",         htmlAttribute);
-    hash.insert("HTML_ATTRIBUTE_AT",      htmlAttributeAt);
-    hash.insert("HTML_ATTRIBUTE_UTF8",    htmlAttributeUtf8);
-    hash.insert("HTML_ATTRIBUTE_UTF8_AT", htmlAttributeUtf8At);
-    hash.insert("JSON_EXTRACT",           jsonExtract);
-    hash.insert("JSON_EXTRACT_UTF8",      jsonExtractUtf8);
-    hash.insert("JSON_EXTRACT_HTML",      jsonExtractHtml);
-    hash.insert("JSON_SPLIT",             jsonSplit);
-    hash.insert("JS_EXTRACT",             jsExtract);
-    hash.insert("JS_CALL",                jsCall);
-    hash.insert("JS_CALLS",               jsCalls);
-    hash.insert("ZIP_FILENAMES",          zipFileNames);
-    hash.insert("ZIP_EXTRACT_FILE",       zipExtractFile);
-#ifndef SK_NO_TORRENT
-    hash.insert("TORRENT_STRING_AFTER",   torrentStringAfter);
-    hash.insert("TORRENT_INTEGER_AFTER",  torrentIntegerAfter);
-    hash.insert("TORRENT_LIST_AFTER",     torrentListAfter);
-    hash.insert("TORRENT_ITEMS",          torrentItems);
-    hash.insert("TORRENT_FOLDERS",        torrentFolders);
-#endif
-    hash.insert("PRINT",                  print);
-
-    cache = new WBackendCache(sk);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WBackendUniversalPrivate::load()

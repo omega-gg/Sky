@@ -136,8 +136,6 @@ public:
     void init(const QString & id, const QString & source);
 
 public: // Functions
-    void populateHash() const;
-
     void load();
 
     void loadData(const QByteArray & array);
