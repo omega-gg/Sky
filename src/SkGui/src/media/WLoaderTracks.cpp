@@ -43,8 +43,6 @@ WLoaderTracksPrivate::WLoaderTracksPrivate(WLoaderTracks * p) : WLoaderPlaylistP
 
 void WLoaderTracksPrivate::init()
 {
-    type = WTrack::Track;
-
     history = NULL;
 
     reply = NULL;
@@ -146,7 +144,7 @@ QStringList WLoaderTracksPrivate::getSourcesInput() const
 
     foreach (const WTrack * track, history->trackPointers())
     {
-        if (track->type() != type) continue;
+        if (types.contains(track->type()) == false) continue;
 
         QString source = WControllerPlaylist::cleanSource(track->source());
 
@@ -248,19 +246,42 @@ void WLoaderTracksPrivate::onLoaded(const WLoaderPlaylistData & data)
     Q_D(WLoaderTracks); d->init();
 }
 
-#ifdef QT_4
-
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
-// QML
 
-/* Q_INVOKABLE */ void WLoaderTracks::setType(int type)
+void WLoaderTracks::addType(WTrack::Type type)
 {
-    setType(static_cast<WTrack::Type> (type));
+    Q_D(WLoaderTracks);
+
+    if (d->types.contains(type)) return;
+
+    d->types.append(type);
+
+    if (d->active) d->updateSources();
 }
 
-#endif
+void WLoaderTracks::removeType(WTrack::Type type)
+{
+    Q_D(WLoaderTracks);
+
+    if (d->types.contains(type) == false) return;
+
+    d->types.removeOne(type);
+
+    if (d->active) d->updateSources();
+}
+
+void WLoaderTracks::clearTypes()
+{
+    Q_D(WLoaderTracks);
+
+    if (d->types.isEmpty()) return;
+
+    d->types.clear();
+
+    if (d->active) d->updateSources();
+}
 
 //-------------------------------------------------------------------------------------------------
 // Protected WLoaderPlaylist implementation
@@ -279,24 +300,6 @@ void WLoaderTracksPrivate::onLoaded(const WLoaderPlaylistData & data)
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
-
-WTrack::Type WLoaderTracks::type() const
-{
-    Q_D(const WLoaderTracks); return d->type;
-}
-
-void WLoaderTracks::setType(WTrack::Type type)
-{
-    Q_D(WLoaderTracks);
-
-    if (d->type == type) return;
-
-    d->type = type;
-
-    if (d->active) d->updateSources();
-
-    emit typeChanged();
-}
 
 WPlaylist * WLoaderTracks::history() const
 {

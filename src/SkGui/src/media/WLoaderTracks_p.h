@@ -66,7 +66,7 @@ public: // Slots
     void onLoaded(const WLoaderPlaylistData & data);
 
 public: // Variables
-    WTrack::Type type;
+    QList<WTrack::Type> types;
 
     WPlaylist * history;
 

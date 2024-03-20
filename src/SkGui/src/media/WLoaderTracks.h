@@ -35,12 +35,6 @@ class SK_GUI_EXPORT WLoaderTracks : public WLoaderPlaylist
 {
     Q_OBJECT
 
-#ifdef QT_4
-    Q_PROPERTY(int type READ type WRITE setType NOTIFY typeChanged)
-#else
-    Q_PROPERTY(WTrack::Type type READ type WRITE setType NOTIFY typeChanged)
-#endif
-
     Q_PROPERTY(WPlaylist * history READ history WRITE setHistory NOTIFY historyChanged)
 
     Q_PROPERTY(QStringList baseUrls READ baseUrls WRITE setBaseUrls NOTIFY baseUrlsChanged)
@@ -48,29 +42,22 @@ class SK_GUI_EXPORT WLoaderTracks : public WLoaderPlaylist
 public:
     WLoaderTracks(WLibraryFolder * folder, int id);
 
-#ifdef QT_4
 public: // Interface
-    //---------------------------------------------------------------------------------------------
-    // QML
+    void addType   (WTrack::Type type);
+    void removeType(WTrack::Type type);
 
-    Q_INVOKABLE void setType(int type);
-#endif
+    void clearTypes();
 
 protected: // WLoaderPlaylist implementation
     /* virtual */ void onStart();
     /* virtual */ void onStop ();
 
 signals:
-    void typeChanged();
-
     void historyChanged();
 
     void baseUrlsChanged();
 
 public: // Properties
-    WTrack::Type type() const;
-    void         setType(WTrack::Type type);
-
     WPlaylist * history() const;
     void        setHistory(WPlaylist * history);
 
