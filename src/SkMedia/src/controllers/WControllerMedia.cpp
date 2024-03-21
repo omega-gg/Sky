@@ -414,7 +414,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (timeline.isEmpty()) return;
 
-            qDebug("CONTEXT BEFORE %s %s", getContext(timeline).C_STR, contextId.C_STR);
+            //qDebug("CONTEXT BEFORE %s %s", getContext(timeline).C_STR, contextId.C_STR);
 
             duration = WControllerMediaSource::applyDurations(&timeline);
 
@@ -1147,8 +1147,6 @@ int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 
 
 QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & timeline, int index)
 {
-    qDebug("CLEAN TIMELINE");
-
     int gap = 0;
 
     int i = 0;
@@ -1216,7 +1214,7 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
         timeB -= gap;
     }
 
-    qDebug("CONTEXT AFTER %s %s", getContext(timeline).C_STR, contextId.C_STR);
+    //qDebug("CONTEXT AFTER %s %s", getContext(timeline).C_STR, contextId.C_STR);
 
     return generateContext(timeline);
 }
