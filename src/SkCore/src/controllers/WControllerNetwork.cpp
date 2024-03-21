@@ -1408,7 +1408,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     int indexB = string.indexOf('#', index + 1);
 
-    if (indexB != 1)
+    if (indexB != -1)
     {
         if (indexB < at) return string;
 
