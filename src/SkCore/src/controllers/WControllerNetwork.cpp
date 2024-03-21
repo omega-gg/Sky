@@ -1442,6 +1442,17 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractFragment(const QString & string)
+{
+    int index = string.indexOf('#');
+
+    if (index == -1)
+    {
+        return string;
+    }
+    else return string.right(string.length() - index - 1);
+}
+
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeFragment(const QString & string)
 {
     int index = string.indexOf('#');
