@@ -418,6 +418,11 @@ bool WBackendManagerPrivate::applyNext(int currentTime)
                 stopBackend();
 
                 q->setEnded(true);
+
+                if (type == Interactive)
+                {
+                    source = WControllerNetwork::removeFragmentValue(source, "id");
+                }
             }
             // NOTE: When the last media is a hub we loop the playback on it. When playing the
             //       entire hub, we let the backend handle the loop for smoother playback.

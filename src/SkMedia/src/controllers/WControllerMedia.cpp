@@ -341,6 +341,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     QString baseUrl = WControllerNetwork::extractBaseUrl(url);
 
+    type = WTrack::typeFromString(reader.extractString("type"));
+
     const QList<WYamlNode> & children = node->children;
 
     if (children.isEmpty())
@@ -349,17 +351,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
         applyMedia(reader.node(), source, baseUrl);
 
-        // NOTE: By default, an image is played like a hub.
-        if (WControllerFile::urlIsImage(source))
-        {
-            type = WTrack::Hub;
-        }
-        else type = WTrack::typeFromString(reader.extractString("type"));
-
         return;
     }
-
-    type = WTrack::typeFromString(reader.extractString("type"));
 
     const WYamlNodeBase & root = reader.node();
 
@@ -960,37 +953,32 @@ void WControllerMediaData::applySource(const WYamlNodeBase & root,
                                        const QString       & url,
                                        const QString       & baseUrl, int duration)
 {
+
+    QString type = node.extractString("type");
+
+    if (type.isEmpty())
+    {
+        typeSource = WTrack::typeFromString(node.key);
+    }
+    else typeSource = WTrack::typeFromString(type);
+
     timeB = timeA + duration;
 
     applyData(node, url, baseUrl);
 
     const WYamlNode * child = WControllerPlaylist::vbmlTemplate(root, node);
 
-    if (child)
-    {
-        if (source.isEmpty())
-        {
-            source = WControllerPlaylist::vbmlSource(child->extractString("source"), baseUrl);
-        }
+    if (child == NULL) return;
 
-        if (ambient.isEmpty())
-        {
-            ambient = WControllerPlaylist::vbmlSource(child->extractString("ambient"), baseUrl);
-        }
+    if (source.isEmpty())
+    {
+        source = WControllerPlaylist::vbmlSource(child->extractString("source"), baseUrl);
     }
 
-    if (WControllerFile::urlIsImage(source) == false)
+    if (ambient.isEmpty())
     {
-        QString type = node.extractString("type");
-
-        if (type.isEmpty())
-        {
-            typeSource = WTrack::typeFromString(node.key);
-        }
-        else typeSource = WTrack::typeFromString(type);
+        ambient = WControllerPlaylist::vbmlSource(child->extractString("ambient"), baseUrl);
     }
-    // NOTE: By default, an image is played like a hub.
-    else typeSource = WTrack::Hub;
 }
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & root,

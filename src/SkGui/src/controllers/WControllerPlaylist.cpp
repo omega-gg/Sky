@@ -298,20 +298,21 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
             return;
         }
 
-        // NOTE: When the content does not seem to be a text query we return.
-        if (content.isEmpty() || content.contains('\n')) return;
+        // NOTE: If it's a text query we create a search query based on it.
+        if (content.isEmpty() == false && content.contains('\n') == false)
+        {
+            //-------------------------------------------------------------------------------------
+            // NOTE: When it's not valid VBML we fallback to a search query.
 
-        //-----------------------------------------------------------------------------------------
-        // NOTE: When it's not valid VBML we fallback to a search query.
+            type = WControllerPlaylist::Redirect;
 
-        type = WControllerPlaylist::Redirect;
+            origin = WControllerPlaylist::createSource(wControllerPlaylist->backendSearchId(),
+                                                       "search", "tracks", content.simplified());
 
-        origin = WControllerPlaylist::createSource(wControllerPlaylist->backendSearchId(),
-                                                   "search", "tracks", content.simplified());
+            source = origin;
 
-        source = origin;
-
-        return;
+            return;
+        }
     }
     else
     {
