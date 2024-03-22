@@ -1453,6 +1453,17 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     else return string.right(string.length() - index - 1);
 }
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractFragmentLast(const QString & string)
+{
+    int index = string.lastIndexOf('#');
+
+    if (index == -1)
+    {
+        return string;
+    }
+    else return string.right(string.length() - index - 1);
+}
+
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeFragment(const QString & string)
 {
     int index = string.indexOf('#');
@@ -1463,6 +1474,19 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     }
     else return string.left(index);
 }
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::removeFragmentLast(const QString & string)
+{
+    int index = string.lastIndexOf('#');
+
+    if (index == -1)
+    {
+        return string;
+    }
+    else return string.left(index);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::hasFragment(const QString & string,
                                                               const QString & key)

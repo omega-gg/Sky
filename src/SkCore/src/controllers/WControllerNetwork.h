@@ -160,8 +160,11 @@ public: // Static functions
 
     Q_INVOKABLE static QString removeUrlQuery(const QString & string, const QString & key);
 
-    Q_INVOKABLE static QString extractFragment(const QString & string);
-    Q_INVOKABLE static QString removeFragment (const QString & string);
+    Q_INVOKABLE static QString extractFragment    (const QString & string);
+    Q_INVOKABLE static QString extractFragmentLast(const QString & string);
+
+    Q_INVOKABLE static QString removeFragment    (const QString & string);
+    Q_INVOKABLE static QString removeFragmentLast(const QString & string);
 
     // NOTE: Check if the fragment exists with the '#key=value' format.
     Q_INVOKABLE static bool hasFragment(const QString & string, const QString & key);

@@ -1987,7 +1987,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
         if (id.isEmpty() == false)
         {
             // NOTE: We want to keep the fragment.
-            QString fragment = WControllerNetwork::extractFragment(source);
+            QString fragment = WControllerNetwork::extractFragmentLast(source);
 
             if (fragment.isEmpty())
             {
