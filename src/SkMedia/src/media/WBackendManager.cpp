@@ -405,11 +405,11 @@ void WBackendManagerPrivate::applyDefault()
     qDebug("Clear source: timeA %d timeB %d start %d", timeA, timeB, start);
 }
 
-bool WBackendManagerPrivate::applyNext(int currentTime)
+bool WBackendManagerPrivate::applyNext(int time)
 {
     Q_Q(WBackendManager);
 
-    if (currentTime >= duration)
+    if (time >= duration)
     {
         if (type == Interactive)
         {
@@ -422,6 +422,7 @@ bool WBackendManagerPrivate::applyNext(int currentTime)
                 if (type == Interactive)
                 {
                     source = WControllerNetwork::removeFragmentValue(source, "id");
+                    source = WControllerNetwork::removeFragmentValue(source, "t");
                 }
             }
             // NOTE: When the last media is a hub we loop the playback on it. When playing the
@@ -448,9 +449,9 @@ bool WBackendManagerPrivate::applyNext(int currentTime)
 
         return true;
     }
-    else if (currentTime >= timeB)
+    else if (time >= timeB)
     {
-        q->setCurrentTime(currentTime);
+        q->setCurrentTime(time);
 
         freeze = true;
 
@@ -459,6 +460,8 @@ bool WBackendManagerPrivate::applyNext(int currentTime)
         if (type == Interactive)
         {
             source = WControllerNetwork::removeFragmentValue(source, "id");
+
+            source = WControllerPlaylist::applyTime(source, currentTime);
         }
 
         loadSources(q->isPlaying());
@@ -1197,8 +1200,14 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->clearReply();
 
-        // NOTE: When reloading we clear the contextId in case it's an interactive track.
-        d->source = WControllerNetwork::removeFragmentValue(d->source, "id");
+        //-----------------------------------------------------------------------------------------
+        // NOTE: When reloading we clear the context in case it's an interactive track.
+
+        QString source = WControllerNetwork::removeFragmentValue(d->source, "id");
+
+        d->source = WControllerPlaylist::applyTime(source, msec);
+
+        //-----------------------------------------------------------------------------------------
 
         d->loadSources(isPlaying());
 
@@ -1220,7 +1229,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         if (d->type == WBackendManagerPrivate::Interactive)
         {
-            d->source = WControllerNetwork::removeFragmentValue(d->source, "id");
+            QString source = WControllerNetwork::removeFragmentValue(d->source, "id");
+
+            d->source = WControllerPlaylist::applyTime(source, msec);
         }
 
         d->loadSources(isPlaying());
