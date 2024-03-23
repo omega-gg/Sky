@@ -622,8 +622,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                     continue;
                 }
 
-                startSource    += at;
-                durationSource -= at;
+                startSource += at;
 
                 starts.append(startSource);
 
@@ -909,15 +908,7 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
         // NOTE: When the duration is invalid we skip it entirely.
         if (durationSource <= 0) continue;
 
-        start          += at;
-        durationSource -= at;
-
-        if (durationSource <= 0)
-        {
-            start = -durationSource;
-
-            continue;
-        }
+        start += at;
 
         int time = timeA + durationSource;
 
