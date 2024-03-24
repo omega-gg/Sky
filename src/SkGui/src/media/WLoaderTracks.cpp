@@ -140,27 +140,28 @@ void WLoaderTracksPrivate::clearQueries()
 
 QStringList WLoaderTracksPrivate::getSourcesInput() const
 {
-    QStringList list;
+    QStringList listA;
+    QStringList listB;
 
     foreach (const WTrack * track, history->trackPointers())
     {
         if (types.contains(track->type()) == false) continue;
 
-        QString source = WControllerPlaylist::cleanSource(track->source());
+        QString source = track->source();
 
-        if (source.isEmpty() || list.contains(source)) continue;
+        listA.append(source);
 
-        list.append(source);
+        listB.append(WControllerPlaylist::cleanSource(source));
     }
 
     foreach (const QString & url, baseUrls)
     {
-        if (list.contains(url)) continue;
+        if (listB.contains(url)) continue;
 
-        list.append(url);
+        listA.append(url);
     }
 
-    return list;
+    return listA;
 }
 
 QStringList WLoaderTracksPrivate::getSourcesOutput() const
