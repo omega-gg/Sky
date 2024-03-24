@@ -582,7 +582,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
         return;
     }
     // NOTE: If we find a VMBL header we prioritize it over HTML.
-    else if (WControllerPlaylist::vbmlCheck(array))
+    else if (WControllerPlaylist::textIsVbml(array))
     {
         applyVbml(array, url, url);
 
@@ -6381,6 +6381,16 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
 //---------------------------------------------------------------------------------------------
 // VBML
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::textIsVbml(const QString & text)
+{
+    return (vbmlHeader(text) != -1);
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::textIsVbmlHash(const QString & text)
+{
+    return (text.startsWith('#') && textIsVbml(text) == false);
+}
+
 /* Q_INVOKABLE static */ QString WControllerPlaylist::vbml(const QString & append)
 {
     QString vbml;
@@ -6388,11 +6398,6 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
     Sk::bmlVersion(vbml, "vbml", versionApi(), append);
 
     return vbml;
-}
-
-/* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlCheck(const QString & data)
-{
-    return (vbmlHeader(data) != -1);
 }
 
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlHeader(const QString & vbml)

@@ -409,11 +409,11 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // VBML
 
+    Q_INVOKABLE static bool textIsVbml    (const QString & text);
+    Q_INVOKABLE static bool textIsVbmlHash(const QString & text);
+
     // NOTE: Writes the vbml header with versionApi.
     Q_INVOKABLE static QString vbml(const QString & append = "\n\n");
-
-    // NOTE: Returns whether the data is VBML or not.
-    Q_INVOKABLE static bool vbmlCheck(const QString & data);
 
     // NOTE: Returns the vbml header index.
     Q_INVOKABLE static int vbmlHeader(const QString & vbml);
