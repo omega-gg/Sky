@@ -890,18 +890,19 @@ void WBackendManagerPrivate::onDuration()
 
     if (type == Channel)
     {
+        if (hub == false) return;
+
         Q_Q(WBackendManager);
 
         QDateTime date = WControllerApplication::currentDateUtc(timeZone);
 
         int time = WControllerApplication::getMsecsWeek(date);
 
-        if (time - timeA < backend->duration() - start)
-        {
-            q->setCurrentTime(time);
-        }
         // NOTE: When the time exceeds the duration we interpolate right away.
-        else q->seek(time);
+        if (time - timeA >= backend->duration() - start)
+        {
+            q->seek(time);
+        }
 
         return;
     }
