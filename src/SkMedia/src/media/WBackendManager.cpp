@@ -497,17 +497,6 @@ void WBackendManagerPrivate::startClock()
 
     Q_Q(WBackendManager);
 
-    QDateTime date = WControllerApplication::currentDateUtc(timeZone);
-
-    int time = WControllerApplication::getMsecsWeek(date);
-
-    if (time < backend->duration())
-    {
-        q->setCurrentTime(time);
-    }
-    // NOTE: When the time exceeds the duration we interpolate right away.
-    else q->seek(time);
-
     timerSynchronize = q->startTimer(BACKENDMANAGER_TIMEOUT_SYNCHRONIZE);
     timerReload      = q->startTimer(BACKENDMANAGER_TIMEOUT_RELOAD);
 }
@@ -895,6 +884,24 @@ void WBackendManagerPrivate::onDuration()
         Q_Q(WBackendManager);
 
         q->setDuration(backend->duration());
+
+        return;
+    }
+
+    if (type == Channel)
+    {
+        Q_Q(WBackendManager);
+
+        QDateTime date = WControllerApplication::currentDateUtc(timeZone);
+
+        int time = WControllerApplication::getMsecsWeek(date);
+
+        if (time - timeA < backend->duration() - start)
+        {
+            q->setCurrentTime(time);
+        }
+        // NOTE: When the time exceeds the duration we interpolate right away.
+        else q->seek(time);
 
         return;
     }
