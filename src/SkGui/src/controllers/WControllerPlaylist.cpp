@@ -2266,7 +2266,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
 
             folder->d_func()->setQueryFinished();
 
-            if (WControllerNetwork::urlIsHttp(source))
+            /*if (WControllerNetwork::urlIsHttp(source))
             {
                 WBackendNetQuery query(source, urlBase, index);
 
@@ -2276,7 +2276,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
                 query.id = 1;
 
                 getDataFolder(folder, query);
-            }
+            }*/
 
             return true;
         }
@@ -4713,7 +4713,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         return;
     }
 
-    //---------------------------------------------------------------------------------------------
+    /*//---------------------------------------------------------------------------------------------
     // Backend html query
 
     WLibraryFolder * folder = item->toFolder();
@@ -4773,8 +4773,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         folder->d_func()->setQueryFinished();
 
         return;
-    }
-
+    }*/
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
@@ -4786,6 +4785,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     //---------------------------------------------------------------------------------------------
     // VBML
+
+    WLibraryFolder * folder = item->toFolder();
 
     WPlaylist * playlist = folder->createLibraryItemAt(0, true)->toPlaylist();
 
@@ -4865,6 +4866,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (type == WControllerPlaylist::Unknown)
     {
+        QStringList urls;
+
         foreach (const WControllerPlaylistSource & source, data.sources)
         {
             const QString & url = source.url;
@@ -4998,9 +5001,13 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
                                         playlist->trackTitle (index));
 
         // NOTE: Is this sufficient to avoid redundant calls ?
-        if (urlBase != source)
+        if (urlBase != source
+            &&
+            applyNextPlaylist(playlist, source, source, indexNext))
         {
-            if (applyNextPlaylist(playlist, source, source, indexNext)) return;
+            folder->d_func()->setQueryFinished();
+
+            return;
         }
     }
     // NOTE: Clearing the default playlist when it's empty and we have other playlist(s).
