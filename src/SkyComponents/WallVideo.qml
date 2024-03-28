@@ -373,6 +373,33 @@ WallBookmarkTrack
         }
     }
 
+    function pCheckAreaClick(mouseX, mouseY)
+    {
+        if (areaBackward.visible == false) return false;
+
+        var y = areaBackward.y;
+
+        if (mouseX < y || mouseY >= y + areaBackward.height) return false;
+
+        if (mouseX < areaBackward.width)
+        {
+            areaBackward.flash();
+
+            seekBackward();
+
+            return true;
+        }
+        else if (mouseX >= areaForward.x)
+        {
+            areaForward.flash();
+
+            seekForward();
+
+            return true;
+        }
+        else return false;
+    }
+
     //---------------------------------------------------------------------------------------------
 
     function pResetShot()
@@ -513,12 +540,24 @@ WallBookmarkTrack
             pMouse = mouse;
 
             // NOTE: We need to check tags at the root and in playerMouseArea.
-            if (scannerPlayer.click()) return;
+            if (scannerPlayer.click() || pCheckAreaClick(mouse.x, mouse.y)) return;
 
             playerClicked(mouse);
         }
 
-        /* QML_EVENT */ onDoubleClicked: function(mouse) { playerDoubleClicked(mouse); }
+        /* QML_EVENT */ onDoubleClicked: function(mouse)
+        {
+            if (mouse.button & Qt.RightButton)
+            {
+                playerDoubleClicked(mouse);
+
+                return;
+            }
+
+            if (pCheckAreaClick(mouse.x, mouse.y)) return;
+
+            playerDoubleClicked(mouse);
+        }
     }
 
     Rectangle
@@ -714,6 +753,47 @@ WallBookmarkTrack
         }
     }
 
+    RectangleShadowClick
+    {
+        id: areaBackward
+
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
+
+        width: pAreaWidth
+
+        z: player.z
+
+        visible: (isExposed == false
+                  &&
+                  player.isPlaying && player.duration != -1)
+
+        interactive: false
+
+        direction: Sk.Right
+
+        filter: st.wallVideo_filterShadow
+    }
+
+    RectangleShadowClick
+    {
+        id: areaForward
+
+        anchors.right : player.right
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
+
+        width: pAreaWidth
+
+        z: player.z
+
+        visible: areaBackward.visible
+
+        interactive: false
+
+        filter: st.wallVideo_filterShadow
+    }
+
     TextSubtitle
     {
         id: itemText
@@ -835,7 +915,7 @@ WallBookmarkTrack
             {
                 tagClicked(pMouse, text);
             }
-            else if (enablePress)
+            else if (enablePress && pCheckAreaClick(pMouse.x, pMouse.y) == false)
             {
                 playerClicked(pMouse);
             }

@@ -71,7 +71,7 @@ Scanner
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    visible: (player.visible || cover.visible)
+    visible: ((player && player.visible) || (cover && cover.visible))
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -250,7 +250,7 @@ Scanner
 
         repeat: true
 
-        running: (player.isPlaying && rectangleTag.isAnimated == false)
+        running: (player && player.isPlaying && rectangleTag.isAnimated == false)
 
         onTriggered: pScan()
     }
