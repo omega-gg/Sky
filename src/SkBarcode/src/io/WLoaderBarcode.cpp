@@ -99,33 +99,46 @@ public: // Variables
 
     image.loadFromData(data);
 
+    QByteArray data;
+    QString    source;
+
     QStringList texts = WBarcodeReader::reads(image);
 
-    // NOTE: When we have multiple barcodes in the image we skip it altogether.
-    if (texts.isEmpty() || texts.count() > 1) return true;
-
-    QString text = texts.first();
-
-    QString source = WControllerPlaylist::generateSource(text);
-
-    if (WControllerPlaylist::urlIsVbmlUri(source))
+    foreach (const QString & text, texts)
     {
-        reply->source = source;
+        QString uri = WControllerPlaylist::generateSource(text);
+
+        if (WControllerPlaylist::urlIsVbmlUri(uri) == false)
+        {
+            // NOTE: When we have multiple valid barcodes in the image we skip them.
+            if (data.isEmpty() == false) return true;
+
+            data = text.toUtf8();
+
+            continue;
+        }
 
         // NOTE: Removing the 'vbml:' part.
-        source = source.remove(0, 5);
+        uri.remove(0, 5);
 
-#ifdef QT_4
-        // FIXME Qt4: This version does not support encoding flags.
-        QByteArray data = QByteArray::fromBase64(source.toUtf8());
-#else
-        QByteArray data = QByteArray::fromBase64(source.toUtf8(), QByteArray::Base64UrlEncoding |
-                                                                  QByteArray::OmitTrailingEquals);
-#endif
+        QByteArray array = WUnzipper::extractBase64(uri.toUtf8());
 
-        reply->data = WUnzipper::extract(data);
+        if (WControllerPlaylist::textIsVbmlHash(array) == false)
+        {
+            // NOTE: When we have multiple valid barcodes in the image we skip them.
+            if (data.isEmpty() == false) return true;
+
+            data = array;
+
+            source = uri;
+
+            continue;
+        }
     }
-    else reply->data = text.toUtf8();
+
+    reply->data = data;
+
+    reply->source = source;
 
     return true;
 }
