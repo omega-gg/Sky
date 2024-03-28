@@ -2385,13 +2385,13 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
             query = WBackendNetQuery(source);
 
+            // NOTE: We want to avoid large binary files.
+            query.scope = WAbstractLoader::ScopeText;
+
             query.indexNext = indexNext;
 
             // NOTE: We propagate the compatibility mode.
             query.mode = mode;
-
-            // NOTE: We want to avoid large binary files.
-            query.scope = WAbstractLoader::ScopeText;
 
             media->urlSource = source;
 

@@ -1448,7 +1448,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (index == -1)
     {
-        return string;
+        return QString();
     }
     else return string.right(string.length() - index - 1);
 }
@@ -1459,7 +1459,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (index == -1)
     {
-        return string;
+        return QString();
     }
     else return string.right(string.length() - index - 1);
 }

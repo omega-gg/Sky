@@ -92,6 +92,8 @@ public: // Variables
     Type   type;
     Target target;
 
+    WAbstractLoader::Scope scope;
+
     QString backend;
 
     QString url;
@@ -110,8 +112,6 @@ public: // Variables
     WAbstractBackend::SourceMode mode;
 
     QVariant data;
-
-    WAbstractLoader::Scope scope;
 
     QString header;
     QString body;

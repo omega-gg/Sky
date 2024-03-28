@@ -97,6 +97,8 @@ void WBackendNetQuery::init(Type type, const QString & url, int indexNext)
 
     target = TargetDefault;
 
+    scope = WAbstractLoader::ScopeDefault;
+
     this->url = url;
 
     currentTime = -1;
@@ -110,8 +112,6 @@ void WBackendNetQuery::init(Type type, const QString & url, int indexNext)
     priority = QNetworkRequest::NormalPriority;
 
     mode = WAbstractBackend::SourceDefault;
-
-    scope = WAbstractLoader::ScopeDefault;
 
     clearItems = false;
     cookies    = false;
@@ -136,6 +136,8 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
     type   = other.type;
     target = other.target;
 
+    scope = other.scope;
+
     backend = other.backend;
 
     url         = other.url;
@@ -154,8 +156,6 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
     mode = other.mode;
 
     data = other.data;
-
-    scope = other.scope;
 
     header = other.header;
     body   = other.body;

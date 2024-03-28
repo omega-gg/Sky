@@ -2003,6 +2003,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
                 WBackendNetQuery query(source, urlBase, index);
 
                 query.target = WBackendNetQuery::TargetHtml;
+                query.scope  = WAbstractLoader::ScopeText;
 
                 getDataPlaylist(playlist, query);
             }
@@ -2270,7 +2271,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
                 WBackendNetQuery query(source, urlBase, index);
 
                 query.target = WBackendNetQuery::TargetHtml;
-                query.id     = 1;
+                query.scope  = WAbstractLoader::ScopeText;
+
+                query.id = 1;
 
                 getDataFolder(folder, query);
             }
@@ -3196,11 +3199,9 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
         WBackendNetQuery query(q);
 
         query.target = WBackendNetQuery::TargetRelated;
+        query.scope  = WAbstractLoader::ScopeText;
 
         query.backend = "vbml";
-
-        // NOTE: The url might be a large media file so we scope it to text.
-        query.scope = WAbstractLoader::ScopeText;
 
         return query;
     }
