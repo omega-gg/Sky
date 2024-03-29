@@ -45,6 +45,8 @@ public: // Interface
     Q_INVOKABLE int getTimeA() const;
     Q_INVOKABLE int getTimeB() const;
 
+    Q_INVOKABLE int getStart() const;
+
 protected: // Virtual functions
     virtual WAbstractHook * createHook(WAbstractBackend * backend); // {}
 

@@ -1018,6 +1018,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     Q_D(const WBackendManager); return d->timeB;
 }
 
+/* Q_INVOKABLE */ int WBackendManager::getStart() const
+{
+    Q_D(const WBackendManager); return d->start;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
