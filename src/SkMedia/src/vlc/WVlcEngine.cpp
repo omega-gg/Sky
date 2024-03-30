@@ -278,7 +278,7 @@ void WVlcEnginePrivate::clearDiscoverers()
                 "--text-renderer=none", /* No FreeType      */
                 //"--adaptive-logic=highest", /* High resolution  */
                 // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
-                "--http-reconnect",     /* Auto reconnect   */
+                //"--http-reconnect",     /* Auto reconnect   */
                 // NOTE: This is useful for the mkv default language.
                 "--audio-language=en"   /* Audio english    */
                 //"--input-fast-seek", /* Fast seek        */
