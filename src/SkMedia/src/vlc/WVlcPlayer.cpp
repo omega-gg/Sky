@@ -542,6 +542,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             else libvlc_media_add_option(media, "no-audio");
         }
 
+        //libvlc_media_add_option(media, "preferred-resolution=1080");
+
         if (eventSource->loop)
         {
             // NOTE: We use the maximum value given we can't set an infinite value.

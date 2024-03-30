@@ -657,6 +657,14 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 {
     QString content = Sk::readUtf8(array);
 
+    // NOTE: When the m3u is too complex we let the player handle the parsing.
+    if (content.contains("#EXT-X-MEDIA"))
+    {
+        medias.insert(WAbstractBackend::QualityDefault, url);
+
+        return;
+    }
+
     QString urlBase = WControllerNetwork::extractBaseUrl(url) + '/';
 
     QString fileName = WControllerNetwork::extractUrlFileName(url);

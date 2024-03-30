@@ -264,22 +264,23 @@ void WVlcEnginePrivate::clearDiscoverers()
         {
             const char * const args[] =
             {
-                "--intf=dummy",        /* No interface     */
+                "--intf=dummy",         /* No interface     */
 #ifdef Q_OS_WIN
-                "--dummy-quiet",       /* No command-line  */
+                "--dummy-quiet",        /* No command-line  */
 #elif defined(Q_OS_MACX)
                 "--vout=macosx",
 #endif
-                "--ignore-config",     /* No configuration */
-                "--no-spu",            /* No sub-pictures  */
-                "--no-osd",            /* No video overlay */
-                "--no-stats",          /* No statistics    */
-                "--no-media-library",  /* No Media Library */
-                "--text-renderer=none" /* No FreeType      */
+                "--ignore-config",      /* No configuration */
+                "--no-spu",             /* No sub-pictures  */
+                "--no-osd",             /* No video overlay */
+                "--no-stats",           /* No statistics    */
+                "--no-media-library",   /* No Media Library */
+                "--text-renderer=none", /* No FreeType      */
+                //"--adaptive-logic=highest", /* High resolution  */
                 // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
-                "--http-reconnect",    /* Auto reconnect   */
+                "--http-reconnect",     /* Auto reconnect   */
                 // NOTE: This is useful for the mkv default language.
-                "--audio-language=en"  /* Audio english    */
+                "--audio-language=en"   /* Audio english    */
                 //"--input-fast-seek", /* Fast seek        */
                 //"--avcodec-fast",    /* Speed tricks     */
                 //"--avcodec-dr",
