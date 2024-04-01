@@ -33,6 +33,8 @@ RectangleShadow
 
     property real ratio: st.rectangleShadowClick_ratio
 
+    property bool hovered: mouseArea.hoverActive
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -79,7 +81,7 @@ RectangleShadow
 
     function getOpacity()
     {
-        if (mouseArea.hoverActive)
+        if (hovered)
         {
             if (mouseArea.pressed) return 1.0;
             else                   return 0.5;

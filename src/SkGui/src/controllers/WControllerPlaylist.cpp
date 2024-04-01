@@ -4658,36 +4658,33 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
     }
 
+    QString url = playlist->source();
+
     // NOTE: When our related results are less than 10 we try without the currentTime.
-    if (playlist->count() < 10)
+    if (WControllerNetwork::extractUrlValue(url, "method") == "related"
+        &&
+        playlist->count() < 10)
     {
-        QString url = playlist->source();
+        source = WControllerNetwork::removeUrlQuery(url, "t");
 
-        if (WControllerNetwork::extractUrlValue(url, "method") == "related")
+        if (source != url)
         {
-            source = WControllerNetwork::removeUrlQuery(url, "t");
+            playlist->applySource(source);
 
-            if (source != url)
-            {
-                playlist->applySource(source);
-
-                if (applyNextPlaylist(playlist, source, source, indexNext)) return;
-            }
+            if (applyNextPlaylist(playlist, source, source, indexNext)) return;
         }
     }
     else if (urlTracks.count() == 1)
     {
         int index = playlist->count() - 1;
 
-        source = playlist->trackSource(index);
+        source = q->sourceRelatedTracks(playlist->trackSource(index),
+                                        playlist->trackTitle (index));
 
         // NOTE: Is this sufficient to avoid redundant calls ?
-        if (urlBase != source)
-        {
-            source = q->sourceRelatedTracks(source, playlist->trackTitle(index));
-
-            if (applyNextPlaylist(playlist, source, source, indexNext)) return;
-        }
+        if (urlBase != source
+            &&
+            applyNextPlaylist(playlist, source, source, indexNext)) return;
     }
 
     // NOTE: We reload the cover in case it changed since the last time.
