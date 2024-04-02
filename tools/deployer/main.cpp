@@ -204,6 +204,81 @@ void replaceFile(const QString & path, const QString & content)
 
 //-------------------------------------------------------------------------------------------------
 
+bool applyImports(QString * content, const QString & line)
+{
+    for (int i = 0; i < imports.count(); i++)
+    {
+        QString import = imports.at(i);
+
+        if (line.startsWith(import) == false) continue;
+
+        content->append(import + ' ' + versions.at(i) + '\n');
+
+        return true;
+    }
+
+    return false;
+}
+
+void applyEvent(QString * line, int index)
+{
+    line->remove(index, 16);
+
+    if (qt > 5) return;
+
+    index = line->indexOf(':', index) + 1;
+
+    int indexB = line->indexOf(')', index + 1) + 1;
+
+    // NOTE: Removing the function(...) part.
+    line->remove(index, indexB - index);
+}
+
+void applyConnection(QString * line, int index)
+{
+    line->remove(index, 21);
+
+    if (qt > 5) return;
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Replacing the function(...) part.
+
+    int indexB = line->indexOf("function ", index);
+
+    if (indexB == -1) return;
+
+    line->remove(index, indexB + 9 - index);
+
+    index = line->indexOf('(', index);
+
+    if (index == -1) return;
+
+    indexB = line->indexOf(')', index + 1) + 1;
+
+    line->remove(index, indexB - index);
+
+    line->insert(index, ':');
+}
+
+void applyLine(QString * line)
+{
+    int index = 0;
+
+    // NOTE: Skipping the line spaces.
+    while (index < line->length()
+           &&
+           line->at(index).isSpace()) index++;
+
+    if (line->indexOf("/* QML_EVENT */ ") == index)
+    {
+        applyEvent(line, index);
+    }
+    else if (line->indexOf("/* QML_CONNECTION */ ") == index)
+    {
+        applyConnection(line, index);
+    }
+}
+
 void applyFiles(const QString & path)
 {
     foreach (const QString & fileName, fileNames)
@@ -240,6 +315,8 @@ bool writeNext(QTextStream * stream, QString * content, QString * line)
 
     while (line->startsWith("//#") == false)
     {
+        applyLine(line);
+
         content->append(*line + '\n');
 
         *line = stream->readLine();
@@ -343,66 +420,6 @@ void skipElse(QTextStream * stream, QString * line)
 
 //-------------------------------------------------------------------------------------------------
 
-bool applyImports(QString * content, const QString & line)
-{
-    for (int i = 0; i < imports.count(); i++)
-    {
-        QString import = imports.at(i);
-
-        if (line.startsWith(import) == false) continue;
-
-        content->append(import + ' ' + versions.at(i) + '\n');
-
-        return true;
-    }
-
-    return false;
-}
-
-void applyEvent(QString * line, int index)
-{
-    line->remove(index, 16);
-
-    if (qt > 5) return;
-
-    index = line->indexOf(':', index) + 1;
-
-    int indexB = line->indexOf(')', index + 1) + 1;
-
-    // NOTE: Removing the function(...) part.
-    line->remove(index, indexB - index);
-}
-
-void applyConnection(QString * line, int index)
-{
-    line->remove(index, 21);
-
-    if (qt > 5) return;
-
-    //---------------------------------------------------------------------------------------------
-    // NOTE: Replacing the function(...) part.
-
-    int indexB = line->indexOf("function ", index);
-
-    if (indexB == -1) return;
-
-    line->remove(index, indexB + 9 - index);
-
-    index = line->indexOf('(', index);
-
-    if (index == -1) return;
-
-    indexB = line->indexOf(')', index + 1) + 1;
-
-    line->remove(index, indexB - index);
-
-    line->insert(index, ':');
-
-    //---------------------------------------------------------------------------------------------
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QString scanFile(const QString & input)
 {
     QString content;
@@ -445,21 +462,7 @@ QString scanFile(const QString & input)
         }
         else
         {
-            int index = 0;
-
-            // NOTE: Skipping the line spaces.
-            while (index < line.length()
-                   &&
-                   line.at(index).isSpace()) index++;
-
-            if (line.indexOf("/* QML_EVENT */ ") == index)
-            {
-                applyEvent(&line, index);
-            }
-            else if (line.indexOf("/* QML_CONNECTION */ ") == index)
-            {
-                applyConnection(&line, index);
-            }
+            applyLine(&line);
 
             content.append(line + '\n');
 
