@@ -827,7 +827,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // TabBarProgress
 
-    property int tabBarProgress_height: dp3
+    property int tabBarProgress_height: dp2
 
     property color tabBarProgress_colorA: sliderStream_colorBarB
     property color tabBarProgress_colorB: sliderStream_colorBarA

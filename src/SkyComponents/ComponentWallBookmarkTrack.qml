@@ -256,7 +256,7 @@ ComponentWall
     {
         anchors.bottom: parent.bottom
 
-        width: (item.currentTime * (parent.width - itemIcon.width)) / item.duration
+        width: (visible) ? (item.currentTime * (parent.width - itemIcon.width)) / item.duration : 0
 
         x: itemIcon.width
 

@@ -119,7 +119,7 @@ ComponentTabBrowser
         anchors.left  : itemIcon.right
         anchors.bottom: parent.bottom
 
-        width: (item) ? item.currentTime * (parent.width - itemIcon.width) / item.duration : 0
+        width: (visible) ? item.currentTime * (parent.width - itemIcon.width) / item.duration : 0
 
         visible: (isCurrent == false && isHighlighted == false && item.currentTime > 0)
 
