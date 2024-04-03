@@ -163,6 +163,13 @@ WallBookmarkTrack
 
     Connections
     {
+        target: window
+
+        /* QML_CONNECTION */ function onMousePosChanged() { pCheckAreaHover() }
+    }
+
+    Connections
+    {
         target: tabs
 
         /* QML_CONNECTION */ function onCurrentTabChanged()
@@ -373,15 +380,71 @@ WallBookmarkTrack
         }
     }
 
+    //---------------------------------------------------------------------------------------------
+
+    function pCheckArea(mouseX, mouseY)
+    {
+        var mouseArea = areaBackward.mouseArea;
+
+        var y = areaBackward.y + mouseArea.y;
+
+        if (mouseY < y || mouseY >= y + mouseArea.height) return 0;
+
+        if (mouseX < areaBackward.width)
+        {
+            return 1;
+        }
+        else if (mouseX >= areaForward.x)
+        {
+            return 2;
+        }
+        else return 0;
+    }
+
+    function pCheckAreaHover()
+    {
+        if (areaBackward.visible == false
+            ||
+            scannerPlayer.isHovered || scannerBrowser.isHovered)
+        {
+            areaBackward.hovered = false;
+            areaForward .hovered = false;
+
+            return;
+        }
+
+        var position = window.mapToItem(wall, window.mouseX, window.mouseY);
+
+        var index = pCheckArea(position.x, position.y);
+
+        if (index == 0)
+        {
+            areaBackward.hovered = false;
+            areaForward .hovered = false;
+        }
+        else if (index == 1)
+        {
+            areaBackward.hovered = true;
+            areaForward .hovered = false;
+        }
+        else // if (index == 2)
+        {
+            areaBackward.hovered = false;
+            areaForward .hovered = true;
+        }
+    }
+
     function pCheckAreaClick(mouseX, mouseY)
     {
         if (areaBackward.visible == false) return false;
 
-        var y = areaBackward.y;
+        var index = pCheckArea(mouseX, mouseY);
 
-        if (mouseX < y || mouseY >= y + areaBackward.height) return false;
-
-        if (mouseX < areaBackward.width)
+        if (index == 0)
+        {
+            return false;
+        }
+        else if (index == 1)
         {
             areaBackward.flash();
 
@@ -389,7 +452,7 @@ WallBookmarkTrack
 
             return true;
         }
-        else if (mouseX >= areaForward.x)
+        else // if (index == 2)
         {
             areaForward.flash();
 
@@ -397,7 +460,6 @@ WallBookmarkTrack
 
             return true;
         }
-        else return false;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -920,6 +982,8 @@ WallBookmarkTrack
                 playerClicked(pMouse);
             }
         }
+
+        onIsHoveredChanged: pCheckAreaHover()
     }
 
     ItemScan
@@ -935,6 +999,8 @@ WallBookmarkTrack
         cover: browserCover
 
         /* QML_EVENT */ onClicked: function(text) { tagClicked(pMouse, text) }
+
+        onIsHoveredChanged: pCheckAreaHover()
     }
 
     PlayerBrowser
