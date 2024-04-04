@@ -1452,66 +1452,75 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     // NOTE: The VBML uri is prioritized because it might contain an http url.
     if (WControllerPlaylist::urlIsVbmlUri(source))
     {
-        if (source.startsWith("vbml://") == false)
-        {
-            query.type = WBackendNetQuery::TypeVbml;
-
-            query.url = source;
-        }
-        else query.url = source.replace("vbml://", "https://");
-    }
-
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
-
-    if (backend)
-    {
-        QString backendId = backend->id();
-
-        query = backend->getQuerySource(source);
-
-        backend->tryDelete();
-
-        if (resolve(backendId, query) == false)
-        {
-            reply->_medias.insert(WAbstractBackend::QualityDefault, url);
-
-            reply->_loaded = true;
-
-            return;
-        }
-    }
-    else
-    {
-        QString extension = WControllerNetwork::extractUrlExtension(source);
-
-        if (WControllerPlaylist::extensionIsM3u(extension))
-        {
-            query.target = WBackendNetQuery::TargetM3u;
-
-            query.url = source;
-        }
-        else if (WControllerPlaylist::extensionIsVbml(extension))
-        {
-            query.url = source;
-        }
-        // NOTE: An http source could be VBML so we try to load it anyway.
-        else if (WControllerNetwork::urlIsHttp(source)
-                 &&
-                 // NOTE: An IP can be a HookTorrent server.
-                 WControllerNetwork::urlIsIp(source) == false)
+        if (source.startsWith("vbml://"))
         {
             // NOTE: We want to avoid large binary files.
             query.scope = WAbstractLoader::ScopeText;
 
-            query.url = source;
+            query.url = source.replace("vbml://", "https://");
         }
         else
         {
-            reply->_medias.insert(WAbstractBackend::QualityDefault, url);
+            query.type   = WBackendNetQuery::TypeVbml;
+            query.target = WBackendNetQuery::TargetVbml;
 
-            reply->_loaded = true;
+            query.url = source;
+        }
+    }
+    else
+    {
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
-            return;
+        if (backend)
+        {
+            QString backendId = backend->id();
+
+            query = backend->getQuerySource(source);
+
+            backend->tryDelete();
+
+            if (resolve(backendId, query) == false)
+            {
+                reply->_medias.insert(WAbstractBackend::QualityDefault, url);
+
+                reply->_loaded = true;
+
+                return;
+            }
+        }
+        else
+        {
+            QString extension = WControllerNetwork::extractUrlExtension(source);
+
+            if (WControllerPlaylist::extensionIsM3u(extension))
+            {
+                query.target = WBackendNetQuery::TargetM3u;
+
+                query.url = source;
+            }
+            else if (WControllerPlaylist::extensionIsVbml(extension))
+            {
+                query.url = source;
+            }
+            // NOTE: An http source could be VBML so we try to load it anyway.
+            else if (WControllerNetwork::urlIsHttp(source)
+                     &&
+                     // NOTE: An IP can be a HookTorrent server.
+                     WControllerNetwork::urlIsIp(source) == false)
+            {
+                // NOTE: We want to avoid large binary files.
+                query.scope = WAbstractLoader::ScopeText;
+
+                query.url = source;
+            }
+            else
+            {
+                reply->_medias.insert(WAbstractBackend::QualityDefault, url);
+
+                reply->_loaded = true;
+
+                return;
+            }
         }
     }
 
