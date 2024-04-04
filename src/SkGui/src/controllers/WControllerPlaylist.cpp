@@ -4802,13 +4802,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         if (source.startsWith('#'))
         {
-            playlist->applySource(source);
-
-            emit playlist->queryEnded();
-
-            playlist->d_func()->setQueryLoaded();
-
-            playlist->tryDelete();
+            folder->applySource(source);
 
             folder->d_func()->setQueryFinished();
 
