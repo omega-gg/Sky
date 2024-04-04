@@ -1009,9 +1009,13 @@ void WTabTrackPrivate::onCurrentTrackChanged()
 
 void WTabTrackPrivate::onTrackLoaded()
 {
+    Q_Q(WTabTrack);
+
     const WTrack * track = playlistTrack->currentTrackPointer();
 
     setTrack(track);
+
+    QObject::disconnect(playlistTrack, 0, q, 0);
 
     playlistTrack->tryDelete();
 

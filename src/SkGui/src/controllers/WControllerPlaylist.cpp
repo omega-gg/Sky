@@ -6656,9 +6656,11 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlHash(const QString & text)
 {
-    QString string = text.simplified().toLower();
+    QString string = text.simplified();
 
     if (string.startsWith('#') == false) return QString();
+
+    string = string.toLower();
 
     QString result;
 
@@ -6673,6 +6675,18 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     }
 
     return result;
+}
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlHashFromUrl(const QString & url)
+{
+    QString uri = generateSource(url);
+
+    if (urlIsVbmlUri(uri) == false) return QString();
+
+    // NOTE: Removing the 'vbml:' part.
+    uri.remove(0, 5);
+
+    return vbmlHash(WUnzipper::extractBase64(uri.toUtf8()));
 }
 
 /* Q_INVOKABLE static */ QStringList WControllerPlaylist::vbmlTags(const WYamlNodeBase & node)
