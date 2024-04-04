@@ -100,7 +100,7 @@ WallBookmarkTrack
     property alias playerBackground: playerBackground
     property alias playerBrowser   : playerBrowser
 
-    property alias itemText: itemText
+    property alias subtitle: subtitle
 
     property alias itemLoader: itemLoader
 
@@ -191,7 +191,7 @@ WallBookmarkTrack
 
     Connections
     {
-        target: (itemText.visible) ? player : null
+        target: (subtitle.visible) ? player : null
 
         /* QML_CONNECTION */ function onWidthChanged () { pUpdateText(); }
         /* QML_CONNECTION */ function onHeightChanged() { pUpdateText(); }
@@ -483,7 +483,7 @@ WallBookmarkTrack
 
     function pUpdateText()
     {
-        pMargin = itemText.applySize(player, playerCover);
+        pMargin = subtitle.applySize(player, playerCover);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -861,7 +861,7 @@ WallBookmarkTrack
 
     TextSubtitle
     {
-        id: itemText
+        id: subtitle
 
         anchors.left  : player.left
         anchors.right : player.right
