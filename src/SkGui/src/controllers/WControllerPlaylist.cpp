@@ -3174,13 +3174,23 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
     QString q = WControllerNetwork::decodeUrl(urlQuery.queryItemValue("q"));
 #endif
 
-    if (WControllerPlaylist::urlIsVbml(q))
+    if (WControllerPlaylist::urlIsVbmlUri(q))
     {
         WBackendNetQuery query(q);
 
-        query.target = WBackendNetQuery::TargetRelated;
+        query.type = WBackendNetQuery::TypeVbml;
 
-        query.backend = "vbml";
+        query.backend = "related";
+
+        return query;
+    }
+    else if (WControllerFile::urlIsImage(q))
+    {
+        WBackendNetQuery query(q);
+
+        query.type = WBackendNetQuery::TypeImage;
+
+        query.backend = "related";
 
         return query;
     }
@@ -3194,18 +3204,14 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
         return query;
     }
-    else if (WControllerNetwork::urlIsHttp(q))
-    {
-        WBackendNetQuery query(q);
 
-        query.target = WBackendNetQuery::TargetRelated;
-        query.scope  = WAbstractLoader::ScopeText;
+    WBackendNetQuery query(q);
 
-        query.backend = "vbml";
+    query.scope = WAbstractLoader::ScopeText;
 
-        return query;
-    }
-    else return WBackendNetQuery();
+    query.backend = "related";
+
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3725,16 +3731,19 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (id.isEmpty())
     {
-         backend = q->backendFromUrl(backendQuery->url);
+        backend = q->backendFromUrl(backendQuery->url);
     }
     else if (id == "vbml")
     {
         backend = NULL;
 
-        if (backendQuery->target != WBackendNetQuery::TargetRelated)
-        {
-            backendQuery->target = WBackendNetQuery::TargetVbml;
-        }
+        backendQuery->target = WBackendNetQuery::TargetVbml;
+    }
+    else if (id == "related")
+    {
+        backend = NULL;
+
+        backendQuery->target = WBackendNetQuery::TargetRelated;
     }
     else backend = q->backendFromId(id);
 
