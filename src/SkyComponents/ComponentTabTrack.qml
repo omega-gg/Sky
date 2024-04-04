@@ -114,7 +114,7 @@ ComponentTabBrowser
     // Children
     //---------------------------------------------------------------------------------------------
 
-    TabBarProgress
+    BarProgress
     {
         anchors.left  : itemIcon.right
         anchors.bottom: parent.bottom

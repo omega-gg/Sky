@@ -252,7 +252,7 @@ ComponentWall
     // Children
     //---------------------------------------------------------------------------------------------
 
-    TabBarProgress
+    BarProgress
     {
         anchors.bottom: parent.bottom
 

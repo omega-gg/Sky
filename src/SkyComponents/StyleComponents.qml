@@ -202,6 +202,19 @@ Style
     property int barTitleText_pixelSize: dp14
 //#END
 
+//#BarProgress
+    //---------------------------------------------------------------------------------------------
+    // BarProgress
+
+    property int barProgress_height: dp2
+
+    property color barProgress_colorA: sliderStream_colorBarB
+    property color barProgress_colorB: sliderStream_colorBarA
+
+    property color barProgress_colorDisableA: "#969696"
+    property color barProgress_colorDisableB: barProgress_colorDisableA
+//#END
+
 //#BaseButton
     //---------------------------------------------------------------------------------------------
     // Button
@@ -823,19 +836,6 @@ Style
     property int tabsPlayer_overlayHeight: itemTab_iconHeight
 //#END
 
-//#TabBarProgress
-    //---------------------------------------------------------------------------------------------
-    // TabBarProgress
-
-    property int tabBarProgress_height: dp2
-
-    property color tabBarProgress_colorA: sliderStream_colorBarB
-    property color tabBarProgress_colorB: sliderStream_colorBarA
-
-    property color tabBarProgress_colorDisableA: "#969696"
-    property color tabBarProgress_colorDisableB: tabBarProgress_colorDisableA
-//#END
-
 //#BaseWall
     //---------------------------------------------------------------------------------------------
     // BaseWall
@@ -1314,6 +1314,14 @@ Style
         barTitleSmall_colorB = barWindow_colorB;
 //#END
 
+//#BarProgress
+        //-----------------------------------------------------------------------------------------
+        // BarProgress
+
+        barProgress_colorDisableA = "#969696";
+        barProgress_colorDisableB = barProgress_colorDisableA;
+//#END
+
 //#BaseButton
         //-----------------------------------------------------------------------------------------
         // Button
@@ -1482,14 +1490,6 @@ Style
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
 //#END
 
-//#TabBarProgress
-        //-----------------------------------------------------------------------------------------
-        // TabBarProgress
-
-        tabBarProgress_colorDisableA = "#969696";
-        tabBarProgress_colorDisableB = tabBarProgress_colorDisableA;
-//#END
-
 //#PlayerBrowser
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
@@ -1620,6 +1620,14 @@ Style
 
         barTitleSmall_colorA = barWindow_colorA;
         barTitleSmall_colorB = barWindow_colorB;
+//#END
+
+//#BarProgress
+        //-----------------------------------------------------------------------------------------
+        // BarProgress
+
+        barProgress_colorDisableA = sliderStream_colorBarDisableB;
+        barProgress_colorDisableB = sliderStream_colorBarDisableA;
 //#END
 
 //#BaseButton
@@ -1790,14 +1798,6 @@ Style
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
 //#END
 
-//#TabBarProgress
-        //-----------------------------------------------------------------------------------------
-        // TabBarProgress
-
-        tabBarProgress_colorDisableA = sliderStream_colorBarDisableB;
-        tabBarProgress_colorDisableB = sliderStream_colorBarDisableA;
-//#END
-
 //#PlayerBrowser
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
@@ -1928,6 +1928,14 @@ Style
 
         barTitleSmall_colorA = "#646464";
         barTitleSmall_colorB = "#484848";
+//#END
+
+//#BarProgress
+        //-----------------------------------------------------------------------------------------
+        // BarProgress
+
+        barProgress_colorDisableA = sliderStream_colorBarDisableB;
+        barProgress_colorDisableB = sliderStream_colorBarDisableA;
 //#END
 
 //#BaseButton
@@ -2096,14 +2104,6 @@ Style
 
         sliderStream_colorBarProgressA = "#646464";
         sliderStream_colorBarProgressB = "#dcdcdc";
-//#END
-
-//#TabBarProgress
-        //-----------------------------------------------------------------------------------------
-        // TabBarProgress
-
-        tabBarProgress_colorDisableA = sliderStream_colorBarDisableB;
-        tabBarProgress_colorDisableB = sliderStream_colorBarDisableA;
 //#END
 
 //#PlayerBrowser

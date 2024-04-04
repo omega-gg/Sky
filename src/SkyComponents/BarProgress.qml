@@ -30,17 +30,17 @@ Rectangle
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property color colorA: st.tabBarProgress_colorA
-    property color colorB: st.tabBarProgress_colorB
+    property color colorA: st.barProgress_colorA
+    property color colorB: st.barProgress_colorB
 
-    property color colorDisableA: st.tabBarProgress_colorDisableA
-    property color colorDisableB: st.tabBarProgress_colorDisableB
+    property color colorDisableA: st.barProgress_colorDisableA
+    property color colorDisableB: st.barProgress_colorDisableB
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    height: st.tabBarProgress_height
+    height: st.barProgress_height
 
     gradient: Gradient
     {

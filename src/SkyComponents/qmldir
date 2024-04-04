@@ -42,6 +42,7 @@ BarTitleSmall   1.0 BarTitleSmall.qml
 BarTitleText    1.0 BarTitleText.qml
 BarSetting      1.0 BarSetting.qml
 BarSettingReset 1.0 BarSettingReset.qml
+BarProgress     1.0 BarProgress.qml
 
 BaseButtonPush       1.0 BaseButtonPush.qml
 BaseButtonPiano      1.0 BaseButtonPiano.qml
@@ -137,8 +138,6 @@ Tabs        1.0 Tabs.qml
 TabsBrowser 1.0 TabsBrowser.qml
 TabsTrack   1.0 TabsTrack.qml
 TabsPlayer  1.0 TabsPlayer.qml
-
-TabBarProgress 1.0 TabBarProgress.qml
 
 BaseWall          1.0 BaseWall.qml
 Wall              1.0 Wall.qml
