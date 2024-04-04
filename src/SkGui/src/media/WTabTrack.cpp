@@ -2050,7 +2050,13 @@ QString WTabTrack::coverShot() const
     }
     else if (d->currentBookmark->currentTime() != -1)
     {
-         return d->currentBookmark->videoShot();
+        QString cover = d->currentBookmark->videoShot();
+
+        if (cover.isEmpty())
+        {
+            return d->currentBookmark->cover();
+        }
+        else return cover;
     }
     else return d->currentBookmark->cover();
 }
