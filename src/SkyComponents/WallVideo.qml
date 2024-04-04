@@ -384,13 +384,17 @@ WallBookmarkTrack
 
     function pCheckArea(mouseX, mouseY)
     {
+        var x = areaBackward.x;
+
+        if (mouseX < x || mouseX >= x + player.width) return 0;
+
         var mouseArea = areaBackward.mouseArea;
 
         var y = areaBackward.y + mouseArea.y;
 
         if (mouseY < y || mouseY >= y + mouseArea.height) return 0;
 
-        if (mouseX < areaBackward.width)
+        if (mouseX < x + areaBackward.width)
         {
             return 1;
         }
@@ -819,6 +823,7 @@ WallBookmarkTrack
     {
         id: areaBackward
 
+        anchors.left  : player.left
         anchors.top   : player.top
         anchors.bottom: player.bottom
 
@@ -826,9 +831,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (isExposed == false
-                  &&
-                  player.isPlaying && player.duration != -1)
+        visible: (player.isPlaying && player.duration != -1)
 
         interactive: false
 
@@ -977,7 +980,7 @@ WallBookmarkTrack
             {
                 tagClicked(pMouse, text);
             }
-            else if (enablePress && pCheckAreaClick(pMouse.x, pMouse.y) == false)
+            else if (pCheckAreaClick(pMouse.x, pMouse.y) == false && enablePress)
             {
                 playerClicked(pMouse);
             }

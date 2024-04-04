@@ -937,6 +937,7 @@ Style
 
     property color itemList_colorBorder       : border_colorLight
     property color itemList_colorBorderDefault: "#b4b4b4"
+    property color itemList_colorBorderBar    : "#969696"
 
     property color itemList_colorText        : "#646464"
     property color itemList_colorTextHover   : text_color
@@ -1527,6 +1528,7 @@ Style
 
         itemList_colorBorder        = border_colorLight;
         itemList_colorBorderDefault = "#b4b4b4";
+        itemList_colorBorderBar     = "#969696";
 
         itemList_colorText         = "#646464";
         itemList_colorTextSelected = text2_color;
@@ -1835,6 +1837,7 @@ Style
 
         itemList_colorBorder        = border_colorLight;
         itemList_colorBorderDefault = "#161616";
+        itemList_colorBorderBar     = "#646464";
 
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;
@@ -2143,6 +2146,7 @@ Style
 
         itemList_colorBorder        = border_colorLight;
         itemList_colorBorderDefault = "#161616";
+        itemList_colorBorderBar     = "#646464";
 
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;
