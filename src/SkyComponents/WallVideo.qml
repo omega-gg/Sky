@@ -261,6 +261,16 @@ WallBookmarkTrack
     }
 
     //---------------------------------------------------------------------------------------------
+
+//#DESKTOP
+    function clearHover()
+    {
+        scannerPlayer .clearHover();
+        scannerBrowser.clearHover();
+    }
+//#END
+
+    //---------------------------------------------------------------------------------------------
     // WallBookmarkTrack reimplementation
 
     function getItemBarMargin(index)

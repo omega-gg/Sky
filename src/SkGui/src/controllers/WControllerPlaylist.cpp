@@ -6695,7 +6695,11 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     // NOTE: Removing the 'vbml:' part.
     uri.remove(0, 5);
 
-    return vbmlHash(WUnzipper::extractBase64(uri.toUtf8()));
+    QString data = WUnzipper::extractBase64(uri.toUtf8());
+
+    if (textIsVbml(data)) return QString();
+
+    return vbmlHash(data);
 }
 
 /* Q_INVOKABLE static */ QStringList WControllerPlaylist::vbmlTags(const WYamlNodeBase & node)
