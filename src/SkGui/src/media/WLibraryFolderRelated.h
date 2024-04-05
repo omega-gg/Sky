@@ -44,8 +44,8 @@ public:
     explicit WLibraryFolderRelated(WLibraryFolder * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void loadTracks(const WTrack      & track);
-    Q_INVOKABLE void loadTracks(const QVariantMap & data);
+    Q_INVOKABLE void loadTracks(const WTrack      & track, int time = -1);
+    Q_INVOKABLE void loadTracks(const QVariantMap & data,  int time = -1);
 
     Q_INVOKABLE void setPreviousPlaylist();
     Q_INVOKABLE void setNextPlaylist    ();

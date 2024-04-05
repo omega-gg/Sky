@@ -65,21 +65,21 @@ void WLibraryFolderRelatedPrivate::init()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WLibraryFolderRelated::loadTracks(const WTrack & track)
+/* Q_INVOKABLE */ void WLibraryFolderRelated::loadTracks(const WTrack & track, int time)
 {
     Q_D(WLibraryFolderRelated);
 
-    QString trackSource = track.source();
+    QString source = track.source();
 
-    if (trackSource.isEmpty()) return;
+    if (source.isEmpty()) return;
 
-    if (d->currentItem && d->currentItem->label() == trackSource)
+    if (d->currentItem && d->currentItem->source() == source)
     {
         d->currentItem->reloadQuery();
 
         WPlaylist * playlist = d->currentItem->toPlaylist();
 
-        if (playlist && playlist->containsSource(trackSource) == false)
+        if (playlist && playlist->containsSource(source) == false)
         {
             playlist->addTrack(track);
         }
@@ -89,7 +89,7 @@ void WLibraryFolderRelatedPrivate::init()
 
     QString title = track.title();
 
-    QString source = wControllerPlaylist->sourceRelatedTracks(trackSource, title);
+    source = wControllerPlaylist->sourceRelatedTracks(source, title, time);
 
     if (source.isEmpty())
     {
@@ -113,17 +113,12 @@ void WLibraryFolderRelatedPrivate::init()
 
     WPlaylist * playlist = new WPlaylist;
 
-    playlist->setLabel(trackSource);
-
     playlist->setTitle(title);
     playlist->setCover(track.cover());
 
     playlist->loadSource(source);
 
-    if (playlist->containsSource(trackSource) == false)
-    {
-        playlist->addTrack(track);
-    }
+    playlist->addTrack(track);
 
     addLibraryItem(playlist);
 
@@ -132,7 +127,7 @@ void WLibraryFolderRelatedPrivate::init()
     playlist->tryDelete();
 }
 
-/* Q_INVOKABLE */ void WLibraryFolderRelated::loadTracks(const QVariantMap & data)
+/* Q_INVOKABLE */ void WLibraryFolderRelated::loadTracks(const QVariantMap & data, int time)
 {
     WTrack track(data.value("source").toString());
 
@@ -156,7 +151,7 @@ void WLibraryFolderRelatedPrivate::init()
 
     track.setDate(data.value("date").toDateTime());
 
-    loadTracks(track);
+    loadTracks(track, time);
 }
 
 //-------------------------------------------------------------------------------------------------
