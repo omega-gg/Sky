@@ -249,14 +249,35 @@ ComponentWall
     filterIconShadow: st.icon1_filterShadow
 
     //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pGetBarWidth()
+    {
+        if (bar.visible == false) return 0;
+
+        var time     = item.currentTime;
+        var duration = item.duration;
+
+        if (time < duration)
+        {
+            return time * (width - itemIcon.width) / duration;
+        }
+        else return width - itemIcon.x - itemIcon.width;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
     BarProgress
     {
+        id: bar
+
         anchors.bottom: parent.bottom
 
-        width: (visible) ? (item.currentTime * (parent.width - itemIcon.width)) / item.duration : 0
+        width: pGetBarWidth()
 
         x: itemIcon.width
 
