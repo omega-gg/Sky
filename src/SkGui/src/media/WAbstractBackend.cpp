@@ -694,8 +694,6 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
         setDuration   (duration);
         setCurrentTime(currentTime);
 
-        backendSetSource(url, reply);
-
         //-----------------------------------------------------------------------------------------
         // NOTE: We need to clear these right now when changing the source.
 
@@ -716,11 +714,11 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
         setVbml(false);
         setLive(false);
 
-        setContext(QString(), QString());
-
         setSubtitles(QStringList());
 
         //-----------------------------------------------------------------------------------------
+
+        backendSetSource(url, reply);
 
         emit sourceChanged();
     }

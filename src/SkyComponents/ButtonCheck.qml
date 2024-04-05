@@ -60,6 +60,8 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Private
 
+    property bool pEnabled: (enabled && checked)
+
     property bool pUpdate: true
 
     //---------------------------------------------------------------------------------------------
@@ -174,14 +176,14 @@ MouseArea
             {
                 position: 0.0
 
-                color: (checked) ? colorActiveA : colorA
+                color: (pEnabled) ? colorActiveA : colorA
             }
 
             GradientStop
             {
                 position: 1.0
 
-                color: (checked) ? colorActiveB : colorB
+                color: (pEnabled) ? colorActiveB : colorB
             }
         }
 
