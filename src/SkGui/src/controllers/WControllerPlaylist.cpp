@@ -3178,9 +3178,20 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
     {
         WBackendNetQuery query(q);
 
-        query.type = WBackendNetQuery::TypeVbml;
+        query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetRelated;
 
-        query.backend = "related";
+        query.backend = "vbml";
+
+        return query;
+    }
+    else if (WControllerPlaylist::urlIsVbmlFile(q))
+    {
+        WBackendNetQuery query(q);
+
+        query.target = WBackendNetQuery::TargetRelated;
+
+        query.backend = "vbml";
 
         return query;
     }
@@ -3188,9 +3199,10 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
     {
         WBackendNetQuery query(q);
 
-        query.type = WBackendNetQuery::TypeImage;
+        query.type   = WBackendNetQuery::TypeImage;
+        query.target = WBackendNetQuery::TargetRelated;
 
-        query.backend = "related";
+        query.backend = "vbml";
 
         return query;
     }
@@ -3207,9 +3219,10 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
     WBackendNetQuery query(q);
 
-    query.scope = WAbstractLoader::ScopeText;
+    query.target = WBackendNetQuery::TargetRelated;
+    query.scope  = WAbstractLoader::ScopeText;
 
-    query.backend = "related";
+    query.backend = "vbml";
 
     return query;
 }
@@ -3737,13 +3750,10 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         backend = NULL;
 
-        backendQuery->target = WBackendNetQuery::TargetVbml;
-    }
-    else if (id == "related")
-    {
-        backend = NULL;
-
-        backendQuery->target = WBackendNetQuery::TargetRelated;
+        if (backendQuery->target != WBackendNetQuery::TargetRelated)
+        {
+            backendQuery->target = WBackendNetQuery::TargetVbml;
+        }
     }
     else backend = q->backendFromId(id);
 
