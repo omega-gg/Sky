@@ -78,8 +78,11 @@ public: // Properties
     QString url      () const;
     QString urlSource() const;
 
-    WTrack::Type type      () const;
+    WTrack::Type type() const;
+    void         setType(WTrack::Type type);
+
     WTrack::Type typeSource() const;
+    void         setTypeSource(WTrack::Type type);
 
     bool isVbml() const;
 

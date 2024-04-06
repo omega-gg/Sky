@@ -153,9 +153,19 @@ WTrack::Type WMediaReply::type() const
     return _type;
 }
 
+void WMediaReply::setType(WTrack::Type type)
+{
+    _type = type;
+}
+
 WTrack::Type WMediaReply::typeSource() const
 {
     return _typeSource;
+}
+
+void WMediaReply::setTypeSource(WTrack::Type type)
+{
+    _typeSource = type;
 }
 
 bool WMediaReply::isVbml() const

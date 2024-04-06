@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WControllerMedia>
@@ -267,7 +268,14 @@ void WBackendManagerPrivate::applySources(bool play)
 
     loaded = true;
 
-    hub = (reply->typeSource() == WTrack::Hub);
+    // NOTE VLC: An image is played like a hub to avoid the 10 seconds duration.
+    if (WControllerFile::urlIsImage(currentMedia))
+    {
+        reply->setTypeSource(WTrack::Hub);
+
+        hub = true;
+    }
+    else hub = (reply->typeSource() == WTrack::Hub);
 
     this->timeA = timeA;
 
