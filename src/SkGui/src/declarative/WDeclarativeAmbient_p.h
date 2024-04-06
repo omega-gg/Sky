@@ -50,6 +50,7 @@ public: // Slots
 
     void onUpdate();
     void onState ();
+    void onVolume();
 
 public: // Variables
     WDeclarativePlayer * player;

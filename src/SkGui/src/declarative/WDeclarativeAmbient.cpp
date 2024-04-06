@@ -117,6 +117,13 @@ void WDeclarativeAmbientPrivate::onState()
     else                                              q->pause();
 }
 
+void WDeclarativeAmbientPrivate::onVolume()
+{
+    Q_Q(WDeclarativeAmbient);
+
+    q->setVolume(player->volume());
+}
+
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
@@ -168,7 +175,10 @@ void WDeclarativeAmbient::setPlayer(WDeclarativePlayer * player)
         connect(player, SIGNAL(currentOutputChanged()), this, SLOT(onUpdate()));
         connect(player, SIGNAL(ambientChanged      ()), this, SLOT(onUpdate()));
 
-        connect(player, SIGNAL(stateChanged()), this, SLOT(onState()));
+        connect(player, SIGNAL(stateChanged()),  this, SLOT(onState ()));
+        connect(player, SIGNAL(volumeChanged()), this, SLOT(onVolume()));
+
+        setVolume(player->volume());
 
         d->onSourceChanged();
 
