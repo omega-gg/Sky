@@ -144,9 +144,14 @@ void WBackendManagerPrivate::loadSources(bool play)
         {
             setBackendInterface(hook);
 
+            freeze     = false;
+            freezeLoop = false;
+
             loaded = true;
 
             type = Track;
+
+            backend->setRepeat(repeat);
 
             backendInterface->loadSource(source, duration, currentTime, NULL);
 
@@ -247,6 +252,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         type = Track;
 
+        backend->setRepeat(repeat);
+
         q->setAmbient(reply->ambient());
 
         q->setSubtitles(reply->subtitles());
@@ -319,6 +326,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setDuration(reply->duration());
     }
+
+    backend->setRepeat(false);
 
     q->setAmbient(reply->ambient());
 
@@ -727,6 +736,8 @@ void WBackendManagerPrivate::onPlayerChanged()
 
 void WBackendManagerPrivate::onRepeatChanged()
 {
+    if (type != Track) return;
+
     backend->setRepeat(repeat);
 }
 
