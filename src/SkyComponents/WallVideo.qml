@@ -978,7 +978,9 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.visible || playerBack.visible)
+        visible: (player.visible
+                  ||
+                  (playerCover.visible && playerCover.isSourceDefault == false))
 
         player: player
 
@@ -1007,7 +1009,7 @@ WallBookmarkTrack
 
         z: browserBack.z
 
-        visible: browserBack.visible
+        visible: (browserCover.visible && browserCover.isSourceDefault == false)
 
         cover: browserCover
 

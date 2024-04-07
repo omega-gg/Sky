@@ -1222,9 +1222,9 @@ Style
 
     //---------------------------------------------------------------------------------------------
 
-    function getTextColor(highlighed, checked, active)
+    function getTextColor(highlighed, active)
     {
-        if (highlighed || checked)
+        if (highlighed)
         {
             return button_colorTextB;
         }

@@ -168,7 +168,7 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    itemText.color: st.getTextColor(isHighlighted, checked, isActive)
+                    itemText.color: st.getTextColor(isHighlighted, isActive)
 
                     /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
                     /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
@@ -196,7 +196,7 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    itemText.color: st.getTextColor(isHighlighted, checked, isActive)
+                    itemText.color: st.getTextColor(isHighlighted, isActive)
 
                     /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
                     /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
@@ -224,7 +224,7 @@ Item
 
                     itemText.elide: buttonsCheck.elide
 
-                    itemText.color: st.getTextColor(isHighlighted, checked, isActive)
+                    itemText.color: st.getTextColor(isHighlighted, isActive)
 
                     /* QML_EVENT */ onPressed: function(mouse) { pressAt(index) }
                     /* QML_EVENT */ onClicked: function(mouse) { clickAt(index) }
