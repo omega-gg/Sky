@@ -301,6 +301,13 @@ Style
     property ImageFilterColor buttonPushOverlay_filterIcon: icon2_filter
 //#END
 
+//#ButtonExtra*
+    //---------------------------------------------------------------------------------------------
+    // ButtonExtra
+
+    property int buttonExtra_width: dp256
+//#END
+
 //#BaseButtonPiano
     //---------------------------------------------------------------------------------------------
     // ButtonPiano
