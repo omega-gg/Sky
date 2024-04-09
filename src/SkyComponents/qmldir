@@ -102,6 +102,8 @@ LabelLoadingText   1.0 LabelLoadingText.qml
 LabelLoadingButton 1.0 LabelLoadingButton.qml
 LabelStream        1.0 LabelStream.qml
 
+Popup 1.0 Popup.qml
+
 CheckBox     1.0 CheckBox.qml
 CheckBoxText 1.0 CheckBoxText.qml
 

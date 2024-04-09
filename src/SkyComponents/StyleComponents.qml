@@ -484,11 +484,11 @@ Style
     property int labelRound_padding: dp16
     property int labelRound_spacing: buttonPush_spacing
 
-    property color labelRound_colorA: "#f0f0f0"
+    property color labelRound_colorA: buttonPush_colorHoverA
     property color labelRound_colorB: labelRound_colorA
 
     property color labelRound_colorDisableA: buttonPush_colorPressA
-    property color labelRound_colorDisableB: buttonPush_colorPressB
+    property color labelRound_colorDisableB: labelRound_colorDisableA
 
     property color labelRound_colorText: text_color
 
@@ -550,6 +550,15 @@ Style
 
     property color labelStream_colorA: scrollBar_colorA
     property color labelStream_colorB: scrollBar_colorB
+//#END
+
+//#Popup
+    //---------------------------------------------------------------------------------------------
+    // Popup
+
+    property int popup_durationAnimation: duration_fast
+
+    property int popup_interval: 5000
 //#END
 
 //#CheckBox
@@ -1415,9 +1424,6 @@ Style
         //-----------------------------------------------------------------------------------------
         // LabelRound
 
-        labelRound_colorA = "#f0f0f0";
-        labelRound_colorB = labelRound_colorA;
-
         labelRound_filterIcon = icon2_filter;
 //#END
 
@@ -1724,9 +1730,6 @@ Style
         //-----------------------------------------------------------------------------------------
         // LabelRound
 
-        labelRound_colorA = buttonPush_colorCheckA;
-        labelRound_colorB = buttonPush_colorCheckB;
-
         labelRound_filterIcon = icon_filter;
 //#END
 
@@ -2032,9 +2035,6 @@ Style
 //#BaseLabelRound
         //-----------------------------------------------------------------------------------------
         // LabelRound
-
-        labelRound_colorA = buttonPush_colorCheckA;
-        labelRound_colorB = buttonPush_colorCheckB;
 
         labelRound_filterIcon = icon_filter;
 //#END
