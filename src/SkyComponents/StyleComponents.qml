@@ -1424,6 +1424,8 @@ Style
         //-----------------------------------------------------------------------------------------
         // LabelRound
 
+        labelRound_colorA = buttonPush_colorHoverA;
+
         labelRound_filterIcon = icon2_filter;
 //#END
 
@@ -1730,6 +1732,8 @@ Style
         //-----------------------------------------------------------------------------------------
         // LabelRound
 
+        labelRound_colorA = buttonPush_colorHoverA;
+
         labelRound_filterIcon = icon_filter;
 //#END
 
@@ -2035,6 +2039,8 @@ Style
 //#BaseLabelRound
         //-----------------------------------------------------------------------------------------
         // LabelRound
+
+        labelRound_colorA = "#646464";
 
         labelRound_filterIcon = icon_filter;
 //#END
