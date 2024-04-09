@@ -4475,9 +4475,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         if (backend)
         {
-            playlist->addSource(origin, true);
+            /*playlist->addSource(origin, true);
 
-            emit playlist->queryEnded();
+            emit playlist->queryEnded();*/
 
             QString backendId = backend->id();
 
@@ -4499,14 +4499,14 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else if (type == WControllerPlaylist::Related)
     {
-        // NOTE: When the currentTime is set we append the track source.
+        /*// NOTE: When the currentTime is set we append the track source.
         if (data.currentTime != -1 && indexNext)
         {
             // NOTE: We want a clean fragment without the timestamp.
             playlist->addSource(WControllerPlaylist::cleanSource(urlBase), true);
 
             emit playlist->queryEnded();
-        }
+        }*/
 
         if (applyNextPlaylist(playlist, origin, urlBase, indexNext)) return;
     }
