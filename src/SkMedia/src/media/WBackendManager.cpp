@@ -142,6 +142,8 @@ void WBackendManagerPrivate::loadSources(bool play)
     {
         if (hook->check(source))
         {
+            Q_Q(WBackendManager);
+
             setBackendInterface(hook);
 
             freeze     = false;
@@ -152,6 +154,10 @@ void WBackendManagerPrivate::loadSources(bool play)
             type = Track;
 
             backend->setRepeat(repeat);
+
+            q->setContext(QString(), QString());
+
+            q->setAmbient(QString());
 
             backendInterface->loadSource(source, duration, currentTime, NULL);
 
@@ -368,8 +374,6 @@ void WBackendManagerPrivate::applyEmpty()
     q->setContext(QString(), QString());
 
     q->setAmbient(QString());
-
-    q->setSubtitles(QStringList());
 
     emit q->loaded();
 }
