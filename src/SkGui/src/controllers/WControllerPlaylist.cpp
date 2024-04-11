@@ -4525,7 +4525,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         {
             playlist->applySource(origin);
 
-            if (applyNextPlaylist(playlist, origin, urlBase, indexNext)) return;
+            if (applyNextPlaylist(playlist, origin, origin, indexNext)) return;
         }
 
         // NOTE: We are adding tracks when origin is not specified.
@@ -4854,7 +4854,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             folder->applySource(origin);
 
-            if (applyNextFolder(folder, origin, urlBase, indexNext)) return;
+            if (applyNextFolder(folder, origin, origin, indexNext)) return;
         }
 
         // NOTE: We are adding tracks when origin is not specified.
