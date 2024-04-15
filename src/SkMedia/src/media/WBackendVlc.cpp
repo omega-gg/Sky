@@ -1135,6 +1135,17 @@ bool WBackendVlcPrivate::applyQuality(WAbstractBackend::Quality quality)
 
 //-------------------------------------------------------------------------------------------------
 
+// FIXME VLC 3.0.20: When the seeking point is incorrect on a live feed the player seems to
+//                   bufferize randomly.
+void WBackendVlcPrivate::playAt(int time)
+{
+    if (live)
+    {
+        player->play();
+    }
+    else player->play(time);
+}
+
 void WBackendVlcPrivate::playMedia()
 {
     Q_Q(WBackendVlc);
@@ -1152,7 +1163,7 @@ void WBackendVlcPrivate::playMedia()
     }
     else
     {
-        player->play(currentTime);
+        playAt(currentTime);
 
         q->setStateLoad(WAbstractBackend::StateLoadResuming);
     }
@@ -1645,7 +1656,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     }
     else if (d->frameFreeze && d->currentTime != -1)
     {
-         d->player->play(d->currentTime);
+         d->playAt(d->currentTime);
     }
     else d->player->play();
 
@@ -1782,13 +1793,13 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
         if (d->state == StatePlaying)
         {
-            d->player->play(d->currentTime);
+            d->playAt(d->currentTime);
         }
         else if (d->state == StatePaused)
         {
             d->setMute(true);
 
-            d->player->play(d->currentTime);
+            d->playAt(d->currentTime);
         }
     }
 }
@@ -2311,7 +2322,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
             {
                 if (d->currentTime > 0)
                 {
-                    // FIXME VLC 3.0.18: When the seeking point is incorrect on a live feed the
+                    // FIXME VLC 3.0.20: When the seeking point is incorrect on a live feed the
                     //                   player seems to bufferize randomly.
                     d->player->seek(0);
                 }

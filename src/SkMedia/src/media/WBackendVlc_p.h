@@ -253,6 +253,8 @@ public: // Functions
 
     bool applyQuality(WAbstractBackend::Quality quality);
 
+    void playAt(int time);
+
     void playMedia();
 
     void reload();
