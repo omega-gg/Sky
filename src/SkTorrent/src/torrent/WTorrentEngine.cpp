@@ -2236,21 +2236,22 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_int(settings_pack::torrent_connect_boost, 100);
 
         //pack.set_int(settings_pack::max_failcount,      1);
-        pack.set_int(settings_pack::min_reconnect_time, 1);
-
+        pack.set_int(settings_pack::min_reconnect_time,   1);
         pack.set_int(settings_pack::peer_connect_timeout, 3);
-        pack.set_int(settings_pack::peer_timeout,         3);
 
-        pack.set_int(settings_pack::piece_timeout,   3);
-        pack.set_int(settings_pack::request_timeout, 3);
+        //pack.set_int(settings_pack::piece_timeout,   3);
+        //pack.set_int(settings_pack::request_timeout, 3);
+        //pack.set_int(settings_pack::peer_timeout,    3);
 
         //-----------------------------------------------------------------------------------------
         // FIXME: Workaround to improve writing efficiency.
 
         //pack.set_int(settings_pack::use_disk_cache_pool, false);
 
+#ifndef LIBTORRENT_LATEST
         pack.set_int(settings_pack::cache_size,   0);
         pack.set_int(settings_pack::cache_expiry, 0);
+#endif
 
         //pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
 
