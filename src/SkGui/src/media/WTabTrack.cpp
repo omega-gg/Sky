@@ -1422,7 +1422,7 @@ void WTabTrackPrivate::onPlaylistDestroyed()
     {
         d->updatePlaylistTrack();
 
-        d->playlistTrack->reloadTrack(0);
+        d->playlistTrack->loadTrack(0);
 
         d->checkPlaylistTrack();
     }

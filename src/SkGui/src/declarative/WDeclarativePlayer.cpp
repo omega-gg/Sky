@@ -1443,6 +1443,8 @@ WDeclarativePlayer::WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem
 {
     Q_D(WDeclarativePlayer);
 
+    if (d->tab == NULL) return;
+
     const WBookmarkTrack * bookmark = d->tab->currentBookmark();
 
     if (bookmark)

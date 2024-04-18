@@ -685,7 +685,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
     Q_D(WAbstractBackend);
 
     // NOTE: When providing a reply we enforce source loading even if the urls are the same.
-    if (d->source != url || reply)
+    if (d->source != url)
     {
         if (d->state == StatePaused || url.isEmpty()) stop();
 
