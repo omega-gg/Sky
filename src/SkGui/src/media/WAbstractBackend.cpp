@@ -684,57 +684,51 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
 {
     Q_D(WAbstractBackend);
 
-    // NOTE: When providing a reply we enforce source loading even if the urls are the same.
-    if (d->source != url)
+    if (d->source == url)
     {
-        if (d->state == StatePaused || url.isEmpty()) stop();
-
-        d->source = url;
-
-        setDuration   (duration);
-        setCurrentTime(currentTime);
-
-        //-----------------------------------------------------------------------------------------
-        // NOTE: We need to clear these right now when changing the source.
-
-        if (d->videos.isEmpty() == false)
+        if (d->state == StateStopped)
         {
-            d->videos.clear();
-
-            emit videosChanged();
+            setCurrentTime(currentTime);
         }
+        else seek(currentTime);
 
-        if (d->audios.isEmpty() == false)
-        {
-            d->audios.clear();
-
-            emit audiosChanged();
-        }
-
-        setVbml(false);
-        setLive(false);
-
-        setSubtitles(QStringList());
-
-        //-----------------------------------------------------------------------------------------
-
-        backendSetSource(url, reply);
-
-        emit sourceChanged();
+        return;
     }
-    else if (d->state != StatePlaying)
+
+    if (d->state == StatePaused || url.isEmpty()) stop();
+
+    d->source = url;
+
+    setDuration   (duration);
+    setCurrentTime(currentTime);
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We need to clear these right now when changing the source.
+
+    if (d->videos.isEmpty() == false)
     {
-        if (d->state == StatePaused) stop();
+        d->videos.clear();
 
-        setDuration   (duration);
-        setCurrentTime(currentTime);
+        emit videosChanged();
     }
-    else
+
+    if (d->audios.isEmpty() == false)
     {
-        setDuration(duration);
+        d->audios.clear();
 
-        seek(currentTime);
+        emit audiosChanged();
     }
+
+    setVbml(false);
+    setLive(false);
+
+    setSubtitles(QStringList());
+
+    //---------------------------------------------------------------------------------------------
+
+    backendSetSource(url, reply);
+
+    emit sourceChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -799,17 +793,15 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
         d->currentTime = msec;
 
         backendSeek(msec);
-
-        emit currentTimeChanged();
-
-        return;
     }
+    else
+    {
+        msec = qMax(0, msec);
 
-    msec = qMax(0, msec);
+        if (d->currentTime == msec) return;
 
-    if (d->currentTime == msec) return;
-
-    d->currentTime = msec;
+        d->currentTime = msec;
+    }
 
     emit currentTimeChanged();
 }

@@ -400,6 +400,15 @@ void WBackendManagerPrivate::loadSource(const QString & source,
     backendInterface->loadSource(source, duration, currentTime, reply);
 }
 
+void WBackendManagerPrivate::pauseBackend()
+{
+    clearMedia();
+
+    disconnectBackend();
+
+    backendInterface->pause();
+}
+
 void WBackendManagerPrivate::stopBackend()
 {
     clearMedia();
@@ -436,7 +445,7 @@ bool WBackendManagerPrivate::applyNext(int time)
         {
             if (hub == false && timeB == duration)
             {
-                stopBackend();
+                pauseBackend();
 
                 q->setEnded(true);
 
@@ -476,7 +485,7 @@ bool WBackendManagerPrivate::applyNext(int time)
 
         freeze = true;
 
-        stopBackend();
+        pauseBackend();
 
         if (type == Interactive)
         {
@@ -1074,7 +1083,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (WControllerNetwork::extractFragmentValue(url, "arg").isEmpty())
     {
-        d->stopBackend();
+        d->pauseBackend();
 
         if (url.isEmpty())
         {
@@ -1091,13 +1100,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         d->freeze = true;
 
-        d->stopBackend();
+        d->pauseBackend();
 
         d->loadSources(true);
 
         setStateLoad(WAbstractBackend::StateLoadBuffering);
     }
-    else d->stopBackend();
+    else d->pauseBackend();
 
     return true;
 }
@@ -1261,7 +1270,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         d->freeze = true;
 
-        d->stopBackend();
+        d->pauseBackend();
 
         if (d->type == WBackendManagerPrivate::Interactive)
         {

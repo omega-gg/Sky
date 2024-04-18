@@ -2429,6 +2429,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
             return;
         }
 
+        media->urlSource = source;
+
         // NOTE: If the parsing fails we add the current url as the default source.
         backendSource.medias.insert(WAbstractBackend::QualityDefault, source);
     }

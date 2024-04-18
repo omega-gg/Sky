@@ -86,7 +86,8 @@ public: // Functions
 
     void loadSource(const QString & source, const QString & media, int currentTime);
 
-    void stopBackend();
+    void pauseBackend();
+    void stopBackend ();
 
     void applyDefault();
 
