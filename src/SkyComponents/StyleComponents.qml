@@ -1168,6 +1168,7 @@ Style
 //#icons_playback:PlayerBrowser
     property url icon_backward: "icons/backward.svg"
     property url icon_forward : "icons/forward.svg"
+    property url icon_plus    : "icons/plus.svg"
 //#END
 
 //#icons_playback

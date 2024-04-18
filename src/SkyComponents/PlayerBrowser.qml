@@ -31,6 +31,8 @@ BasePlayerBrowser
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    /* read */ property bool isLite: tab.isLite
+
     property bool loading: false
 
     property bool enableTitle : true
@@ -57,6 +59,8 @@ BasePlayerBrowser
     //---------------------------------------------------------------------------------------------
     // Signals
     //---------------------------------------------------------------------------------------------
+
+    signal browse
 
     signal contextual
 
@@ -229,7 +233,9 @@ BasePlayerBrowser
 
         isPressed: (pressed || isReturnPressed || areaPlay.pressed)
 
-        icon       : st.icon_play
+        icon: (isLite) ? st.icon_plus
+                       : st.icon_play
+
         iconScaling: true
 
         iconFillMode: Image.PreserveAspectFit
@@ -238,7 +244,11 @@ BasePlayerBrowser
 
         itemIcon.visible: (loading == false)
 
-        onClicked: play()
+        onClicked:
+        {
+            if (isLite) browse();
+            else        play  ();
+        }
 
         IconLoading
         {

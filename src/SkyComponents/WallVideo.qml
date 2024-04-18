@@ -113,6 +113,8 @@ WallBookmarkTrack
     // Signals
     //---------------------------------------------------------------------------------------------
 
+    signal browse
+
     signal titleClicked (variant mouse)
     signal authorClicked(variant mouse)
 
@@ -1185,6 +1187,8 @@ WallBookmarkTrack
 
         /* QML_EVENT */ onTitleClicked : function(mouse) { wall.titleClicked (mouse); }
         /* QML_EVENT */ onAuthorClicked: function(mouse) { wall.authorClicked(mouse); }
+
+        onBrowse: wall.browse()
 
         onContextual: contextualBrowser()
     }

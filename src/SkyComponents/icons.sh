@@ -39,6 +39,7 @@ cp "$solid"/pause.svg icons
 
 cp "$solid"/backward-step.svg icons/backward.svg
 cp "$solid"/forward-step.svg  icons/forward.svg
+cp "$solid"/plus.svg          icons
 
 cp "$solid"/volume-off.svg  icons
 cp "$solid"/volume-high.svg icons/volume-up.svg
