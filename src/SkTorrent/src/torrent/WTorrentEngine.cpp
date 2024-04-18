@@ -951,6 +951,8 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
 
     //---------------------------------------------------------------------------------------------
     // Deadline
+    //---------------------------------------------------------------------------------------------
+    // FIXME: Workaround to clear piece deadlines.
 
     bool clear = true;
 
@@ -962,8 +964,9 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
         }
     }
 
-    // FIXME: Workaround to clear piece deadlines.
     if (clear) handle.clear_piece_deadlines();
+
+    //---------------------------------------------------------------------------------------------
 
     updatePriority(handle, pieces, current, end);
 }
@@ -2239,9 +2242,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_int(settings_pack::min_reconnect_time,   1);
         pack.set_int(settings_pack::peer_connect_timeout, 3);
 
-        //pack.set_int(settings_pack::piece_timeout,   3);
-        //pack.set_int(settings_pack::request_timeout, 3);
-        //pack.set_int(settings_pack::peer_timeout,    3);
+        pack.set_int(settings_pack::piece_timeout,    3);
+        pack.set_int(settings_pack::request_timeout, 10);
+
+        pack.set_int(settings_pack::peer_timeout,    10);
+        pack.set_int(settings_pack::urlseed_timeout, 10);
 
         //-----------------------------------------------------------------------------------------
         // FIXME: Workaround to improve writing efficiency.
