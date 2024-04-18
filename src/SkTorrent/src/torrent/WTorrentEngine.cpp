@@ -2242,7 +2242,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_int(settings_pack::min_reconnect_time,   1);
         pack.set_int(settings_pack::peer_connect_timeout, 3);
 
-        pack.set_int(settings_pack::piece_timeout,    3);
+        pack.set_int(settings_pack::piece_timeout,   10);
         pack.set_int(settings_pack::request_timeout, 10);
 
         pack.set_int(settings_pack::peer_timeout,    10);
