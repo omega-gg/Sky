@@ -706,6 +706,8 @@ void WBackendVlcPrivate::init()
     frameUpdated = false;
     frameFreeze  = false;
 
+    length = 0;
+
     // FIXME VLC: This forces our default volume instead of the saved one.
     WAbstractBackendPrivate::volume = -1.0;
 
@@ -1252,6 +1254,8 @@ void WBackendVlcPrivate::clearPlayer()
     }
 
     playing = false;
+
+    length = 0;
 }
 
 void WBackendVlcPrivate::clearActive()
@@ -1769,38 +1773,47 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 {
     Q_D(WBackendVlc);
 
-    if (d->closestQuality == quality || d->applyQuality(quality) == false) return;
-
-    QString media = d->medias.value(d->closestQuality);
-
-    if (d->currentMedia == media) return;
-
-    d->currentMedia = media;
-
-    d->currentAudio = d->audios.value(d->closestQuality);
-
-    if (hasStarted())
+    if (d->closestQuality != quality && d->applyQuality(quality))
     {
-        d->started = false;
+        QString media = d->medias.value(d->closestQuality);
 
-        d->frameFreeze = true;
+        if (d->currentMedia != media)
+        {
+            d->currentMedia = media;
 
-        d->onFrameUpdated();
-
-        d->player->setSource(d->currentMedia, d->currentAudio, d->loop);
+            d->currentAudio = d->audios.value(d->closestQuality);
+        }
 
         setQualityActive(d->closestQuality);
+    }
 
-        if (d->state == StatePlaying)
-        {
-            d->playAt(d->currentTime);
-        }
-        else if (d->state == StatePaused)
-        {
-            d->setMute(true);
+    QString string = qualityToString(quality);
 
-            d->playAt(d->currentTime);
-        }
+    if (string == "default")
+    {
+         d->player->setQuality("");
+    }
+    else d->player->setQuality(string);
+
+    if (hasStarted() == false) return;
+
+    d->started = false;
+
+    d->frameFreeze = true;
+
+    d->onFrameUpdated();
+
+    d->player->setSource(d->currentMedia, d->currentAudio, d->loop);
+
+    if (d->state == StatePlaying)
+    {
+        d->playAt(d->currentTime);
+    }
+    else if (d->state == StatePaused)
+    {
+        d->setMute(true);
+
+        d->playAt(d->currentTime);
     }
 }
 
@@ -2309,29 +2322,16 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventLengthChanged))
     {
+        Q_D(WBackendVlc);
+
         WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
 
         int length = eventPlayer->value.toInt();
 
-        // NOTE: If length is 0 then it's a live feed.
-        if (length == 0)
-        {
-            Q_D(WBackendVlc);
+        d->length = length;
 
-            if (d->live == false)
-            {
-                if (d->currentTime > 0)
-                {
-                    // FIXME VLC 3.0.20: When the seeking point is incorrect on a live feed the
-                    //                   player seems to bufferize randomly.
-                    d->player->seek(0);
-                }
-
-                setLive(true);
-            }
-        }
-
-        setDuration(length);
+        // FIXME VLC 3.0.20: When playing m3u(s) we might get a duration of 0.
+        if (length != 0) setDuration(length);
 
         return true;
     }
@@ -2373,9 +2373,13 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
         setCurrentTime(time);
 
-        if (time > d->duration)
+        if (time > d->length && d->live == false)
         {
-            setDuration(time);
+            // FIXME VLC 3.0.20: When the seeking point is incorrect on a live feed the player
+            //                   seems to bufferize randomly.
+            //d->player->seek(0);
+
+            setLive(true);
         }
 
         return true;

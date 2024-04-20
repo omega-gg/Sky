@@ -256,6 +256,7 @@ public: // Interface
     Q_INVOKABLE WTrack::Type trackType   (int index) const;
     Q_INVOKABLE void         setTrackType(int index, WTrack::Type type);
 
+    Q_INVOKABLE bool trackIsLive       (int index) const;
     Q_INVOKABLE bool trackIsHub        (int index) const;
     Q_INVOKABLE bool trackIsChannel    (int index) const;
     Q_INVOKABLE bool trackIsInteractive(int index) const;

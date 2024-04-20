@@ -157,6 +157,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(int trackType READ trackType NOTIFY currentTrackUpdated)
 
+    Q_PROPERTY(bool trackIsLive        READ trackIsLive        NOTIFY currentTrackUpdated)
     Q_PROPERTY(bool trackIsHub         READ trackIsHub         NOTIFY currentTrackUpdated)
     Q_PROPERTY(bool trackIsChannel     READ trackIsChannel     NOTIFY currentTrackUpdated)
     Q_PROPERTY(bool trackIsInteractive READ trackIsInteractive NOTIFY currentTrackUpdated)
@@ -484,6 +485,7 @@ public: // Properties
 
     WTrack::Type trackType() const;
 
+    bool trackIsLive       () const;
     bool trackIsHub        () const;
     bool trackIsChannel    () const;
     bool trackIsInteractive() const;

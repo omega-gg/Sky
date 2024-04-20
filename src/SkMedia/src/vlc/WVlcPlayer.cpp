@@ -49,7 +49,8 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     backend = NULL;
 
-    output = WAbstractBackend::OutputMedia;
+    output  = WAbstractBackend::OutputMedia;
+    quality = "";
 
     scanOutput = false;
 
@@ -540,9 +541,15 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                 }
             }
             else libvlc_media_add_option(media, "no-audio");
-        }
 
-        //libvlc_media_add_option(media, "preferred-resolution=1080");
+            if (d->quality.isEmpty() == false)
+            {
+                qDebug("HELLO preferred %s", d->quality.C_STR);
+
+                libvlc_media_add_option(media,
+                                        QString("preferred-resolution=" + d->quality).C_STR);
+            }
+        }
 
         if (eventSource->loop)
         {
@@ -734,6 +741,30 @@ void WVlcPlayer::setOutput(WAbstractBackend::Output output)
     locker.unlock();
 
     emit outputChanged();
+}
+
+QString WVlcPlayer::quality()
+{
+    Q_D(WVlcPlayer);
+
+    const QMutexLocker locker(&d->mutex);
+
+    return d->quality;
+}
+
+void WVlcPlayer::setQuality(const QString & quality)
+{
+    Q_D(WVlcPlayer);
+
+    QMutexLocker locker(&d->mutex);
+
+    if (d->quality == quality) return;
+
+    d->quality = quality;
+
+    locker.unlock();
+
+    emit qualityChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

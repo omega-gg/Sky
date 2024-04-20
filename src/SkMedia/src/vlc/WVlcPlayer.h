@@ -121,7 +121,8 @@ protected: // Events
 signals:
     void optionsChanged();
 
-    void outputChanged();
+    void outputChanged ();
+    void qualityChanged();
 
     void networkCacheChanged();
 
@@ -131,6 +132,9 @@ public: // Properties
 
     WAbstractBackend::Output output();
     void                     setOutput(WAbstractBackend::Output output);
+
+    QString quality();
+    void    setQuality(const QString & quality);
 
     int  networkCache();
     void setNetworkCache(int msec);

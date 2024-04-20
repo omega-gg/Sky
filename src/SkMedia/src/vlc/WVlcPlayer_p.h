@@ -112,6 +112,7 @@ public: // Variables
     QStringList options;
 
     WAbstractBackend::Output output;
+    QString                  quality;
 
     bool scanOutput;
 

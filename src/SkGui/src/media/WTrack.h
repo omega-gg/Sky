@@ -83,6 +83,7 @@ public: // Properties
     Type type() const;
     void setType(Type type);
 
+    bool isLive       () const;
     bool isHub        () const;
     bool isChannel    () const;
     bool isInteractive() const;

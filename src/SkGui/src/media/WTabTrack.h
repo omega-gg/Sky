@@ -85,6 +85,7 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(int type READ type NOTIFY currentBookmarkUpdated)
 
+    Q_PROPERTY(bool isLive        READ isLive        NOTIFY currentBookmarkUpdated)
     Q_PROPERTY(bool isHub         READ isHub         NOTIFY currentBookmarkUpdated)
     Q_PROPERTY(bool isChannel     READ isChannel     NOTIFY currentBookmarkUpdated)
     Q_PROPERTY(bool isInteractive READ isInteractive NOTIFY currentBookmarkUpdated)
@@ -216,6 +217,7 @@ public: // Properties
 
     WTrack::Type type() const;
 
+    bool isLive       () const;
     bool isHub        () const;
     bool isChannel    () const;
     bool isInteractive() const;

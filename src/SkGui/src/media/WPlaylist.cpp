@@ -2004,6 +2004,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     updateTrack(index);
 }
 
+/* Q_INVOKABLE */ bool WPlaylist::trackIsLive(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+        return track->isLive();
+    }
+    else return false;
+}
+
 /* Q_INVOKABLE */ bool WPlaylist::trackIsHub(int index) const
 {
     const WTrack * track = trackPointerAt(index);

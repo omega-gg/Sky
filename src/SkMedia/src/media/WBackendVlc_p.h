@@ -343,6 +343,8 @@ public: // Variables
     bool frameUpdated;
     bool frameFreeze;
 
+    int length;
+
     int  volume;
     bool mute;
 

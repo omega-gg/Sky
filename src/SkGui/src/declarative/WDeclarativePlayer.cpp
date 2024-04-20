@@ -2945,6 +2945,11 @@ WTrack::Type WDeclarativePlayer::trackType() const
     else return WTrack::Track;
 }
 
+bool WDeclarativePlayer::trackIsLive() const
+{
+    return (trackType() == WTrack::Live);
+}
+
 bool WDeclarativePlayer::trackIsHub() const
 {
     return (trackType() == WTrack::Hub);

@@ -1863,6 +1863,11 @@ WTrack::Type WTabTrack::type() const
     else return WTrack::Track;
 }
 
+bool WTabTrack::isLive() const
+{
+    return (type() == WTrack::Live);
+}
+
 bool WTabTrack::isHub() const
 {
     return (type() == WTrack::Hub);

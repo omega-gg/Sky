@@ -314,6 +314,11 @@ void WTrack::setType(WTrack::Type type)
     Q_D(WTrack); d->type = type;
 }
 
+bool WTrack::isLive() const
+{
+    Q_D(const WTrack); return (d->type == Live);
+}
+
 bool WTrack::isHub() const
 {
     Q_D(const WTrack); return (d->type == Hub);
