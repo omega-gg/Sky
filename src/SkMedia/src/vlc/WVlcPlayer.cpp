@@ -544,8 +544,6 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
             if (d->quality.isEmpty() == false)
             {
-                qDebug("HELLO preferred %s", d->quality.C_STR);
-
                 libvlc_media_add_option(media,
                                         QString("preferred-resolution=" + d->quality).C_STR);
             }
