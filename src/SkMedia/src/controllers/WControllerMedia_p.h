@@ -179,11 +179,16 @@ public: // Functions
 
     void applySource(WPrivateMediaData            * media,
                      const WBackendNetSource      & source,
-                     WAbstractBackend::SourceMode   mode);
+                     WAbstractBackend::SourceMode   mode,
+                     bool                           cache);
 
     void appendSlice(const WPrivateMediaSlice     & slice,
                      const QString                & url,
                      WAbstractBackend::SourceMode   mode);
+
+    bool applyCache(WPrivateMediaData            * media,
+                    const QString                & url,
+                    WAbstractBackend::SourceMode   mode);
 
     void updateSources();
 

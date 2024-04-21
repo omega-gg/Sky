@@ -1663,7 +1663,8 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
 void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
                                           const WBackendNetSource      & source,
-                                          WAbstractBackend::SourceMode   mode)
+                                          WAbstractBackend::SourceMode   mode,
+                                          bool                           cache)
 {
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
 
@@ -1685,6 +1686,7 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         WPrivateMediaSlice slice;
 
+        QString url       = media->url;
         QString urlSource = media->urlSource;
 
         WTrack::Type type       = media->type;
@@ -1699,11 +1701,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.vbml = vbml;
 
-        slice.medias = medias;
-        slice.audios = audios;
-
-        slice.expiry = source.expiry;
-
         slice.currentTime = -1;
         slice.duration    = -1;
 
@@ -1712,7 +1709,23 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.start = 0;
 
-        appendSlice(slice, media->url, mode);
+        slice.medias = medias;
+        slice.audios = audios;
+
+        slice.expiry = source.expiry;
+
+        appendSlice(slice, url, mode);
+
+        if (cache && urlSource != url)
+        {
+            slice.urlSource = QString();
+
+            slice.type = typeSource;
+
+            slice.vbml = false;
+
+            appendSlice(slice, urlSource, mode);
+        }
 
         foreach (WMediaReply * reply, media->replies)
         {
@@ -1737,6 +1750,7 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         WPrivateMediaSlice slice;
 
+        QString url       = media->url;
         QString urlSource = media->urlSource;
 
         WTrack::Type type       = media->type;
@@ -1790,7 +1804,35 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.expiry = source.expiry;
 
-        appendSlice(slice, media->url, mode);
+        appendSlice(slice, url, mode);
+
+        if (cache && urlSource != url && medias.count())
+        {
+            slice.urlSource = QString();
+
+            slice.type = typeSource;
+
+            slice.vbml = false;
+
+            slice.timeZone = QString();
+
+            slice.currentTime = -1;
+            slice.duration    = -1;
+
+            slice.timeA = -1;
+            slice.timeB = -1;
+
+            slice.start = 0;
+
+            slice.context   = QString();
+            slice.contextId = QString();
+
+            slice.ambient = QString();
+
+            slice.subtitles = QStringList();
+
+            appendSlice(slice, urlSource, mode);
+        }
 
         foreach (WMediaReply * reply, media->replies)
         {
@@ -1846,12 +1888,38 @@ void WControllerMediaPrivate::appendSlice(const WPrivateMediaSlice     & slice,
             WList<WPrivateMediaSlice> & slices = data->slices;
 #endif
 
+            // NOTE: We could check for doublons here, but these are unlikely so we favor
+            //       performances over redundancy checking.
+
+            /*int currentTime = slice.currentTime;
+
+            int count = slices.count();
+
+            for (int i = 0; i < count; i++)
+            {
+                const WPrivateMediaSlice & slice = slices.at(i);
+
+                int timeA = slice.timeA;
+
+                // NOTE: When the time is -1 it means the currentTime is irrelevant.
+                if (timeA != -1
+                    &&
+                    (currentTime < timeA || currentTime > slice.timeB)) continue;
+
+                count--;
+
+                // NOTE: We pop the slice at the top of the stack.
+                slices.move(i, count);
+
+                return;
+            }*/
+
             while (slices.count() == CONTROLLERMEDIA_MAX_SLICES)
             {
-                slices.removeAt(0);
+                slices.removeLast();
             }
 
-            slices.append(slice);
+            slices.prepend(slice);
         }
         else
         {
@@ -1881,6 +1949,34 @@ void WControllerMediaPrivate::appendSlice(const WPrivateMediaSlice     & slice,
 
         sources.insert(url, mediaSource);
     }
+}
+
+bool WControllerMediaPrivate::applyCache(WPrivateMediaData            * media,
+                                         const QString                & url,
+                                         WAbstractBackend::SourceMode   mode)
+{
+    WPrivateMediaSource * source = getSource(url);
+
+    if (source == NULL) return false;
+
+    const WPrivateMediaSlice * slice = getSlice(source, mode, media->currentTime);
+
+    if (slice == NULL) return false;
+
+    WBackendNetSource backendSource;
+
+    backendSource.medias = slice->medias;
+    backendSource.audios = slice->audios;
+
+    backendSource.expiry = slice->expiry;
+
+    applySource(media, backendSource, mode, false);
+
+    medias.removeOne(media);
+
+    delete media;
+
+    return true;
 }
 
 void WControllerMediaPrivate::updateSources()
@@ -2084,8 +2180,7 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
 
         int timeA = slice.timeA;
 
-        // NOTE: When the time is -1 it means the currentTime is irrelevant so we return the slice
-        //       right away.
+        // NOTE: When the time is -1 it means the currentTime is irrelevant.
         if (timeA != -1
             &&
             (currentTime < timeA || currentTime > slice.timeB)) continue;
@@ -2264,7 +2359,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         media->type = WTrack::Track;
     }
 
-    applySource(media, source, backendQuery.mode);
+    applySource(media, source, backendQuery.mode, true);
 
     this->medias.removeOne(media);
 
@@ -2294,7 +2389,7 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
     {
         int indexNext = checkMax(media, query);
 
-        if (indexNext == -1) return;
+        if (indexNext == -1 || applyCache(media, origin, mode)) return;
 
         WBackendNet * backend = wControllerPlaylist->backendFromUrl(origin);
 
@@ -2340,81 +2435,41 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
         }
     }
 
-    WBackendNetSource backendSource;
-
     QString source = data.source;
 
-    if (source.isEmpty() == false)
+    if (source.isEmpty())
     {
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+        WBackendNetSource backendSource;
 
-        if (backend)
+        backendSource.medias = data.medias;
+
+        applyData(media, data);
+
+        applySource(media, backendSource, mode, true);
+
+        medias.removeOne(media);
+
+        delete media;
+
+        return;
+    }
+
+    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+
+    if (backend)
+    {
+        int indexNext = checkMax(media, query);
+
+        if (indexNext == -1) return;
+
+        QString backendId = backend->id();
+
+        query = backend->getQuerySource(source);
+
+        backend->tryDelete();
+
+        if (resolve(backendId, query))
         {
-            int indexNext = checkMax(media, query);
-
-            if (indexNext == -1) return;
-
-            QString backendId = backend->id();
-
-            query = backend->getQuerySource(source);
-
-            backend->tryDelete();
-
-            if (resolve(backendId, query))
-            {
-                query.indexNext = indexNext;
-
-                // NOTE: We propagate the compatibility mode.
-                query.mode = mode;
-
-                media->urlSource = source;
-
-                applyData(media, data);
-
-                getData(media, &query);
-
-                return;
-            }
-        }
-        else if (WControllerPlaylist::urlIsVbml(source))
-        {
-            int indexNext = checkMax(media, query);
-
-            if (indexNext == -1) return;
-
-            query = WBackendNetQuery(source);
-
-            query.indexNext = indexNext;
-
-            if (WControllerPlaylist::urlIsVbmlUri(source))
-            {
-                query.type = WBackendNetQuery::TypeVbml;
-
-                query.url = source;
-            }
-
-            // NOTE: We propagate the compatibility mode.
-            query.mode = mode;
-
-            media->urlSource = source;
-
-            applyData(media, data);
-
-            getData(media, &query);
-
-            return;
-        }
-        else if (WControllerNetwork::urlIsHttp(source))
-        {
-            int indexNext = checkMax(media, query);
-
-            if (indexNext == -1) return;
-
-            query = WBackendNetQuery(source);
-
-            // NOTE: We want to avoid large binary files.
-            query.scope = WAbstractLoader::ScopeText;
-
             query.indexNext = indexNext;
 
             // NOTE: We propagate the compatibility mode.
@@ -2424,21 +2479,80 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
             applyData(media, data);
 
+            if (applyCache(media, source, mode)) return;
+
             getData(media, &query);
 
             return;
         }
+    }
+    else if (WControllerPlaylist::urlIsVbml(source))
+    {
+        int indexNext = checkMax(media, query);
+
+        if (indexNext == -1) return;
+
+        query = WBackendNetQuery(source);
+
+        query.indexNext = indexNext;
+
+        if (WControllerPlaylist::urlIsVbmlUri(source))
+        {
+            query.type = WBackendNetQuery::TypeVbml;
+
+            query.url = source;
+        }
+
+        // NOTE: We propagate the compatibility mode.
+        query.mode = mode;
 
         media->urlSource = source;
 
-        // NOTE: If the parsing fails we add the current url as the default source.
-        backendSource.medias.insert(WAbstractBackend::QualityDefault, source);
+        applyData(media, data);
+
+        if (applyCache(media, source, mode)) return;
+
+        getData(media, &query);
+
+        return;
     }
-    else backendSource.medias = data.medias;
+    else if (WControllerNetwork::urlIsHttp(source))
+    {
+        int indexNext = checkMax(media, query);
+
+        if (indexNext == -1) return;
+
+        query = WBackendNetQuery(source);
+
+        // NOTE: We want to avoid large binary files.
+        query.scope = WAbstractLoader::ScopeText;
+
+        query.indexNext = indexNext;
+
+        // NOTE: We propagate the compatibility mode.
+        query.mode = mode;
+
+        media->urlSource = source;
+
+        applyData(media, data);
+
+        if (applyCache(media, source, mode)) return;
+
+        getData(media, &query);
+
+        return;
+    }
+
+    media->urlSource = source;
+
+    WBackendNetSource backendSource;
+
+    // NOTE: If the parsing fails we add the current url as the default source.
+    backendSource.medias.insert(WAbstractBackend::QualityDefault, source);
 
     applyData(media, data);
 
-    applySource(media, backendSource, mode);
+    applySource(media, backendSource, mode, true);
 
     medias.removeOne(media);
 
