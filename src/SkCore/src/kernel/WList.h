@@ -42,13 +42,17 @@ template <typename T>
 class WList : public std::list<T>
 {
 public: // Interface
-    void append(const T & value);
+    void append (const T & value);
+    void prepend(const T & value);
 
     void insert(int index, const T & value);
 
     void move(int from, int to);
 
     void removeAt(int index);
+
+    void removeFirst();
+    void removeLast ();
 
     const T & at(int index) const;
 
@@ -73,6 +77,12 @@ template<typename T>
 void WList<T>::append(const T & value)
 {
     this->push_back(value);
+}
+
+template<typename T>
+void WList<T>::prepend(const T & value)
+{
+    insert(0, value);
 }
 
 template<typename T>
@@ -104,6 +114,18 @@ void WList<T>::removeAt(int index)
     Q_ASSERT(index >= 0 && index <= (int) this->size());
 
     this->erase(std::next(this->begin(), index));
+}
+
+template<typename T>
+void WList<T>::removeFirst()
+{
+    removeAt(0);
+}
+
+template<typename T>
+void WList<T>::removeLast()
+{
+    removeAt(this->size() - 1);
 }
 
 //-------------------------------------------------------------------------------------------------
