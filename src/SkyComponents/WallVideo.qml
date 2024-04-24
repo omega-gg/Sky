@@ -988,6 +988,11 @@ WallBookmarkTrack
 
         cover: playerCover
 
+//#DESKTOP
+        cursor: (areaBackward.hovered || areaForward.hovered) ? Qt.PointingHandCursor
+                                                              : Qt.ArrowCursor
+//#END
+
         /* QML_EVENT */ onClicked: function(text)
         {
             if (text)
@@ -1014,6 +1019,8 @@ WallBookmarkTrack
         visible: (browserCover.visible && browserCover.isSourceDefault == false)
 
         cover: browserCover
+
+        cursor: scannerPlayer.cursor
 
         /* QML_EVENT */ onClicked: function(text) { tagClicked(pMouse, text) }
 

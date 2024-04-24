@@ -33,6 +33,10 @@ Scanner
 
     property real ratioTouch: st.itemScan_ratioTouch
 
+//#DESKTOP
+    property int cursor: Qt.ArrowCursor
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -40,7 +44,7 @@ Scanner
     // NOTE: We don't want to update the rectangle position while clicking.
     property bool pHoverable: (sk.cursorVisible && mouseArea.containsMouse
                                &&
-                               pClick == false && rectangleTag.isAnimated == false)
+                               rectangleTag.visible == false)
 //#END
 
     property bool pClick: false
@@ -119,9 +123,7 @@ Scanner
     {
         if (pHoverable)
         {
-            timer.interval = st.itemScan_intervalA;
-
-            timer.restart();
+            scan();
         }
         else clearHover()
     }
@@ -153,6 +155,13 @@ Scanner
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
+
+    function scan()
+    {
+        var position = window.mapToItem(itemScan, window.mouseX, window.mouseY);
+
+        scanFrame(position.x, position.y);
+    }
 
     function click()
     {
@@ -221,15 +230,6 @@ Scanner
 
         timer.restart();
     }
-
-    function pScan()
-    {
-        if (pHoverable == false) return;
-
-        var position = window.mapToItem(itemScan, window.mouseX, window.mouseY);
-
-        scanFrame(position.x, position.y);
-    }
 //#END
 
     //---------------------------------------------------------------------------------------------
@@ -241,7 +241,7 @@ Scanner
     {
         id: timer
 
-        onTriggered: pScan()
+        onTriggered: scan()
     }
 
     Timer
@@ -252,7 +252,7 @@ Scanner
 
         running: (player && player.isPlaying && rectangleTag.isAnimated == false)
 
-        onTriggered: pScan()
+        onTriggered: scan()
     }
 
     MouseArea
@@ -265,7 +265,8 @@ Scanner
 
         hoverEnabled: true
 
-        cursor: Qt.PointingHandCursor
+        cursor: (isHovered || rectangleTag.visible) ? Qt.PointingHandCursor
+                                                    : itemScan.cursor
 
         // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
         onHoverActiveChanged: if (hoverActive == false) clearHover()

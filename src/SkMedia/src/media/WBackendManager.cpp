@@ -780,8 +780,7 @@ void WBackendManagerPrivate::onStateLoad()
 
     qDebug("STATE LOAD %d", stateLoad);
 
-    q->setStateLoad(stateLoad);
-
+    // NOTE: Unfreeze before updating the stateLoad.
 #ifdef SK_NO_QML
     if (freezeLoop == false) freeze = false;
 #else
@@ -792,6 +791,8 @@ void WBackendManagerPrivate::onStateLoad()
         q->applyFrame();
     }
 #endif
+
+    q->setStateLoad(stateLoad);
 
     if (stateLoad == WAbstractBackend::StateLoadDefault)
     {
@@ -878,6 +879,7 @@ void WBackendManagerPrivate::onCurrentTime()
 
     if (currentTime == at || applyNext(at)) return;
 
+    // NOTE: Unfreeze before updating the currentTime.
 #ifdef SK_NO_QML
     if (freezeLoop)
     {
