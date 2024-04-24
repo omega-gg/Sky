@@ -2253,10 +2253,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         //pack.set_int(settings_pack::use_disk_cache_pool, false);
 
-#ifndef LIBTORRENT_LATEST
+        // NOTE: These are important to avoid issues when redirecting data to a third party, like
+        //       avoiding glitchy frames on a video player.
         pack.set_int(settings_pack::cache_size,   0);
         pack.set_int(settings_pack::cache_expiry, 0);
-#endif
 
         //pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
 
