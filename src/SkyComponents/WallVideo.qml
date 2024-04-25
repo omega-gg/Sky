@@ -33,6 +33,12 @@ WallBookmarkTrack
 
     /* read */ property bool isExposed: false
 
+//#DESKTOP
+    /* read */ property bool isScannerHovered: (scannerPlayer.isHovered
+                                                ||
+                                                scannerBrowser.isHovered)
+//#END
+
     property int loaderHeight: player.height / 128
 
     property int logoMargin: browserBack.width / logoRatio
@@ -265,10 +271,16 @@ WallBookmarkTrack
     //---------------------------------------------------------------------------------------------
 
 //#DESKTOP
+    function scan()
+    {
+        if      (scannerBrowser.visible) scannerBrowser.scan();
+        else if (scannerPlayer .visible) scannerPlayer .scan();
+    }
+
     function clearHover()
     {
-        scannerPlayer .clearHover();
-        scannerBrowser.clearHover();
+        if      (scannerBrowser.visible) scannerBrowser.clearHover();
+        else if (scannerPlayer .visible) scannerPlayer .clearHover();
     }
 //#END
 
@@ -843,7 +855,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isPlaying && player.duration != -1)
+        visible: (sk.cursorVisible && player.isPlaying && player.duration != -1)
 
         interactive: false
 

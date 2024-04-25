@@ -101,7 +101,10 @@ Scanner
                 rectangleTag.clickEnd();
             }
 //#DESKTOP
-            else scannerHover.apply(topLeft, topRight, bottomLeft, bottomRight);
+            else if (pHoverable)
+            {
+                scannerHover.apply(topLeft, topRight, bottomLeft, bottomRight);
+            }
 //#END
         }
         else if (pClick)
@@ -125,7 +128,7 @@ Scanner
         {
             scan();
         }
-        else clearHover()
+        else clearHover();
     }
 //#END
 
@@ -160,7 +163,13 @@ Scanner
     {
         var position = window.mapToItem(itemScan, window.mouseX, window.mouseY);
 
+//#DESKTOP
+        if (scanFrame(position.x, position.y)) return;
+
+        scannerHover.clear();
+//#ELSE
         scanFrame(position.x, position.y);
+//#END
     }
 
     function click()
