@@ -163,13 +163,7 @@ Scanner
     {
         var position = window.mapToItem(itemScan, window.mouseX, window.mouseY);
 
-//#DESKTOP
-        if (scanFrame(position.x, position.y)) return;
-
-        scannerHover.clear();
-//#ELSE
         scanFrame(position.x, position.y);
-//#END
     }
 
     function click()

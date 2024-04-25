@@ -1175,12 +1175,12 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
             //-------------------------------------------------------------------------------------
             // NOTE: We move our index to the prior index and adjust the duration accordingly.
 
-            index -= count;
-
             for (int k = 0; k < count; k++)
             {
                 gap += timeline.at(index - k).duration;
             }
+
+            index -= count;
 
             break;
         }
@@ -1191,9 +1191,9 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
 
             if (at < index)
             {
-                index--;
-
                 gap += object.duration;
+
+                index--;
             }
 
             timeline.removeAt(at);
