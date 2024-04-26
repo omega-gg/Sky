@@ -988,6 +988,11 @@ void WControllerMediaData::applySource(const WYamlNodeBase & root,
     {
         ambient = WControllerPlaylist::vbmlSource(child->extractString("ambient"), baseUrl);
     }
+
+    if (subtitles.isEmpty())
+    {
+        subtitles = WControllerPlaylist::vbmlSubtitles(*child, baseUrl);
+    }
 }
 
 void WControllerMediaData::applyMedia(const WYamlNodeBase & root,
