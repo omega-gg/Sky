@@ -54,8 +54,14 @@ Scanner
     //---------------------------------------------------------------------------------------------
 
 //#DESKTOP
-    property alias isHovered: scannerHover.isActive
+    property alias isActive: scannerHover.isActive
+//#END
 
+    property alias hoverActive: mouseArea.hoverActive
+
+    //---------------------------------------------------------------------------------------------
+
+//#DESKTOP
     property alias mouseArea: mouseArea
 //#END
 
@@ -101,10 +107,7 @@ Scanner
                 rectangleTag.clickEnd();
             }
 //#DESKTOP
-            else if (pHoverable)
-            {
-                scannerHover.apply(topLeft, topRight, bottomLeft, bottomRight);
-            }
+            else scannerHover.apply(topLeft, topRight, bottomLeft, bottomRight);
 //#END
         }
         else if (pClick)
@@ -197,7 +200,7 @@ Scanner
 
     function getTextHovered()
     {
-        if (isHovered == false) return "";
+        if (isActive == false) return "";
 
         var position = window.mapToItem(rectangleTag, window.mouseX, window.mouseY);
 
@@ -268,8 +271,8 @@ Scanner
 
         hoverEnabled: true
 
-        cursor: (isHovered || rectangleTag.visible) ? Qt.PointingHandCursor
-                                                    : itemScan.cursor
+        cursor: (isActive || rectangleTag.visible) ? Qt.PointingHandCursor
+                                                   : itemScan.cursor
 
         // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
         onHoverActiveChanged: if (hoverActive == false) clearHover()

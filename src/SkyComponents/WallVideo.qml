@@ -34,9 +34,7 @@ WallBookmarkTrack
     /* read */ property bool isExposed: false
 
 //#DESKTOP
-    /* read */ property bool isScannerHovered: (scannerPlayer.isHovered
-                                                ||
-                                                scannerBrowser.isHovered)
+    /* read */ property bool isScannerActive: (scannerBrowser.isActive || scannerPlayer.isActive)
 //#END
 
     property int loaderHeight: player.height / 128
@@ -433,7 +431,7 @@ WallBookmarkTrack
     {
         if (areaBackward.visible == false
             ||
-            scannerPlayer.isHovered || scannerBrowser.isHovered)
+            scannerPlayer.isActive || scannerBrowser.isActive)
         {
             areaBackward.hovered = false;
             areaForward .hovered = false;
@@ -1017,7 +1015,9 @@ WallBookmarkTrack
             }
         }
 
-        onIsHoveredChanged: pCheckAreaHover()
+//#DESKTOP
+        onIsActiveChanged: pCheckAreaHover()
+//#END
     }
 
     ItemScan
@@ -1036,7 +1036,9 @@ WallBookmarkTrack
 
         /* QML_EVENT */ onClicked: function(text) { tagClicked(pMouse, text) }
 
-        onIsHoveredChanged: pCheckAreaHover()
+//#DESKTOP
+        onIsActiveChanged: pCheckAreaHover()
+//#END
     }
 
     PlayerBrowser
