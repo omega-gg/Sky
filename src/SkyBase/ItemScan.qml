@@ -31,6 +31,10 @@ Scanner
     // Properties
     //---------------------------------------------------------------------------------------------
 
+//#DESKTOP
+    property bool isHoverable: (sk.cursorVisible && mouseArea.containsMouse)
+//#END
+
     property real ratioTouch: st.itemScan_ratioTouch
 
 //#DESKTOP
@@ -40,21 +44,16 @@ Scanner
     //---------------------------------------------------------------------------------------------
     // Private
 
-//#DESKTOP
-    // NOTE: We don't want to update the rectangle position while clicking.
-    property bool pHoverable: (sk.cursorVisible && mouseArea.containsMouse
-                               &&
-                               rectangleTag.visible == false)
-//#END
-
     property bool pClick: false
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias isClicking: rectangleTag.visible
+
 //#DESKTOP
-    property alias isActive: scannerHover.isActive
+    property alias isActive: scannerHover.visible
 //#END
 
     property alias hoverActive: mouseArea.hoverActive
@@ -66,6 +65,11 @@ Scanner
 //#END
 
     property alias rectangleTag: rectangleTag
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias durationAnimation: rectangleTag.durationAnimation
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -125,9 +129,9 @@ Scanner
     onWidthChanged : pRestart()
     onHeightChanged: pRestart()
 
-    onPHoverableChanged:
+    onIsHoverableChanged:
     {
-        if (pHoverable)
+        if (isHoverable)
         {
             scan();
         }
@@ -195,6 +199,8 @@ Scanner
     {
         timer.stop();
 
+        pClick = false;
+
         scannerHover.clear();
     }
 
@@ -221,7 +227,7 @@ Scanner
 //#DESKTOP
     function pRestart()
     {
-        if (pHoverable == false) return;
+        if (isHoverable == false) return;
 
         timer.interval = st.itemScan_intervalA;
 
@@ -230,7 +236,7 @@ Scanner
 
     function pRestartHover()
     {
-        if (pHoverable == false) return;
+        if (isHoverable == false) return;
 
         timer.interval = st.itemScan_intervalB;
 
@@ -271,8 +277,8 @@ Scanner
 
         hoverEnabled: true
 
-        cursor: (isActive || rectangleTag.visible) ? Qt.PointingHandCursor
-                                                   : itemScan.cursor
+        cursor: (isActive || isClicking) ? Qt.PointingHandCursor
+                                         : itemScan.cursor
 
         // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
         onHoverActiveChanged: if (hoverActive == false) clearHover()
@@ -288,7 +294,8 @@ Scanner
 
         anchors.fill: parent
 
-        visible: isActive
+        // NOTE: We don't want to hover a tag while clicking.
+        visible: (isActive && isClicking == false)
 
         opacity: st.rectangleTag_opacity
 

@@ -364,9 +364,9 @@ void WViewPrivate::init(QQuickItem * item)
 
     idleCheck = false;
     idle      = false;
-    idleDelay = 3000;
+    idleDelay = 3000; // 3 seconds
 
-    idleTimer.setInterval(3000);
+    idleTimer.setInterval(idleDelay);
 
 #ifdef QT_NEW
     //---------------------------------------------------------------------------------------------
