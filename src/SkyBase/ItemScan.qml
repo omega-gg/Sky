@@ -50,11 +50,11 @@ Scanner
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias isClicking: rectangleTag.visible
-
 //#DESKTOP
-    property alias isActive: scannerHover.visible
+    property alias isHovered: scannerHover.visible
 //#END
+
+    property alias isClicking: rectangleTag.visible
 
     property alias hoverActive: mouseArea.hoverActive
 
@@ -206,7 +206,7 @@ Scanner
 
     function getTextHovered()
     {
-        if (isActive == false) return "";
+        if (isHovered == false) return "";
 
         var position = window.mapToItem(rectangleTag, window.mouseX, window.mouseY);
 
@@ -277,8 +277,8 @@ Scanner
 
         hoverEnabled: true
 
-        cursor: (isActive || isClicking) ? Qt.PointingHandCursor
-                                         : itemScan.cursor
+        cursor: (isHovered || isClicking) ? Qt.PointingHandCursor
+                                          : itemScan.cursor
 
         // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
         onHoverActiveChanged: if (hoverActive == false) clearHover()
