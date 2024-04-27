@@ -57,7 +57,7 @@ Scanner
     property alias isClicking: rectangleTag.visible
 
 //#DESKTOP
-    property alias hoverActive: mouseArea.hoverActive
+    property alias containsMouse: mouseArea.containsMouse
 //#END
 
     //---------------------------------------------------------------------------------------------

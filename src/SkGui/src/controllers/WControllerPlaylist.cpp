@@ -5507,6 +5507,8 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         QString trackId = backend->getTrackId(url);
 
+        if (trackId.isEmpty()) trackId = url;
+
         QString t = WBackendNet::timeToString(time);
 
         WBackendNetQuery query = backend->createQuery("related", "tracks", trackId, t);
@@ -5573,6 +5575,8 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
         Q_D(const WControllerPlaylist);
 
         QString id = backend->getTrackId(url);
+
+        if (id.isEmpty()) id = url;
 
         WBackendNetQuery query = backend->createQuery("related", "tracks", id);
 

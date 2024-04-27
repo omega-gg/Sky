@@ -76,8 +76,6 @@ TextBase
 
     wrapMode: Text.WordWrap
 
-    font.pixelSize: pGetSize()
-
     font.bold: st.textSubtitle_bold
 
     //---------------------------------------------------------------------------------------------
@@ -87,6 +85,7 @@ TextBase
     // NOTE: This function applies the proper subtitle size and returns the bottom margin.
     function applySize(player, cover)
     {
+        var size;
         var height;
 
         var playerHeight = player.height;
@@ -94,33 +93,34 @@ TextBase
         // NOTE: When the player is hidden we display the subtitles on the cover.
         if (player.outputActive == AbstractBackend.OutputAudio || player.hasOutput)
         {
+            size = Math.min(cover.paintedWidth, player.width) / 32;
+
             height = cover.paintedHeight;
         }
-        else height = Math.min(player.getRect().height, playerHeight);
+        else
+        {
+            var rect = player.getRect();
+
+            size = Math.min(rect.width, player.width) / 32;
+
+            height = Math.min(rect.height, playerHeight);
+        }
+
+        if (size < sizeMinimum)
+        {
+            font.pixelSize = sizeMinimum;
+        }
+        else if (size > sizeMaximum)
+        {
+            font.pixelSize = sizeMaximum;
+        }
+        else font.pixelSize = size;
 
         if (height > 0)
         {
             return (playerHeight - height) / 2 + height / 64;
         }
         else return playerHeight / 64;
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    function pGetSize()
-    {
-        var size = width / 32;
-
-        if (size < sizeMinimum)
-        {
-            return sizeMinimum;
-        }
-        else if (size > sizeMaximum)
-        {
-            return sizeMaximum;
-        }
-        else return size;
     }
 
     //---------------------------------------------------------------------------------------------

@@ -39,6 +39,10 @@ WallBookmarkTrack
                                                 scannerPlayer.isHovered)
 //#END
 
+    /* read */ property bool isScannerClicking: (scannerBrowser.isClicking
+                                                 ||
+                                                 scannerPlayer.isClicking)
+
     property int loaderHeight: player.height / 128
 
     property int logoMargin: browserBack.width / logoRatio
