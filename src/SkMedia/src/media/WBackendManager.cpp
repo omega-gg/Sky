@@ -347,6 +347,8 @@ void WBackendManagerPrivate::applySources(bool play)
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
 
         if (play) startClock();
+
+        // FIXME: We should probably find a way to call 'applyDefault' later.
     }
     else
     {
