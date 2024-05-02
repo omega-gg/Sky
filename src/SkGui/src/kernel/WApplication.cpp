@@ -99,6 +99,9 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 #ifdef QT_4
     QCoreApplication::setAttribute(Qt::AA_ImmediateWidgetCreation);
 #elif defined(QT_5)
+    // NOTE: We want to handle dpi scaling ourselves.
+    qputenv("QT_SCREEN_SCALE_FACTORS", "1");
+
 #ifdef SK_SOFTWARE
     QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
 #else
@@ -107,6 +110,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 #else // QT_6
     // NOTE: We want to handle dpi scaling ourselves.
     qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
+    qputenv("QT_SCREEN_SCALE_FACTORS",   "1");
 
 #ifdef SK_DESKTOP
     // FIXME Qt6.6: We keep deceleration until the mouse wheel gets snappier.
