@@ -177,11 +177,11 @@ WBroadcastServerThread::WBroadcastServerThread(WBroadcastServer * parent, int po
 
         int length = data.length();
 
-        if (length == 0)
+        if (length)
         {
-            qWarning("WBroadcastServerThread::EventReply: Data is empty.");
+            socket->write(data.constData(), data.length());
         }
-        else socket->write(data.constData(), data.length());
+        else qWarning("WBroadcastServerThread::EventReply: Data is empty.");
 
         return true;
     }

@@ -69,7 +69,7 @@ public: // Functions
 
 public: // Static functions
     static QString extractName     (QString * data);
-    static QString extractParameter(QString * data);
+    static QString extractParameter(QString * data, int index);
 
     static QByteArray generateData(const QString & type, const QStringList & parameters);
 

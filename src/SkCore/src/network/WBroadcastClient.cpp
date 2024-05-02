@@ -210,11 +210,11 @@ WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * parent)
 
         int length = data.length();
 
-        if (length == 0)
+        if (length)
         {
-            qWarning("WBroadcastClientThread::EventMessage: Data is empty.");
+            socket->write(data.constData(), data.length());
         }
-        else socket->write(data.constData(), data.length());
+        else qWarning("WBroadcastClientThread::EventMessage: Data is empty.");
 
         return true;
     }
@@ -378,7 +378,11 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 
     while (content.isEmpty() == false)
     {
-        QString parameter = WBroadcastClientPrivate::extractParameter(&content);
+        int index = content.indexOf('"');
+
+        if (index == -1) break;
+
+        QString parameter = WBroadcastClientPrivate::extractParameter(&content, index);
 
         parameters.append(parameter);
     }
@@ -526,7 +530,11 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
 
     while (content.isEmpty() == false)
     {
-        QString parameter = WBroadcastClientPrivate::extractParameter(&content);
+        int index = content.indexOf('"');
+
+        if (index == -1) break;
+
+        QString parameter = WBroadcastClientPrivate::extractParameter(&content, index);
 
         parameters.append(parameter);
     }
@@ -823,12 +831,8 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
     return name;
 }
 
-/* static */ QString WBroadcastClientPrivate::extractParameter(QString * data)
+/* static */ QString WBroadcastClientPrivate::extractParameter(QString * data, int index)
 {
-    int index = data->indexOf('"');
-
-    if (index == -1) return QString();
-
     while (Sk::checkEscaped(*data, index))
     {
         int at = data->indexOf('"', index + 1);
@@ -868,7 +872,7 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 
     QByteArray bytes;
 
-    WBroadcastClient::appendInt(&bytes, data.length());
+    WBroadcastClient::appendInt(&bytes, array.length());
 
     array.prepend(bytes, 4);
 
