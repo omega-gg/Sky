@@ -342,7 +342,13 @@ void WBackendManagerPrivate::applySources(bool play)
     qDebug("Current source: %s timeA %d timeB %d start %d duration %d hub %d",
            source.C_STR, timeA, timeB, start, duration, hub);
 
-    if (currentMedia.isEmpty() == false)
+    if (currentMedia.isEmpty())
+    {
+        q->setStateLoad(WAbstractBackend::StateLoadDefault);
+
+        if (play) startClock();
+    }
+    else
     {
         loadSource(url, currentMedia, currentTime - timeA + start);
 
@@ -351,12 +357,6 @@ void WBackendManagerPrivate::applySources(bool play)
         backendInterface->play();
 
         connectBackend();
-    }
-    else if (play)
-    {
-        startClock();
-
-        q->setStateLoad(WAbstractBackend::StateLoadDefault);
     }
 
     emit q->loaded();
