@@ -556,6 +556,10 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     {
         if (parameters.count() == 1) return;
     }
+    else if (type == VIDEOS || type == AUDIOS || type == SUBTITLES)
+    {
+        if (parameters.isEmpty() == false) return;
+    }
     else if (parameters.isEmpty()) return;
 
     //---------------------------------------------------------------------------------------------
