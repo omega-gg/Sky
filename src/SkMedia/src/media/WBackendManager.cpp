@@ -346,9 +346,12 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
 
-        if (play) startClock();
+        freeze     = false;
+        freezeLoop = false;
 
-        // FIXME: We should probably find a way to call 'applyDefault' later.
+        backendInterface->stop();
+
+        if (play) startClock();
     }
     else
     {
