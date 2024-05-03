@@ -149,9 +149,12 @@ void WBackendManagerPrivate::loadSources(bool play)
             freeze     = false;
             freezeLoop = false;
 
-            loaded = true;
-
             type = Track;
+
+            timeA = -1;
+            timeB = -1;
+
+            start = 0;
 
             backend->setRepeat(repeat);
 
@@ -164,11 +167,16 @@ void WBackendManagerPrivate::loadSources(bool play)
             // NOTE: We clear the arg so we don't apply it when seeking to another video slice.
             source = WControllerNetwork::removeFragmentValue(source, "arg");
 
-            if (play == false) return;
+            if (play)
+            {
+                backendInterface->play();
 
-            backendInterface->play();
+                connectBackend();
+            }
 
-            connectBackend();
+            loaded = true;
+
+            emit q->loaded();
 
             return;
         }
@@ -183,15 +191,22 @@ void WBackendManagerPrivate::loadSources(bool play)
 
     if (reply == NULL) return;
 
-    if (reply->isLoaded())
+    if (reply->isLoaded() == false)
     {
-        applySources(play);
+        QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q_func(), SLOT(onLoaded()));
 
-        delete reply;
-
-        reply = NULL;
+        return;
     }
-    else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q_func(), SLOT(onLoaded()));
+
+    applySources(play);
+
+    delete reply;
+
+    reply = NULL;
+
+    loaded = true;
+
+    emit q_func()->loaded();
 }
 
 void WBackendManagerPrivate::reloadSources(bool play)
@@ -200,18 +215,29 @@ void WBackendManagerPrivate::reloadSources(bool play)
 
     if (reply == NULL) return;
 
-    if (reply->isLoaded())
+    if (reply->isLoaded() == false)
     {
-        if (urlSource != reply->urlSource())
-        {
-            applySources(play);
-        }
+        QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q_func(), SLOT(onReloaded()));
 
+        return;
+    }
+
+    if (urlSource == reply->urlSource())
+    {
         delete reply;
 
         reply = NULL;
+
+        return;
     }
-    else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q_func(), SLOT(onReloaded()));
+
+    applySources(play);
+
+    delete reply;
+
+    reply = NULL;
+
+    emit q_func()->loaded();
 }
 
 void WBackendManagerPrivate::loadMedia()
@@ -240,9 +266,9 @@ void WBackendManagerPrivate::applySources(bool play)
 
     q->setVbml(reply->isVbml());
 
-    int timeA = reply->timeA();
+    int time = reply->timeA();
 
-    if (timeA == -1)
+    if (time == -1)
     {
         if (currentMedia.isEmpty())
         {
@@ -254,9 +280,12 @@ void WBackendManagerPrivate::applySources(bool play)
         freeze     = false;
         freezeLoop = false;
 
-        loaded = true;
-
         type = Track;
+
+        timeA = -1;
+        timeB = -1;
+
+        start = 0;
 
         backend->setRepeat(repeat);
 
@@ -279,8 +308,6 @@ void WBackendManagerPrivate::applySources(bool play)
 
     WTrack::Type typeRoot = reply->type();
 
-    loaded = true;
-
     // NOTE VLC: An image is played like a hub to avoid the 10 seconds duration.
     if (WControllerFile::urlIsImage(currentMedia))
     {
@@ -290,7 +317,7 @@ void WBackendManagerPrivate::applySources(bool play)
     }
     else hub = (reply->typeSource() == WTrack::Hub);
 
-    this->timeA = timeA;
+    timeA = time;
 
     timeB = reply->timeB();
 
@@ -363,8 +390,6 @@ void WBackendManagerPrivate::applySources(bool play)
 
         connectBackend();
     }
-
-    emit q->loaded();
 }
 
 void WBackendManagerPrivate::applyEmpty()
@@ -376,11 +401,14 @@ void WBackendManagerPrivate::applyEmpty()
     freeze     = false;
     freezeLoop = false;
 
+    timeA = -1;
+    timeB = -1;
+
+    start = 0;
+
     q->setContext(QString(), QString());
 
     q->setAmbient(QString());
-
-    emit q->loaded();
 }
 
 void WBackendManagerPrivate::loadSource(const QString & source,
@@ -711,31 +739,45 @@ void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backendNew)
 
 void WBackendManagerPrivate::onLoaded()
 {
+    Q_Q(WBackendManager);
+
     if (reply->hasError())
     {
         applyEmpty();
     }
-    else applySources(q_func()->isPlaying());
+    else applySources(q->isPlaying());
 
     reply->deleteLater();
 
     reply = NULL;
+
+    loaded = true;
+
+    emit q->loaded();
 }
 
 void WBackendManagerPrivate::onReloaded()
 {
-    if (reply->hasError() == false && urlSource != reply->urlSource())
+    if (reply->hasError() || urlSource == reply->urlSource())
     {
-        Q_Q(WBackendManager);
+        reply->deleteLater();
 
-        disconnectBackend();
+        reply = NULL;
 
-        applySources(q->isPlaying());
+        return;
     }
+
+    Q_Q(WBackendManager);
+
+    disconnectBackend();
+
+    applySources(q->isPlaying());
 
     reply->deleteLater();
 
     reply = NULL;
+
+    emit q->loaded();
 }
 
 void WBackendManagerPrivate::onNext()
