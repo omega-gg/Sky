@@ -951,11 +951,7 @@ void WBackendManagerPrivate::onCurrentTime()
 
     // NOTE: Sometimes, playback is a bit in advance so we skip the last milliseconds to avoid the
     //       first frame from the next segment.
-    if (backendDuration - backendTime == end)
-    {
-        timer.start(end);
-    }
-    else timer.start(end - BACKENDCACHE_TIME_SKIP);
+    timer.start(end - BACKENDCACHE_TIME_SKIP);
 }
 
 void WBackendManagerPrivate::onDuration()
@@ -1334,27 +1330,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         if (d->backend->isLive()) return;
 
-        int backendDuration = d->backend->duration();
-
-        int duration = backendDuration - d->start;
+        int duration = d->backend->duration() - d->start;
 
         if (duration < 0) return;
 
         int end = d->timeB - msec;
-
-        msec -= d->timeA;
-
-        // NOTE: Parenthesis are required to avoid integer overflow.
-        int at = msec - duration * (msec / duration) + d->start;
-
-        if (backendDuration - at == end)
-        {
-            d->backendInterface->seek(at);
-
-            if (isPlaying()) d->timer.start(end);
-
-            return;
-        }
 
         // NOTE: Sometimes, playback is a bit in advance so we skip the last milliseconds to avoid
         //       the first frame from the next segment.
@@ -1364,6 +1344,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
             return;
         }
+
+        msec -= d->timeA;
+
+        // NOTE: Parenthesis are required to avoid integer overflow.
+        int at = msec - duration * (msec / duration) + d->start;
 
         d->backendInterface->seek(at);
 
@@ -1371,27 +1356,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     }
     else if (d->currentMedia.isEmpty() == false)
     {
-        int backendDuration = d->backend->duration();
-
         int end = d->timeB - msec;
-
-        msec -= d->timeA;
-
-        if (backendDuration - msec == end)
-        {
-            if (msec >= d->backend->duration() - d->start)
-            {
-                d->applyDefault();
-
-                return;
-            }
-
-            d->backendInterface->seek(msec + d->start);
-
-            if (isPlaying()) d->timer.start(end);
-
-            return;
-        }
 
         // NOTE: Sometimes, playback is a bit in advance so we skip the last milliseconds to avoid
         //       the first frame from the next segment.
@@ -1401,6 +1366,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
             return;
         }
+
+        msec -= d->timeA;
 
         if (msec >= d->backend->duration() - d->start)
         {
