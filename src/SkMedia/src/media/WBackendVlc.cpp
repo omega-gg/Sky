@@ -1235,6 +1235,10 @@ void WBackendVlcPrivate::updateLoading()
 
 void WBackendVlcPrivate::clearPlayer()
 {
+    playing = false;
+
+    length = 0;
+
     if (started)
     {
         started = false;
@@ -1252,10 +1256,6 @@ void WBackendVlcPrivate::clearPlayer()
 
         onFrameUpdated();
     }
-
-    playing = false;
-
-    length = 0;
 }
 
 void WBackendVlcPrivate::clearActive()
@@ -2401,7 +2401,11 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
                 return true;
             }
 
-            d->clearPlayer();
+            d->started = false;
+            d->active  = false;
+            d->playing = false;
+
+            d->frameFreeze = false;
 
             setEnded(true);
         }

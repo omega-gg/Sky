@@ -888,7 +888,34 @@ void WBackendManagerPrivate::onEnded()
 
     qDebug("ENDED");
 
-    applyDefault();
+    int time = timeA + backend->duration() - start;
+
+    if (time < timeB)
+    {
+        applyDefault();
+
+        return;
+    }
+
+    if (timeB == duration) return;
+
+    Q_Q(WBackendManager);
+
+    q->setCurrentTime(time);
+
+    freeze = true;
+
+    // NOTE: We have to call stopBackend when the playback has ended.
+    stopBackend();
+
+    if (type == Interactive)
+    {
+        source = WControllerNetwork::removeFragmentValue(source, "id");
+
+        source = WControllerPlaylist::applyTime(source, currentTime);
+    }
+
+    loadSources(q->isPlaying());
 }
 
 void WBackendManagerPrivate::onCurrentTime()
