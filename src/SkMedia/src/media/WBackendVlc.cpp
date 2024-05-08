@@ -1177,18 +1177,23 @@ void WBackendVlcPrivate::reload()
 
     // NOTE: When the currentMedia is empty we skip this call. This is useful when using a
     //       WHookOutput.
-    if (currentMedia.isEmpty() || q->hasStarted() == false) return;
+    if (currentMedia.isEmpty()) return;
 
     clearReply();
 
-    q->backendStop();
+    if (q->hasStarted())
+    {
+        q->backendStop();
 
-    // NOTE: We clear sources because we want check their validity when we resume playback.
-    clearSources();
+        // NOTE: We clear sources to check their validity when we resume playback.
+        clearSources();
 
-    loadSources(q->isPlaying());
+        loadSources(q->isPlaying());
 
-    updateLoading();
+        updateLoading();
+    }
+    // NOTE: We clear sources to check their validity when we resume playback.
+    else clearSources();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2465,7 +2470,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
         stopError("Vlc player error");
 
-        // NOTE: We clear sources because we want check their validity when we resume playback.
+        // NOTE: We clear sources to check their validity when we resume playback.
         d->clearSources();
 
         wControllerMedia->clearMedia(d->source);
