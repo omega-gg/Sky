@@ -31,10 +31,11 @@ TextBase
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property real ratio: st.textSubtitle_ratio
+
     property int pixelSize: sizeMinimum
 
     property int sizeMinimum: st.textSubtitle_sizeMinimum
-    property int sizeMaximum: st.textSubtitle_sizeMaximum
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -93,7 +94,7 @@ TextBase
         // NOTE: When the player is hidden we display the subtitles on the cover.
         if (player.outputActive == AbstractBackend.OutputAudio || player.hasOutput)
         {
-            size = Math.min(cover.paintedWidth, player.width) / 32;
+            size = Math.min(cover.paintedWidth, player.width) / ratio;
 
             height = cover.paintedHeight;
         }
@@ -101,20 +102,12 @@ TextBase
         {
             var rect = player.getRect();
 
-            size = Math.min(rect.width, player.width) / 32;
+            size = Math.min(rect.width, player.width) / ratio;
 
             height = Math.min(rect.height, playerHeight);
         }
 
-        if (size < sizeMinimum)
-        {
-            font.pixelSize = sizeMinimum;
-        }
-        else if (size > sizeMaximum)
-        {
-            font.pixelSize = sizeMaximum;
-        }
-        else font.pixelSize = size;
+        font.pixelSize = Math.max(sizeMinimum, size);
 
         if (height > 0)
         {

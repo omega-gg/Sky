@@ -364,8 +364,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // TextSubtitle
 
+    property real textSubtitle_ratio: 40.0
+
     property int textSubtitle_sizeMinimum: dp18
-    property int textSubtitle_sizeMaximum: dp48
 
     property bool textSubtitle_bold: true
 
