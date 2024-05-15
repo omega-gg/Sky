@@ -735,83 +735,99 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
     }
 }
 
-//-------------------------------------------------------------------------------------------------
-// Static functions
-//-------------------------------------------------------------------------------------------------
-
-/* static */ QVariant WControllerMediaData::extractResult(const WYamlReader & reader,
-                                                          const QString     & argument,
-                                                          const QStringList & context,
-                                                          const QString     & contextId)
+void WControllerMediaData::applySource(const WYamlNodeBase & root,
+                                       const WYamlNode     & node,
+                                       const QString       & url,
+                                       const QString       & baseUrl, int duration)
 {
-    QStringList list = argument.split(',');
 
-    if (list.isEmpty()) return QVariant();
+    QString type = node.extractString("type");
 
-    // NOTE: A routine name has a maximum length of 16 characters.
-    QString routine = list.takeFirst().left(16).toUpper();
-
-    WBackendUniversalScript script(reader.extractString(routine));
-
-    if (script.isValid() == false) return QVariant();
-
-    WBackendUniversalParameters parameters(script);
-
-    if (list.isEmpty() == false)
+    if (type.isEmpty())
     {
-        parameters.add("argument", list.first());
-        parameters.add("args",     list);
+        typeSource = WTrack::typeFromString(node.key);
+    }
+    else typeSource = WTrack::typeFromString(type);
+
+    timeB = timeA + duration;
+
+    applyData(node, url, baseUrl);
+
+    const WYamlNode * child = WControllerPlaylist::vbmlTemplate(root, node);
+
+    if (child == NULL) return;
+
+    if (source.isEmpty())
+    {
+        source = WControllerPlaylist::vbmlSource(child->extractString("source"), baseUrl);
     }
 
-    parameters.add("context", context);
-    parameters.add("id",      contextId);
-
-    return script.run(&parameters);
-}
-
-/* static */
-QString WControllerMediaData::generateContext(const QList<WControllerMediaObject> & timeline)
-{
-    return WZipper::compressBase64(getContext(timeline).toUtf8());
-}
-
-/* static */
-QString WControllerMediaData::getContext(const QList<WControllerMediaObject> & timeline)
-{
-    QString context;
-
-    foreach (const WControllerMediaObject & object, timeline)
+    if (ambient.isEmpty())
     {
-        context.append(object.id + ',');
+        ambient = WControllerPlaylist::vbmlSource(child->extractString("ambient"), baseUrl);
     }
 
-    if (context.isEmpty()) return context;
-
-    context.chop(1);
-
-    return context;
+    if (subtitles.isEmpty())
+    {
+        subtitles = WControllerPlaylist::vbmlSubtitles(*child, baseUrl);
+    }
 }
 
-/* static */
-void WControllerMediaData::dumpTimeline(const QList<WControllerMediaObject> & timeline)
+void WControllerMediaData::applyMedia(const WYamlNodeBase & root,
+                                      const QString       & url, const QString & baseUrl)
 {
-    QString context;
+    int durationSource = WControllerPlaylist::vbmlDuration(root, 0, -1);
 
-    foreach (const WControllerMediaObject & object, timeline)
+    if (durationSource == -1)
     {
-        context.append(object.id + ',');
+        applyData(root, url, baseUrl);
+
+        return;
     }
 
-    if (context.isEmpty()) return;
+    int at = root.extractMsecs("at");
 
-    context.chop(1);
+    if (at)
+    {
+        durationSource -= at;
 
-    qDebug("%s", context.C_STR);
+        start += at;
+    }
+
+    if (durationSource <= 0) return;
+
+    if (duration == -1)
+    {
+        if (type == WTrack::Channel)
+        {
+            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
+        }
+        else duration = durationSource;
+    }
+
+    timeB = timeA + durationSource;
+
+    applyData(root, url, baseUrl);
 }
 
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
+void WControllerMediaData::applyData(const WYamlNodeBase & node, const QString & url,
+                                     const QString & baseUrl)
+{
+    source = WControllerPlaylist::vbmlSource(url, baseUrl);
+
+    ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
+
+    subtitles = WControllerPlaylist::vbmlSubtitles(node, baseUrl);
+}
+
+void WControllerMediaData::applyEmpty()
+{
+    if (currentTime >= duration) return;
+
+    timeB = duration;
+
+    start = 0;
+}
 
 void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
                                                  const QList<WYamlNode> & children,
@@ -964,100 +980,6 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
         }
         else applySource(root, child, QString(), baseUrl, durationSource);
     }
-}
-
-void WControllerMediaData::applySource(const WYamlNodeBase & root,
-                                       const WYamlNode     & node,
-                                       const QString       & url,
-                                       const QString       & baseUrl, int duration)
-{
-
-    QString type = node.extractString("type");
-
-    if (type.isEmpty())
-    {
-        typeSource = WTrack::typeFromString(node.key);
-    }
-    else typeSource = WTrack::typeFromString(type);
-
-    timeB = timeA + duration;
-
-    applyData(node, url, baseUrl);
-
-    const WYamlNode * child = WControllerPlaylist::vbmlTemplate(root, node);
-
-    if (child == NULL) return;
-
-    if (source.isEmpty())
-    {
-        source = WControllerPlaylist::vbmlSource(child->extractString("source"), baseUrl);
-    }
-
-    if (ambient.isEmpty())
-    {
-        ambient = WControllerPlaylist::vbmlSource(child->extractString("ambient"), baseUrl);
-    }
-
-    if (subtitles.isEmpty())
-    {
-        subtitles = WControllerPlaylist::vbmlSubtitles(*child, baseUrl);
-    }
-}
-
-void WControllerMediaData::applyMedia(const WYamlNodeBase & root,
-                                      const QString       & url, const QString & baseUrl)
-{
-    int durationSource = WControllerPlaylist::vbmlDuration(root, 0, -1);
-
-    if (durationSource == -1)
-    {
-        applyData(root, url, baseUrl);
-
-        return;
-    }
-
-    int at = root.extractMsecs("at");
-
-    if (at)
-    {
-        durationSource -= at;
-
-        start += at;
-    }
-
-    if (durationSource <= 0) return;
-
-    if (duration == -1)
-    {
-        if (type == WTrack::Channel)
-        {
-            duration = CONTROLLERMEDIA_CHANNEL_DURATION;
-        }
-        else duration = durationSource;
-    }
-
-    timeB = timeA + durationSource;
-
-    applyData(root, url, baseUrl);
-}
-
-void WControllerMediaData::applyData(const WYamlNodeBase & node, const QString & url,
-                                                                 const QString & baseUrl)
-{
-    source = WControllerPlaylist::vbmlSource(url, baseUrl);
-
-    ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
-
-    subtitles = WControllerPlaylist::vbmlSubtitles(node, baseUrl);
-}
-
-void WControllerMediaData::applyEmpty()
-{
-    if (currentTime >= duration) return;
-
-    timeB = duration;
-
-    start = 0;
 }
 
 void WControllerMediaData::addChapter(const WYamlNodeBase & node,
@@ -1240,6 +1162,80 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
     //qDebug("CONTEXT AFTER %s %s", getContext(timeline).C_STR, contextId.C_STR);
 
     return generateContext(timeline);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QVariant WControllerMediaData::extractResult(const WYamlReader & reader,
+                                                          const QString     & argument,
+                                                          const QStringList & context,
+                                                          const QString     & contextId)
+{
+    QStringList list = argument.split(',');
+
+    if (list.isEmpty()) return QVariant();
+
+    // NOTE: A routine name has a maximum length of 16 characters.
+    QString routine = list.takeFirst().left(16).toUpper();
+
+    WBackendUniversalScript script(reader.extractString(routine));
+
+    if (script.isValid() == false) return QVariant();
+
+    WBackendUniversalParameters parameters(script);
+
+    if (list.isEmpty() == false)
+    {
+        parameters.add("argument", list.first());
+        parameters.add("args",     list);
+    }
+
+    parameters.add("context", context);
+    parameters.add("id",      contextId);
+
+    return script.run(&parameters);
+}
+
+/* static */
+QString WControllerMediaData::generateContext(const QList<WControllerMediaObject> & timeline)
+{
+    return WZipper::compressBase64(getContext(timeline).toUtf8());
+}
+
+/* static */
+QString WControllerMediaData::getContext(const QList<WControllerMediaObject> & timeline)
+{
+    QString context;
+
+    foreach (const WControllerMediaObject & object, timeline)
+    {
+        context.append(object.id + ',');
+    }
+
+    if (context.isEmpty()) return context;
+
+    context.chop(1);
+
+    return context;
+}
+
+/* static */
+void WControllerMediaData::dumpTimeline(const QList<WControllerMediaObject> & timeline)
+{
+    QString context;
+
+    foreach (const WControllerMediaObject & object, timeline)
+    {
+        context.append(object.id + ',');
+    }
+
+    if (context.isEmpty()) return;
+
+    context.chop(1);
+
+    qDebug("%s", context.C_STR);
 }
 
 //-------------------------------------------------------------------------------------------------

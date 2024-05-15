@@ -174,18 +174,16 @@ public: // Interface
 
     void applyM3u(const QByteArray & array, const QString & url);
 
-public: // Static functions
-    static QVariant extractResult(const WYamlReader & reader, const QString     & argument,
-                                                              const QStringList & context,
-                                                              const QString     & contextId);
+    void applySource(const WYamlNodeBase & root,
+                     const WYamlNode     & node,
+                     const QString       & url, const QString & baseUrl, int duration);
 
-    static QString generateContext(const QList<WControllerMediaObject> & timeline);
+    void applyMedia(const WYamlNodeBase & root, const QString & url, const QString & baseUrl);
 
-    static QString getContext(const QList<WControllerMediaObject> & timeline);
+    void applyData(const WYamlNodeBase & node, const QString & url, const QString & baseUrl);
 
-    static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
+    void applyEmpty();
 
-public: // Functions
     void extractSourceDuration(const WYamlNodeBase    & root,
                                const QList<WYamlNode> & children,
                                const QList<int>       & durations,
@@ -199,16 +197,6 @@ public: // Functions
     void extractSource(const WYamlNodeBase    & root,
                        const QList<WYamlNode> & children, const QString & baseUrl);
 
-    void applySource(const WYamlNodeBase & root,
-                     const WYamlNode     & node,
-                     const QString       & url, const QString & baseUrl, int duration);
-
-    void applyMedia(const WYamlNodeBase & root, const QString & url, const QString & baseUrl);
-
-    void applyData(const WYamlNodeBase & node, const QString & url, const QString & baseUrl);
-
-    void applyEmpty();
-
     void addChapter(const WYamlNodeBase & node, int time, const QString & baseUrl);
 
     int updateCurrentTime(const WYamlNodeBase                 & root,
@@ -216,6 +204,17 @@ public: // Functions
 
     // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
     QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index);
+
+public: // Static functions
+    static QVariant extractResult(const WYamlReader & reader, const QString     & argument,
+                                  const QStringList & context,
+                                  const QString     & contextId);
+
+    static QString generateContext(const QList<WControllerMediaObject> & timeline);
+
+    static QString getContext(const QList<WControllerMediaObject> & timeline);
+
+    static void dumpTimeline(const QList<WControllerMediaObject> & timeline);
 
 private: // Functions
     QStringList getContext(const QList<WControllerMediaObject> & timeline, int count) const;
