@@ -119,6 +119,8 @@ public: // Variable
     QString context;
     QString contextId;
 
+    QList<WChapter> chapters;
+
     QString ambient;
 
     QStringList subtitles;

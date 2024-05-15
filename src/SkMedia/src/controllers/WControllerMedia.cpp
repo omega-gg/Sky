@@ -223,6 +223,11 @@ QHash<WAbstractBackend::Quality, QString> WMediaReply::audios() const
     return _audios;
 }
 
+QList<WChapter> WMediaReply::chapters() const
+{
+    return _chapters;
+}
+
 QString WMediaReply::ambient() const
 {
     return _ambient;
@@ -820,9 +825,15 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
 
         if (durationSource <= 0) continue;
 
-        start = starts.at(i);
+        const WYamlNode & child = children.at(i);
 
         int time = timeA + durationSource;
+
+        addChapter(child, time, baseUrl);
+
+        if (timeB != -1) continue;
+
+        start = starts.at(i);
 
         if (currentTime >= time)
         {
@@ -830,8 +841,6 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
 
             continue;
         }
-
-        const WYamlNode & child = children.at(i);
 
         const WYamlNode * node = child.at("source");
 
@@ -848,8 +857,6 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
         else applySource(root, child, QString(), baseUrl, durationSource);
 
         if (source.isEmpty()) applyEmpty();
-
-        return;
     }
 }
 
@@ -926,9 +933,13 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
         // NOTE: When the duration is invalid we skip it entirely.
         if (durationSource <= 0) continue;
 
-        start += at;
-
         int time = timeA + durationSource;
+
+        addChapter(child, time, baseUrl);
+
+        if (timeB != -1) continue;
+
+        start += at;
 
         if (currentTime >= time)
         {
@@ -952,8 +963,6 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
             else extractSource(root, nodes, baseUrl);
         }
         else applySource(root, child, QString(), baseUrl, durationSource);
-
-        return;
     }
 }
 
@@ -1049,6 +1058,18 @@ void WControllerMediaData::applyEmpty()
     timeB = duration;
 
     start = 0;
+}
+
+void WControllerMediaData::addChapter(const WYamlNodeBase & node,
+                                      int                   time, const QString & baseUrl)
+{
+    WChapter chapter(time);
+
+    chapter.setTitle(node.extractString("title"));
+
+    chapter.setCover(WControllerPlaylist::vbmlSource(node.extractString("cover"), baseUrl));
+
+    chapters.append(chapter);
 }
 
 int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 & root,
@@ -1625,6 +1646,8 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
         media->typeSource = type;
     }
 
+    media->chapters.append(data.chapters);
+
     if (data.ambient.isEmpty() == false)
     {
         media->ambient = data.ambient;
@@ -1641,29 +1664,60 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
     int duration = data.duration;
 
-    if (duration != -1)
+    if (duration == -1)
     {
-        if (media->timeZone.isEmpty())
+        media->timeA = data.timeA;
+
+        if (media->timeB == -1 || timeB < media->timeB)
         {
-            media->timeZone = data.timeZone;
+            media->timeB = timeB;
         }
 
-        media->currentTime = data.currentTime;
+        media->start = data.start;
 
-        media->duration = duration;
-
-        media->context   = data.context;
-        media->contextId = data.contextId;
+        return;
     }
+
+    if (media->timeZone.isEmpty())
+    {
+        media->timeZone = data.timeZone;
+    }
+
+    media->currentTime = data.currentTime;
+
+    media->duration = duration;
 
     media->timeA = data.timeA;
-
-    if (media->timeB == -1 || timeB < media->timeB)
-    {
-        media->timeB = timeB;
-    }
+    media->timeB = timeB;
 
     media->start = data.start;
+
+    media->context   = data.context;
+    media->contextId = data.contextId;
+}
+
+void WControllerMediaPrivate::applyChapters(WPrivateMediaData     * media,
+                                            const QList<WChapter> & chapters)
+{
+    if (chapters.isEmpty()) return;
+
+    int timeA = media->timeA;
+
+    int duration = media->timeB - timeA;
+
+    int start = media->start;
+
+    foreach (const WChapter & chapter, chapters)
+    {
+        int time = chapter.time() - start;
+
+        if (time < 0 || time >= duration) continue;
+
+        media->chapters.append(chapter);
+
+        // NOTE: We interpolate the track time to fit the current timeline.
+        media->chapters.last().setTime(timeA + time);
+    }
 }
 
 void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
@@ -1672,6 +1726,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
                                           bool                           cache)
 {
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
+
+    const QList<WChapter> & chapters = media->chapters;
 
     int timeB = media->timeB;
 
@@ -1717,6 +1773,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.medias = medias;
         slice.audios = audios;
 
+        slice.chapters = chapters;
+
         slice.expiry = source.expiry;
 
         appendSlice(slice, url, mode);
@@ -1728,6 +1786,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             slice.type = typeSource;
 
             slice.vbml = false;
+
+            slice.chapters = QList<WChapter>();
 
             appendSlice(slice, urlSource, mode);
         }
@@ -1743,6 +1803,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_medias = medias;
             reply->_audios = audios;
+
+            reply->_chapters = chapters;
 
             reply->_loaded = true;
 
@@ -1803,6 +1865,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.medias = medias;
         slice.audios = audios;
 
+        slice.chapters = chapters;
+
         slice.ambient = ambient;
 
         slice.subtitles = subtitles;
@@ -1831,6 +1895,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             slice.context   = QString();
             slice.contextId = QString();
+
+            slice.chapters = QList<WChapter>();
 
             slice.ambient = QString();
 
@@ -1863,6 +1929,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_medias = medias;
             reply->_audios = audios;
+
+            reply->_chapters = chapters;
 
             reply->_ambient = ambient;
 
@@ -2364,6 +2432,12 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         media->type = WTrack::Track;
     }
 
+    if (media->timeB == -1)
+    {
+        media->chapters = source.chapters;
+    }
+    else applyChapters(media, source.chapters);
+
     applySource(media, source, backendQuery.mode, true);
 
     this->medias.removeOne(media);
@@ -2678,6 +2752,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
             reply->_medias = slice->medias;
             reply->_audios = slice->audios;
+
+            reply->_chapters = slice->chapters;
 
             reply->_ambient = slice->ambient;
 

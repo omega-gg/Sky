@@ -110,6 +110,8 @@ protected: // Functions
 
     void setContext(const QString & context, const QString & contextId);
 
+    void setChapters(const QList<WChapter> & chapters);
+
     void setAmbient(const QString & ambient);
 
     void setSubtitles(const QStringList & subtitles);

@@ -38,7 +38,7 @@
 #endif
 
 // Sk includes
-#include <Sk>
+#include <WChapter>
 
 #ifndef SK_NO_ABSTRACTBACKEND
 
@@ -229,6 +229,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
     Q_PROPERTY(QString contextId READ contextId NOTIFY contextChanged)
+
+    Q_PROPERTY(QList<WChapter> chapters READ chapters NOTIFY chaptersChanged)
 
     Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
 
@@ -454,6 +456,8 @@ protected: // Functions
 
     void setContext(const QString & context, const QString & contextId);
 
+    void setChapters(const QList<WChapter> & chapters);
+
     void setAmbient(const QString & ambient);
 
     void setSubtitles(const QStringList & subtitles);
@@ -581,6 +585,8 @@ signals:
 
     void contextChanged();
 
+    void chaptersChanged();
+
     void ambientChanged();
 
     void subtitlesChanged();
@@ -670,6 +676,8 @@ public: // Properties
 
     QString context  () const;
     QString contextId() const;
+
+    QList<WChapter> chapters() const;
 
     QString ambient() const;
 
@@ -787,6 +795,8 @@ public:
     virtual void filterCurrentOutput(int * index); // {}
 
     virtual void filterContext(QString * context, QString * contextId); // {}
+
+    virtual void filterChapters(QList<WChapter> * chapters); // {}
 
     virtual void filterAmbient(QString * ambient); // {}
 

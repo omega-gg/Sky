@@ -79,6 +79,8 @@ struct WPrivateMediaData
     QString context;
     QString contextId;
 
+    QList<WChapter> chapters;
+
     QString ambient;
 
     QStringList subtitles;
@@ -120,6 +122,8 @@ struct WPrivateMediaSlice
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
+
+    QList<WChapter> chapters;
 
     QString ambient;
 
@@ -176,6 +180,8 @@ public: // Functions
                  int                      start) const;
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
+
+    void applyChapters(WPrivateMediaData * media, const QList<WChapter> & chapters);
 
     void applySource(WPrivateMediaData            * media,
                      const WBackendNetSource      & source,

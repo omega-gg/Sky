@@ -160,6 +160,8 @@ void WBackendManagerPrivate::loadSources(bool play)
 
             q->setContext(QString(), QString());
 
+            q->setChapters(QList<WChapter>());
+
             q->setAmbient(QString());
 
             backendInterface->loadSource(source, duration, currentTime, NULL);
@@ -289,6 +291,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         backend->setRepeat(repeat);
 
+        q->setChapters(reply->chapters());
+
         q->setAmbient(reply->ambient());
 
         q->setSubtitles(reply->subtitles());
@@ -362,6 +366,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
     backend->setRepeat(false);
 
+    q->setChapters(reply->chapters());
+
     q->setAmbient(reply->ambient());
 
     q->setSubtitles(reply->subtitles());
@@ -407,6 +413,8 @@ void WBackendManagerPrivate::applyEmpty()
     start = 0;
 
     q->setContext(QString(), QString());
+
+    q->setChapters(QList<WChapter>());
 
     q->setAmbient(QString());
 }

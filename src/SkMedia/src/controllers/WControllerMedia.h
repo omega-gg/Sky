@@ -102,6 +102,8 @@ public: // Properties
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
 
+    QList<WChapter> chapters() const;
+
     QString ambient() const;
 
     QStringList subtitles() const;
@@ -138,6 +140,8 @@ private: // Variables
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
+
+    QList<WChapter> _chapters;
 
     QString _ambient;
 
@@ -205,6 +209,8 @@ public: // Functions
 
     void applyEmpty();
 
+    void addChapter(const WYamlNodeBase & node, int time, const QString & baseUrl);
+
     int updateCurrentTime(const WYamlNodeBase                 & root,
                           const QList<WControllerMediaObject> & timeline, const QString & baseUrl);
 
@@ -242,6 +248,8 @@ public: // Variables
     QString contextId;
 
     QHash<WAbstractBackend::Quality, QString> medias;
+
+    QList<WChapter> chapters;
 
     QString ambient;
 

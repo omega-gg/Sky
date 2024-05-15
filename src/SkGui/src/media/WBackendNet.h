@@ -31,6 +31,7 @@
 #include <WAbstractLoader>
 #include <WLibraryFolder>
 #include <WTrack>
+#include <WChapter>
 
 #ifndef SK_NO_BACKENDNET
 
@@ -178,6 +179,8 @@ public:
 public: // Variables
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
+
+    QList<WChapter> chapters;
 
     QDateTime expiry;
 };

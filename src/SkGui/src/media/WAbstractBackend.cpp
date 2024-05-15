@@ -1180,6 +1180,21 @@ void WAbstractBackend::setContext(const QString & context, const QString & conte
     emit contextChanged();
 }
 
+void WAbstractBackend::setChapters(const QList<WChapter> & chapters)
+{
+    Q_D(WAbstractBackend);
+
+    QList<WChapter> list = chapters;
+
+    if (d->filter) d->filter->filterChapters(&list);
+
+    if (d->chapters == chapters) return;
+
+    d->chapters = chapters;
+
+    emit chaptersChanged();
+}
+
 void WAbstractBackend::setAmbient(const QString & ambient)
 {
     Q_D(WAbstractBackend);
@@ -1837,6 +1852,11 @@ QString WAbstractBackend::contextId() const
     Q_D(const WAbstractBackend); return d->contextId;
 }
 
+QList<WChapter> WAbstractBackend::chapters() const
+{
+    Q_D(const WAbstractBackend); return d->chapters;
+}
+
 QString WAbstractBackend::ambient() const
 {
     Q_D(const WAbstractBackend); return d->ambient;
@@ -1978,6 +1998,8 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 /* virtual */ void WBackendFilter::filterCurrentOutput(int *) {}
 
 /* virtual */ void WBackendFilter::filterContext(QString *, QString *) {}
+
+/* virtual */ void WBackendFilter::filterChapters(QList<WChapter> *) {}
 
 /* virtual */ void WBackendFilter::filterAmbient(QString *) {}
 

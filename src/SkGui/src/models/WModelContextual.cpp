@@ -36,7 +36,7 @@ class WModelContextualBase : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit WModelContextualBase(WModelContextual * model = 0);
+    explicit WModelContextualBase(WModelContextual * model = NULL);
 
 public: // QAbstractItemModel reimplementation
     /* virtual */ int rowCount(const QModelIndex & parent = QModelIndex()) const;
