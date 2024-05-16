@@ -628,7 +628,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 int durationSource = WControllerPlaylist::vbmlDuration(child, at);
 
-                // NOTE: When the duration is invalid we skip it entirely.
                 if (durationSource <= 0)
                 {
                     starts   .append(0);
@@ -847,8 +846,6 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
 
         addChapter(child, time, baseUrl);
 
-        if (timeB != -1) continue;
-
         start = starts.at(i);
 
         if (currentTime >= time)
@@ -873,6 +870,23 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
         else applySource(root, child, QString(), baseUrl, durationSource);
 
         if (source.isEmpty()) applyEmpty();
+
+        time = timeB;
+
+        for (int j = i; j < durations.length(); j++)
+        {
+            durationSource = durations.at(j);
+
+            if (durationSource <= 0) continue;
+
+            const WYamlNode & child = children.at(j);
+
+            time += durationSource;
+
+            addChapter(child, time, baseUrl);
+        }
+
+        return;
     }
 }
 
@@ -940,20 +954,19 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
                                          const QList<WYamlNode> & children,
                                          const QString          & baseUrl)
 {
-    foreach (const WYamlNode & child, children)
+    for (int i = 0; i < children.length(); i++)
     {
+        const WYamlNode & child = children.at(i);
+
         int at = child.extractMsecs("at");
 
         int durationSource = WControllerPlaylist::vbmlDuration(child, at);
 
-        // NOTE: When the duration is invalid we skip it entirely.
         if (durationSource <= 0) continue;
 
         int time = timeA + durationSource;
 
         addChapter(child, time, baseUrl);
-
-        if (timeB != -1) continue;
 
         start += at;
 
@@ -979,6 +992,25 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
             else extractSource(root, nodes, baseUrl);
         }
         else applySource(root, child, QString(), baseUrl, durationSource);
+
+        time = timeB;
+
+        for (int j = i; j < children.length(); j++)
+        {
+            const WYamlNode & child = children.at(j);
+
+            at = child.extractMsecs("at");
+
+            int durationSource = WControllerPlaylist::vbmlDuration(child, at);
+
+            if (durationSource <= 0) continue;
+
+            time += durationSource;
+
+            addChapter(child, time, baseUrl);
+        }
+
+        return;
     }
 }
 

@@ -1615,7 +1615,6 @@ int WControllerMediaSource::applyDurations(QList<WControllerMediaObject> * timel
 
         int durationSource = media->getDuration(at);
 
-        // NOTE: When the duration is invalid we skip it entirely.
         if (durationSource <= 0)
         {
             object.at       = 0;
