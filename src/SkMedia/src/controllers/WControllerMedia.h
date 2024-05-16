@@ -206,7 +206,7 @@ public: // Interface
     QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index);
 
 public: // Static functions
-    static QVariant extractResult(const WYamlReader & reader, const QString     & argument,
+    static QVariant extractResult(const WYamlReader & reader, const QString & argument,
                                   const QStringList & context,
                                   const QString     & contextId);
 

@@ -982,8 +982,8 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
     }
 }
 
-void WControllerMediaData::addChapter(const WYamlNodeBase & node,
-                                      int                   time, const QString & baseUrl)
+void WControllerMediaData::addChapter(const WYamlNodeBase & node, int time,
+                                      const QString       & baseUrl)
 {
     WChapter chapter(time);
 
