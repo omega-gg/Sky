@@ -873,7 +873,7 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
 
         time = timeB;
 
-        for (int j = i; j < durations.length(); j++)
+        for (int j = i + 1; j < durations.length(); j++)
         {
             durationSource = durations.at(j);
 
@@ -995,7 +995,7 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
 
         time = timeB;
 
-        for (int j = i; j < children.length(); j++)
+        for (int j = i + 1; j < children.length(); j++)
         {
             const WYamlNode & child = children.at(j);
 
