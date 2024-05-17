@@ -23,6 +23,9 @@
 #ifndef WCHAPTER_H
 #define WCHAPTER_H
 
+// Qt includes
+#include <QVariant>
+
 // Sk includes
 #include <Sk>
 
@@ -37,6 +40,9 @@ public:
 
 public: // Interface
     bool isValid() const;
+
+public: // Virtual interface
+    virtual QVariantMap toMap() const;
 
 public: // Operators
     WChapter(const WChapter & other);
