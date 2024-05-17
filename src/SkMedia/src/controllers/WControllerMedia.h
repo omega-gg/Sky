@@ -203,7 +203,8 @@ public: // Interface
                           const QList<WControllerMediaObject> & timeline, const QString & baseUrl);
 
     // NOTE: This function cleans the timeline to ensure that we don't have redundant id(s).
-    QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index);
+    QString cleanTimeline(QList<WControllerMediaObject> & timeline, int index,
+                          const QString                 & baseUrl);
 
 public: // Static functions
     static QVariant extractResult(const WYamlReader & reader, const QString & argument,

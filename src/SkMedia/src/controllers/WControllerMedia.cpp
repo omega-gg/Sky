@@ -428,7 +428,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (duration == -1)
             {
-                context = cleanTimeline(timeline, -1);
+                context = cleanTimeline(timeline, -1, baseUrl);
 
                 return;
             }
@@ -448,7 +448,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                     index = extractSourceTimeline(root, timeline, baseUrl);
 
-                    context = cleanTimeline(timeline, index);
+                    context = cleanTimeline(timeline, index, baseUrl);
 
                     return;
                 }
@@ -482,7 +482,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                             index = extractSourceTimeline(root, timeline, baseUrl);
                         }
 
-                        context = cleanTimeline(timeline, index);
+                        context = cleanTimeline(timeline, index, baseUrl);
 
                         return;
                     }
@@ -493,7 +493,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (argument.isEmpty())
             {
-                context = cleanTimeline(timeline, index);
+                context = cleanTimeline(timeline, index, baseUrl);
 
                 return;
             }
@@ -512,7 +512,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (count < 2)
                 {
-                    context = cleanTimeline(timeline, index);
+                    context = cleanTimeline(timeline, index, baseUrl);
 
                     return;
                 }
@@ -521,10 +521,13 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (name != "swap")
                 {
-                    context = cleanTimeline(timeline, index);
+                    context = cleanTimeline(timeline, index, baseUrl);
 
                     return;
                 }
+
+                // NOTE: We clear the chapters when swapping.
+                chapters.clear();
 
                 list = Sk::split(variants.at(1).toString().toLower(), ',');
 
@@ -534,7 +537,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (durationNew == -1)
                 {
-                    context = cleanTimeline(timeline, index);
+                    context = cleanTimeline(timeline, index, baseUrl);
 
                     return;
                 }
@@ -553,7 +556,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 if (durationNew == -1)
                 {
-                    context = cleanTimeline(timeline, index);
+                    context = cleanTimeline(timeline, index, baseUrl);
 
                     return;
                 }
@@ -572,7 +575,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (indexNew == -1)
             {
-                context = cleanTimeline(timeline, index);
+                context = cleanTimeline(timeline, index, baseUrl);
 
                 return;
             }
@@ -584,7 +587,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             timeline.append(timelineNew);
 
-            context = cleanTimeline(timeline, index + indexNew);
+            context = cleanTimeline(timeline, index + indexNew, baseUrl);
 
             return;
         }
@@ -1122,7 +1125,8 @@ int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 
     return index;
 }
 
-QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & timeline, int index)
+QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & timeline, int index,
+                                            const QString                 & baseUrl)
 {
     int gap = 0;
 
@@ -1192,6 +1196,35 @@ QString WControllerMediaData::cleanTimeline(QList<WControllerMediaObject> & time
     }
 
     //qDebug("CONTEXT AFTER %s %s", getContext(timeline).C_STR, contextId.C_STR);
+
+    int time = 0;
+
+    for (int i = 0; i < timeline.count(); i++)
+    {
+        const WControllerMediaObject & object = timeline.at(i);
+
+        WControllerMediaSource * media = object.media;
+
+        if (media == NULL) continue;
+
+        const WYamlNode * node = media->node;
+
+        WChapter chapter(time);
+
+        QString title = node->extractString("title");
+
+        if (title.isEmpty())
+        {
+            chapter.setTitle(media->id);
+        }
+        else chapter.setTitle(title);
+
+        chapter.setCover(WControllerPlaylist::vbmlSource(node->extractString("cover"), baseUrl));
+
+        chapters.append(chapter);
+
+        time += object.duration;
+    }
 
     return generateContext(timeline);
 }
