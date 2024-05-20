@@ -144,6 +144,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
     Q_PROPERTY(QString contextId READ contextId NOTIFY contextChanged)
 
+    Q_PROPERTY(QList<WChapter> chapters READ chapters NOTIFY chaptersChanged)
+
     Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
 
     Q_PROPERTY(QStringList subtitles READ subtitles NOTIFY subtitlesChanged)
@@ -238,6 +240,8 @@ public: // Interface
     Q_INVOKABLE QRectF getGeometry() const;
 
     Q_INVOKABLE void updateHighlightedTab();
+
+    Q_INVOKABLE QVariantList chaptersData(bool sort = true) const;
 
     //---------------------------------------------------------------------------------------------
     // Tracks
@@ -351,6 +355,8 @@ signals:
     void subtitleChanged();
 
     void contextChanged();
+
+    void chaptersChanged();
 
     void ambientChanged();
 
@@ -470,6 +476,8 @@ public: // Properties
 
     QString context  () const;
     QString contextId() const;
+
+    QList<WChapter> chapters() const;
 
     QString ambient() const;
 

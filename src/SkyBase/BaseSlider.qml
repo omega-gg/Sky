@@ -46,6 +46,9 @@ MouseArea
     property alias minimum: model.minimum
     property alias maximum: model.maximum
 
+    property alias handleMinimum: model.handleMinimum
+    property alias handleMaximum: model.handleMaximum
+
     property alias pageStep  : model.pageStep
     property alias singleStep: model.singleStep
 
@@ -66,8 +69,8 @@ MouseArea
     drag.target: handle
     drag.axis  : Drag.XAxis
 
-    drag.minimumX: model.handleMinimum
-    drag.maximumX: model.handleMaximum
+    drag.minimumX: handleMinimum
+    drag.maximumX: handleMaximum
 
 //#QT_NEW
     drag.threshold: 0
@@ -81,8 +84,8 @@ MouseArea
     {
         var pos = mouseX - (handle.width / 2);
 
-        pos = Math.max(model.handleMinimum, pos);
-        pos = Math.min(pos, model.handleMaximum);
+        pos = Math.max(handleMinimum, pos);
+        pos = Math.min(pos, handleMaximum);
 
         handle.x = pos;
 

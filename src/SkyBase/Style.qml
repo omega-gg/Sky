@@ -655,17 +655,15 @@ Item
 
     function getSliderValue(slider, position)
     {
-        var model = slider.model;
-
-        var minimum = model.handleMinimum;
-        var maximum = model.handleMaximum;
+        var minimum = slider.handleMinimum;
+        var maximum = slider.handleMaximum;
 
         var pos = position - Math.round(slider.handle.width / 2);
 
         if      (pos < minimum) pos = minimum;
         else if (pos > maximum) pos = maximum;
 
-        return model.positionToValue(pos);
+        return slider.model.positionToValue(pos);
     }
 
     //---------------------------------------------------------------------------------------------

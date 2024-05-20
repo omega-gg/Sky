@@ -31,6 +31,10 @@ Slider
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property int sizeChapter: st.sliderStream_sizeChapter
+
+    /* read */ property int handleRange: handleMaximum - handleMinimum
+
     property bool active: true
     property bool live  : false
 
@@ -38,6 +42,10 @@ Slider
     property int duration   : -1
 
     property real progress: 0.0
+
+    property variant chapters: null
+
+    /* read */ property variant times: []
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -51,6 +59,12 @@ Slider
 
     //---------------------------------------------------------------------------------------------
     // Private
+
+    property int pChapterSize: (handle.width - sizeChapter) / 2
+
+    property int pChapterX: handleMinimum + pChapterSize
+
+    property int pPosition: position + pChapterSize + st.dp1
 
     property int pState: 0
 
@@ -94,6 +108,18 @@ Slider
 
     onProgressChanged: pUpdateProgress()
 
+    onChaptersChanged:
+    {
+        var array = new Array;
+
+        for (var i = 0; i < chapters.length; i++)
+        {
+            array.push(chapters[i].time);
+        }
+
+        times = array;
+    }
+
     onPStateChanged: pUpdateProgress()
 
     //---------------------------------------------------------------------------------------------
@@ -116,6 +142,26 @@ Slider
 
     //---------------------------------------------------------------------------------------------
     // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function getChapterTitle(time)
+    {
+        var length = times.length;
+
+        if (length == 0 || time < times[0] || time >= duration) return "";
+
+        var index = 0;
+
+        for (var i = 0; i < length; i++)
+        {
+            if (time < times[i]) break;
+
+            index = i;
+        }
+
+        return chapters[index].title;
+    }
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -162,6 +208,13 @@ Slider
         pProgress = progress;
 
         behaviorProgress.enabled = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function pGetX(index)
+    {
+        return handleRange * (times[index] / duration) + pChapterX;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -313,6 +366,34 @@ Slider
 
                 easing.type: st.easing
             }
+        }
+    }
+
+    Repeater
+    {
+        z: -1
+
+        model: times.length
+
+        Rectangle
+        {
+            anchors.verticalCenter: sliderStream.verticalCenter
+
+            width : sizeChapter
+            height: sizeChapter
+
+            radius: height
+
+            x: pGetX(index)
+
+            visible: foreground.visible
+
+            color: (x > pPosition) ? st.slider_colorFront
+                                   : colorFront
+
+//#QT_4
+            smooth: true
+//#END
         }
     }
 

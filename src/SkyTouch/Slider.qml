@@ -31,7 +31,8 @@ BaseSlider
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins      : st.slider_margins
+    /* read */ property int margins: itemHandle.width / 2
+
     property int marginsHandle: st.slider_marginsHandle
 
     //---------------------------------------------------------------------------------------------

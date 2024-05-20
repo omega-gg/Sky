@@ -43,6 +43,15 @@
 #include <WView>
 
 //-------------------------------------------------------------------------------------------------
+// Inline functions
+//-------------------------------------------------------------------------------------------------
+
+inline bool sortChapter(const WChapter & chapterA, const WChapter & chapterB)
+{
+    return (chapterA.time() < chapterB.time());
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -1539,6 +1548,22 @@ void WDeclarativePlayer::updateFrame()
     Q_D(WDeclarativePlayer); d->onHighlightedTabChanged();
 }
 
+/* Q_INVOKABLE */ QVariantList WDeclarativePlayer::chaptersData(bool sort) const
+{
+    QVariantList list;
+
+    QList<WChapter> chapters = this->chapters();
+
+    if (sort) std::sort(chapters.begin(), chapters.end(), sortChapter);
+
+    foreach (const WChapter & chapter, chapters)
+    {
+        list.append(chapter.toMap());
+    }
+
+    return list;
+}
+
 //---------------------------------------------------------------------------------------------
 // Tracks
 
@@ -1954,6 +1979,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
     connect(backend, SIGNAL(subtitleChanged()), this, SIGNAL(subtitleChanged()));
 
     connect(backend, SIGNAL(contextChanged()), this, SIGNAL(contextChanged()));
+
+    connect(backend, SIGNAL(chaptersChanged()), this, SIGNAL(chaptersChanged()));
 
     connect(backend, SIGNAL(ambientChanged()), this, SIGNAL(ambientChanged()));
 
@@ -2799,6 +2826,17 @@ QString WDeclarativePlayer::contextId() const
         return d->backend->contextId();
     }
     else return QString();
+}
+
+QList<WChapter> WDeclarativePlayer::chapters() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->chapters();
+    }
+    else return QList<WChapter>();
 }
 
 QString WDeclarativePlayer::ambient() const

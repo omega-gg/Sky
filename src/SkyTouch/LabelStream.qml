@@ -56,6 +56,22 @@ BaseLabel
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
+    // Events
+
+    function onText()
+    {
+        var time = st.getSliderValue(slider, position);
+
+        var title = slider.getChapterTitle(time);
+
+        if (title)
+        {
+            return controllerPlaylist.getPlayerTime(time, 8) + ' ' + title;
+        }
+        else return controllerPlaylist.getPlayerTime(time, 8);
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Private
 
     function pGetPosition()
@@ -80,6 +96,6 @@ BaseLabel
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
-        text: controllerPlaylist.getPlayerTime(st.getSliderValue(slider, position), 8)
+        text: onText()
     }
 }
