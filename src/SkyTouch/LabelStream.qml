@@ -66,7 +66,7 @@ BaseLabel
 
         if (title)
         {
-            return controllerPlaylist.getPlayerTime(time, 8) + ' ' + title;
+            return controllerPlaylist.getPlayerTime(time, 8) + " - " + title;
         }
         else return controllerPlaylist.getPlayerTime(time, 8);
     }

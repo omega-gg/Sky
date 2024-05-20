@@ -148,7 +148,7 @@ Slider
     {
         var length = times.length;
 
-        if (length == 0 || time < times[0] || time >= duration) return "";
+        if (length == 0 || time < times[0] || time > duration) return "";
 
         var index = 0;
 
