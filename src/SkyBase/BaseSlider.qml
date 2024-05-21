@@ -33,6 +33,8 @@ MouseArea
 
     property bool isHovered: hoverActive
 
+    /* read */ property int mousePressX: -1
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -82,12 +84,14 @@ MouseArea
 
     onPressed:
     {
-        var pos = mouseX - (handle.width / 2);
+        mousePressX = mouseX;
 
-        pos = Math.max(handleMinimum, pos);
-        pos = Math.min(pos, handleMaximum);
+        var x = mouseX - (handle.width / 2);
 
-        handle.x = pos;
+        x = Math.max(handleMinimum, x);
+        x = Math.min(x, handleMaximum);
+
+        handle.x = x;
 
         handlePressed();
     }

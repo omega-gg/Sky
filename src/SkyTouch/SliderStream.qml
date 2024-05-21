@@ -162,6 +162,31 @@ Slider
         return chapters[index].title;
     }
 
+    function getChapterTime(tolerance)
+    {
+        var length = times.length;
+
+        if (length == 0) return value;
+
+        var gap = model.positionToValue(tolerance);
+
+        var timeA = value - gap;
+        var timeB = value + gap;
+
+        for (var i = 0; i < length; i++)
+        {
+            var timeChapter = times[i];
+
+            if (Math.abs(timeChapter - timeA) < gap
+                ||
+                Math.abs(timeChapter - timeB) < gap) return timeChapter;
+
+            if (timeChapter > timeB) return value;
+        }
+
+        return value;
+    }
+
     //---------------------------------------------------------------------------------------------
     // Private
 

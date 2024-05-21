@@ -2038,7 +2038,7 @@ void WControllerMediaPrivate::appendSlice(const WPrivateMediaSlice     & slice,
                 // NOTE: When the time is -1 it means the currentTime is irrelevant.
                 if (timeA != -1
                     &&
-                    (currentTime < timeA || currentTime > slice.timeB)) continue;
+                    (currentTime < timeA || currentTime >= slice.timeB)) continue;
 
                 count--;
 
@@ -2317,7 +2317,7 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
         // NOTE: When the time is -1 it means the currentTime is irrelevant.
         if (timeA != -1
             &&
-            (currentTime < timeA || currentTime > slice.timeB)) continue;
+            (currentTime < timeA || currentTime >= slice.timeB)) continue;
 
         count--;
 
