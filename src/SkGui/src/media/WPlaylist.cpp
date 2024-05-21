@@ -2513,8 +2513,8 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         Sk::bmlTag(vbml, "tracks");
 
-        QString tabA = Sk::tabs(1);
-        QString tabB = Sk::tabs(2);
+        QString tab  = Sk::tabs(1);
+        QString tab2 = Sk::tabs(2);
 
         for (int i = 0; i < d->tracks.count(); i++)
         {
@@ -2522,16 +2522,16 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
             const WTrackPrivate * p = d->tracks.at(i).d_func();
 
-            Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
+            Sk::bmlTag(vbml, tab + WTrack::typeToString(p->type));
 
             source = p->source;
 
             // NOTE: When the source is empty or local, we enforce a more comprehensive export.
             if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
             {
-                d->vbmlTrack(vbml, p, tabB);
+                d->vbmlTrack(vbml, p, tab2);
             }
-            else Sk::bmlPair(vbml, tabB + "source", source);
+            else Sk::bmlPair(vbml, tab2 + "source", source);
         }
 
         vbml.append('\n');
@@ -2540,8 +2540,8 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         Sk::bmlTag(vbml, "tracks");
 
-        QString tabA = Sk::tabs(1);
-        QString tabB = Sk::tabs(2);
+        QString tab  = Sk::tabs(1);
+        QString tab2 = Sk::tabs(2);
 
         for (int i = 0; i < d->tracks.count(); i++)
         {
@@ -2549,16 +2549,16 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
             const WTrackPrivate * p = d->tracks.at(i).d_func();
 
-            Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
+            Sk::bmlTag(vbml, tab + WTrack::typeToString(p->type));
 
             source = p->source;
 
             if (WControllerNetwork::urlIsFile(source) == false)
             {
-                Sk::bmlPair(vbml, tabB + "source", source);
+                Sk::bmlPair(vbml, tab2 + "source", source);
             }
 
-            d->vbmlTrack(vbml, p, tabB);
+            d->vbmlTrack(vbml, p, tab2);
         }
 
         vbml.append('\n');

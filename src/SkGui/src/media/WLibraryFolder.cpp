@@ -2418,8 +2418,8 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     {
         Sk::bmlTag(vbml, "items");
 
-        QString tabA = Sk::tabs(1);
-        QString tabB = Sk::tabs(2);
+        QString tab  = Sk::tabs(1);
+        QString tab2 = Sk::tabs(2);
 
         for (int i = 0; i < d->items.count(); i++)
         {
@@ -2427,16 +2427,16 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 
             const WLibraryFolderItem & item = d->items.at(i);
 
-            Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
+            Sk::bmlTag(vbml, tab + WLibraryItem::typeToString(item.type));
 
             source = item.source;
 
             // NOTE: When the source is empty or local, we enforce a more comprehensive export.
             if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
             {
-                d->vbmlItem(vbml, item, tabB);
+                d->vbmlItem(vbml, item, tab2);
             }
-            else Sk::bmlPair(vbml, tabB + "source", source);
+            else Sk::bmlPair(vbml, tab2 + "source", source);
         }
 
         vbml.append('\n');
@@ -2445,8 +2445,8 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     {
         Sk::bmlTag(vbml, "items");
 
-        QString tabA = Sk::tabs(1);
-        QString tabB = Sk::tabs(2);
+        QString tab  = Sk::tabs(1);
+        QString tab2 = Sk::tabs(2);
 
         for (int i = 0; i < d->items.count(); i++)
         {
@@ -2454,16 +2454,16 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 
             const WLibraryFolderItem & item = d->items.at(i);
 
-            Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
+            Sk::bmlTag(vbml, tab + WLibraryItem::typeToString(item.type));
 
             source = item.source;
 
             if (WControllerNetwork::urlIsFile(source) == false)
             {
-                Sk::bmlPair(vbml, tabB + "source", source);
+                Sk::bmlPair(vbml, tab2 + "source", source);
             }
 
-            d->vbmlItem(vbml, item, tabB);
+            d->vbmlItem(vbml, item, tab2);
         }
 
         vbml.append('\n');

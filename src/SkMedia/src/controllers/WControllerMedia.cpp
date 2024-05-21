@@ -99,7 +99,7 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
 
     if (_audios.isEmpty() == false)
     {
-        Sk::bmlTag(vbml, "audios", "\n");
+        Sk::bmlTag(vbml, "audios");
 
         QHashIterator<WAbstractBackend::Quality, QString> i(_audios);
 
@@ -111,6 +111,25 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
         }
     }
 
+    if (_chapters.isEmpty() == false)
+    {
+        QString tab2 = Sk::tabs(2);
+
+        Sk::bmlTag(vbml, "chapters");
+
+        foreach (const WChapter & chapter, _chapters)
+        {
+            Sk::bmlTag(vbml, "chapter");
+
+            Sk::bmlPair(vbml, tab2 + "time", QString::number(chapter.time()));
+
+            Sk::bmlPair(vbml, tab2 + "title", chapter.title());
+            Sk::bmlPair(vbml, tab2 + "cover", chapter.cover());
+        }
+
+        vbml.append('\n');
+    }
+
     if (_ambient.isEmpty() == false)
     {
         Sk::bmlPair(vbml, "ambient", _ambient, "\n\n");
@@ -118,11 +137,11 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
 
     if (_subtitles.isEmpty() == false)
     {
-        Sk::bmlTag(vbml, "subtitles", "\n");
+        Sk::bmlList(vbml, "subtitles");
 
         foreach (const QString & subtitle, _subtitles)
         {
-            Sk::bmlPair(vbml, tab + subtitle, "\n\n");
+            Sk::bmlValue(vbml, tab + subtitle);
         }
     }
 
