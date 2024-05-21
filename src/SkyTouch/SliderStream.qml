@@ -64,7 +64,7 @@ Slider
 
     property int pChapterX: handleMinimum + pChapterSize
 
-    property int pPosition: position + pChapterSize + st.dp1
+    property int pHandleX: position + pChapterSize + st.dp1
 
     property int pState: 0
 
@@ -413,8 +413,8 @@ Slider
 
             visible: foreground.visible
 
-            color: (x > pPosition) ? st.slider_colorFront
-                                   : colorFront
+            color: (x > pHandleX) ? st.slider_colorFront
+                                  : colorFront
 
 //#QT_4
             smooth: true
