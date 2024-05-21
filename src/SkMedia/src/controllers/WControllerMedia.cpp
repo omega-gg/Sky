@@ -119,7 +119,7 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
 
         foreach (const WChapter & chapter, _chapters)
         {
-            Sk::bmlTag(vbml, "chapter");
+            Sk::bmlTag(vbml, tab + "chapter");
 
             Sk::bmlPair(vbml, tab2 + "time", QString::number(chapter.time()));
 
