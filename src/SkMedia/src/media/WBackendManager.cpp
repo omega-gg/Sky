@@ -1163,6 +1163,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (WControllerNetwork::extractFragmentValue(url, "arg").isEmpty())
     {
+        setChapters(QList<WChapter>());
+
         d->pauseBackend();
 
         if (url.isEmpty())

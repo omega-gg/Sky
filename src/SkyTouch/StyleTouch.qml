@@ -195,13 +195,6 @@ Style
     property int labelLoading_margins: dp12
 //#END
 
-//#LabelStream
-    //---------------------------------------------------------------------------------------------
-    // LabelStream
-
-    property int labelStream_padding: dp8
-//#END
-
 //#LabelWide*
     //---------------------------------------------------------------------------------------------
     // LabelWide
@@ -305,7 +298,8 @@ Style
 
     property int sliderStream_intervalProgress: ms1000
 
-    property int sliderStream_sizeChapter: dp8
+    property int sliderStream_sizeChapter: (isTight) ? dp8
+                                                     : dp12
 
     property real sliderStream_opacityProgressA: 0.5
     property real sliderStream_opacityProgressB: 1.0
