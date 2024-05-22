@@ -213,6 +213,8 @@ public: // Functions
     void applyQualities(QHash<WAbstractBackend::Quality, QString> * qualities,
                         QVariant                                  * value) const;
 
+    void applyChapters(QList<WChapter> * chapters, QVariant * value) const;
+
     //---------------------------------------------------------------------------------------------
 
     WBackendNetQuery getQuery(const QVariant & value) const;

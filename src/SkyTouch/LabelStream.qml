@@ -23,62 +23,57 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseLabel
+Item
 {
+    id: labelStream
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
     /* mandatory */ property variant slider
 
-    property int padding: st.labelStream_padding
-
     /* read */ property int position: pGetPosition()
+
+    /* read */ property int time: (visible) ? st.getSliderValue(slider, position) : -1
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias itemText: itemText
+    property alias labelTitle: labelTitle
+    property alias labelTime : labelTime
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, itemText.text) + padding * 2
+    anchors.left : parent.left
+    anchors.right: parent.right
 
-    height: st.labelTiny_size
-
-    x: st.getSliderX(slider, width, position)
+    height: pGetHeight()
 
     visible: (slider.enabled && slider.isHovered)
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-    // Events
-
-    function onText()
-    {
-        var time = st.getSliderValue(slider, position);
-
-        var title = slider.getChapterTitle(time);
-
-        if (title)
-        {
-            return controllerPlaylist.getPlayerTime(time, 8) + "  " + title;
-        }
-        else return controllerPlaylist.getPlayerTime(time, 8);
-    }
-
-    //---------------------------------------------------------------------------------------------
     // Private
+
+    function pGetHeight()
+    {
+        if (labelTitle.visible)
+        {
+            return labelTitle.height + st.margins + labelTime.height;
+        }
+        else return labelTime.height;
+    }
 
     function pGetPosition()
     {
         if (visible)
         {
-             return window.viewport.mapToItem(slider, window.mouseX, 0).x;
+            return window.viewport.mapToItem(slider, window.mouseX, 0).x;
         }
         else return -1;
     }
@@ -87,15 +82,45 @@ BaseLabel
     // Children
     //---------------------------------------------------------------------------------------------
 
-    TextBase
+    Label
     {
-        id: itemText
+        id: labelTitle
 
-        anchors.fill: parent
+        height: st.labelTiny_size
 
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment  : Text.AlignVCenter
+        maximumWidth: labelStream.width
 
-        text: onText()
+        x: st.getSliderX(slider, width, position)
+
+        radius: height
+
+        visible: (text != "")
+
+        text: slider.getChapterTitle(time)
+
+        itemText.wrapMode: Text.NoWrap
+
+        itemText.maximumLineCount: 1
+
+//#DESKTOP
+        // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
+        itemText.elide: (width == maximumWidth) ? Text.ElideRight
+                                                : Text.ElideNone
+//#END
+    }
+
+    Label
+    {
+        id: labelTime
+
+        anchors.bottom: parent.bottom
+
+        height: st.labelTiny_size
+
+        x: st.getSliderX(slider, width, position)
+
+        radius: height
+
+        text: controllerPlaylist.getPlayerTime(time, 8)
     }
 }

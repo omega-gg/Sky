@@ -1244,16 +1244,33 @@ inline QVariant slices(const WBackendUniversalNode * node,
 
     if (count < 3) return QVariant();
 
-    if (count == 3)
+    QVariantList list;
+
+    list.append(node->getVariant(parameters, 1));
+    list.append(node->getVariant(parameters, 2));
+
+    QList<WRegExp> regExps = node->getRegExps(list);
+
+    if (regExps.isEmpty())
     {
-         return node->variants(Sk::slices(node->getString(parameters, 0),
-                                          node->getString(parameters, 1),
-                                          node->getString(parameters, 2)));
+        if (count == 3)
+        {
+             return node->variants(Sk::slices(node->getString(parameters, 0),
+                                              node->getString(parameters, 1),
+                                              node->getString(parameters, 2)));
+        }
+        else return node->variants(Sk::slices(node->getString(parameters, 0),
+                                              node->getString(parameters, 1),
+                                              node->getString(parameters, 2),
+                                              node->getInt   (parameters, 3)));
     }
-    else return node->variants(Sk::slices(node->getString(parameters, 0),
-                                          node->getString(parameters, 1),
-                                          node->getString(parameters, 2),
-                                          node->getInt(parameters, 3)));
+    else if (count == 3)
+    {
+         return node->variants(Sk::slices(node->getString(parameters, 0), regExps.at(0),
+                                          regExps.at(1)));
+    }
+    else return node->variants(Sk::slices(node->getString(parameters, 0), regExps.at(0),
+                                          regExps.at(1), node->getInt(parameters, 3)));
 }
 
 inline QVariant slicesIn(const WBackendUniversalNode * node,
@@ -1267,16 +1284,32 @@ inline QVariant slicesIn(const WBackendUniversalNode * node,
 
     if (count < 3) return QVariant();
 
-    if (count == 3)
+    QVariantList list;
+
+    list.append(node->getVariant(parameters, 1));
+    list.append(node->getVariant(parameters, 2));
+
+    QList<WRegExp> regExps = node->getRegExps(list);
+
+    if (regExps.isEmpty())
     {
-         return node->variants(Sk::slicesIn(node->getString(parameters, 0),
-                                            node->getString(parameters, 1),
-                                            node->getString(parameters, 2)));
+        if (count == 3)
+        {
+             return node->variants(Sk::slicesIn(node->getString(parameters, 0),
+                                                node->getString(parameters, 1),
+                                                node->getString(parameters, 2)));
+        }
+        else return node->variants(Sk::slicesIn(node->getString(parameters, 0),
+                                                node->getString(parameters, 1),
+                                                node->getString(parameters, 2),
+                                                node->getInt   (parameters, 3)));
     }
-    else return node->variants(Sk::slicesIn(node->getString(parameters, 0),
-                                            node->getString(parameters, 1),
-                                            node->getString(parameters, 2),
-                                            node->getInt(parameters, 3)));
+    else if (count == 3)
+    {
+         return Sk::slicesIn(node->getString(parameters, 0), regExps.at(0), regExps.at(1));
+    }
+    else return Sk::slicesIn(node->getString(parameters, 0), regExps.at(0), regExps.at(1),
+                             node->getInt(parameters, 3));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3625,10 +3658,11 @@ QString WBackendUniversalScript::extractString(QString * string, const QChar & c
 
         result = string->mid(1, index - 1);
 
+        result.replace("\\n",  "\n");
+        result.replace("\\/n", "\\n");
+
         result.replace("\\\"", "\"");
         result.replace("\\\\", "\\");
-
-        result.replace("\\n", "\n");
 
         string->remove(0, index + 1);
     }
@@ -4056,6 +4090,8 @@ void WBackendUniversalPrivate::applySourceParameters(WBackendUniversalParameters
     parameters->add("medias");
     parameters->add("audios");
 
+    parameters->add("chapters");
+
     parameters->add("expiry", reply.expiry);
 
     parameters->add("next");
@@ -4070,6 +4106,8 @@ void WBackendUniversalPrivate::applySourceResults(WBackendUniversalParameters * 
 
     applyQualities(&(reply->medias), parameters->value("medias"));
     applyQualities(&(reply->audios), parameters->value("audios"));
+
+    applyChapters(&(reply->chapters), parameters->value("chapters"));
 
     reply->expiry = getDate(*(parameters->value("expiry")));
 
@@ -4389,6 +4427,26 @@ void WBackendUniversalPrivate
         i.next();
 
         qualities->insert(getQuality(i.key()), i.value().toString());
+    }
+}
+
+void WBackendUniversalPrivate::applyChapters(QList<WChapter> * chapters, QVariant * value) const
+{
+    QVariantList list = value->toList();
+
+    for (int i = 0; i < list.count(); i++)
+    {
+        QHash<QString, QVariant> hash = list.at(i).toHash();
+
+        int time = Sk::extractMsecs(hash.value("time").toString(), -1);
+
+        if (time == -1) continue;
+
+        WChapter chapter(time);
+
+        chapter.setTitle(hash.value("title").toString());
+
+        chapters->append(chapter);
     }
 }
 

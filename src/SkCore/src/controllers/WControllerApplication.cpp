@@ -1207,11 +1207,14 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 {
     QStringList list;
 
+    int length = start.length();
+
+    // NOTE: length must be valid to avoid an infinite loop.
+    if (length == 0) return list;
+
     int indexA = string.indexOf(start, from);
 
     if (indexA == -1) return list;
-
-    int length = start.length();
 
     int indexB = string.indexOf(end, indexA + length);
 
@@ -1249,6 +1252,9 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     if (indexA == -1) return list;
 
     int length = start.matchedLength();
+
+    // NOTE: length must be valid to avoid an infinite loop.
+    if (length == 0) return list;
 
     int indexB = end.indexIn(string, indexA + length);
 

@@ -2407,10 +2407,10 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
     {
         QString result = text.mid(at + 1, index - at - 1);
 
+        result.replace("\\n", "\n");
+
         result.replace("\\\"", "\"");
         result.replace("\\\\", "\\");
-
-        result.replace("\\n", "\n");
 
         return result;
     }
