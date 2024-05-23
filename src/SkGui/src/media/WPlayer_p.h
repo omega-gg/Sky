@@ -126,7 +126,7 @@ public: // Slots
 
 public: // Variables
 #ifndef SK_NO_QML
-    WDeclarativePlayer * view;
+    WView * view;
 #endif
 
     WAbstractBackend * backend;

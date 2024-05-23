@@ -1447,7 +1447,7 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
 
 #ifdef QT_NEW
 
-void WDeclarativePlayer::updateFrame()
+void WPlayer::updateFrame()
 {
 }
 
