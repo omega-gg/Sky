@@ -31,7 +31,6 @@
 #include <WAbstractHook>
 #include <WTabsTrack>
 #include <WTabTrack>
-#include <WLibraryFolder>
 #ifndef SK_NO_QML
 #include <WView>
 #endif
@@ -1446,6 +1445,14 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_NEW
+
+void WDeclarativePlayer::updateFrame()
+{
+}
+
+#endif
+
 /* Q_INVOKABLE */ QImage WPlayer::getFrame() const
 {
     Q_D(const WPlayer);
@@ -1459,8 +1466,6 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
     else return QImage();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ QRectF WPlayer::getRect() const
 {
     Q_D(const WPlayer);
@@ -1470,6 +1475,118 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
          return d->backend->getRect();
     }
     else return QRectF();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WPlayer::applyBackend(WAbstractBackend * backend)
+{
+    Q_D(WPlayer);
+
+    if (backend == NULL) return false;
+
+    if (d->backend)
+    {
+         qWarning("WPlayer::applyBackend: The backend is already set.");
+
+         return false;
+    }
+
+    d->backend = backend;
+
+    d->setBackendInterface(backend, NULL);
+
+    backend->setParent(this);
+    //backend->setPlayer(this);
+
+    d->updateRepeat(trackType());
+
+    backend->setSpeed(d->speed);
+
+    backend->setVolume(d->volume);
+
+    backend->setOutput    (d->output);
+    backend->setQuality   (d->quality);
+    backend->setSourceMode(d->mode);
+
+    backend->setFillMode(d->fillMode);
+
+    backend->setTrackVideo(d->trackVideo);
+    backend->setTrackAudio(d->trackAudio);
+
+    backend->setScanOutput(d->scanOutput);
+
+    backend->setCurrentOutput(d->currentOutput);
+
+    if (d->source.isEmpty() == false)
+    {
+         d->clearPlaylistAndTabs();
+
+         d->loadSource(d->source, -1, -1);
+    }
+
+    connect(backend, SIGNAL(loaded()), this, SIGNAL(loaded()));
+
+    connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
+
+    connect(backend, SIGNAL(vbmlChanged()), this, SIGNAL(vbmlChanged()));
+    connect(backend, SIGNAL(liveChanged()), this, SIGNAL(liveChanged()));
+
+    connect(backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
+    connect(backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
+
+    connect(backend, SIGNAL(currentTimeChanged()), this, SIGNAL(currentTimeChanged()));
+    connect(backend, SIGNAL(durationChanged   ()), this, SIGNAL(durationChanged   ()));
+
+    connect(backend, SIGNAL(progressChanged()), this, SIGNAL(progressChanged()));
+
+    connect(backend, SIGNAL(speedChanged()), this, SIGNAL(speedChanged()));
+
+    connect(backend, SIGNAL(volumeChanged()), this, SIGNAL(volumeChanged()));
+
+    connect(backend, SIGNAL(repeatChanged()), this, SIGNAL(repeatChanged()));
+
+    connect(backend, SIGNAL(outputChanged    ()), this, SIGNAL(outputChanged    ()));
+    connect(backend, SIGNAL(qualityChanged   ()), this, SIGNAL(qualityChanged   ()));
+    connect(backend, SIGNAL(sourceModeChanged()), this, SIGNAL(sourceModeChanged()));
+
+    connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
+    connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
+
+    connect(backend, SIGNAL(fillModeChanged()), this, SIGNAL(fillModeChanged()));
+
+    connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
+    connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
+
+    connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
+    connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
+
+    connect(backend, SIGNAL(scanOutputChanged()), this, SIGNAL(scanOutputChanged()));
+
+    connect(backend, SIGNAL(currentOutputChanged()), this, SIGNAL(currentOutputChanged()));
+
+    connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
+
+    connect(backend, SIGNAL(subtitleChanged()), this, SIGNAL(subtitleChanged()));
+
+    connect(backend, SIGNAL(contextChanged()), this, SIGNAL(contextChanged()));
+
+    connect(backend, SIGNAL(chaptersChanged()), this, SIGNAL(chaptersChanged()));
+
+    connect(backend, SIGNAL(ambientChanged()), this, SIGNAL(ambientChanged()));
+
+    connect(backend, SIGNAL(subtitlesChanged()), this, SIGNAL(subtitlesChanged()));
+
+    connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
+
+    connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
+
+    connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
+    connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
+
+    emit backendChanged();
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1681,112 +1798,7 @@ WAbstractBackend * WPlayer::backend() const
 
 void WPlayer::setBackend(WAbstractBackend * backend)
 {
-    Q_D(WPlayer);
-
-    if (backend == NULL) return;
-
-    if (d->backend)
-    {
-        qWarning("WPlayer::setBackend: The backend is already set.");
-
-        return;
-    }
-
-    d->backend = backend;
-
-    d->setBackendInterface(backend, NULL);
-
-    backend->setParent(this);
-    //backend->setPlayer(this);
-
-    //backend->setSize(QSizeF(width(), height()));
-
-    d->updateRepeat(trackType());
-
-    backend->setSpeed(d->speed);
-
-    backend->setVolume(d->volume);
-
-    backend->setOutput    (d->output);
-    backend->setQuality   (d->quality);
-    backend->setSourceMode(d->mode);
-
-    backend->setFillMode(d->fillMode);
-
-    backend->setTrackVideo(d->trackVideo);
-    backend->setTrackAudio(d->trackAudio);
-
-    backend->setScanOutput(d->scanOutput);
-
-    backend->setCurrentOutput(d->currentOutput);
-
-    if (d->source.isEmpty() == false)
-    {
-        d->clearPlaylistAndTabs();
-
-        d->loadSource(d->source, -1, -1);
-    }
-
-    connect(backend, SIGNAL(loaded()), this, SIGNAL(loaded()));
-
-    connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
-
-    connect(backend, SIGNAL(vbmlChanged()), this, SIGNAL(vbmlChanged()));
-    connect(backend, SIGNAL(liveChanged()), this, SIGNAL(liveChanged()));
-
-    connect(backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
-    connect(backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
-
-    connect(backend, SIGNAL(currentTimeChanged()), this, SIGNAL(currentTimeChanged()));
-    connect(backend, SIGNAL(durationChanged   ()), this, SIGNAL(durationChanged   ()));
-
-    connect(backend, SIGNAL(progressChanged()), this, SIGNAL(progressChanged()));
-
-    connect(backend, SIGNAL(speedChanged()), this, SIGNAL(speedChanged()));
-
-    connect(backend, SIGNAL(volumeChanged()), this, SIGNAL(volumeChanged()));
-
-    connect(backend, SIGNAL(repeatChanged()), this, SIGNAL(repeatChanged()));
-
-    connect(backend, SIGNAL(outputChanged    ()), this, SIGNAL(outputChanged    ()));
-    connect(backend, SIGNAL(qualityChanged   ()), this, SIGNAL(qualityChanged   ()));
-    connect(backend, SIGNAL(sourceModeChanged()), this, SIGNAL(sourceModeChanged()));
-
-    connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
-    connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
-
-    connect(backend, SIGNAL(fillModeChanged()), this, SIGNAL(fillModeChanged()));
-
-    connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
-    connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
-
-    connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
-    connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
-
-    connect(backend, SIGNAL(scanOutputChanged()), this, SIGNAL(scanOutputChanged()));
-
-    connect(backend, SIGNAL(currentOutputChanged()), this, SIGNAL(currentOutputChanged()));
-
-    connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
-
-    connect(backend, SIGNAL(subtitleChanged()), this, SIGNAL(subtitleChanged()));
-
-    connect(backend, SIGNAL(contextChanged()), this, SIGNAL(contextChanged()));
-
-    connect(backend, SIGNAL(chaptersChanged()), this, SIGNAL(chaptersChanged()));
-
-    connect(backend, SIGNAL(ambientChanged()), this, SIGNAL(ambientChanged()));
-
-    connect(backend, SIGNAL(subtitlesChanged()), this, SIGNAL(subtitlesChanged()));
-
-    connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
-
-    connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
-
-    connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
-    connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
-
-    emit backendChanged();
+    applyBackend(backend);
 }
 
 QList<WAbstractHook *> WPlayer::hooks() const

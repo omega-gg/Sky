@@ -53,7 +53,7 @@ public: // Slots
     void onVolume();
 
 public: // Variables
-    WDeclarativePlayer * player;
+    WDeclarativePlayer * playerSource;
 
     QString currentSource;
 

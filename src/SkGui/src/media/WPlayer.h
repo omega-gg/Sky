@@ -218,9 +218,15 @@ public: // Interface
 
     Q_INVOKABLE void reloadSource();
 
+#ifdef QT_NEW
+    Q_INVOKABLE void updateFrame();
+#endif
+
     Q_INVOKABLE QImage getFrame() const;
 
     Q_INVOKABLE QRectF getRect() const;
+
+    Q_INVOKABLE bool applyBackend(WAbstractBackend * backend);
 
     Q_INVOKABLE void updateHighlightedTab();
 

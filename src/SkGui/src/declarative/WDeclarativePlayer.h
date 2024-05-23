@@ -37,6 +37,7 @@
 // Forward declarations
 class WDeclarativePlayerPrivate;
 class WBroadcastServer;
+class WPlayer;
 class WAbstractHook;
 class WTabsTrack;
 
@@ -56,6 +57,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_OBJECT
 
     Q_ENUMS(Repeat)
+
+    Q_PROPERTY(WPlayer * player READ player CONSTANT)
 
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
 
@@ -283,13 +286,12 @@ protected: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
-protected: // WPlaylistWatcher implementation
-    /* virtual */ void beginTracksInsert(int first, int last);
-    /* virtual */ void endTracksInsert  ();
-
-    /* virtual */ void beginTracksRemove(int first, int last);
-
-    /* virtual */ void beginTracksClear();
+protected: // WDeclarativeItem reimplementation
+#ifdef QT_4
+    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+#else
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
+#endif
 
 signals:
     void loaded();
@@ -376,6 +378,8 @@ signals:
     void videoTagChanged();
 
 public: // Properties
+    WPlayer * player() const;
+
     WAbstractBackend * backend() const;
     void               setBackend(WAbstractBackend * backend);
 
@@ -527,55 +531,6 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WDeclarativePlayer)
-
-    Q_PRIVATE_SLOT(d_func(), void onEnded())
-    Q_PRIVATE_SLOT(d_func(), void onError())
-
-    Q_PRIVATE_SLOT(d_func(), void onHookUpdated())
-
-    Q_PRIVATE_SLOT(d_func(), void onStateChanged   ())
-    Q_PRIVATE_SLOT(d_func(), void onDurationChanged())
-
-    Q_PRIVATE_SLOT(d_func(), void onCurrentTrackChanged())
-
-    Q_PRIVATE_SLOT(d_func(), void onCurrentTabChanged    ())
-    Q_PRIVATE_SLOT(d_func(), void onHighlightedTabChanged())
-
-    Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkChanged())
-    Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkUpdated())
-
-    Q_PRIVATE_SLOT(d_func(), void onConnectedChanged())
-
-    Q_PRIVATE_SLOT(d_func(), void onMessage(const WBroadcastMessage &))
-
-    Q_PRIVATE_SLOT(d_func(), void onSource     ())
-    Q_PRIVATE_SLOT(d_func(), void onState      ())
-    Q_PRIVATE_SLOT(d_func(), void onStateLoad  ())
-    Q_PRIVATE_SLOT(d_func(), void onVbml       ())
-    Q_PRIVATE_SLOT(d_func(), void onLive       ())
-    Q_PRIVATE_SLOT(d_func(), void onStart      ())
-    Q_PRIVATE_SLOT(d_func(), void onEnd        ())
-    Q_PRIVATE_SLOT(d_func(), void onCurrentTime())
-    Q_PRIVATE_SLOT(d_func(), void onDuration   ())
-    Q_PRIVATE_SLOT(d_func(), void onProgress   ())
-    Q_PRIVATE_SLOT(d_func(), void onOutput     ())
-    Q_PRIVATE_SLOT(d_func(), void onQuality    ())
-    Q_PRIVATE_SLOT(d_func(), void onContext    ())
-    Q_PRIVATE_SLOT(d_func(), void onVideos     ())
-    Q_PRIVATE_SLOT(d_func(), void onAudios     ())
-    Q_PRIVATE_SLOT(d_func(), void onAmbient    ())
-    Q_PRIVATE_SLOT(d_func(), void onSubtitles  ())
-    Q_PRIVATE_SLOT(d_func(), void onScreen     ())
-    Q_PRIVATE_SLOT(d_func(), void onFullScreen ())
-#ifdef SK_DESKTOP
-    Q_PRIVATE_SLOT(d_func(), void onStartup   ())
-#endif
-
-    Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())
-    Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())
-    Q_PRIVATE_SLOT(d_func(), void onFolderDestroyed  ())
-    Q_PRIVATE_SLOT(d_func(), void onTabsDestroyed    ())
-    Q_PRIVATE_SLOT(d_func(), void onTabDestroyed     ())
 };
 
 #include <private/WDeclarativePlayer_p>

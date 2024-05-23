@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WControllerPlaylist>
+#include <WPlayer>
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -36,11 +37,11 @@ WDeclarativeAmbientPrivate::WDeclarativeAmbientPrivate(WDeclarativeAmbient * p)
 
 void WDeclarativeAmbientPrivate::init()
 {
-    player = NULL;
+    playerSource = NULL;
 
-    repeat = WDeclarativePlayer::RepeatOne;
+    player->setRepeat(WPlayer::RepeatOne);
 
-    output = WAbstractBackend::OutputAudio;
+    player->setOutput(WAbstractBackend::OutputAudio);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -49,7 +50,7 @@ void WDeclarativeAmbientPrivate::init()
 
 void WDeclarativeAmbientPrivate::onSourceChanged()
 {
-    QString source = WControllerPlaylist::cleanSource(player->source());
+    QString source = WControllerPlaylist::cleanSource(playerSource->source());
 
     if (currentSource == source) return;
 
@@ -66,7 +67,7 @@ void WDeclarativeAmbientPrivate::onUpdate()
 {
     Q_Q(WDeclarativeAmbient);
 
-    if (backend == NULL || player->hasOutput())
+    if (q->backend() == NULL || playerSource->hasOutput())
     {
         if (q->source().isEmpty()) return;
 
@@ -77,12 +78,12 @@ void WDeclarativeAmbientPrivate::onUpdate()
         return;
     }
 
-    QString ambient = player->ambient();
+    QString ambient = playerSource->ambient();
 
     if (ambient.isEmpty())
     {
         // NOTE: We clear the ambient source as late as possible to avoid blanks.
-        if (q->source().isEmpty()/* || player->isDefault() == false*/) return;
+        if (q->source().isEmpty()/* || playerSource->isDefault() == false*/) return;
 
         hash.insert(currentSource, q->currentTime());
 
@@ -99,7 +100,7 @@ void WDeclarativeAmbientPrivate::onUpdate()
 
     if (msec != -1) q->seek(msec);
 
-    if (player->state() != WAbstractBackend::StatePlaying) return;
+    if (playerSource->state() != WAbstractBackend::StatePlaying) return;
 
     q->play();
 }
@@ -110,7 +111,7 @@ void WDeclarativeAmbientPrivate::onState()
 
     if (q->source().isEmpty()) return;
 
-    WAbstractBackend::State state = player->state();
+    WAbstractBackend::State state = playerSource->state();
 
     if      (state == WAbstractBackend::StateStopped) q->stop ();
     else if (state == WAbstractBackend::StatePlaying) q->play ();
@@ -121,7 +122,7 @@ void WDeclarativeAmbientPrivate::onVolume()
 {
     Q_Q(WDeclarativeAmbient);
 
-    q->setVolume(player->volume());
+    q->setVolume(playerSource->volume());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -142,20 +143,20 @@ void WDeclarativeAmbientPrivate::onVolume()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativePlayer * WDeclarativeAmbient::player() const
+WDeclarativePlayer * WDeclarativeAmbient::playerSource() const
 {
-    Q_D(const WDeclarativeAmbient); return d->player;
+    Q_D(const WDeclarativeAmbient); return d->playerSource;
 }
 
-void WDeclarativeAmbient::setPlayer(WDeclarativePlayer * player)
+void WDeclarativeAmbient::setPlayer(WDeclarativePlayer * playerSource)
 {
     Q_D(WDeclarativeAmbient);
 
-    if (d->player == player) return;
+    if (d->playerSource == playerSource) return;
 
-    if (player)
+    if (playerSource)
     {
-        disconnect(player, 0, this, 0);
+        disconnect(playerSource, 0, this, 0);
 
         clear();
 
@@ -164,28 +165,28 @@ void WDeclarativeAmbient::setPlayer(WDeclarativePlayer * player)
         d->hash.clear();
     }
 
-    d->player = player;
+    d->playerSource = playerSource;
 
-    if (player)
+    if (playerSource)
     {
-        connect(player, SIGNAL(sourceChanged()), this, SLOT(onSourceChanged()));
+        connect(playerSource, SIGNAL(sourceChanged()), this, SLOT(onSourceChanged()));
 
-        connect(player, SIGNAL(backendChanged      ()), this, SLOT(onUpdate()));
-        connect(player, SIGNAL(stateLoadChanged    ()), this, SLOT(onUpdate()));
-        connect(player, SIGNAL(currentOutputChanged()), this, SLOT(onUpdate()));
-        connect(player, SIGNAL(ambientChanged      ()), this, SLOT(onUpdate()));
+        connect(playerSource, SIGNAL(backendChanged      ()), this, SLOT(onUpdate()));
+        connect(playerSource, SIGNAL(stateLoadChanged    ()), this, SLOT(onUpdate()));
+        connect(playerSource, SIGNAL(currentOutputChanged()), this, SLOT(onUpdate()));
+        connect(playerSource, SIGNAL(ambientChanged      ()), this, SLOT(onUpdate()));
 
-        connect(player, SIGNAL(stateChanged()),  this, SLOT(onState ()));
-        connect(player, SIGNAL(volumeChanged()), this, SLOT(onVolume()));
+        connect(playerSource, SIGNAL(stateChanged()),  this, SLOT(onState ()));
+        connect(playerSource, SIGNAL(volumeChanged()), this, SLOT(onVolume()));
 
-        setVolume(player->volume());
+        setVolume(playerSource->volume());
 
         d->onSourceChanged();
 
         d->onUpdate();
     }
 
-    emit playerChanged();
+    emit playerSourceChanged();
 }
 
 #endif // SK_NO_DECLARATIVEAMBIENT
