@@ -14,6 +14,7 @@ With a focus on efficiency, scalability and simplicity.<br>
 - [MotionBox](https://omega.gg/MotionBox/sources) - Video Browser
 - [MotionMonkey](https://omega.gg/MotionMonkey) - Semantic Player
 - [tevolution](https://omega.gg/tevolution) - Remote Video Screen
+- [tevo](https://omega.gg/tevo/sources) - Command line Semantic Player
 - [clientVBML](https://omega.gg/clientVBML/sources) - VBML retriever and extractor
 - [HelloConsole](https://omega.gg/HelloConsole/sources) - "Hello World" console application
 - [HelloSky](https://omega.gg/HelloSky/sources) - "Hello World" application
