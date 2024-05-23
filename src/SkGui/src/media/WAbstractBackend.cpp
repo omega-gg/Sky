@@ -163,7 +163,7 @@ void WAbstractBackendPrivate::currentOutputChanged()
 // WAbstractBackend
 //=================================================================================================
 
-WAbstractBackend::WAbstractBackend(QObject * parent)
+/* explicit */ WAbstractBackend::WAbstractBackend(QObject * parent)
     : QObject(parent), WPrivatable(new WAbstractBackendPrivate(this))
 {
     Q_D(WAbstractBackend); d->init();

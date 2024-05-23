@@ -22,6 +22,8 @@ HEADERS += src/media/WBackendNet.h \
            src/media/WLoaderRecent_p.h \
            src/media/WLoaderTracks.h \
            src/media/WLoaderTracks_p.h \
+           src/media/WPlayer.h \
+           src/media/WPlayer_p.h \
            src/media/WAbstractBackend.h \
            src/media/WAbstractBackend_p.h \
            src/media/WAbstractHook.h \
@@ -47,6 +49,7 @@ SOURCES += src/media/WBackendNet.cpp \
            src/media/WLoaderSuggest.cpp \
            src/media/WLoaderRecent.cpp \
            src/media/WLoaderTracks.cpp \
+           src/media/WPlayer.cpp \
            src/media/WAbstractBackend.cpp \
            src/media/WAbstractHook.cpp \
            src/media/WHookOutput.cpp \

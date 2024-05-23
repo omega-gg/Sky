@@ -315,7 +315,7 @@ public:
 #endif
 
 public:
-    WAbstractBackend(QObject * parent = NULL);
+    explicit WAbstractBackend(QObject * parent = NULL);
 protected:
     WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent = NULL);
 
