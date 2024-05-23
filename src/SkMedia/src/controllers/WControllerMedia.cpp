@@ -864,9 +864,9 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
 
         const WYamlNode & child = children.at(i);
 
-        int time = timeA + durationSource;
+        addChapter(child, timeA, baseUrl);
 
-        addChapter(child, time, baseUrl);
+        int time = timeA + durationSource;
 
         start = starts.at(i);
 
@@ -903,9 +903,9 @@ void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
 
             const WYamlNode & child = children.at(j);
 
-            time += durationSource;
-
             addChapter(child, time, baseUrl);
+
+            time += durationSource;
         }
 
         return;
@@ -986,9 +986,9 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
 
         if (durationSource <= 0) continue;
 
-        int time = timeA + durationSource;
+        addChapter(child, timeA, baseUrl);
 
-        addChapter(child, time, baseUrl);
+        int time = timeA + durationSource;
 
         start += at;
 
@@ -1027,9 +1027,9 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
 
             if (durationSource <= 0) continue;
 
-            time += durationSource;
-
             addChapter(child, time, baseUrl);
+
+            time += durationSource;
         }
 
         return;

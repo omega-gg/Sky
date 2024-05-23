@@ -148,7 +148,9 @@ Slider
     {
         var length = times.length;
 
-        if (length == 0 || time < times[0] || time > duration) return "";
+        if (length == 0 || time < times[0]) return "";
+
+        time += model.positionToValue(sizeChapter / 2);
 
         var index = 0;
 
