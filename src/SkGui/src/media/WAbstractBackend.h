@@ -327,8 +327,8 @@ public: // Interface
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);
 
-#ifndef SK_NO_QML
-#ifdef QT_NEW
+#ifndef SK_NO_PLAYER
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
     Q_INVOKABLE void synchronize(WBackendFrame * frame);
 #endif
 
@@ -508,8 +508,8 @@ protected: // Virtual functions
 
     virtual void backendSetSize(const QSizeF & size); // {}
 
-#ifndef SK_NO_QML
-#ifdef QT_NEW
+#ifndef SK_NO_PLAYER
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
     virtual void backendSynchronize(WBackendFrame * frame); // {}
 #endif
 

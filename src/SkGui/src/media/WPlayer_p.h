@@ -69,7 +69,9 @@ public: // Functions
 
     void clearPlaylistAndTabs();
 
+#ifndef SK_NO_QML
     WView * getView() const;
+#endif
 
     void setBackendInterface(WBackendInterface * currentBackend, WAbstractHook * currentHook);
 

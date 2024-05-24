@@ -29,6 +29,7 @@
 #else
 #include <WDeclarativeItem>
 #endif
+#include <WAbstractBackend>
 #include <WPlaylist>
 #include <WTrack>
 

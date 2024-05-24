@@ -27,7 +27,7 @@
 #include <QVariant>
 
 // Sk includes
-#include <WAbstractBackend>
+#include <Sk>
 
 #ifndef SK_NO_TRACK
 

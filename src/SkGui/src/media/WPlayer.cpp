@@ -716,11 +716,13 @@ void WPlayerPrivate::onConnectedChanged()
         server->sendReply(WBroadcastReply::SHUTDOWN);
 #endif
 
+#ifndef SK_NO_QML
 #ifdef QT_4
         QObject::connect(qApp->desktop(), SIGNAL(screenCountChanged()), q, SLOT(onScreen()));
 #else
         QObject::connect(qApp, SIGNAL(screenAdded  (QScreen *)), q, SLOT(onScreen()));
         QObject::connect(qApp, SIGNAL(screenRemoved(QScreen *)), q, SLOT(onScreen()));
+#endif
 #endif
 
 #ifdef SK_DESKTOP
@@ -748,8 +750,11 @@ void WPlayerPrivate::onConnectedChanged()
     }
     else
     {
+#ifndef SK_NO_QML
         QObject::disconnect(qApp, NULL, q, NULL);
-        QObject::disconnect(sk,   NULL, q, NULL);
+#endif
+
+        QObject::disconnect(sk, NULL, q, NULL);
 
 #ifndef SK_NO_QML
         WView * view = getView();
@@ -1473,16 +1478,14 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_NEW
-
 void WPlayer::updateFrame()
 {
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
     Q_D(WPlayer);
 
     if (d->view) d->view->updateFrame();
-}
-
 #endif
+}
 
 /* Q_INVOKABLE */ QImage WPlayer::getFrame() const
 {

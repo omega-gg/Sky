@@ -151,8 +151,8 @@ protected: // Functions
 
     void backendSetSize(const QSizeF & size);
 
-#ifndef SK_NO_QML
-#ifdef QT_NEW
+#ifndef SK_NO_PLAYER
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
     void backendSynchronize(WBackendFrame * frame);
 #endif
 

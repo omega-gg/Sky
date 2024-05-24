@@ -438,9 +438,9 @@ void WAbstractHook::backendSetSize(const QSizeF & size)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 void WAbstractHook::backendSynchronize(WBackendFrame * frame)
 {

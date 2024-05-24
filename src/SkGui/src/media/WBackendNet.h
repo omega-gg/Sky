@@ -29,6 +29,7 @@
 
 // Sk includes
 #include <WAbstractLoader>
+#include <WAbstractBackend>
 #include <WLibraryFolder>
 #include <WTrack>
 #include <WChapter>

@@ -24,6 +24,7 @@
 #define WPLAYER_H
 
 // Sk includes
+#include <WAbstractBackend>
 #include <WPlaylist>
 #include <WTrack>
 
@@ -221,9 +222,7 @@ public: // Interface
 
     Q_INVOKABLE void reloadSource();
 
-#ifdef QT_NEW
     Q_INVOKABLE void updateFrame();
-#endif
 
     Q_INVOKABLE QImage getFrame() const;
 
@@ -544,10 +543,12 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onAudios     ())
     Q_PRIVATE_SLOT(d_func(), void onAmbient    ())
     Q_PRIVATE_SLOT(d_func(), void onSubtitles  ())
+#ifndef SK_NO_QML
     Q_PRIVATE_SLOT(d_func(), void onScreen     ())
     Q_PRIVATE_SLOT(d_func(), void onFullScreen ())
+#endif
 #ifdef SK_DESKTOP
-    Q_PRIVATE_SLOT(d_func(), void onStartup   ())
+    Q_PRIVATE_SLOT(d_func(), void onStartup    ())
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())

@@ -211,9 +211,9 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 
 //-------------------------------------------------------------------------------------------------
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 /* Q_INVOKABLE */ void WAbstractBackend::synchronize(WBackendFrame * frame)
 {
@@ -1348,9 +1348,9 @@ void WAbstractBackend::endOutputRemove() const
 
 //-------------------------------------------------------------------------------------------------
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 /* virtual */ void WAbstractBackend::backendSynchronize(WBackendFrame *)
 {
