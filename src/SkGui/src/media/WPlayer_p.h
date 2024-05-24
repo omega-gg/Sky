@@ -38,8 +38,8 @@
 
 #ifndef SK_NO_PLAYER
 
-#ifndef SK_NO_QML
 // Forward declarations
+#ifndef SK_NO_QML
 class WView;
 #endif
 
