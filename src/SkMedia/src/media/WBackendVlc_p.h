@@ -34,12 +34,12 @@
 */
 
 // Qt includes
-#ifndef QT_6
+#if defined(QT_6) && defined(SK_NO_QML) == false
 #include <QGLWidget>
 #endif
 //#include <QMutex>
 #include <QMetaMethod>
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 #include <QSGMaterial>
 #endif
 #ifdef QT_6
@@ -48,7 +48,7 @@
 
 // Sk includes
 #include <WVlcPlayer>
-#ifdef QT_6
+#if defined(QT_6) && defined(SK_NO_QML) == false
 #include <WTextureVideo>
 #endif
 
@@ -103,7 +103,7 @@ struct WBackendVlcTexture
     uchar * bits;
 };
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 //-------------------------------------------------------------------------------------------------
 // WBackendVlcShader

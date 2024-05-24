@@ -1148,7 +1148,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 // Protected WAbstractBackend implementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 /* virtual */ WBackendNode * WBackendManager::backendCreateNode() const
 {
@@ -1507,7 +1507,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 /* virtual */ void WBackendManager::backendSynchronize(WBackendFrame * frame)
 {

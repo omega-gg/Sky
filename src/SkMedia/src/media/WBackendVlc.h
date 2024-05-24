@@ -48,7 +48,7 @@ public: // Interface
     Q_INVOKABLE void clearProxy();
 
 protected: // WAbstractBackend implementation
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
     /* virtual */ WBackendNode * backendCreateNode() const;
 #endif
 
@@ -82,7 +82,7 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetSize(const QSizeF & size);
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
     /* virtual */ void backendSynchronize(WBackendFrame * frame);
 #endif
 

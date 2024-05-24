@@ -26,10 +26,10 @@
 
 // Qt includes
 #include <QCoreApplication>
-#ifdef QT_5
+#if defined(QT_5) && defined(SK_NO_QML) == false
 #include <QOpenGLFunctions>
 #endif
-#ifdef QT_6
+#if defined(QT_6) || defined(SK_NO_QML)
 #include <QPainter>
 #endif
 
@@ -42,9 +42,13 @@
 
 // 3rdparty includes
 #include <3rdparty/vlc/mmxRgb.h>
-#if defined(QT_6) == false && defined(Q_OS_MAC) == false && defined(Q_OS_ANDROID) == false
+#if defined(QT_6) == false && defined(SK_NO_QML) == false \
+    && \
+    defined(Q_OS_MAC) == false && defined(Q_OS_ANDROID) == false
 #include <3rdparty/opengl/glext.h>
 #endif
+
+#ifndef SK_NO_QML
 
 // Mac includes
 #if defined(QT_6) == false && defined(Q_OS_MACX)
@@ -57,12 +61,15 @@
 #include <GL/glx.h>
 #endif
 
+#endif // SK_NO_QML
+
 // Private includes
 #include <private/WVlcPlayer_p>
 
 //-------------------------------------------------------------------------------------------------
 // Defines
 //-------------------------------------------------------------------------------------------------
+// RGB
 
 #define RED_MARGIN    178
 #define GREEN_MARGIN  135
@@ -70,6 +77,37 @@
 #define RED_OFFSET   1501
 #define GREEN_OFFSET  135
 #define BLUE_OFFSET   818
+
+//-------------------------------------------------------------------------------------------------
+// YUV pixel conversions
+
+#define SHIFT 20
+
+#define U_GREEN_COEF ((int) (-0.391 * (1 << SHIFT) / 1.164))
+#define U_BLUE_COEF  ((int) ( 2.018 * (1 << SHIFT) / 1.164))
+#define V_RED_COEF   ((int) ( 1.596 * (1 << SHIFT) / 1.164))
+#define V_GREEN_COEF ((int) (-0.813 * (1 << SHIFT) / 1.164))
+
+#define W_CONVERT_YUV_PIXEL                             \
+\
+    u = *(p_u++);                                       \
+    v = *(p_v++);                                       \
+                                                        \
+    r = (V_RED_COEF   * v)                    >> SHIFT; \
+    g = (U_GREEN_COEF * u + V_GREEN_COEF * v) >> SHIFT; \
+    b = (U_BLUE_COEF  * u)                    >> SHIFT; \
+                                                        \
+    W_CONVERT_Y_PIXEL;                                  \
+
+#define W_CONVERT_Y_PIXEL                                                                  \
+                                                                                           \
+    yBase = tableRgb + *(p_y++);                                                           \
+                                                                                           \
+    *bits++ = yBase[RED_OFFSET   - ((V_RED_COEF                    * 128) >> SHIFT) + r] | \
+              yBase[GREEN_OFFSET - (((U_GREEN_COEF + V_GREEN_COEF) * 128) >> SHIFT) + g] | \
+              yBase[BLUE_OFFSET  - ((U_BLUE_COEF                   * 128) >> SHIFT) + b];  \
+
+#ifndef SK_NO_QML
 
 //-------------------------------------------------------------------------------------------------
 // Opengl
@@ -91,35 +129,6 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
 #define glActiveTextureARB            pglActiveTextureARB
 #define glMultiTexCoord2fARB          pglMultiTexCoord2fARB
 #endif
-
-//-------------------------------------------------------------------------------------------------
-// YUV pixel conversions
-
-#define SHIFT 20
-
-#define U_GREEN_COEF ((int) (-0.391 * (1 << SHIFT) / 1.164))
-#define U_BLUE_COEF  ((int) ( 2.018 * (1 << SHIFT) / 1.164))
-#define V_RED_COEF   ((int) ( 1.596 * (1 << SHIFT) / 1.164))
-#define V_GREEN_COEF ((int) (-0.813 * (1 << SHIFT) / 1.164))
-
-#define W_CONVERT_YUV_PIXEL                             \
-                                                        \
-    u = *(p_u++);                                       \
-    v = *(p_v++);                                       \
-                                                        \
-    r = (V_RED_COEF   * v)                    >> SHIFT; \
-    g = (U_GREEN_COEF * u + V_GREEN_COEF * v) >> SHIFT; \
-    b = (U_BLUE_COEF  * u)                    >> SHIFT; \
-                                                        \
-    W_CONVERT_Y_PIXEL;                                  \
-
-#define W_CONVERT_Y_PIXEL                                                                  \
-                                                                                           \
-    yBase = tableRgb + *(p_y++);                                                           \
-                                                                                           \
-    *bits++ = yBase[RED_OFFSET   - ((V_RED_COEF                    * 128) >> SHIFT) + r] | \
-              yBase[GREEN_OFFSET - (((U_GREEN_COEF + V_GREEN_COEF) * 128) >> SHIFT) + g] | \
-              yBase[BLUE_OFFSET  - ((U_BLUE_COEF                   * 128) >> SHIFT) + b];  \
 
 //-------------------------------------------------------------------------------------------------
 
@@ -221,6 +230,8 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
     gl->glBindTexture(GL_TEXTURE_2D, Id); \
 }                                         \
 
+#endif // SK_NO_QML
+
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
@@ -245,7 +256,7 @@ static GLfloat shaderValues[16];
 
 static GLfloat shaderOpacity = 1.f;
 
-#else
+#elif defined(SK_NO_QML) == false
 
 static QSGMaterialType materialType;
 
@@ -262,6 +273,8 @@ static const QMatrix4x4 matrix
 );
 
 #endif
+
+#ifndef SK_NO_QML
 
 #ifdef QT_4
 
@@ -650,6 +663,8 @@ WBackendVlcNode::WBackendVlcNode() : WBackendNode()
 }
 
 #endif
+
+#endif // SK_NO_QML
 
 //=================================================================================================
 // WBackendVlcPrivate
@@ -1598,7 +1613,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 // Protected WAbstractBackend implementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 /* virtual */ WBackendNode * WBackendVlc::backendCreateNode() const
 {
@@ -1902,7 +1917,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_NEW
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 /* virtual */ void WBackendVlc::backendSynchronize(WBackendFrame * frame)
 {

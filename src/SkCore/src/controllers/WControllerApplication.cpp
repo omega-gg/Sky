@@ -248,6 +248,8 @@ void WControllerApplicationPrivate::onAboutToQuit()
 
     wControllerFile->waitActions();
 
+    QtMsgType verbosity = wControllerFile->verbosity();
+
     wControllerFile->d_func()->clearMessageHandler();
 
     if (object)
@@ -257,16 +259,28 @@ void WControllerApplicationPrivate::onAboutToQuit()
         object = NULL;
     }
 
-    for (int i = controllers.count() - 1; i > -1; i--)
+    if (verbosity == QtDebugMsg)
     {
-        qDebug("Deleting %s", controllers[i]->metaObject()->className());
+        for (int i = controllers.count() - 1; i > -1; i--)
+        {
+            qDebug("Deleting %s", controllers[i]->metaObject()->className());
 
-        delete controllers[i];
+            delete controllers[i];
+        }
+
+        controllers.clear();
+
+        qDebug("Done");
     }
+    else
+    {
+        for (int i = controllers.count() - 1; i > -1; i--)
+        {
+            delete controllers[i];
+        }
 
-    controllers.clear();
-
-    qDebug("Done");
+        controllers.clear();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
