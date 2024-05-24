@@ -35,6 +35,10 @@ class WTabTrackPrivate;
 class WPlayer;
 #endif
 
+#if defined(QT_6) && defined(SK_NO_PLAYER) == false
+Q_MOC_INCLUDE("WPlayer")
+#endif
+
 class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 {
     Q_OBJECT
