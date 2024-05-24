@@ -34,7 +34,7 @@
 */
 
 // Qt includes
-#if defined(QT_6) && defined(SK_NO_QML) == false
+#if defined(QT_6) == false && defined(SK_NO_QML) == false
 #include <QGLWidget>
 #endif
 //#include <QMutex>
