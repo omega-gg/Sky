@@ -87,6 +87,8 @@ public: // Variables
     QString log;
     QString logBuffer;
 
+    QtMsgType verbosity;
+
     QString pathStorage;
     QString pathLog;
 

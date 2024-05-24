@@ -370,6 +370,8 @@ void WControllerFilePrivate::init()
     threadWrite = NULL;
     threadRead  = NULL;
 
+    verbosity = QtDebugMsg;
+
     pathLog = "log.txt";
 
     cache = NULL;
@@ -471,11 +473,15 @@ bool WControllerFilePrivate::isLoading() const
 #ifdef QT_4
 /* static */ void WControllerFilePrivate::messageHandler(QtMsgType, const char *) {}
 #else
-/* static */ void WControllerFilePrivate::messageHandler(QtMsgType,
+/* static */ void WControllerFilePrivate::messageHandler(QtMsgType type,
                                                          const QMessageLogContext &,
                                                          const QString            & message)
 {
-    wControllerFile->d_func()->method.invoke(wControllerFile, Q_ARG(const QString &, message));
+    WControllerFilePrivate * p = wControllerFile->d_func();
+
+    if (p->verbosity > type) return;
+
+    p->method.invoke(wControllerFile, Q_ARG(const QString &, message));
 
 #ifdef Q_OS_ANDROID
 #ifdef QT_4
@@ -1488,6 +1494,22 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 QString WControllerFile::log() const
 {
     Q_D(const WControllerFile); return d->log;
+}
+
+QtMsgType WControllerFile::verbosity() const
+{
+    Q_D(const WControllerFile); return d->verbosity;
+}
+
+void WControllerFile::setVerbosity(QtMsgType verbosity)
+{
+    Q_D(WControllerFile);
+
+    if (d->verbosity == verbosity) return;
+
+    d->verbosity = verbosity;
+
+    emit verbosityChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
