@@ -26,7 +26,8 @@
 
 // Qt includes
 #ifdef QT_4
-#include <QCoreApplication>
+#include <QApplication>
+#include <QDesktopWidget>
 #endif
 
 // Sk includes
