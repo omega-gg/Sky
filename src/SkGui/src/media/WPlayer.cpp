@@ -24,6 +24,11 @@
 
 #ifndef SK_NO_PLAYER
 
+// Qt includes
+#ifdef QT_4
+#include <QCoreApplication>
+#endif
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerPlaylist>
