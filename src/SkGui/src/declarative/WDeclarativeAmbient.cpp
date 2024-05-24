@@ -148,7 +148,7 @@ WDeclarativePlayer * WDeclarativeAmbient::playerSource() const
     Q_D(const WDeclarativeAmbient); return d->playerSource;
 }
 
-void WDeclarativeAmbient::setPlayer(WDeclarativePlayer * playerSource)
+void WDeclarativeAmbient::setPlayerSource(WDeclarativePlayer * playerSource)
 {
     Q_D(WDeclarativeAmbient);
 

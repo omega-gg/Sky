@@ -26,8 +26,8 @@
 
 // Sk includes
 #include <WBarcodeWriter>
-#ifndef SK_NO_QML
-#include <WDeclarativePlayer>
+#ifndef SK_NO_PLAYER
+#include <WPlayer>
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -59,12 +59,12 @@ WHookOutputBarcode::WHookOutputBarcode(WAbstractBackend * backend)
 
 /* virtual */ QString WHookOutputBarcode::getSource(const QString & url) const
 {
-#ifdef SK_NO_QML
+#ifdef SK_NO_PLAYER
     return url;
 #else
     Q_D(const WHookOutputBarcode);
 
-    WDeclarativePlayer * player = d->backend->player();
+    WPlayer * player = d->backend->player();
 
     if (player == NULL) return url;
 

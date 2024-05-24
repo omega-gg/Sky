@@ -231,9 +231,7 @@ public: // Interface
 
     Q_INVOKABLE void reloadSource();
 
-#ifdef QT_NEW
     Q_INVOKABLE void updateFrame();
-#endif
 
     Q_INVOKABLE QImage getFrame() const;
 
@@ -284,13 +282,6 @@ protected: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 #else
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
-#endif
-
-protected: // WDeclarativeItem reimplementation
-#ifdef QT_4
-    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
-#else
-    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 #endif
 
 signals:

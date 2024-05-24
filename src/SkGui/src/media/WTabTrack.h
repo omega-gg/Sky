@@ -32,7 +32,7 @@
 // Forward declarations
 class WTabTrackPrivate;
 #ifndef SK_NO_PLAYER
-class WDeclarativePlayer;
+class WPlayer;
 #endif
 
 class SK_GUI_EXPORT WTabTrack : public WAbstractTab
@@ -50,7 +50,7 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
     Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
 
 #ifndef SK_NO_PLAYER
-    Q_PROPERTY(WDeclarativePlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
+    Q_PROPERTY(WPlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
 #endif
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
@@ -183,8 +183,8 @@ public: // Properties
     void        setPlaylist(WPlaylist * playlist);
 
 #ifndef SK_NO_PLAYER
-    WDeclarativePlayer * player() const;
-    void                 setPlayer(WDeclarativePlayer * player);
+    WPlayer * player() const;
+    void      setPlayer(WPlayer * player);
 #endif
 
     int count() const;

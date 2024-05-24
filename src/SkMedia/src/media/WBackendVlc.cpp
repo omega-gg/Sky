@@ -25,9 +25,8 @@
 #ifndef SK_NO_BACKENDVLC
 
 // Qt includes
-#ifdef QT_4
 #include <QCoreApplication>
-#elif defined(QT_5)
+#ifdef QT_5
 #include <QOpenGLFunctions>
 #endif
 #ifdef QT_6
@@ -40,7 +39,6 @@
 #endif
 #include <WControllerMedia>
 #include <WControllerPlaylist>
-#include <WDeclarativePlayer>
 
 // 3rdparty includes
 #include <3rdparty/vlc/mmxRgb.h>
@@ -2395,8 +2393,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
         if (d->started)
         {
-            // NOTE: We repeat at the lowest level possible, instead of relying on the
-            //       WDeclarativePlayer.
+            // NOTE: We repeat at the lowest level possible, instead of relying on the WPlayer.
             if (d->repeat)
             {
                 d->player->setSource(d->currentMedia, d->currentAudio, d->loop);

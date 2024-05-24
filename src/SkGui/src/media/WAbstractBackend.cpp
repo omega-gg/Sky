@@ -27,8 +27,8 @@
 // Sk includes
 #include <WControllerNetwork>
 #include <WControllerPlaylist>
-#ifndef SK_NO_QML
-#include <WDeclarativePlayer>
+#ifndef SK_NO_PLAYER
+#include <WPlayer>
 #endif
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
@@ -67,7 +67,7 @@ WAbstractBackendPrivate::WAbstractBackendPrivate(WAbstractBackend * p) : WPrivat
 
 void WAbstractBackendPrivate::init()
 {
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
     player = NULL;
 #endif
 
@@ -285,7 +285,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 
         setParent(NULL);
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
         setPlayer(NULL);
 #endif
 
@@ -810,17 +810,13 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
 
 void WAbstractBackend::applyFrame() const
 {
     Q_D(const WAbstractBackend);
 
-#ifdef QT_4
-    if (d->player) d->player->update();
-#else
     if (d->player) d->player->updateFrame();
-#endif
 }
 
 #endif
@@ -1399,14 +1395,14 @@ void WAbstractBackend::endOutputRemove() const
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
 
-WDeclarativePlayer * WAbstractBackend::player() const
+WPlayer * WAbstractBackend::player() const
 {
     Q_D(const WAbstractBackend); return d->player;
 }
 
-void WAbstractBackend::setPlayer(WDeclarativePlayer * parent)
+void WAbstractBackend::setPlayer(WPlayer * parent)
 {
     Q_D(WAbstractBackend);
 

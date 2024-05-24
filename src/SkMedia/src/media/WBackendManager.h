@@ -107,7 +107,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onNext())
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
     Q_PRIVATE_SLOT(d_func(), void onPlayerChanged())
 #endif
 

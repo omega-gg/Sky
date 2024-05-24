@@ -35,7 +35,7 @@ class WBroadcastServer;
 class WAbstractHook;
 class WTabsTrack;
 #ifndef SK_NO_QML
-class WView;
+class WDeclarativePlayer;
 #endif
 
 #ifdef QT_6
@@ -52,7 +52,7 @@ class SK_GUI_EXPORT WPlayer : public QObject, public WPlaylistWatcher, public WP
     Q_ENUMS(Repeat)
 
 #ifndef SK_NO_QML
-    Q_PROPERTY(WView * view READ view WRITE setView NOTIFY viewChanged)
+    Q_PROPERTY(WDeclarativePlayer * view READ view WRITE setView NOTIFY viewChanged)
 #endif
 
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
@@ -348,8 +348,8 @@ signals:
 
 public: // Properties
 #ifndef SK_NO_QML
-    WView * view() const;
-    void    setView(WView * view);
+    WDeclarativePlayer * view() const;
+    void                 setView(WDeclarativePlayer * view);
 #endif
 
     WAbstractBackend * backend() const;

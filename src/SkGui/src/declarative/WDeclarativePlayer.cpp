@@ -51,6 +51,8 @@ void WDeclarativePlayerPrivate::init()
 
     player = new WPlayer(q);
 
+    player->setView(q);
+
 #if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     frameUpdate = false;
 #endif
@@ -267,11 +269,9 @@ WDeclarativePlayer::WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_NEW
-
 void WDeclarativePlayer::updateFrame()
 {
-#ifndef SK_SOFTWARE
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     Q_D(WDeclarativePlayer);
 
     backend()->synchronize(&d->frame);
@@ -279,8 +279,6 @@ void WDeclarativePlayer::updateFrame()
 
     update();
 }
-
-#endif
 
 /* Q_INVOKABLE */ QImage WDeclarativePlayer::getFrame() const
 {
@@ -568,32 +566,6 @@ void WDeclarativePlayer::updateFrame()
 #else
     WDeclarativeItem::geometryChange(newGeometry, oldGeometry);
 #endif
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------
-// Protected WDeclarativeItem reimplementation
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_4
-/* virtual */ QVariant WDeclarativePlayer::itemChange(GraphicsItemChange change,
-                                                      const QVariant &   value)
-#else
-/* virtual */ void WDeclarativePlayer::itemChange(ItemChange change, const ItemChangeData & value)
-#endif
-{
-    Q_D(WDeclarativePlayer);
-
-#ifdef QT_4
-    bool result = WDeclarativeItem::itemChange(change, value);
-
-    d->player->setView(d->view);
-
-    return result;
-#else
-    WDeclarativeItem::itemChange(change, value);
-
-    d->player->setView(d->view);
 #endif
 }
 

@@ -38,7 +38,7 @@
 #include <WAbstractThreadAction>
 #include <WPlaylist>
 #ifndef SK_NO_PLAYER
-#include <WDeclarativePlayer>
+#include <WPlayer>
 #endif
 #include <WPixmapCache>
 
@@ -1612,12 +1612,12 @@ void WTabTrack::setPlaylist(WPlaylist * playlist)
 
 #ifndef SK_NO_PLAYER
 
-WDeclarativePlayer * WTabTrack::player() const
+WPlayer * WTabTrack::player() const
 {
     Q_D(const WTabTrack); return d->player;
 }
 
-void WTabTrack::setPlayer(WDeclarativePlayer * player)
+void WTabTrack::setPlayer(WPlayer * player)
 {
     Q_D(WTabTrack);
 

@@ -27,7 +27,7 @@
 #include <QObject>
 #include <QSizeF>
 #include <QHash>
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
 #include <QImage>
 #endif
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
@@ -50,7 +50,7 @@ class QStyleOptionGraphicsItem;
 class WAbstractBackendPrivate;
 class WAbstractBackend;
 class WMediaReply;
-class WDeclarativePlayer;
+class WPlayer;
 class WBackendFilter;
 class WBackendTrack;
 class WBackendOutput;
@@ -59,8 +59,8 @@ struct WBackendFrame;
 struct WBackendTexture;
 #endif
 
-#if defined(QT_6) && defined(SK_NO_QML) == false
-Q_MOC_INCLUDE("WDeclarativePlayer")
+#if defined(QT_6) && defined(SK_NO_PLAYER) == false
+Q_MOC_INCLUDE("WPlayer")
 #endif
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
@@ -157,8 +157,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_ENUMS(FrameState)
 #endif
 
-#ifndef SK_NO_QML
-    Q_PROPERTY(WDeclarativePlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
+#ifndef SK_NO_PLAYER
+    Q_PROPERTY(WPlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
 #endif
 
     Q_PROPERTY(WBackendFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
@@ -420,7 +420,7 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
     void applyFrame() const;
 #endif
 
@@ -532,7 +532,7 @@ signals:
 
     void error(const QString & message);
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
     void playerChanged();
 #endif
 
@@ -592,9 +592,9 @@ signals:
     void subtitlesChanged();
 
 public: // Properties
-#ifndef SK_NO_QML
-    WDeclarativePlayer * player() const;
-    void                 setPlayer(WDeclarativePlayer * parent);
+#ifndef SK_NO_PLAYER
+    WPlayer * player() const;
+    void      setPlayer(WPlayer * parent);
 #endif
 
     WBackendFilter * filter() const;

@@ -116,7 +116,7 @@ public: // Slots
 
     void onNext();
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
     void onPlayerChanged();
 #endif
 

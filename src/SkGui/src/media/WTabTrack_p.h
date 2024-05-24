@@ -148,7 +148,9 @@ public: // Variables
     WPlaylist * playlist;
     WPlaylist * playlistTrack;
 
-    WDeclarativePlayer * player;
+#ifndef SK_NO_PLAYER
+    WPlayer * player;
+#endif
 
     WBookmarkTrack * currentBookmark;
 

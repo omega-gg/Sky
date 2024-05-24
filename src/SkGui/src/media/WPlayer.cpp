@@ -33,6 +33,7 @@
 #include <WTabTrack>
 #ifndef SK_NO_QML
 #include <WView>
+#include <WDeclarativePlayer>
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -332,6 +333,21 @@ void WPlayerPrivate::clearPlaylistAndTabs()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_QML
+
+WView * WPlayerPrivate::getView() const
+{
+    if (view)
+    {
+        return view->view();
+    }
+    else return NULL;
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 void WPlayerPrivate::setBackendInterface(WBackendInterface * currentBackend,
                                          WAbstractHook     * currentHook)
 {
@@ -398,7 +414,7 @@ void WPlayerPrivate::setTab(WTabTrack * tab)
         QObject::connect(tab, SIGNAL(destroyed   ()),
                          q,   SLOT(onTabDestroyed()));
 
-        //tab->setPlayer(q);
+        tab->setPlayer(q);
 
         if (q->hasStarted())
         {
@@ -674,6 +690,8 @@ void WPlayerPrivate::onConnectedChanged()
         server->sendReply(WBroadcastReply::VOLUME, QString::number(backend->volume()));
 
 #ifndef SK_NO_QML
+        WView * view = getView();
+
         if (view)
         {
             onScreen();
@@ -734,6 +752,8 @@ void WPlayerPrivate::onConnectedChanged()
         QObject::disconnect(sk,   NULL, q, NULL);
 
 #ifndef SK_NO_QML
+        WView * view = getView();
+
         if (view) QObject::disconnect(view, NULL, q, NULL);
 #endif
 
@@ -946,6 +966,8 @@ void WPlayerPrivate::onMessage(const WBroadcastMessage & message)
 #ifndef SK_NO_QML
     else if (type == WBroadcastMessage::SCREEN)
     {
+        WView * view = getView();
+
         if (view == NULL) return;
 
         view->moveToScreen(message.parameters.first().toInt());
@@ -955,6 +977,8 @@ void WPlayerPrivate::onMessage(const WBroadcastMessage & message)
     }
     else if (type == WBroadcastMessage::FULLSCREEN)
     {
+        WView * view = getView();
+
         if (view == NULL) return;
 
         bool fullScreen = message.parameters.first().toInt();
@@ -1112,6 +1136,8 @@ void WPlayerPrivate::onScreen()
 {
     QStringList parameters;
 
+    WView * view = getView();
+
     parameters.append(QString::number(view->screenNumber()));
     parameters.append(QString::number(view->screenCount ()));
 
@@ -1120,6 +1146,8 @@ void WPlayerPrivate::onScreen()
 
 void WPlayerPrivate::onFullScreen()
 {
+    WView * view = getView();
+
     server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
 }
 
@@ -1224,7 +1252,7 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
 
     if (d->tab)
     {
-        //d->tab->setPlayer(this);
+        d->tab->setPlayer(this);
 
         if (d->backend->isStopped())
         {
@@ -1241,7 +1269,7 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
 
     if (d->backend == NULL) return;
 
-    //if (d->tab) d->tab->setPlayer(this);
+    if (d->tab) d->tab->setPlayer(this);
 
     d->backendInterface->replay();
 }
@@ -1449,6 +1477,9 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
 
 void WPlayer::updateFrame()
 {
+    Q_D(WPlayer);
+
+    if (d->view) d->view->updateFrame();
 }
 
 #endif
@@ -1497,7 +1528,7 @@ void WPlayer::updateFrame()
     d->setBackendInterface(backend, NULL);
 
     backend->setParent(this);
-    //backend->setPlayer(this);
+    backend->setPlayer(this);
 
     d->updateRepeat(trackType());
 
@@ -1773,12 +1804,12 @@ void WPlayer::updateFrame()
 
 #ifndef SK_NO_QML
 
-WView * WPlayer::view() const
+WDeclarativePlayer * WPlayer::view() const
 {
     Q_D(const WPlayer); return d->view;
 }
 
-void WPlayer::setView(WView * view)
+void WPlayer::setView(WDeclarativePlayer * view)
 {
     Q_D(WPlayer);
 

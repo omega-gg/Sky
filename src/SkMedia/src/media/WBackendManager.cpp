@@ -111,7 +111,7 @@ void WBackendManagerPrivate::init()
     timer.setTimerType(Qt::PreciseTimer);
 #endif
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
 #endif
 
@@ -677,7 +677,7 @@ void WBackendManagerPrivate::disconnectBackend()
 
     backend = backendNew;
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
     backend->setPlayer(player);
 #endif
 
@@ -793,7 +793,7 @@ void WBackendManagerPrivate::onNext()
     applyNext(timeB);
 }
 
-#ifndef SK_NO_QML
+#ifndef SK_NO_PLAYER
 
 void WBackendManagerPrivate::onPlayerChanged()
 {

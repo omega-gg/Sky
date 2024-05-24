@@ -58,8 +58,8 @@ public: // Functions
     void currentOutputChanged();
 
 public: // Variable
-#ifndef SK_NO_QML
-    WDeclarativePlayer * player;
+#ifndef SK_NO_PLAYER
+    WPlayer * player;
 #endif
 
     WBackendFilter * filter;

@@ -38,6 +38,11 @@
 
 #ifndef SK_NO_PLAYER
 
+#ifndef SK_NO_QML
+// Forward declarations
+class WView;
+#endif
+
 class SK_GUI_EXPORT WPlayerPrivate : public WPrivate
 {
 public:
@@ -63,6 +68,8 @@ public: // Functions
     void clearShuffle ();
 
     void clearPlaylistAndTabs();
+
+    WView * getView() const;
 
     void setBackendInterface(WBackendInterface * currentBackend, WAbstractHook * currentHook);
 
@@ -126,7 +133,7 @@ public: // Slots
 
 public: // Variables
 #ifndef SK_NO_QML
-    WView * view;
+    WDeclarativePlayer * view;
 #endif
 
     WAbstractBackend * backend;

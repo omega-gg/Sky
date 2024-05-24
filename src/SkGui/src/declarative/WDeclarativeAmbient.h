@@ -34,7 +34,7 @@ class SK_GUI_EXPORT WDeclarativeAmbient : public WDeclarativePlayer
 {
     Q_OBJECT
 
-    Q_PROPERTY(WDeclarativePlayer * playerSource READ playerSource WRITE setPlayer
+    Q_PROPERTY(WDeclarativePlayer * playerSource READ playerSource WRITE setPlayerSource
                NOTIFY playerSourceChanged)
 
 public:
@@ -49,7 +49,7 @@ signals:
 
 public: // Properties
     WDeclarativePlayer * playerSource() const;
-    void                 setPlayer(WDeclarativePlayer * playerSource);
+    void                 setPlayerSource(WDeclarativePlayer * playerSource);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeAmbient)
