@@ -39,6 +39,9 @@ class WDeclarativePlayer;
 #endif
 
 #ifdef QT_6
+#ifndef SK_NO_QML
+Q_MOC_INCLUDE("WDeclarativePlayer")
+#endif
 Q_MOC_INCLUDE("WAbstractHook")
 Q_MOC_INCLUDE("WBroadcastServer")
 Q_MOC_INCLUDE("WTabsTrack")
