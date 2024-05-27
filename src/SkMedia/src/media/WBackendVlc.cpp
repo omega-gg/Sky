@@ -235,17 +235,21 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
+
 static const int PLAYER_FORMAT          = GL_LUMINANCE;
 static const int PLAYER_FORMAT_INTERNAL = GL_LUMINANCE;
 
 static const int PLAYER_DATA_TYPE = GL_UNSIGNED_BYTE;
+
 #endif
 
 static const int PLAYER_MAX_WIDTH  = 5760;
 static const int PLAYER_MAX_HEIGHT = 3240;
 
 //-------------------------------------------------------------------------------------------------
+
+#ifndef SK_NO_QML
 
 #ifdef QT_4
 
@@ -256,7 +260,7 @@ static GLfloat shaderValues[16];
 
 static GLfloat shaderOpacity = 1.f;
 
-#elif defined(SK_NO_QML) == false
+#else
 
 static QSGMaterialType materialType;
 
@@ -273,8 +277,6 @@ static const QMatrix4x4 matrix
 );
 
 #endif
-
-#ifndef SK_NO_QML
 
 #ifdef QT_4
 
@@ -676,7 +678,7 @@ WBackendVlcPrivate::WBackendVlcPrivate(WBackendVlc * p) : WAbstractBackendPrivat
 {
     delete player;
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
     deleteShader();
 
     if (textureIds[0]) glDeleteTextures(3, textureIds);
@@ -700,7 +702,7 @@ void WBackendVlcPrivate::init()
     frameSwap  = false;
     frameIndex = false;
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
     targetX      = 0.f;
     targetY      = 0.f;
     targetWidth  = 0.f;
@@ -791,7 +793,7 @@ void WBackendVlcPrivate::populateTableRgb()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
 
 void WBackendVlcPrivate::initShader()
 {
@@ -1227,7 +1229,7 @@ void WBackendVlcPrivate::updateTargetRect()
 
     targetRect = QRectF(x, y, width, height);
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
     targetX = x;
     targetY = y;
 
@@ -1314,7 +1316,7 @@ void WBackendVlcPrivate::clearSources()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
 
 void WBackendVlcPrivate::setOpacity(GLfloat opacity)
 {
@@ -2012,6 +2014,9 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     if (d->active == false) return;
 
 #ifdef QT_4
+#ifdef SK_NO_QML
+    Q_UNUSED(rect)
+#else
     if (painter->paintEngine()->type() == QPaintEngine::OpenGL2)
     {
         if (d->frameUpdated && d->frameFreeze == false)
@@ -2177,6 +2182,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     }
     else
 #endif
+#endif // QT_4
     {
 #ifdef QT_4
         if (d->frameFreeze == false) d->convertFrameSse();

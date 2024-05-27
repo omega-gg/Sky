@@ -237,7 +237,7 @@ public:
 public: // Functions
     void populateTableRgb();
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
     void initShader  ();
     void deleteShader();
 #endif
@@ -270,7 +270,7 @@ public: // Functions
     void clearMedia  ();
     void clearSources();
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
     void setOpacity(GLfloat opacity);
 #endif
 
@@ -322,7 +322,7 @@ public: // Variables
 
     QRectF targetRect;
 
-#ifdef QT_4
+#if defined(QT_4) && defined(SK_NO_QML) == false
     GLfloat targetX;
     GLfloat targetY;
     GLfloat targetWidth;

@@ -471,11 +471,12 @@ bool WControllerFilePrivate::isLoading() const
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* static */ void WControllerFilePrivate::messageHandler(QtMsgType, const char *) {}
+/* static */ void WControllerFilePrivate::messageHandler(QtMsgType type, const char * message)
 #else
 /* static */ void WControllerFilePrivate::messageHandler(QtMsgType type,
                                                          const QMessageLogContext &,
                                                          const QString            & message)
+#endif
 {
     WControllerFilePrivate * p = wControllerFile->d_func();
 
@@ -497,7 +498,6 @@ bool WControllerFilePrivate::isLoading() const
 #endif
 #endif
 }
-#endif
 
 //-------------------------------------------------------------------------------------------------
 

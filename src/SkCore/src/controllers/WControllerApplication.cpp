@@ -268,7 +268,11 @@ void WControllerApplicationPrivate::onAboutToQuit()
     //       the WControlleFile deletion.
     if (verbosity != QtDebugMsg)
     {
+#ifdef QT_4
+        qInstallMsgHandler(WControllerApplicationPrivate::messageHandler);
+#else
         qInstallMessageHandler(WControllerApplicationPrivate::messageHandler);
+#endif
     }
 
     if (object)
@@ -1836,6 +1840,8 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
 {
 #ifdef QT_4
+    Q_UNUSED(timeZone);
+
     // FIXME Qt4: We're not supportign time zones at the moment.
     return QDateTime::currentDateTimeUtc();
 #else
