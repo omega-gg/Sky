@@ -71,6 +71,14 @@ public: // Functions
 public: // WCoreApplication and WApplication interface
     void initApplication(QCoreApplication * application, Sk::Type type, bool gui);
 
+public: // Static functions
+#ifdef QT_4
+    static void messageHandler(QtMsgType type, const char * message);
+#else
+    static void messageHandler(QtMsgType type, const QMessageLogContext & context,
+                                               const QString            & message);
+#endif
+
 public: // Slots
     void onAboutToQuit();
 

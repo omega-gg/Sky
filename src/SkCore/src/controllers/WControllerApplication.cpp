@@ -237,6 +237,18 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+/* static */ void WControllerApplicationPrivate::messageHandler(QtMsgType, const char *) {}
+#else
+/* static */ void WControllerApplicationPrivate::messageHandler(QtMsgType,
+                                                                const QMessageLogContext &,
+                                                                const QString            &) {}
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -252,6 +264,13 @@ void WControllerApplicationPrivate::onAboutToQuit()
 
     wControllerFile->d_func()->clearMessageHandler();
 
+    // NOTE: When the verbosity is set, we apply a dummy handler to avoid printing messages after
+    //       the WControlleFile deletion.
+    if (verbosity != QtDebugMsg)
+    {
+        qInstallMessageHandler(WControllerApplicationPrivate::messageHandler);
+    }
+
     if (object)
     {
         delete object;
@@ -259,28 +278,16 @@ void WControllerApplicationPrivate::onAboutToQuit()
         object = NULL;
     }
 
-    if (verbosity == QtDebugMsg)
+    for (int i = controllers.count() - 1; i > -1; i--)
     {
-        for (int i = controllers.count() - 1; i > -1; i--)
-        {
-            qDebug("Deleting %s", controllers[i]->metaObject()->className());
+        qDebug("Deleting %s", controllers[i]->metaObject()->className());
 
-            delete controllers[i];
-        }
-
-        controllers.clear();
-
-        qDebug("Done");
+        delete controllers[i];
     }
-    else
-    {
-        for (int i = controllers.count() - 1; i > -1; i--)
-        {
-            delete controllers[i];
-        }
 
-        controllers.clear();
-    }
+    controllers.clear();
+
+    qDebug("Done");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1981,7 +1988,15 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
 
     if (count == 1)
     {
-        return list.first().toInt();
+        QStringList seconds = list.last().split('.');
+
+        int msecs = seconds.first().toInt() * 1000;
+
+        if (seconds.count() == 2)
+        {
+             return msecs + seconds.last().toInt();
+        }
+        else return msecs;
     }
     else if (count == 2)
     {
