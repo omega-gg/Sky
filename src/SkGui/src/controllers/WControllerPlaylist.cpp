@@ -6689,6 +6689,34 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     else return "vbml:" + result;
 }
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlUriFromCode(const QString & code)
+{
+    int length = code.length();
+
+    if (length < 12) return QString();
+
+    QString ip;
+
+    int index = 0;
+
+    for (int i = 0; i < 4; i++)
+    {
+        while (code.at(index).isDigit() == false) index++;
+
+        if (index + 3 > length) return QString();
+
+        int number = code.mid(index, 3).toInt() - 100;
+
+        ip += QString::number(number) + '.';
+
+        index += 3;
+    }
+
+    ip.chop(1);
+
+    return "vbml:connect/" + ip;
+}
+
 /* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlHash(const QString & text)
 {
     QString string = text.simplified();

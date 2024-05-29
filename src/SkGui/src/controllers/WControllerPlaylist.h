@@ -442,7 +442,8 @@ public: // Static functions
     Q_INVOKABLE static void vbmlApplyTrack(WTrack * track, const QString & uri);
 
     // NOTE: This function returns a vbml uri from a vbml. based url without prefix.
-    Q_INVOKABLE static QString vbmlUriFromUrl(const QString & url);
+    Q_INVOKABLE static QString vbmlUriFromUrl (const QString & url);
+    Q_INVOKABLE static QString vbmlUriFromCode(const QString & code);
 
     // NOTE: This function extracts a hash value with the #value format.
     Q_INVOKABLE static QString vbmlHash(const QString & text);
