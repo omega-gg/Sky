@@ -552,7 +552,7 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
              ||
              type == PROGRESS || type == OUTPUT || type == QUALITY || type == AMBIENT
              ||
-             type == VOLUME || type == FULLSCREEN || type == VIDEOTAG)
+             type == VOLUME || type == FULLSCREEN || type == VIDEOTAG || type == STARTUP)
     {
         if (parameters.count() == 1) return;
     }
