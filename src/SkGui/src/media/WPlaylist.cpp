@@ -882,7 +882,6 @@ void WPlaylistPrivate::applyTrackLoaded(int index)
 
     if (track->state() != WTrack::LoadCover)
     {
-        emit q->trackQueryEnded    ();
         emit q->trackQueryCompleted();
 
         return;
@@ -890,8 +889,6 @@ void WPlaylistPrivate::applyTrackLoaded(int index)
 
     // NOTE: The priority should be high because it's tied to the track loading completion.
     loadCover(track, QNetworkRequest::HighPriority);
-
-    emit q->trackQueryEnded();
 }
 
 void WPlaylistPrivate::applyTrackAbort(int index)

@@ -3968,36 +3968,32 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         trackReply.applyDataTo(track);
 
+        emit playlist->trackQueryEnded();
+
+        if (playlist->trackPointerAt(index) != track) return;
+
         addToCache(track->source(), reply.cache);
 
         if (getNextTracks(backendId, playlist, track, reply.nextQueries, urlBase, indexNext))
         {
             playlist->updateTrack(index);
 
-            emit playlist->trackQueryEnded();
-
             return;
         }
 
         // NOTE: Maybe other queries are still loading.
-        if (checkTrack(track))
-        {
-            emit playlist->trackQueryEnded();
-
-            return;
-        }
+        if (checkTrack(track)) return;
 
         applyTrack(playlist, track, trackReply.state(), index);
     }
     else
     {
-        // NOTE: Maybe other queries are still loading.
-        if (checkTrack(track))
-        {
-            emit playlist->trackQueryEnded();
+        emit playlist->trackQueryEnded();
 
-            return;
-        }
+        if (playlist->trackPointerAt(index) != track
+            ||
+            // NOTE: Maybe other queries are still loading.
+            checkTrack(track)) return;
 
         track->setState(WTrack::Default);
 
@@ -4349,12 +4345,7 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
             playlist->updateTrack(index);
         }
 
-        if (applyNextTrack(playlist, track, origin, urlBase, indexNext))
-        {
-            emit playlist->trackQueryEnded();
-
-            return;
-        }
+        if (applyNextTrack(playlist, track, origin, urlBase, indexNext)) return;
     }
     else
     {
@@ -4362,6 +4353,10 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
         if (tracks.isEmpty())
         {
+            emit playlist->trackQueryEnded();
+
+            if (playlist->trackPointerAt(index) != track) return;
+
             track->setState(WTrack::Default);
 
             playlist->updateTrack(index);
@@ -4371,6 +4366,10 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
             const WTrack & trackReply = tracks.first();
 
             trackReply.applyDataTo(track);
+
+            emit playlist->trackQueryEnded();
+
+            if (playlist->trackPointerAt(index) != track) return;
 
             if (origin.isEmpty() == false)
             {
@@ -4390,8 +4389,6 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
                     {
                         playlist->updateTrack(index);
 
-                        emit playlist->trackQueryEnded();
-
                         return;
                     }
                 }
@@ -4403,8 +4400,6 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
                 if (getNextTrack("", playlist, track, query, urlBase, indexNext))
                 {
                     playlist->updateTrack(index);
-
-                    emit playlist->trackQueryEnded();
 
                     return;
                 }
