@@ -480,9 +480,9 @@ bool WControllerFilePrivate::isLoading() const
 {
     WControllerFilePrivate * p = wControllerFile->d_func();
 
-    if (p->verbosity > type) return;
-
     p->method.invoke(wControllerFile, Q_ARG(const QString &, message));
+
+    if (p->verbosity > type) return;
 
 #ifdef Q_OS_ANDROID
 #ifdef QT_4
