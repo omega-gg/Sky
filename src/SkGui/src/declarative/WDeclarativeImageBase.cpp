@@ -532,7 +532,18 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
 /* Q_INVOKABLE */ void WDeclarativeImageBase::clearPixmap()
 {
-    setPixmap(QPixmap());
+    Q_D(WDeclarativeImageBase);
+
+    if (d->url.isEmpty() == false)
+    {
+        d->url = "";
+
+        emit sourceChanged();
+    }
+
+    d->pix.setPixmap(QPixmap(), this);
+
+    d->applyRequest();
 }
 
 //-------------------------------------------------------------------------------------------------
