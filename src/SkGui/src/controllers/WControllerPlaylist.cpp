@@ -4103,11 +4103,18 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         emit playlist->queryEnded();
 
+        if (playlist->queryIsLoading() == false) return;
+
         addToCache(playlist->source(), reply.cache);
 
         if (getNextPlaylists(backendId, playlist, reply.nextQueries, urlBase, indexNext)) return;
     }
-    else emit playlist->queryEnded();
+    else
+    {
+        emit playlist->queryEnded();
+
+        if (playlist->queryIsLoading() == false) return;
+    }
 
     // NOTE: Maybe other queries are still loading.
     if (checkPlaylist(playlist)) return;
@@ -4228,11 +4235,18 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         emit folder->queryEnded();
 
+        if (folder->queryIsLoading() == false) return;
+
         addToCache(folder->source(), reply.cache);
 
         if (getNextFolders(backendId, folder, reply.nextQueries, urlBase, indexNext)) return;
     }
-    else emit folder->queryEnded();
+    else
+    {
+        emit folder->queryEnded();
+
+        if (folder->queryIsLoading() == false) return;
+    }
 
     // NOTE: Maybe other queries are still loading.
     if (checkFolder(folder)) return;
@@ -4281,11 +4295,18 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
         emit item->queryEnded();
 
+        if (item->queryIsLoading() == false) return;
+
         addToCache(item->source(), reply.cache, extension);
 
         if (getNextItems(backendId, item, reply.nextQueries, urlBase, indexNext)) return;
     }
-    else emit item->queryEnded();
+    else
+    {
+        emit item->queryEnded();
+
+        if (item->queryIsLoading() == false) return;
+    }
 
     // NOTE: Maybe other queries are still loading.
     if (checkItem(item)) return;
@@ -4459,6 +4480,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             playlist->applySource(source);
 
             emit playlist->queryEnded();
+
+            if (playlist->queryIsLoading() == false) return;
 
             playlist->d_func()->setQueryLoaded();
 
@@ -4667,6 +4690,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     // Next query
 
     emit playlist->queryEnded();
+
+    if (playlist->queryIsLoading() == false) return;
 
     if (source.isEmpty() == false)
     {
@@ -4985,6 +5010,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     emit playlist->queryEnded();
 
+    if (playlist->queryIsLoading() == false) return;
+
     if (source.isEmpty() == false)
     {
         WBackendNet * backend = q->backendFromUrl(source);
@@ -5063,8 +5090,10 @@ void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * devic
 
     emit item->queryEnded();
 
-    // NOTE: Maybe other queries are still loading.
-    if (checkItem(item)) return;
+    if (item->queryIsLoading() == false
+        ||
+        // NOTE: Maybe other queries are still loading.
+        checkItem(item)) return;
 
     item->d_func()->setQueryLoaded();
 }
