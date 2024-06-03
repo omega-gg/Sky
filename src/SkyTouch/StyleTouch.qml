@@ -305,6 +305,8 @@ Style
     property real sliderStream_opacityProgressB: 1.0
 
     property color sliderStream_colorActive: color_highlight
+
+    property color sliderStream_colorChapter: slider_colorFront
 //#END
 
 //#PlayerBrowser

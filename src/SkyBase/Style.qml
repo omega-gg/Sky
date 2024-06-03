@@ -666,6 +666,57 @@ Item
         return slider.model.positionToValue(pos);
     }
 
+    function getChapterTitle(slider, time)
+    {
+        var times = slider.times;
+
+        var length = times.length;
+
+        if (length == 0 || time < times[0]) return "";
+
+        time += slider.model.positionToValue(slider.sizeChapter / 2);
+
+        var index = 0;
+
+        for (var i = 0; i < length; i++)
+        {
+            if (time < times[i]) break;
+
+            index = i;
+        }
+
+        return slider.chapters[index].title;
+    }
+
+    function getChapterTime(slider, tolerance)
+    {
+        var times = slider.times;
+
+        var length = times.length;
+
+        var value = slider.value;
+
+        if (length == 0) return value;
+
+        var gap = slider.model.positionToValue(tolerance);
+
+        var timeA = value - gap;
+        var timeB = value + gap;
+
+        for (var i = 0; i < length; i++)
+        {
+            var timeChapter = times[i];
+
+            if (Math.abs(timeChapter - timeA) < gap
+                ||
+                Math.abs(timeChapter - timeB) < gap) return timeChapter;
+
+            if (timeChapter > timeB) return value;
+        }
+
+        return value;
+    }
+
     //---------------------------------------------------------------------------------------------
 
     function getTabTitle(title, state, source)

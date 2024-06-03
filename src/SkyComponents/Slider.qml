@@ -71,6 +71,8 @@ BaseSlider
     property alias background: background
     property alias foreground: foreground
 
+    property alias handleBackground: handleBackground
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------

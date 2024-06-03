@@ -96,7 +96,7 @@ Item
 
         visible: (text != "")
 
-        text: slider.getChapterTitle(time)
+        text: st.getChapterTitle(slider, time)
 
         itemText.wrapMode: Text.NoWrap
 

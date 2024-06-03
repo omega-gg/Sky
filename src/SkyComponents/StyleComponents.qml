@@ -790,6 +790,8 @@ Style
 
     property int sliderStream_height: dp32
 
+    property int sliderStream_sizeChapter: dp6
+
     property int sliderStream_textWidth: dp46
 
     property real sliderStream_opacityProgressA: 0.5
@@ -809,6 +811,9 @@ Style
 
     property color sliderStream_colorBarProgressA: sliderStream_colorBarDisableHoverA
     property color sliderStream_colorBarProgressB: sliderStream_colorBarDisableHoverB
+
+    property color sliderStream_colorChapterA: icon2_colorA
+    property color sliderStream_colorChapterB: icon1_colorA
 //#END
 
 //#BaseTabs

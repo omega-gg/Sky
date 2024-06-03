@@ -57,6 +57,8 @@ Slider
     property real opacityProgressA: st.sliderStream_opacityProgressA
     property real opacityProgressB: st.sliderStream_opacityProgressB
 
+    property color colorChapter: st.sliderStream_colorChapter
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -142,53 +144,6 @@ Slider
 
     //---------------------------------------------------------------------------------------------
     // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function getChapterTitle(time)
-    {
-        var length = times.length;
-
-        if (length == 0 || time < times[0]) return "";
-
-        time += model.positionToValue(sizeChapter / 2);
-
-        var index = 0;
-
-        for (var i = 0; i < length; i++)
-        {
-            if (time < times[i]) break;
-
-            index = i;
-        }
-
-        return chapters[index].title;
-    }
-
-    function getChapterTime(tolerance)
-    {
-        var length = times.length;
-
-        if (length == 0) return value;
-
-        var gap = model.positionToValue(tolerance);
-
-        var timeA = value - gap;
-        var timeB = value + gap;
-
-        for (var i = 0; i < length; i++)
-        {
-            var timeChapter = times[i];
-
-            if (Math.abs(timeChapter - timeA) < gap
-                ||
-                Math.abs(timeChapter - timeB) < gap) return timeChapter;
-
-            if (timeChapter > timeB) return value;
-        }
-
-        return value;
-    }
-
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -398,8 +353,6 @@ Slider
 
     Repeater
     {
-        z: -1
-
         model: times.length
 
         Rectangle
@@ -413,9 +366,11 @@ Slider
 
             x: pGetX(index)
 
+            z: itemProgress.z
+
             visible: foreground.visible
 
-            color: (x > pHandleX) ? st.slider_colorFront
+            color: (x > pHandleX) ? colorChapter
                                   : colorFront
 
 //#QT_4

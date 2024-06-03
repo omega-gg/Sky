@@ -33,12 +33,20 @@ Item
 
     property bool isHovered: slider.hoverActive
 
+    property int sizeChapter: st.sliderStream_sizeChapter
+
+    /* read */ property int handleRange: handleMaximum - handleMinimum
+
     property bool active: true
 
     property int currentTime: -1
     property int duration   : -1
 
     property real progress: 0.0
+
+    property variant chapters: null
+
+    /* read */ property variant times: []
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -65,8 +73,17 @@ Item
     property color colorBarProgressA: st.sliderStream_colorBarProgressA
     property color colorBarProgressB: st.sliderStream_colorBarProgressB
 
+    property color colorChapterA: st.sliderStream_colorChapterA
+    property color colorChapterB: st.sliderStream_colorChapterB
+
     //---------------------------------------------------------------------------------------------
     // Private
+
+    property int pChapterSize: (handle.width - sizeChapter) / 2
+
+    property int pChapterX: handleMinimum + pChapterSize
+
+    property int pHandleX: position + pChapterSize + st.dp1
 
     property int pState: 0
 
@@ -87,6 +104,9 @@ Item
 
     property alias minimum: slider.minimum
     property alias maximum: slider.maximum
+
+    property alias handleMinimum: slider.handleMinimum
+    property alias handleMaximum: slider.handleMaximum
 
     property alias pageStep  : slider.pageStep
     property alias singleStep: slider.singleStep
@@ -123,6 +143,18 @@ Item
     onDurationChanged   : pUpdate()
 
     onProgressChanged: pUpdateProgress()
+
+    onChaptersChanged:
+    {
+        var array = new Array;
+
+        for (var i = 0; i < chapters.length; i++)
+        {
+            array.push(chapters[i].time);
+        }
+
+        times = array;
+    }
 
     onPStateChanged: pUpdateProgress()
 
@@ -202,6 +234,13 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
+
+    function pGetX(index)
+    {
+        return handleRange * (times[index] / duration) + pChapterX;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
@@ -266,7 +305,10 @@ Item
                                  : colorBarDisableHoverB
 
         // NOTE: We want the background to be behind the itemProgress.
-        background.z: -1
+        background.z: -2
+
+        // NOTE: We want the foreground to be behind the chapters.
+        foreground.z: -1
 
         foreground.opacity: (pState) ? opacityProgressA
                                      : opacityProgressB
@@ -286,7 +328,7 @@ Item
 
             radius: parent.radius
 
-            z: -1
+            z: -2
 
             visible: (opacity != 0.0)
             opacity: 0.0
@@ -426,6 +468,34 @@ Item
 
                     easing.type: st.easing
                 }
+            }
+        }
+
+        Repeater
+        {
+            model: times.length
+
+            Rectangle
+            {
+                anchors.verticalCenter: slider.verticalCenter
+
+                width : sizeChapter
+                height: sizeChapter
+
+                radius: height
+
+                x: pGetX(index)
+
+                z: foreground.z
+
+                visible: foreground.visible
+
+                color: (x > pHandleX) ? colorChapterB
+                                      : colorChapterA
+
+//#QT_4
+                smooth: true
+//#END
             }
         }
     }
