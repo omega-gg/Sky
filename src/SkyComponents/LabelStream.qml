@@ -25,71 +25,51 @@ import Sky     1.0
 
 Item
 {
+    id: labelStream
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
     /* mandatory */ property variant slider
 
-    property int padding: st.labelStream_padding
-
-    property int paddingLeft : padding
-    property int paddingRight: padding
-
     /* read */ property int position: pGetPosition()
+
+    /* read */ property int time: (visible) ? st.getSliderValue(slider, position) : -1
 
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property color colorA: st.labelStream_colorA
-    property color colorB: st.labelStream_colorB
+    property color color: st.buttonStream_color
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    default property alias content: background.data
-
-    property alias borderSize : borders.size
-    property alias borderColor: borders.color
-
-    property alias borderLeft  : borders.borderLeft
-    property alias borderRight : borders.borderRight
-    property alias borderTop   : borders.borderTop
-    property alias borderBottom: borders.borderBottom
-
-    property alias borderSizeWidth : borders.sizeWidth
-    property alias borderSizeHeight: borders.sizeHeight
-
-    /* read */ property alias text: itemText.text
-
-    property alias font: itemText.font
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias background: background
-    property alias borders   : borders
-
-    property alias itemText: itemText
+    property alias itemTitle: itemTitle
+    property alias itemTime : itemTime
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: paddingLeft + paddingRight + borderSizeWidth + sk.textWidth(font, text)
-
-    height: st.labelStream_height + borderSizeHeight
-
-    x: slider.x + st.getSliderX(slider.slider, width, position)
+    height: pGetHeight()
 
     visible: (slider.enabled && slider.isHovered)
-
-    opacity: (visible)
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
     // Private
+
+    function pGetHeight()
+    {
+        if (itemTitle.visible)
+        {
+            return itemTitle.height + itemTime.height;
+        }
+        else return itemTime.height;
+    }
 
     function pGetPosition()
     {
@@ -104,50 +84,64 @@ Item
     // Children
     //---------------------------------------------------------------------------------------------
 
-    Rectangle
+    ButtonPiano
     {
-        id: background
+        id: itemTitle
 
-        anchors.fill: parent
+        height: st.labelStream_heightTitle + borderSizeHeight
 
-        anchors.leftMargin  : borderLeft
-        anchors.rightMargin : borderRight
-        anchors.topMargin   : borderTop
-        anchors.bottomMargin: borderBottom
+        maximumWidth: labelStream.width
 
-        gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: colorA }
-            GradientStop { position: 1.0; color: colorB }
-        }
+        x: st.getSliderX(slider.slider, width, position)
 
-        TextBase
-        {
-            id: itemText
+        borderLeft  : borderSize
+        borderTop   : borderSize
+        borderBottom: borderSize
 
-            anchors.fill: parent
+        enabled: false
 
-            anchors.leftMargin : paddingLeft
-            anchors.rightMargin: paddingRight
+        visible: (text != "")
 
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment  : Text.AlignVCenter
+        text: st.getChapterTitle(slider, time)
 
-            text: controllerPlaylist.getPlayerTime(st.getSliderValue(slider, position), 7)
+        colorA: labelStream.color
+        colorB: labelStream.color
 
-            style: st.text_raised
+        itemText.opacity: 1.0
 
-            // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
-            elide: Text.ElideNone
+        itemText.style: st.text_raised
 
-            font.pixelSize: st.dp11
-        }
+//#DESKTOP
+        // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
+        itemText.elide: (width == maximumWidth) ? Text.ElideRight
+                                                : Text.ElideNone
+//#END
     }
 
-    RectangleBorders
+    ButtonPiano
     {
-        id: borders
+        id: itemTime
 
-        anchors.fill: parent
+        anchors.bottom: parent.bottom
+
+        height: st.labelStream_heightTime
+
+        x: st.getSliderX(slider.slider, width, position)
+
+        borderLeft: borderSize
+
+        enabled: false
+
+        text: controllerPlaylist.getPlayerTime(time, 8)
+
+        colorA: labelStream.color
+        colorB: labelStream.color
+
+        itemText.opacity: 1.0
+
+        itemText.style: st.text_raised
+
+        // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
+        itemText.elide: Text.ElideNone
     }
 }

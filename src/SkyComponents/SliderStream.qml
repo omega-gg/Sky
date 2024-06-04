@@ -73,8 +73,9 @@ Item
     property color colorBarProgressA: st.sliderStream_colorBarProgressA
     property color colorBarProgressB: st.sliderStream_colorBarProgressB
 
-    property color colorChapterA: st.sliderStream_colorChapterA
-    property color colorChapterB: st.sliderStream_colorChapterB
+    property color colorChapter       : st.sliderStream_colorChapter
+    property color colorChapterActive : st.sliderStream_colorChapterActive
+    property color colorChapterDisable: st.sliderStream_colorChapterDisable
 
     //---------------------------------------------------------------------------------------------
     // Private
@@ -490,8 +491,18 @@ Item
 
                 visible: foreground.visible
 
-                color: (x > pHandleX) ? colorChapterB
-                                      : colorChapterA
+                color:
+                {
+                    if (x > pHandleX)
+                    {
+                        return colorChapter;
+                    }
+                    else if (active)
+                    {
+                        return colorChapterActive;
+                    }
+                    else return colorChapterDisable;
+                }
 
 //#QT_4
                 smooth: true

@@ -124,7 +124,7 @@ BaseSlider
 
         radius: slider.radius
 
-        visible: (value > 0)
+        visible: (value > -1)
 
         gradient: Gradient
         {

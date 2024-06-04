@@ -48,9 +48,6 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.left : parent.left
-    anchors.right: parent.right
-
     height: pGetHeight()
 
     visible: (slider.enabled && slider.isHovered)
@@ -122,5 +119,8 @@ Item
         radius: height
 
         text: controllerPlaylist.getPlayerTime(time, 8)
+
+        // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
+        itemText.elide: Text.ElideNone
     }
 }

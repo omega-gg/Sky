@@ -544,7 +544,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // LabelStream
 
-    property int labelStream_height: dp16
+    property int labelStream_heightTime : dp16
+    property int labelStream_heightTitle: dp24
 
     property int labelStream_padding: dp4
 
@@ -812,8 +813,9 @@ Style
     property color sliderStream_colorBarProgressA: sliderStream_colorBarDisableHoverA
     property color sliderStream_colorBarProgressB: sliderStream_colorBarDisableHoverB
 
-    property color sliderStream_colorChapterA: icon2_colorA
-    property color sliderStream_colorChapterB: icon1_colorA
+    property color sliderStream_colorChapter       : icon1_colorA
+    property color sliderStream_colorChapterActive : icon2_colorA
+    property color sliderStream_colorChapterDisable: sliderStream_colorChapter
 //#END
 
 //#BaseTabs
@@ -1510,6 +1512,8 @@ Style
 
         sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
+
+        sliderStream_colorChapterDisable = sliderStream_colorChapter;
 //#END
 
 //#PlayerBrowser
@@ -1818,6 +1822,8 @@ Style
 
         sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
+
+        sliderStream_colorChapterDisable = buttonStream_color;
 //#END
 
 //#PlayerBrowser
@@ -2126,6 +2132,8 @@ Style
 
         sliderStream_colorBarProgressA = "#646464";
         sliderStream_colorBarProgressB = "#dcdcdc";
+
+        sliderStream_colorChapterDisable = buttonStream_color;
 //#END
 
 //#PlayerBrowser
