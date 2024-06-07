@@ -134,8 +134,6 @@ Item
 
     height: st.sliderStream_height
 
-    enabled: (duration > 0)
-
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
@@ -288,6 +286,8 @@ Item
         anchors.rightMargin: -st.dp24
 
         anchors.verticalCenter: parent.verticalCenter
+
+        enabled: (duration > 0)
 
         hoverRetain: true
 
