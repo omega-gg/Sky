@@ -761,7 +761,6 @@ void WControllerMediaData::applySource(const WYamlNodeBase & root,
                                        const QString       & url,
                                        const QString       & baseUrl, int duration)
 {
-
     QString type = node.extractString("type");
 
     if (type.isEmpty())
