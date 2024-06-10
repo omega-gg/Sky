@@ -6563,13 +6563,22 @@ int WControllerPlaylist::vbmlDurationSource(const WYamlNodeBase & node, int at, 
 {
     const QList<WYamlNode> & children = node.children;
 
-    if (children.isEmpty()) return defaultValue;
+    if (children.isEmpty())
+    {
+        return defaultValue;
+    }
+    else return vbmlDurationNodes(children, at, defaultValue);
+}
 
+/* Q_INVOKABLE static */
+int WControllerPlaylist::vbmlDurationNodes(const QList<WYamlNode> & nodes, int at,
+                                                                           int defaultValue)
+{
     int duration = 0;
 
-    foreach (const WYamlNode & child, children)
+    foreach (const WYamlNode & node, nodes)
     {
-        int durationSource = vbmlDuration(child, child.extractMsecs("at"));
+        int durationSource = vbmlDuration(node, node.extractMsecs("at"));
 
         duration += durationSource;
     }
@@ -6650,6 +6659,17 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypePlaylist(Type type)
 {
     return (type == Playlist || type == Feed);
+}
+
+/* Q_INVOKABLE static */ WTrack::Type WControllerPlaylist::vbmlTrackType(const WYamlNode & node)
+{
+    QString type = node.extractString("type");
+
+    if (type.isEmpty())
+    {
+         return WTrack::typeFromString(node.key);
+    }
+    else return WTrack::typeFromString(type);
 }
 
 /* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)

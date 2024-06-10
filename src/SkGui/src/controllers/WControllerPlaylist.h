@@ -429,6 +429,9 @@ public: // Static functions
     Q_INVOKABLE static int vbmlDurationSource(const WYamlNodeBase & node, int at           = 0,
                                                                           int defaultValue = 0);
 
+    Q_INVOKABLE static int vbmlDurationNodes(const QList<WYamlNode> & nodes, int at           = 0,
+                                                                             int defaultValue = 0);
+
     Q_INVOKABLE static int vbmlDurationInteractive(const WYamlNodeBase & node,
                                                    const QString       & url);
 
@@ -436,6 +439,8 @@ public: // Static functions
 
     Q_INVOKABLE static bool vbmlTypeTrack   (Type type);
     Q_INVOKABLE static bool vbmlTypePlaylist(Type type);
+
+    Q_INVOKABLE static WTrack::Type vbmlTrackType(const WYamlNode & node);
 
     Q_INVOKABLE static void vbmlPatch(QString & data, const QString & api);
 

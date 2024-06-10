@@ -38,6 +38,7 @@ Item
     /* read */ property int handleRange: handleMaximum - handleMinimum
 
     property bool active: true
+    property bool live  : false
 
     property int currentTime: -1
     property int duration   : -1
@@ -255,7 +256,7 @@ Item
 
         text: controllerPlaylist.getPlayerTime(value, 7)
 
-        itemText.visible: buttonRight.itemText.visible
+        itemText.visible: (duration > 0)
     }
 
     ButtonStream
@@ -270,9 +271,10 @@ Item
 
         enabled: false
 
-        text: controllerPlaylist.getPlayerTime(duration, 7)
+        text: (live) ? qsTr("L I V E")
+                     : controllerPlaylist.getPlayerTime(duration, 7)
 
-        itemText.visible: (duration > 0)
+        itemText.visible: (buttonLeft.visible || live)
     }
 
     Slider

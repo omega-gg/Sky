@@ -174,6 +174,7 @@ public: // Functions
     void loadUrl(QIODevice              * device,
                  const WBackendNetQuery & query,
                  const QString          & urlBase,
+                 WTrack::Type             typeSource,
                  int                      currentTime,
                  int                      duration,
                  int                      timeA,

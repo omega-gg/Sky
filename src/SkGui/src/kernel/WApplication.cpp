@@ -158,7 +158,6 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
 
     //---------------------------------------------------------------------------------------------
     // MetaType registering
-    //---------------------------------------------------------------------------------------------
 
     qRegisterMetaType<QIODevice *>("QIODevice *");
 
