@@ -116,7 +116,11 @@ Slider
 
         for (var i = 0; i < chapters.length; i++)
         {
-            array.push(chapters[i].time);
+            var time = chapters[i].time;
+
+            if (time >= duration) continue;
+
+            array.push(time);
         }
 
         times = array;

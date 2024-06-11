@@ -650,17 +650,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
                 int durationSource = WControllerPlaylist::vbmlDuration(child, at);
 
+                durationSource -= start;
+
                 if (durationSource <= 0)
                 {
-                    starts   .append(0);
-                    durations.append(0);
-
-                    continue;
-                }
-
-                if (startSource >= durationSource)
-                {
-                    startSource -= durationSource;
+                    startSource = -durationSource;
 
                     starts   .append(0);
                     durations.append(0);
@@ -1009,11 +1003,11 @@ void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
 
         int durationSource = WControllerPlaylist::vbmlDuration(child, at);
 
-        if (durationSource <= 0) continue;
+        durationSource -= start;
 
-        if (start >= durationSource)
+        if (durationSource <= 0)
         {
-            start -= durationSource;
+            start = -durationSource;
 
             continue;
         }
