@@ -114,6 +114,8 @@ MouseArea
 
     function moveTo(pos)
     {
+        mousePressX = -1;
+
         pos = Math.max(0, pos);
         pos = Math.min(pos, maximum);
 

@@ -6861,6 +6861,19 @@ const WYamlNode * WControllerPlaylist::vbmlTemplate(const WYamlNodeBase & root,
     return NULL;
 }
 
+/* Q_INVOKABLE static */
+QList<const WYamlNode *> WControllerPlaylist::vbmlShuffle(const WYamlNodeBase & root,
+                                                          const WYamlNodeBase & node)
+{
+    int seed = root.extractInt("shuffle", -1);
+
+    if (seed == -1)
+    {
+        return QList<const WYamlNode *>();
+    }
+    else return node.shuffled(seed);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

@@ -464,6 +464,9 @@ public: // Static functions
     Q_INVOKABLE static const WYamlNode * vbmlTemplate(const WYamlNodeBase & root,
                                                       const WYamlNodeBase & node);
 
+    Q_INVOKABLE static QList<const WYamlNode *> vbmlShuffle(const WYamlNodeBase & root,
+                                                            const WYamlNodeBase & node);
+
 signals:
     void filesCleared(const QList<int> & idFull);
     void filesDeleted(const QList<int> & idFull);

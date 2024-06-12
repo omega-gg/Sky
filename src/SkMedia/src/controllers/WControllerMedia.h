@@ -184,18 +184,21 @@ public: // Interface
 
     void applyEmpty();
 
-    void extractSourceDuration(const WYamlNodeBase    & root,
-                               const QList<WYamlNode> & children,
-                               const QList<int>       & durations,
-                               const QList<int>       & starts,
-                               const QString          & baseUrl);
+    void extractSourceDuration(const WYamlNodeBase & root, const QList<WYamlNode> & children,
+                                                           const QList<int>       & durations,
+                                                           const QList<int>       & starts,
+                                                           const QString          & baseUrl);
 
     int extractSourceTimeline(const WYamlNodeBase                 & root,
                               const QList<WControllerMediaObject> & timeline,
                               const QString                       & baseUrl);
 
-    void extractSource(const WYamlNodeBase    & root,
-                       const QList<WYamlNode> & children, const QString & baseUrl);
+    void extractSource(const WYamlNodeBase            & root,
+                       const QList<WYamlNode>         & children,
+                       const QString                  & baseUrl,
+                       const QList<const WYamlNode *> & shuffled);
+
+    bool extractChild(const WYamlNodeBase & root, const WYamlNode & child, const QString & baseUrl);
 
     void addChapter(const WYamlNodeBase & node, int time, const QString & baseUrl);
 
