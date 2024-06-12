@@ -570,8 +570,9 @@ private: // Functions
 
     bool addUrl(QStringList * urls, const QString & url) const;
 
-    void extractSource(const WYamlNodeBase    & root,
-                       const QList<WYamlNode> & children, const QString & baseUrl);
+    void extractSource(const WYamlNodeBase & root,
+                       const WYamlNodeBase & node,
+                       const QString       & baseUrl, const QList<const WYamlNode *> & shuffled);
 
     void extractSourceTimeline(const WYamlNodeBase                 & root,
                                const QList<WControllerMediaObject> & timeline,
