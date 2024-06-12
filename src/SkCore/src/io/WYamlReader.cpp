@@ -56,6 +56,7 @@ const WYamlNode * WYamlNodeBase::at(const QString & key) const
 
 QList<WYamlNode> WYamlNodeBase::shuffled(unsigned int seed) const
 {
+    // NOTE: Maybe we should add implicit sharing to WYamlNode.
     QList<WYamlNode> list = children;
 
     std::srand(seed);
