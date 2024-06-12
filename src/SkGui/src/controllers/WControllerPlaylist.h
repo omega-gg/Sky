@@ -26,6 +26,7 @@
 // Sk includes
 #include <WController>
 #include <WBackendNet>
+#include <WYamlReader>
 #ifdef QT_4
 #include <QStringList>
 #endif
@@ -37,11 +38,6 @@ class WControllerPlaylistPrivate;
 class WControllerPlaylistData;
 class WControllerMediaSource;
 class WControllerFileReply;
-class WAbstractLoader;
-class WYamlReader;
-class WYamlNodeBase;
-class WYamlNode;
-class WRemoteData;
 
 #ifdef QT_6
 Q_MOC_INCLUDE("QThread")
@@ -464,8 +460,8 @@ public: // Static functions
     Q_INVOKABLE static const WYamlNode * vbmlTemplate(const WYamlNodeBase & root,
                                                       const WYamlNodeBase & node);
 
-    Q_INVOKABLE static QList<const WYamlNode *> vbmlShuffle(const WYamlNodeBase & root,
-                                                            const WYamlNodeBase & node);
+    Q_INVOKABLE static QList<WYamlNode> vbmlShuffle(const WYamlNodeBase & root,
+                                                    const WYamlNodeBase & node);
 
 signals:
     void filesCleared(const QList<int> & idFull);
@@ -570,9 +566,8 @@ private: // Functions
 
     bool addUrl(QStringList * urls, const QString & url) const;
 
-    void extractSource(const WYamlNodeBase & root,
-                       const WYamlNodeBase & node,
-                       const QString       & baseUrl, const QList<const WYamlNode *> & shuffled);
+    void extractSource(const WYamlNodeBase    & root,
+                       const QList<WYamlNode> & children, const QString & baseUrl);
 
     void extractSourceTimeline(const WYamlNodeBase                 & root,
                                const QList<WControllerMediaObject> & timeline,

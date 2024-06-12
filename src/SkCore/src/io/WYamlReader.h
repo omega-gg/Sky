@@ -53,7 +53,7 @@ public: // Interface
 
     const WYamlNode * at(const QString & key) const;
 
-    QList<const WYamlNode *> shuffled(unsigned int seed) const;
+    QList<WYamlNode> shuffled(unsigned int seed) const;
 
     void dump() const;
 

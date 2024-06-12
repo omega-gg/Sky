@@ -54,14 +54,9 @@ const WYamlNode * WYamlNodeBase::at(const QString & key) const
     return NULL;
 }
 
-QList<const WYamlNode *> WYamlNodeBase::shuffled(unsigned int seed) const
+QList<WYamlNode> WYamlNodeBase::shuffled(unsigned int seed) const
 {
-    QList<const WYamlNode *> list;
-
-    foreach (const WYamlNode & node, children)
-    {
-        list.append(&node);
-    }
+    QList<WYamlNode> list = children;
 
     std::srand(seed);
 

@@ -630,8 +630,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (duration)
             {
-                extractSource(root, children, baseUrl,
-                              WControllerPlaylist::vbmlShuffle(root, *node));
+                extractSource(root, WControllerPlaylist::vbmlShuffle(root, *node), baseUrl);
 
                 if (source.isEmpty()) applyEmpty();
 
@@ -645,21 +644,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             int startSource = start;
 
-            QList<const WYamlNode *> shuffled = WControllerPlaylist::vbmlShuffle(root, *node);
+            WControllerPlaylist::vbmlShuffle(root, *node);
 
-            if (shuffled.isEmpty())
+            foreach (const WYamlNode & child, children)
             {
-                foreach (const WYamlNode & child, children)
-                {
-                    duration += extractDuration(child, &starts, &durations, startSource);
-                }
-            }
-            else
-            {
-                foreach (const WYamlNode * child, shuffled)
-                {
-                    duration += extractDuration(*child, &starts, &durations, startSource);
-                }
+                duration += extractDuration(child, &starts, &durations, startSource);
             }
 
             if (duration == 0)
@@ -669,7 +658,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 return;
             }
 
-            extractSourceDuration(root, children, durations, starts, baseUrl, shuffled);
+            extractSourceDuration(root, children, durations, starts, baseUrl);
 
             if (source.isEmpty()) applyEmpty();
 
@@ -678,7 +667,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     }
     else start += reader.extractMsecs("at");
 
-    extractSource(root, children, baseUrl, WControllerPlaylist::vbmlShuffle(root, *node));
+    extractSource(root, WControllerPlaylist::vbmlShuffle(root, *node), baseUrl);
 
     if (source.isEmpty()) applyEmpty();
 }
@@ -875,55 +864,135 @@ int WControllerMediaData::extractDuration(const WYamlNode & child,
     }
 }
 
-void WControllerMediaData::extractSourceDuration(const WYamlNodeBase            & root,
-                                                 const QList<WYamlNode>         & children,
-                                                 const QList<int>               & durations,
-                                                 const QList<int>               & starts,
-                                                 const QString                  & baseUrl,
-                                                 const QList<const WYamlNode *> & shuffled)
+void WControllerMediaData::extractSource(const WYamlNodeBase    & root,
+                                         const QList<WYamlNode> & children,
+                                         const QString          & baseUrl)
 {
-    if (shuffled.isEmpty())
+    interpolateTime(children);
+
+    for (int i = 0; i < children.length(); i++)
     {
-        for (int i = 0; i < durations.length(); i++)
+        const WYamlNode & child = children.at(i);
+
+        int at = child.extractMsecs("at");
+
+        int durationSource = WControllerPlaylist::vbmlDuration(child, at);
+
+        durationSource -= start;
+
+        if (durationSource <= 0)
         {
-            if (extractChildDuration(root, children.at(i),
-                                     durations, starts, i, baseUrl) == false) continue;
+            start = -durationSource;
 
-            int time = timeB;
+            continue;
+        }
 
-            for (int j = i + 1; j < durations.length(); j++)
+        addChapter(child, timeA, baseUrl);
+
+        int time = timeA + durationSource;
+
+        if (currentTime >= time)
+        {
+            timeA = time;
+
+            start = 0;
+
+            continue;
+        }
+
+        start += at;
+
+        typeSource = WControllerPlaylist::vbmlTrackType(child);
+
+        const WYamlNode * node = child.at("source");
+
+        if (node)
+        {
+            const QList<WYamlNode> & nodes = node->children;
+
+            if (nodes.isEmpty())
             {
-                int durationSource = durations.at(j);
-
-                if (durationSource <= 0) continue;
-
-                const WYamlNode & child = children.at(j);
-
-                addChapter(child, time, baseUrl);
-
-                time += durationSource;
+                applySource(root, child, node->value, baseUrl, durationSource);
             }
+            else extractSource(root, WControllerPlaylist::vbmlShuffle(child, *node), baseUrl);
+        }
+        else applySource(root, child, QString(), baseUrl, durationSource);
 
-            return;
+        time = timeB;
+
+        for (int j = i + 1; j < children.length(); j++)
+        {
+            const WYamlNode & child = children.at(j);
+
+            at = child.extractMsecs("at");
+
+            durationSource = WControllerPlaylist::vbmlDuration(child, at);
+
+            if (durationSource <= 0) continue;
+
+            addChapter(child, time, baseUrl);
+
+            time += durationSource;
         }
 
         return;
     }
+}
+
+void WControllerMediaData::extractSourceDuration(const WYamlNodeBase    & root,
+                                                 const QList<WYamlNode> & children,
+                                                 const QList<int>       & durations,
+                                                 const QList<int>       & starts,
+                                                 const QString          & baseUrl)
+{
+    interpolateTime(children);
 
     for (int i = 0; i < durations.length(); i++)
     {
-        if (extractChildDuration(root, *(shuffled.at(i)),
-                                 durations, starts, i, baseUrl) == false) continue;
+        int durationSource = durations.at(i);
 
-        int time = timeB;
+        if (durationSource <= 0) continue;
+
+        const WYamlNode & child = children.at(i);
+
+        addChapter(child, timeA, baseUrl);
+
+        int time = timeA + durationSource;
+
+        start = starts.at(i);
+
+        if (currentTime >= time)
+        {
+            timeA = time;
+
+            continue;
+        }
+
+        typeSource = WControllerPlaylist::vbmlTrackType(child);
+
+        const WYamlNode * node = child.at("source");
+
+        if (node)
+        {
+            const QList<WYamlNode> & nodes = node->children;
+
+            if (nodes.isEmpty())
+            {
+                applySource(root, child, node->value, baseUrl, durationSource);
+            }
+            else extractSource(root, WControllerPlaylist::vbmlShuffle(child, *node), baseUrl);
+        }
+        else applySource(root, child, QString(), baseUrl, durationSource);
+
+        time = timeB;
 
         for (int j = i + 1; j < durations.length(); j++)
         {
-            int durationSource = durations.at(j);
+            durationSource = durations.at(j);
 
             if (durationSource <= 0) continue;
 
-            const WYamlNode & child = *(shuffled.at(j));
+            const WYamlNode & child = children.at(j);
 
             addChapter(child, time, baseUrl);
 
@@ -984,8 +1053,7 @@ int WControllerMediaData::extractSourceTimeline(const WYamlNodeBase             
             {
                 applySource(root, *child, node->value, baseUrl, durationSource);
             }
-            else extractSource(root, nodes, baseUrl,
-                               WControllerPlaylist::vbmlShuffle(*child, *node));
+            else extractSource(root, WControllerPlaylist::vbmlShuffle(*child, *node), baseUrl);
         }
         else applySource(root, *child, QString(), baseUrl, durationSource);
 
@@ -997,177 +1065,26 @@ int WControllerMediaData::extractSourceTimeline(const WYamlNodeBase             
     return -1;
 }
 
-void WControllerMediaData::extractSource(const WYamlNodeBase            & root,
-                                         const QList<WYamlNode>         & children,
-                                         const QString                  & baseUrl,
-                                         const QList<const WYamlNode *> & shuffled)
+void WControllerMediaData::interpolateTime(const QList<WYamlNode> & children)
 {
-    // NOTE: When we encapsulate a hub inside a multi-track we consider it has an infinite length,
-    //       so we interpolate the time cursor accordingly.
-    if (typeSource == WTrack::Hub)
-    {
-        int duration = WControllerPlaylist::vbmlDurationNodes(children);
+    if (typeSource != WTrack::Hub) return;
 
-        if (duration > 0)
-        {
-            int msec = currentTime - timeA + start;
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We consider a hub has an infinite length, so we interpolate the time cursor
+    //       accordingly.
 
-            if (msec >= duration)
-            {
-                // NOTE: Parenthesis are required to avoid integer overflow.
-                timeA += duration * (msec / duration) - start;
+    int duration = WControllerPlaylist::vbmlDurationNodes(children);
 
-                start = 0;
-            }
-        }
-    }
+    if (duration <= 0) return;
 
-    if (shuffled.isEmpty())
-    {
-        for (int i = 0; i < children.length(); i++)
-        {
-            if (extractChild(root, children.at(i), baseUrl) == false) continue;
+    int msec = currentTime - timeA + start;
 
-            int time = timeB;
+    if (msec < duration) return;
 
-            for (int j = i + 1; j < children.length(); j++)
-            {
-                const WYamlNode & child = children.at(j);
+    // NOTE: Parenthesis are required to avoid integer overflow.
+    timeA += duration * (msec / duration) - start;
 
-                int at = child.extractMsecs("at");
-
-                int durationSource = WControllerPlaylist::vbmlDuration(child, at);
-
-                if (durationSource <= 0) continue;
-
-                addChapter(child, time, baseUrl);
-
-                time += durationSource;
-            }
-
-            return;
-        }
-
-        return;
-    }
-
-    for (int i = 0; i < shuffled.length(); i++)
-    {
-        if (extractChild(root, *(shuffled.at(i)), baseUrl) == false) continue;
-
-        int time = timeB;
-
-        for (int j = i + 1; j < shuffled.length(); j++)
-        {
-            const WYamlNode & child = *(shuffled.at(j));
-
-            int at = child.extractMsecs("at");
-
-            int durationSource = WControllerPlaylist::vbmlDuration(child, at);
-
-            if (durationSource <= 0) continue;
-
-            addChapter(child, time, baseUrl);
-
-            time += durationSource;
-        }
-
-        return;
-    }
-}
-
-bool WControllerMediaData::extractChild(const WYamlNodeBase & root,
-                                        const WYamlNode     & child, const QString & baseUrl)
-{
-    int at = child.extractMsecs("at");
-
-    int durationSource = WControllerPlaylist::vbmlDuration(child, at);
-
-    durationSource -= start;
-
-    if (durationSource <= 0)
-    {
-        start = -durationSource;
-
-        return false;
-    }
-
-    addChapter(child, timeA, baseUrl);
-
-    int time = timeA + durationSource;
-
-    if (currentTime >= time)
-    {
-        timeA = time;
-
-        start = 0;
-
-        return false;
-    }
-
-    start += at;
-
-    typeSource = WControllerPlaylist::vbmlTrackType(child);
-
-    const WYamlNode * node = child.at("source");
-
-    if (node)
-    {
-        const QList<WYamlNode> & nodes = node->children;
-
-        if (nodes.isEmpty())
-        {
-            applySource(root, child, node->value, baseUrl, durationSource);
-        }
-        else extractSource(root, nodes, baseUrl, WControllerPlaylist::vbmlShuffle(child, *node));
-    }
-    else applySource(root, child, QString(), baseUrl, durationSource);
-
-    return true;
-}
-
-bool WControllerMediaData::extractChildDuration(const WYamlNodeBase & root,
-                                                const WYamlNode     & child,
-                                                const QList<int>    & durations,
-                                                const QList<int>    & starts,
-                                                int                   index,
-                                                const QString       & baseUrl)
-{
-    int durationSource = durations.at(index);
-
-    if (durationSource <= 0) return false;
-
-    addChapter(child, timeA, baseUrl);
-
-    int time = timeA + durationSource;
-
-    start = starts.at(index);
-
-    if (currentTime >= time)
-    {
-        timeA = time;
-
-        return false;
-    }
-
-    typeSource = WControllerPlaylist::vbmlTrackType(child);
-
-    const WYamlNode * node = child.at("source");
-
-    if (node)
-    {
-        const QList<WYamlNode> & nodes = node->children;
-
-        if (nodes.isEmpty())
-        {
-            applySource(root, child, node->value, baseUrl, durationSource);
-        }
-        else extractSource(root, nodes, baseUrl,
-                           WControllerPlaylist::vbmlShuffle(child, *node));
-    }
-    else applySource(root, child, QString(), baseUrl, durationSource);
-
-    return true;
+    start = 0;
 }
 
 void WControllerMediaData::addChapter(const WYamlNodeBase & node, int time,
@@ -1271,7 +1188,7 @@ int WControllerMediaData::updateCurrentTime(const WYamlNodeBase                 
         {
             applySource(root, *child, node->value, baseUrl, object.duration);
         }
-        else extractSource(root, nodes, baseUrl, WControllerPlaylist::vbmlShuffle(*child, *node));
+        else extractSource(root, WControllerPlaylist::vbmlShuffle(*child, *node), baseUrl);
     }
     else applySource(root, *child, QString(), baseUrl, object.duration);
 
