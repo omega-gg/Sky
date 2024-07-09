@@ -24,7 +24,7 @@
 
 #ifndef SK_NO_YAMLREADER
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACX
 // C++ includes
 #include <algorithm>
 #endif
