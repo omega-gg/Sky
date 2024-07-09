@@ -6542,6 +6542,19 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     else return url;
 }
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlSourceSeed(const QString & url,
+                                                                     const QString & seed,
+                                                                     const QString & baseUrl)
+{
+    QString source = vbmlSource(url, baseUrl);
+
+    if (seed.isEmpty())
+    {
+        return source;
+    }
+    else return WControllerNetwork::applyFragmentValue(source, "seed", seed);
+}
+
 /* Q_INVOKABLE static */
 int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node, int at, int defaultValue)
 {
@@ -6863,15 +6876,41 @@ const WYamlNode * WControllerPlaylist::vbmlTemplate(const WYamlNodeBase & root,
 
 /* Q_INVOKABLE static */
 QList<WYamlNode> WControllerPlaylist::vbmlShuffle(const WYamlNodeBase & root,
-                                                  const WYamlNodeBase & node)
+                                                  const WYamlNodeBase & node, const QString & url)
 {
     int seed = root.extractInt("shuffle", -1);
 
+    if (url.isEmpty())
+    {
+        if (seed == -1)
+        {
+            return node.children;
+        }
+        else return node.shuffled(seed);
+    }
+
+    QString string = WControllerNetwork::extractFragmentValue(url, "seed");
+
+    if (string.isEmpty())
+    {
+        if (seed == -1)
+        {
+            return node.children;
+        }
+        else return node.shuffled(seed);
+    }
+
     if (seed == -1)
     {
-        return node.children;
+        return node.shuffled(string.toInt());
     }
-    else return node.shuffled(seed);
+
+    QList<int> seeds;
+
+    seeds.append(string.toInt());
+    seeds.append(seed);
+
+    return node.shuffled(seeds);
 }
 
 //-------------------------------------------------------------------------------------------------

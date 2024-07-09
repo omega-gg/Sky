@@ -24,6 +24,11 @@
 
 #ifndef SK_NO_YAMLREADER
 
+#ifdef Q_OS_MAC
+// C++ includes
+#include <algorithm>
+#endif
+
 // Sk includes
 #include <WControllerApplication>
 
@@ -54,14 +59,22 @@ const WYamlNode * WYamlNodeBase::at(const QString & key) const
     return NULL;
 }
 
-QList<WYamlNode> WYamlNodeBase::shuffled(unsigned int seed) const
+QList<WYamlNode> WYamlNodeBase::shuffled(int seed) const
+{
+    return shuffled(QList<int>() << seed);
+}
+
+QList<WYamlNode> WYamlNodeBase::shuffled(const QList<int> & seeds) const
 {
     // NOTE: Maybe we should add implicit sharing to WYamlNode.
     QList<WYamlNode> list = children;
 
-    std::srand(seed);
+    foreach (int seed, seeds)
+    {
+        std::srand(seed);
 
-    std::random_shuffle(list.begin(), list.end());
+        std::random_shuffle(list.begin(), list.end());
+    }
 
     return list;
 }

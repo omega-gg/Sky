@@ -171,14 +171,8 @@ public:
 public: // Functions
     void loadSources(WMediaReply * reply);
 
-    void loadUrl(QIODevice              * device,
-                 const WBackendNetQuery & query,
-                 const QString          & urlBase,
-                 WTrack::Type             typeSource,
-                 int                      currentTime,
-                 int                      duration,
-                 int                      timeA,
-                 int                      start) const;
+    void loadUrl(QIODevice * device, const WBackendNetQuery  & query,
+                                     const WPrivateMediaData & media) const;
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
 
