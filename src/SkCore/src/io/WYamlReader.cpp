@@ -24,10 +24,8 @@
 
 #ifndef SK_NO_YAMLREADER
 
-#ifdef Q_OS_MACX
 // C++ includes
-#include <algorithm>
-#endif
+#include <random>
 
 // Sk includes
 #include <WControllerApplication>
@@ -71,9 +69,7 @@ QList<WYamlNode> WYamlNodeBase::shuffled(const QList<int> & seeds) const
 
     foreach (int seed, seeds)
     {
-        std::srand(seed);
-
-        std::random_shuffle(list.begin(), list.end());
+        std::shuffle(list.begin(), list.end(), std::default_random_engine(seed));
     }
 
     return list;
