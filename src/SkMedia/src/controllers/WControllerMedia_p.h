@@ -174,7 +174,8 @@ public: // Functions
     void loadUrl(QIODevice * device, const WBackendNetQuery  & query,
                                      const WPrivateMediaData & media) const;
 
-    void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
+    void applyData     (WPrivateMediaData * media, const WControllerMediaData & data);
+    void applyDataSlice(WPrivateMediaData * media, const WPrivateMediaSlice   & slice);
 
     void applyChapters(WPrivateMediaData * media, const QList<WChapter> & chapters);
 

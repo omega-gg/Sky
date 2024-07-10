@@ -291,6 +291,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         backend->setRepeat(repeat);
 
+        q->setContext(QString(), QString());
+
         q->setChapters(reply->chapters());
 
         q->setAmbient(reply->ambient());
@@ -344,6 +346,8 @@ void WBackendManagerPrivate::applySources(bool play)
         QDateTime date = WControllerApplication::currentDateUtc(timeZone);
 
         q->setCurrentTime(WControllerApplication::getMsecsWeek(date));
+
+        q->setContext(QString(), QString());
     }
     else if (typeRoot == WTrack::Interactive)
     {
@@ -362,6 +366,8 @@ void WBackendManagerPrivate::applySources(bool play)
         loop = (typeRoot == WTrack::Hub);
 
         q->setDuration(reply->duration());
+
+        q->setContext(QString(), QString());
     }
 
     backend->setRepeat(false);

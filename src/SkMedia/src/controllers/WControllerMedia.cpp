@@ -382,6 +382,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     if (children.isEmpty())
     {
+        typeSource = type;
+
         source = node->value;
 
         applyMedia(reader.node(), source, baseUrl);
@@ -1833,6 +1835,74 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
     media->contextId = data.contextId;
 }
 
+void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
+                                             const WPrivateMediaSlice & slice)
+{
+    WTrack::Type type = slice.type;
+
+    if (media->type == WTrack::Unknown)
+    {
+        media->type = type;
+    }
+
+    WTrack::Type typeSource = slice.typeSource;
+
+    if (typeSource)
+    {
+        media->typeSource = typeSource;
+    }
+    else if (type)
+    {
+        media->typeSource = type;
+    }
+
+    media->chapters.append(slice.chapters);
+
+    if (slice.ambient.isEmpty() == false)
+    {
+        media->ambient = slice.ambient;
+    }
+
+    if (slice.subtitles.isEmpty() == false)
+    {
+        media->subtitles = slice.subtitles;
+    }
+
+    int timeB = slice.timeB;
+
+    if (timeB == -1) return;
+
+    int duration = slice.duration;
+
+    media->timeA = slice.timeA;
+
+    media->start = slice.start;
+
+    if (duration == -1)
+    {
+        if (media->timeB == -1 || timeB < media->timeB)
+        {
+            media->timeB = timeB;
+        }
+
+        return;
+    }
+
+    if (media->timeZone.isEmpty())
+    {
+        media->timeZone = slice.timeZone;
+    }
+
+    media->currentTime = slice.currentTime;
+
+    media->duration = duration;
+
+    media->timeB = timeB;
+
+    media->context   = slice.context;
+    media->contextId = slice.contextId;
+}
+
 void WControllerMediaPrivate::applyChapters(WPrivateMediaData     * media,
                                             const QList<WChapter> & chapters)
 {
@@ -2172,6 +2242,8 @@ bool WControllerMediaPrivate::applyCache(WPrivateMediaData            * media,
     const WPrivateMediaSlice * slice = getSlice(source, mode, media->currentTime);
 
     if (slice == NULL) return false;
+
+    applyDataSlice(media, *slice);
 
     WBackendNetSource backendSource;
 
