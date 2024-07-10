@@ -6905,7 +6905,7 @@ QList<WYamlNode> WControllerPlaylist::vbmlShuffle(const WYamlNodeBase & root,
         return node.shuffled(string.toInt());
     }
 
-    QList<int> seeds;
+    QList<uint> seeds;
 
     seeds.append(string.toInt());
     seeds.append(seed);
