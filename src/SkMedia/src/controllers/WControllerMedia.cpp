@@ -757,7 +757,7 @@ void WControllerMediaData::applySource(const WYamlNodeBase & root,
     if (source.isEmpty())
     {
         source = WControllerPlaylist::vbmlSourceSeed(child->extractString("source"),
-                                                     child->extractString("shuffle"), baseUrl);
+                                                     child->extractString("seed"), baseUrl);
     }
 
     if (ambient.isEmpty())
@@ -811,7 +811,7 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & root,
 void WControllerMediaData::applyData(const WYamlNodeBase & node, const QString & url,
                                                                  const QString & baseUrl)
 {
-    source = WControllerPlaylist::vbmlSourceSeed(url, node.extractString("shuffle"), baseUrl);
+    source = WControllerPlaylist::vbmlSourceSeed(url, node.extractString("seed"), baseUrl);
 
     ambient = WControllerPlaylist::vbmlSource(node.extractString("ambient"), baseUrl);
 

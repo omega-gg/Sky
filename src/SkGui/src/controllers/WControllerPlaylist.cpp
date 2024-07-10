@@ -6878,7 +6878,7 @@ const WYamlNode * WControllerPlaylist::vbmlTemplate(const WYamlNodeBase & root,
 QList<WYamlNode> WControllerPlaylist::vbmlShuffle(const WYamlNodeBase & root,
                                                   const WYamlNodeBase & node, const QString & url)
 {
-    int seed = root.extractInt("shuffle", -1);
+    int seed = root.extractInt("seed", -1);
 
     if (url.isEmpty())
     {

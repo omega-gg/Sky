@@ -463,8 +463,8 @@ public: // Static functions
     Q_INVOKABLE static const WYamlNode * vbmlTemplate(const WYamlNodeBase & root,
                                                       const WYamlNodeBase & node);
 
-    // NOTE: This function extracts the 'shuffle' parameter from the root node and optionnaly
-    //       extracts the seed fragment from the url and combines the two.
+    // NOTE: This function extracts the 'seed' parameter from the root node and optionnaly extracts
+    //       the 'seed' fragment from the url and combines the two.
     Q_INVOKABLE static QList<WYamlNode> vbmlShuffle(const WYamlNodeBase & root,
                                                     const WYamlNodeBase & node,
                                                     const QString       & url = QString());
