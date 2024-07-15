@@ -465,9 +465,9 @@ public: // Static functions
 
     // NOTE: This function extracts the 'seed' parameter from the root node and optionnaly extracts
     //       the 'seed' fragment from the url and combines the two.
-    Q_INVOKABLE static QList<WYamlNode> vbmlShuffle(const WYamlNodeBase & root,
-                                                    const WYamlNodeBase & node,
-                                                    const QString       & url = QString());
+    Q_INVOKABLE static QList<WYamlNode> vbmlSeed(const WYamlNodeBase & root,
+                                                 const WYamlNodeBase & node,
+                                                 const QString       & url = QString());
 
 signals:
     void filesCleared(const QList<int> & idFull);
