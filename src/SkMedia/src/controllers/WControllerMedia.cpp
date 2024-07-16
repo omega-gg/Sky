@@ -378,7 +378,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     type = WTrack::typeFromString(reader.extractString("type"));
 
-    typeSource = type;
+    if (type > WTrack::Track) typeSource = type;
 
     const QList<WYamlNode> & children = node->children;
 
@@ -1783,10 +1783,6 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
     {
         media->typeSource = typeSource;
     }
-    else if (type)
-    {
-        media->typeSource = type;
-    }
 
     media->chapters.append(data.chapters);
 
@@ -1850,10 +1846,6 @@ void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
     if (typeSource)
     {
         media->typeSource = typeSource;
-    }
-    else if (type)
-    {
-        media->typeSource = type;
     }
 
     media->chapters.append(slice.chapters);

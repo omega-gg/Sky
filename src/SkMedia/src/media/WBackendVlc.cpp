@@ -726,8 +726,8 @@ void WBackendVlcPrivate::init()
     // FIXME VLC: This forces our default volume instead of the saved one.
     //WAbstractBackendPrivate::volume = -1.0;
 
-    volume = 100;
-    mute   = false;
+    //volume = 100;
+    //mute   = false;
 
     loop = false;
 
@@ -1340,7 +1340,7 @@ void WBackendVlcPrivate::setOpacity(GLfloat opacity)
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendVlcPrivate::setMute(bool enabled)
+/*void WBackendVlcPrivate::setMute(bool enabled)
 {
     if (mute == enabled) return;
 
@@ -1351,7 +1351,7 @@ void WBackendVlcPrivate::setMute(bool enabled)
          player->setVolume(0);
     }
     else player->setVolume(volume);
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1701,7 +1701,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
         else */d->player->pause();
     }
     // FIXME VLC: Muting the sound to avoid the audio glitch.
-    else d->setMute(true);
+    //else d->setMute(true);
 
     return true;
 }
@@ -1729,6 +1729,16 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         if (volume < 1.0)
         {
+             d->player->setVolume(qRound(volume * 80) + 20);
+        }
+        else d->player->setVolume(qRound(volume * 100));
+    }
+    else d->player->setVolume(0);
+
+    /*if (volume)
+    {
+        if (volume < 1.0)
+        {
              d->volume = qRound(volume * 80) + 20;
         }
         else d->volume = qRound(volume * 100);
@@ -1738,7 +1748,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     if (d->mute == false)
     {
         d->player->setVolume(d->volume);
-    }
+    }*/
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1831,7 +1841,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     }
     else if (d->state == StatePaused)
     {
-        d->setMute(true);
+        //d->setMute(true);
 
         d->playAt(d->currentTime);
     }
@@ -2310,7 +2320,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
                 d->frameUpdated = false;
             }
 
-            d->setMute(false);
+            //d->setMute(false);
         }
         else if (d->state == StateStopped)
         {

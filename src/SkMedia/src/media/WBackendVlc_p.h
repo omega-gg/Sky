@@ -274,7 +274,7 @@ public: // Functions
     void setOpacity(GLfloat opacity);
 #endif
 
-    void setMute(bool enabled);
+    //void setMute(bool enabled);
 
     WAbstractBackend::Output getOutput(WAbstractBackend::Output output);
 
@@ -345,8 +345,8 @@ public: // Variables
 
     int length;
 
-    int  volume;
-    bool mute;
+    //int  volume;
+    //bool mute;
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;

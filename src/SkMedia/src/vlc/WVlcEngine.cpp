@@ -275,7 +275,6 @@ void WVlcEnginePrivate::clearDiscoverers()
                 "--no-osd",                 /* No video overlay */
                 "--no-stats",               /* No statistics    */
                 "--no-media-library",       /* No Media Library */
-                "--no-volume-save",         /* No volume save   */
                 "--text-renderer=none",     /* No FreeType      */
                 // NOTE VLC 3.0.20: This is required for the preferred-resolution to be applied.
                 "--adaptive-logic=highest"  /* High resolution  */
