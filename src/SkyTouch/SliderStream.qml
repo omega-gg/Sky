@@ -95,6 +95,9 @@ Slider
     // NOTE: We want the background to be behind the itemProgress.
     background.z: -1
 
+    // NOTE: We need a transparent handle to keep the chapters visible when dragging.
+    handleForeground.color: "transparent"
+
     //---------------------------------------------------------------------------------------------
     // Style
 

@@ -47,6 +47,8 @@ BaseSlider
     property alias background: background
     property alias foreground: foreground
 
+    property alias handleForeground: handleForeground
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -129,6 +131,8 @@ BaseSlider
 
         Rectangle
         {
+            id: handleForeground
+
             anchors.fill: parent
 
             anchors.margins: marginsHandle
