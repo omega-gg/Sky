@@ -33,7 +33,7 @@ MouseArea
 
     property bool isHovered: hoverActive
 
-    /* read */ property int mousePressX: -1
+    /* read */ property variant timePress: null
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -84,8 +84,6 @@ MouseArea
 
     onPressed:
     {
-        mousePressX = mouseX;
-
         var x = mouseX - (handle.width / 2);
 
         x = Math.max(handleMinimum, x);
@@ -94,6 +92,9 @@ MouseArea
         handle.x = x;
 
         handlePressed();
+
+        // FIXME Qt5.14.2: We must use 'date' instead of 'time' to avoid conversions issues.
+        timePress = sk.getDate();
     }
 
     onReleased:
@@ -112,10 +113,17 @@ MouseArea
     // Functions
     //---------------------------------------------------------------------------------------------
 
+    function isClicked()
+    {
+        if (timePress)
+        {
+            return (sk.getElapsed(timePress) < 200);
+        }
+        else return false;
+    }
+
     function moveTo(pos)
     {
-        mousePressX = -1;
-
         pos = Math.max(0, pos);
         pos = Math.min(pos, maximum);
 
