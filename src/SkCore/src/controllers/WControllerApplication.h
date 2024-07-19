@@ -586,7 +586,7 @@ public: // Properties
     // NOTE android: This returns the 'intent' text.
     QString message() const;
 
-    void clearMessage();
+    Q_INVOKABLE void clearMessage();
 #endif
 
 #ifdef SK_DESKTOP

@@ -2333,7 +2333,7 @@ QString WControllerApplication::message() const
 #endif
 }
 
-void WControllerApplication::clearMessage()
+/* Q_INVOKABLE */ void WControllerApplication::clearMessage()
 {
 #ifdef Q_OS_MAC
     Q_D(WControllerApplication);
