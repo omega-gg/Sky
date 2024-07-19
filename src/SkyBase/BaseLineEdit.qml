@@ -276,7 +276,7 @@ MouseArea
 //#QT_4
                     timer.start();
 //#ELSE
-                    textInput.selectAll();
+                    Qt.callLater(textInput.selectAll);
 //#END
                 }
             }

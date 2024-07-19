@@ -31,6 +31,8 @@ Slider
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property bool hasChapters: times.length
+
     property int sizeChapter: st.sliderStream_sizeChapter
 
     /* read */ property int handleRange: handleMaximum - handleMinimum
@@ -94,6 +96,10 @@ Slider
 
     // NOTE: We want the background to be behind the itemProgress.
     background.z: -1
+
+    // NOTE: We need a transparent handle to keep the chapters visible when dragging.
+    handleForeground.color: (pressed && hasChapters == false) ? foreground.color
+                                                              : "transparent"
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -357,6 +363,8 @@ Slider
 
     Repeater
     {
+        visible: hasChapters
+
         model: times.length
 
         Rectangle
