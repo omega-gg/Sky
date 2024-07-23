@@ -262,6 +262,8 @@ void WBackendManagerPrivate::applySources(bool play)
 {
     Q_Q(WBackendManager);
 
+    urlSource = reply->urlSource();
+
     medias = reply->medias();
 
     currentMedia = WAbstractBackend::mediaFromQuality(medias, quality);
@@ -310,8 +312,6 @@ void WBackendManagerPrivate::applySources(bool play)
         return;
     }
 
-    QString url = reply->urlSource();
-
     WTrack::Type typeRoot = reply->type();
 
     // NOTE VLC: An image is played like a hub to avoid the 10 seconds duration.
@@ -332,8 +332,6 @@ void WBackendManagerPrivate::applySources(bool play)
     if (typeRoot == WTrack::Channel)
     {
         type = Channel;
-
-        urlSource = url;
 
         timeZone = reply->timeZone();
 
@@ -394,7 +392,7 @@ void WBackendManagerPrivate::applySources(bool play)
     }
     else
     {
-        loadSource(url, currentMedia, currentTime - timeA + start);
+        loadSource(urlSource, currentMedia, currentTime - timeA + start);
 
         if (play == false) return;
 
@@ -1125,6 +1123,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QString WBackendManager::getUrlSource() const
+{
+    Q_D(const WBackendManager); return d->urlSource;
+}
 
 /* Q_INVOKABLE */ int WBackendManager::getTimeA() const
 {

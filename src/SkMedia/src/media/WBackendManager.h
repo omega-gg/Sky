@@ -42,6 +42,8 @@ protected:
     WBackendManager(WBackendManagerPrivate * p, QObject * parent = NULL);
 
 public: // Interface
+    Q_INVOKABLE QString getUrlSource() const;
+
     Q_INVOKABLE int getTimeA() const;
     Q_INVOKABLE int getTimeB() const;
 
