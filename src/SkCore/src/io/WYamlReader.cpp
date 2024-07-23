@@ -59,18 +59,10 @@ const WYamlNode * WYamlNodeBase::at(const QString & key) const
 
 QList<WYamlNode> WYamlNodeBase::shuffled(uint seed) const
 {
-    return shuffled(QList<uint>() << seed);
-}
-
-QList<WYamlNode> WYamlNodeBase::shuffled(const QList<uint> & seeds) const
-{
     // NOTE: Maybe we should add implicit sharing to WYamlNode.
     QList<WYamlNode> list = children;
 
-    foreach (uint seed, seeds)
-    {
-        std::shuffle(list.begin(), list.end(), std::default_random_engine(seed));
-    }
+    std::shuffle(list.begin(), list.end(), std::default_random_engine(seed));
 
     return list;
 }

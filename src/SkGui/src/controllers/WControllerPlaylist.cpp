@@ -6876,41 +6876,15 @@ const WYamlNode * WControllerPlaylist::vbmlTemplate(const WYamlNodeBase & root,
 
 /* Q_INVOKABLE static */
 QList<WYamlNode> WControllerPlaylist::vbmlSeed(const WYamlNodeBase & root,
-                                               const WYamlNodeBase & node, const QString & url)
+                                               const WYamlNodeBase & node)
 {
     int seed = root.extractInt("seed", -1);
 
-    if (url.isEmpty())
-    {
-        if (seed == -1)
-        {
-            return node.children;
-        }
-        else return node.shuffled(seed);
-    }
-
-    QString string = WControllerNetwork::extractFragmentValue(url, "seed");
-
-    if (string.isEmpty())
-    {
-        if (seed == -1)
-        {
-            return node.children;
-        }
-        else return node.shuffled(seed);
-    }
-
     if (seed == -1)
     {
-        return node.shuffled(string.toInt());
+        return node.children;
     }
-
-    QList<uint> seeds;
-
-    seeds.append(string.toInt());
-    seeds.append(seed);
-
-    return node.shuffled(seeds);
+    else return node.shuffled(seed);
 }
 
 //-------------------------------------------------------------------------------------------------

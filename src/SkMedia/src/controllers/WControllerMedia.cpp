@@ -301,8 +301,7 @@ WControllerMediaData::WControllerMediaData()
 // Interface
 
 void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url,
-                                                               const QString & urlBase,
-                                                               const QString & urlSource)
+                                                               const QString & urlBase)
 {
     QString content = Sk::readBml(array);
 
@@ -334,7 +333,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         {
             WControllerPlaylist::vbmlPatch(content, api);
 
-            applyVbml(content.toUtf8(), url, urlBase, urlSource);
+            applyVbml(content.toUtf8(), url, urlBase);
 
             return;
         }
@@ -633,8 +632,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (duration)
             {
-                extractSource(root, WControllerPlaylist::vbmlSeed(root, *node, urlSource),
-                              baseUrl);
+                extractSource(root, WControllerPlaylist::vbmlSeed(root, *node), baseUrl);
 
                 if (source.isEmpty()) applyEmpty();
 
@@ -648,7 +646,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             int startSource = start;
 
-            QList<WYamlNode> children = WControllerPlaylist::vbmlSeed(root, *node, urlSource);
+            QList<WYamlNode> children = WControllerPlaylist::vbmlSeed(root, *node);
 
             foreach (const WYamlNode & child, children)
             {
@@ -671,7 +669,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     }
     else start += reader.extractMsecs("at");
 
-    extractSource(root, WControllerPlaylist::vbmlSeed(root, *node, urlSource), baseUrl);
+    extractSource(root, WControllerPlaylist::vbmlSeed(root, *node), baseUrl);
 
     if (source.isEmpty()) applyEmpty();
 }
@@ -1453,7 +1451,6 @@ public: // Interface
     Q_INVOKABLE void extractVbml(QIODevice     * device,
                                  const QString & url,
                                  const QString & urlBase,
-                                 const QString & urlSource,
                                  int             typeSource,
                                  int             currentTime,
                                  int             duration,
@@ -1471,7 +1468,6 @@ signals:
 /* Q_INVOKABLE */ void WControllerMediaReply::extractVbml(QIODevice     * device,
                                                           const QString & url,
                                                           const QString & urlBase,
-                                                          const QString & urlSource,
                                                           int             typeSource,
                                                           int             currentTime,
                                                           int             duration,
@@ -1489,7 +1485,7 @@ signals:
 
     data.start = start;
 
-    data.applyVbml(WControllerFile::readAll(device), url, urlBase, urlSource);
+    data.applyVbml(WControllerFile::readAll(device), url, urlBase);
 
     emit loaded(device, data);
 
@@ -1569,8 +1565,8 @@ void WControllerMediaPrivate::init(const QStringList & options)
 
     const QMetaObject * meta = WControllerMediaReply().metaObject();
 
-    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString,QString,"
-                                                              "int,int,int,int,int)"));
+    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString,"
+                                                  "int,int,int,int,int)"));
 
     methodM3u = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
 
@@ -1757,7 +1753,6 @@ void WControllerMediaPrivate::loadUrl(QIODevice               * device,
     else methodVbml.invoke(reply, Q_ARG(QIODevice     *, device),
                                   Q_ARG(const QString &, query.url),
                                   Q_ARG(const QString &, media.url),
-                                  Q_ARG(const QString &, media.urlSource),
                                   Q_ARG(int,             media.typeSource),
                                   Q_ARG(int,             media.currentTime),
                                   Q_ARG(int,             media.duration),
