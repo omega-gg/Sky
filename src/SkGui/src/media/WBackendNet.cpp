@@ -101,6 +101,8 @@ void WBackendNetQuery::init(Type type, const QString & url, int indexNext)
 
     this->url = url;
 
+    typeSource = WTrack::Track;
+
     currentTime = -1;
 
     id = 0;
@@ -143,6 +145,8 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
     url         = other.url;
     urlBase     = other.urlBase;
     urlRedirect = other.urlRedirect;
+
+    typeSource = other.typeSource;
 
     currentTime = other.currentTime;
 

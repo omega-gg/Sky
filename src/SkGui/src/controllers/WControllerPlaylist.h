@@ -533,6 +533,8 @@ public:
         currentTime = -1;
 
         type = WControllerPlaylist::Unknown;
+
+        typeSource = WTrack::Unknown;
     }
 
 public: // Interface
@@ -579,7 +581,9 @@ private: // Functions
                                const QString                       & baseUrl);
 
     void extractSourceNode(const WYamlNodeBase & root,
-                           const WYamlNodeBase & node, const QString & baseUrl);
+                           const WYamlNode     & node, const QString & baseUrl);
+
+    void interpolateTime(const QList<WYamlNode> & children);
 
     void applySource(const WYamlNodeBase & node, const QString & url,
                                                  const QString & baseUrl, int duration);
@@ -590,6 +594,8 @@ public: // Variables
     int currentTime;
 
     WControllerPlaylist::Type type;
+
+    WTrack::Type typeSource;
 
     QString origin;
     QString source;

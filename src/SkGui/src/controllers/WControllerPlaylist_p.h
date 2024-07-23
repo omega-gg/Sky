@@ -100,7 +100,8 @@ public: // Interface
                                                                 int             index);
 
     bool applySourcePlaylist(WPlaylist * playlist, const QString & url,
-                                                   const QString & urlBase, int index);
+                                                   const QString & urlBase,
+                                                   WTrack::Type    type, int index);
 
     bool applySourceFolder(WLibraryFolder * folder, const QString & url,
                                                     const QString & urlBase, int index);
@@ -113,7 +114,8 @@ public: // Interface
                                                               const QString & urlBase, int index);
 
     bool applyNextPlaylist(WPlaylist * playlist, const QString & url,
-                                                 const QString & urlBase, int index);
+                                                 const QString & urlBase,
+                                                 WTrack::Type    type, int index);
 
     bool applyNextFolder(WLibraryFolder * folder, const QString & url,
                                                   const QString & urlBase, int index);
@@ -221,7 +223,7 @@ public: // Functions
     bool getNextPlaylists(const QString                 & backendId,
                           WPlaylist                     * playlist,
                           const QList<WBackendNetQuery> & queries,
-                          const QString                 & urlBase, int index);
+                          const QString                 & urlBase, WTrack::Type type, int index);
 
     bool getNextFolders(const QString                 & backendId,
                         WLibraryFolder                * folder,
@@ -242,7 +244,7 @@ public: // Functions
     bool getNextPlaylist(const QString          & backendId,
                          WPlaylist              * playlist,
                          const WBackendNetQuery & query,
-                         const QString          & urlBase, int index);
+                         const QString          & urlBase, WTrack::Type type, int index);
 
     bool getNextFolder(const QString          & backendId,
                        WLibraryFolder         * folder,

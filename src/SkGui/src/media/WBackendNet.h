@@ -102,6 +102,8 @@ public: // Variables
     QString urlBase;
     QString urlRedirect;
 
+    WTrack::Type typeSource;
+
     int currentTime;
 
     int id;
