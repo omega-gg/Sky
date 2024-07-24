@@ -2365,7 +2365,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
         d->length = length;
 
         // FIXME VLC 3.0.20: When playing m3u(s) we might get a duration of 0.
-        if (length != 0) setDuration(length);
+        if (length) setDuration(length);
 
         return true;
     }

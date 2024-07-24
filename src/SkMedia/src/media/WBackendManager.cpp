@@ -303,11 +303,15 @@ void WBackendManagerPrivate::applySources(bool play)
 
         loadSource(source, currentMedia, currentTime);
 
-        if (play == false) return;
+        if (play)
+        {
+            backendInterface->play();
 
-        backendInterface->play();
+            connectBackend();
+        }
 
-        connectBackend();
+        // NOTE: Restore the proper duration in case we loaded a slice of this track before.
+        q->setDuration(backend->duration());
 
         return;
     }

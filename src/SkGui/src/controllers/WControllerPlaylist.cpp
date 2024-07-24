@@ -4544,9 +4544,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         if (backend)
         {
-            /*playlist->addSource(origin, true);
+            playlist->addSource(origin, true);
 
-            emit playlist->queryEnded();*/
+            emit playlist->queryEnded();
 
             QString backendId = backend->id();
 
