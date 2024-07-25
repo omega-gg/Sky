@@ -115,6 +115,7 @@ public: // Slots
     void onOutput     ();
     void onQuality    ();
     void onContext    ();
+    void onChapters   ();
     void onVideos     ();
     void onAudios     ();
     void onAmbient    ();

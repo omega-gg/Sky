@@ -556,9 +556,13 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     {
         if (parameters.count() == 1) return;
     }
-    else if (type == VIDEOS || type == AUDIOS || type == SUBTITLES)
+    else if (type == VIDEOS || type == AUDIOS)
     {
         if (parameters.isEmpty() == false) return;
+    }
+    else if (type == CHAPTERS || type == SUBTITLES)
+    {
+        return;
     }
     else if (parameters.isEmpty()) return;
 
@@ -607,6 +611,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "OUTPUT")     return OUTPUT;
     else if (string == "QUALITY")    return QUALITY;
     else if (string == "CONTEXT")    return CONTEXT;
+    else if (string == "CHAPTERS")   return CHAPTERS;
     else if (string == "VIDEOS")     return VIDEOS;
     else if (string == "AUDIOS")     return AUDIOS;
     else if (string == "AMBIENT")    return AMBIENT;
@@ -636,6 +641,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == OUTPUT)     return "OUTPUT";
     else if (type == QUALITY)    return "QUALITY";
     else if (type == CONTEXT)    return "CONTEXT";
+    else if (type == CHAPTERS)   return "CHAPTERS";
     else if (type == VIDEOS)     return "VIDEOS";
     else if (type == AUDIOS)     return "AUDIOS";
     else if (type == AMBIENT)    return "AMBIENT";

@@ -450,6 +450,41 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         q->setContext(parameters.first(), parameters.last());
     }
+    else if (type == WBroadcastReply::CHAPTERS)
+    {
+        Q_Q(WHookOutput);
+
+        const QStringList & parameters = reply.parameters;
+
+        int count = parameters.count();
+
+        if (count % 3) return;
+
+        QList<WChapter> chapters;
+
+        int index = 0;
+
+        while (index < count)
+        {
+            WChapter chapter;
+
+            chapter.setTime(parameters.at(index).toInt());
+
+            index++;
+
+            chapter.setTitle(parameters.at(index));
+
+            index++;
+
+            chapter.setCover(parameters.at(index));
+
+            index++;
+
+            chapters.append(chapter);
+        }
+
+        q->setChapters(chapters);
+    }
     else if (type == WBroadcastReply::VIDEOS)
     {
         Q_Q(WHookOutput);

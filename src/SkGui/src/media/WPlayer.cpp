@@ -749,6 +749,7 @@ void WPlayerPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
         QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
         QObject::connect(backend, SIGNAL(contextChanged      ()), q, SLOT(onContext    ()));
+        QObject::connect(backend, SIGNAL(chaptersChanged     ()), q, SLOT(onChapters   ()));
         QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
         QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
         QObject::connect(backend, SIGNAL(ambientChanged      ()), q, SLOT(onAmbient    ()));
@@ -782,6 +783,7 @@ void WPlayerPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
         QObject::disconnect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
         QObject::disconnect(backend, SIGNAL(contextChanged      ()), q, SLOT(onContext    ()));
+        QObject::disconnect(backend, SIGNAL(chaptersChanged     ()), q, SLOT(onChapters   ()));
         QObject::disconnect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
         QObject::disconnect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
         QObject::disconnect(backend, SIGNAL(ambientChanged      ()), q, SLOT(onAmbient    ()));
@@ -1097,6 +1099,23 @@ void WPlayerPrivate::onContext()
     parameters.append(backend->contextId());
 
     server->sendReply(WBroadcastReply::CONTEXT, parameters);
+}
+
+void WPlayerPrivate::onChapters()
+{
+    QStringList parameters;
+
+    QList<WChapter> chapters = backend->chapters();
+
+    foreach (const WChapter & chapter, chapters)
+    {
+        parameters.append(QString::number(chapter.time()));
+
+        parameters.append(chapter.title());
+        parameters.append(chapter.cover());
+    }
+
+    server->sendReply(WBroadcastReply::CHAPTERS, parameters);
 }
 
 void WPlayerPrivate::onVideos()

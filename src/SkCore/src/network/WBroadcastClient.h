@@ -148,6 +148,7 @@ public: // Enums
         OUTPUT,
         QUALITY,
         CONTEXT,
+        CHAPTERS,
         VIDEOS,
         AUDIOS,
         AMBIENT,
