@@ -24,8 +24,10 @@
 
 #ifndef SK_NO_YAMLREADER
 
-// C++ includes
-#include <random>
+#ifndef QT_4
+// Qt includes
+#include <QRandomGenerator>
+#endif
 
 // Sk includes
 #include <WControllerApplication>
@@ -62,7 +64,21 @@ QList<WYamlNode> WYamlNodeBase::shuffled(uint seed) const
     // NOTE: Maybe we should add implicit sharing to WYamlNode.
     QList<WYamlNode> list = children;
 
-    std::shuffle(list.begin(), list.end(), std::default_random_engine(seed));
+#ifdef QT_4
+    std::srand(seed)
+#else
+    // NOTE: We're using QRandomGenerator because it has a consistent behavior on each platform.
+    QRandomGenerator generator(seed);
+#endif
+
+    for (int i = 0; i < list.count(); i++)
+    {
+#ifdef QT_4
+        list.swap(i, std::rand() % (i + 1));
+#else
+        list.swapItemsAt(i, generator.generate() % (i + 1));
+#endif
+    }
 
     return list;
 }
