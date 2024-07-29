@@ -73,10 +73,10 @@ QList<WYamlNode> WYamlNodeBase::shuffled(uint seed) const
 
     for (int i = 0; i < list.count(); i++)
     {
-#ifdef QT_4
-        list.swap(i, std::rand() % (i + 1));
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
         list.swapItemsAt(i, generator.generate() % (i + 1));
+#else
+        list.swap(i, std::rand() % (i + 1));
 #endif
     }
 
