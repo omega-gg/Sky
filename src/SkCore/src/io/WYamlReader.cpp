@@ -24,7 +24,7 @@
 
 #ifndef SK_NO_YAMLREADER
 
-#ifndef QT_4
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 // Qt includes
 #include <QRandomGenerator>
 #endif
@@ -64,11 +64,11 @@ QList<WYamlNode> WYamlNodeBase::shuffled(uint seed) const
     // NOTE: Maybe we should add implicit sharing to WYamlNode.
     QList<WYamlNode> list = children;
 
-#ifdef QT_4
-    std::srand(seed)
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     // NOTE: We're using QRandomGenerator because it has a consistent behavior on each platform.
     QRandomGenerator generator(seed);
+#else
+    std::srand(seed)
 #endif
 
     for (int i = 0; i < list.count(); i++)
