@@ -68,7 +68,7 @@ QList<WYamlNode> WYamlNodeBase::shuffled(uint seed) const
     // NOTE: We're using QRandomGenerator because it has a consistent behavior on each platform.
     QRandomGenerator generator(seed);
 #else
-    qsrand(seed)
+    qsrand(seed);
 #endif
 
     // NOTE: We want an implementation that's close to random_shuffle.
