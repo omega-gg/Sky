@@ -68,15 +68,17 @@ QList<WYamlNode> WYamlNodeBase::shuffled(uint seed) const
     // NOTE: We're using QRandomGenerator because it has a consistent behavior on each platform.
     QRandomGenerator generator(seed);
 #else
-    std::srand(seed)
+    qsrand(seed)
 #endif
 
-    for (int i = 0; i < list.count(); i++)
+    // NOTE: We want an implementation that's close to random_shuffle.
+    //       https://en.cppreference.com/w/cpp/algorithm/random_shuffle
+    for (int i = list.count() - 1; i > 0; i--)
     {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
         list.swapItemsAt(i, generator.generate() % (i + 1));
 #else
-        list.swap(i, std::rand() % (i + 1));
+        list.swap(i, qrand() % (i + 1));
 #endif
     }
 
