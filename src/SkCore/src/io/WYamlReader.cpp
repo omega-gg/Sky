@@ -73,6 +73,9 @@ QList<WYamlNode> WYamlNodeBase::shuffled(uint seed) const
 
     // NOTE: We want an implementation that's close to random_shuffle.
     //       https://en.cppreference.com/w/cpp/algorithm/random_shuffle
+    // FIXME: For some reason none of the mt19937 based implementations seem to be consistent
+    //        between windows based MinGW and android Clang. So we're using QRandomGenerator for
+    //        the moment.
     for (int i = list.count() - 1; i > 0; i--)
     {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
