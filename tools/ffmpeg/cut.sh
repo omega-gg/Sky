@@ -69,7 +69,7 @@ fi
 
 if [ $# = 3 ]; then
 
-    "$ffmpeg" -i "$1" -ss "$2" -c copy "$4"
+    "$ffmpeg" -i "$1" -ss "$2" -c copy "$3"
 else
     "$ffmpeg" -i "$1" -ss "$2" -to "$3" -c copy "$4"
 fi
