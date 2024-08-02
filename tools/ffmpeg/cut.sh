@@ -43,9 +43,9 @@ getOs()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 4 ]; then
+if [ $# != 3 -o $# != 4 ]; then
 
-    echo "Usage: cut <video> <timeA> <timeB> <output>"
+    echo "Usage: cut <video> <timeA> [timeB] <output>"
 
     exit 1
 fi
@@ -67,4 +67,9 @@ fi
 # Run
 #--------------------------------------------------------------------------------------------------
 
-"$ffmpeg" -i "$1" -ss "$2" -to "$3" -c copy "$4"
+if [ $# = 3 ]; then
+
+    "$ffmpeg" -i "$1" -ss "$2" -c copy "$4"
+else
+    "$ffmpeg" -i "$1" -ss "$2" -to "$3" -c copy "$4"
+fi
