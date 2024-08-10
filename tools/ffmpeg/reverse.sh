@@ -22,4 +22,4 @@ fi
 # Run
 #--------------------------------------------------------------------------------------------------
 
-"$ffmpeg" -i "$1" -filter_complex "[0:v]reverse" -codec:v libx264 -crf 15 -preset slow "$2"
+"$ffmpeg" -y -i "$1" -filter_complex "[0:v]reverse" -codec:v libx264 -crf 15 -preset slow "$2"
