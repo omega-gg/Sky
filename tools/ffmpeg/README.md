@@ -12,3 +12,4 @@ Place your FFmpeg binaries into the bin folder.
 - reverse.sh: Reverse the video.
 - loop.sh: Generate a looped version of the video.
 - volume.sh: Adjust the video's volume.
+- topaz.sh: Upscale the video.
