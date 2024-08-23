@@ -17,9 +17,11 @@ model="/c/ProgramData/Topaz Labs LLC/Topaz Video AI/models"
 
 if [ $# != 3 -a $# != 4 ] \
    || \
-   [ $3 != "prob-4" -a $3 != "iris-3" ] || [ $# = 4 -a "$4" != "crop" ]; then
+   [ $3 != "prob-4" -a $3 != "iris-3" -a $3 != "rhea-1" ] \
+   || \
+   [ $# = 4 -a "$4" != "letterbox" -a "$4" != "crop" ]; then
 
-    echo "Usage: topaz <input> <output> <prob-4 | iris-3> [crop]"
+    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [letterbox | crop]"
 
     exit 1
 fi
@@ -38,11 +40,15 @@ export TVAI_MODEL_DATA_DIR="$model"
 # Run
 #--------------------------------------------------------------------------------------------------
 
-if [ "$4" = "crop" ]; then
+filter="tvai_up=model=$3:scale=0:w=3840:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=3840:h=2160:flags=lanczos:threads=0"
 
-    filter="tvai_up=model=$3:scale=0:w=3840:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=3840:h=2160:flags=lanczos:threads=0:force_original_aspect_ratio=increase,crop=3840:2160"
-else
-    filter="tvai_up=model=$3:scale=0:w=3840:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=3840:h=2160:flags=lanczos:threads=0"
+if [ "$4" = "letterbox" ]; then
+
+    filter="$filter:force_original_aspect_ratio=decrease,pad=3840:2160:-1:-1:color=black"
+
+elif [ "$4" = "crop" ]; then
+
+    filter="$filter:force_original_aspect_ratio=increase,crop=3840:2160"
 fi
 
 movflags="frag_keyframe+empty_moov+delay_moov+use_metadata_tags+write_colr"
