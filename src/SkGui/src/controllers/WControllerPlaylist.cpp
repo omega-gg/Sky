@@ -5382,15 +5382,16 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ QString WControllerPlaylist::backendIdFromText(const QString & text) const
 {
+    Q_D(const WControllerPlaylist);
+
     QString id = text.left(text.indexOf(' ')).toLower();
 
-    WBackendNet * backend = backendFromId(id);
-
-    if (backend)
+    foreach (WBackendLoader * loader, d->backendLoaders)
     {
-        return id;
+        if (loader->checkId(id)) return id;
     }
-    else return QString();
+
+    return QString();
 }
 
 /* Q_INVOKABLE */ QString WControllerPlaylist::backendSearchId() const
@@ -5921,6 +5922,12 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 #endif
 
     return source.toString();
+}
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::queryFromText(const QString & text,
+                                                                    const QString & id)
+{
+    return text.mid(id.length() + 1);
 }
 
 //-------------------------------------------------------------------------------------------------

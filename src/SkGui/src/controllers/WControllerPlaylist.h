@@ -242,7 +242,7 @@ public: // Interface
 
     Q_INVOKABLE QString backendIdFromSource(const QString & url) const;
 
-    // NOTE: Extract the backend id from text with the 'backend query' format.
+    // NOTE: Extract the backend id from 'text' with the 'backend query' format.
     Q_INVOKABLE QString backendIdFromText(const QString & text) const;
 
     Q_INVOKABLE QString backendSearchId() const;
@@ -306,6 +306,9 @@ public: // Static functions
                                             const QString & label,
                                             const QString & q = QString(),
                                             const QString & t = QString());
+
+    // NOTE: Extract the query from 'text' with the 'backend query' format.
+    Q_INVOKABLE static QString queryFromText(const QString & text, const QString & id);
 
     // NOTE: Returns the source fragment cleaned up. That's useful for comparison.
     Q_INVOKABLE static QString cleanSource(const QString & url);
