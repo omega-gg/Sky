@@ -1947,13 +1947,15 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
 
     if (WBackendNet::checkQuery(source))
     {
+        WBackendNetQuery query;
+
         WBackendNet * backend = q->backendFromUrl(source);
 
         if (backend)
         {
             QString backendId = backend->id();
 
-            WBackendNetQuery query = extractQuery(backend, source, backendId);
+            query = extractQuery(backend, source, backendId);
 
             backend->tryDelete();
 
@@ -1966,19 +1968,17 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
             // NOTE: The custom query priority should be high because it's often tied to the
             //       current action.
             query.priority = QNetworkRequest::HighPriority;
-
-            getDataPlaylist(playlist, query);
-
-            return true;
         }
+        else
+        {
+            query = extractRelated(source);
 
-        WBackendNetQuery query = extractRelated(source);
+            if (query.isValid() == false) return false;
 
-        if (query.isValid() == false) return false;
-
-        query.urlBase    = urlBase;
-        query.typeSource = type;
-        query.indexNext  = index;
+            query.urlBase    = urlBase;
+            query.typeSource = type;
+            query.indexNext  = index;
+        }
 
         getDataPlaylist(playlist, query);
 
@@ -2192,7 +2192,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
         QString method = urlQuery.queryItemValue("method");
 #endif
 
-        // NOTE: The view and related methods only works for playlists.
+        // NOTE: The view and related methods do not work for folders.
         if (method != "view" && method != "related")
         {
             WBackendNet * backend = q->backendFromUrl(source);
@@ -5375,6 +5375,19 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         backend->tryDelete();
 
+        return id;
+    }
+    else return QString();
+}
+
+/* Q_INVOKABLE */ QString WControllerPlaylist::backendIdFromText(const QString & text) const
+{
+    QString id = text.left(text.indexOf(':')).toLower();
+
+    WBackendNet * backend = backendFromId(id);
+
+    if (backend)
+    {
         return id;
     }
     else return QString();
