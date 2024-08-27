@@ -242,7 +242,7 @@ public: // Interface
 
     Q_INVOKABLE QString backendIdFromSource(const QString & url) const;
 
-    // NOTE: Extract the backend id from text with the 'backend: query' format.
+    // NOTE: Extract the backend id from text with the 'backend query' format.
     Q_INVOKABLE QString backendIdFromText(const QString & text) const;
 
     Q_INVOKABLE QString backendSearchId() const;

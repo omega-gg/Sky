@@ -5382,7 +5382,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ QString WControllerPlaylist::backendIdFromText(const QString & text) const
 {
-    QString id = text.left(text.indexOf(':')).toLower();
+    QString id = text.left(text.indexOf(' ')).toLower();
 
     WBackendNet * backend = backendFromId(id);
 
