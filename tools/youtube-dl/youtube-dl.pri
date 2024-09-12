@@ -1,2 +1,3 @@
-OTHER_FILES += youtube-dl/audio.sh \
+OTHER_FILES += youtube-dl/get.sh \
+               youtube-dl/audio.sh \
                youtube-dl/README.md \
