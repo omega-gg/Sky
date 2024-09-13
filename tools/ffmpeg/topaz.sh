@@ -7,9 +7,9 @@ set -e
 
 bin="$PWD/bin"
 
-topaz="/c/Program Files/Topaz Labs LLC/Topaz Video AI"
+topaz="C:\Program Files\Topaz Labs LLC\Topaz Video AI"
 
-model="/c/ProgramData/Topaz Labs LLC/Topaz Video AI/models"
+model="C:\ProgramData\Topaz Labs LLC\Topaz Video AI\models"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
