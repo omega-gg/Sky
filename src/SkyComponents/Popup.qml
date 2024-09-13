@@ -51,6 +51,12 @@ LabelRound
     visible: false
     opacity: 0.0
 
+//#DESKTOP
+    // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
+    itemText.elide: (width == maximumWidth) ? Text.ElideRight
+                                            : Text.ElideNone
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
