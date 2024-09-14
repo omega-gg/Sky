@@ -2840,7 +2840,7 @@ bool WControllerPlaylistPrivate::applyUrl(WLibraryFolder * folder,
     {
         WLibraryFolderItem item(WLibraryItem::Playlist, WLocalObject::Default);
 
-        item.source = backend->getUrlTrack(id);
+        item.source = url;
 
         folder->addItem(item);
 
@@ -2853,7 +2853,7 @@ bool WControllerPlaylistPrivate::applyUrl(WLibraryFolder * folder,
     {
         WLibraryFolderItem item(info.type, WLocalObject::Default);
 
-        item.source = backend->getUrlPlaylist(info);
+        item.source = url;
 
         folder->addItem(item);
 
