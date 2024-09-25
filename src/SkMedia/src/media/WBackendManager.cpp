@@ -1225,6 +1225,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->type == WBackendManagerPrivate::Track)
     {
+        if (d->currentMedia.isEmpty()) return false;
+
         d->backendInterface->play();
 
         d->connectBackend();
