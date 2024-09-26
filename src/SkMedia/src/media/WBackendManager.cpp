@@ -248,14 +248,17 @@ void WBackendManagerPrivate::loadMedia()
 
     WAbstractBackend::SourceMode mode = q->getMode();
 
+    // NOTE: We remove the 't' fragment to ensure that caching is working.
+    QString url = WControllerNetwork::removeFragmentValue(source, "t");
+
     // NOTE: When using Chromecast for video we want to increase source compatibility.
     if (outputData.type == WAbstractBackend::OutputChromecast
         &&
         mode != WAbstractBackend::SourceAudio)
     {
-         reply = wControllerMedia->getMedia(source, q, WAbstractBackend::SourceSafe, currentTime);
+         reply = wControllerMedia->getMedia(url, q, WAbstractBackend::SourceSafe, currentTime);
     }
-    else reply = wControllerMedia->getMedia(source, q, mode, currentTime);
+    else reply = wControllerMedia->getMedia(url, q, mode, currentTime);
 }
 
 void WBackendManagerPrivate::applySources(bool play)
