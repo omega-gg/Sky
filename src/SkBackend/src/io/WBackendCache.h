@@ -53,6 +53,8 @@ public: // Interface
 
     Q_INVOKABLE void removeScripts(const QString & pattern);
 
+    Q_INVOKABLE void clear();
+
 signals:
     void maxCountChanged();
 

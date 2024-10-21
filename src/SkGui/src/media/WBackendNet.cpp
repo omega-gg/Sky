@@ -871,7 +871,7 @@ QString WBackendNet::getUrlPlaylist(const WBackendNetPlaylistInfo &) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendNet::getQuerySource(const QString &) const
+WBackendNetQuery WBackendNet::getQuerySource(const QString &, WAbstractBackend::SourceMode) const
 {
     return WBackendNetQuery();
 }

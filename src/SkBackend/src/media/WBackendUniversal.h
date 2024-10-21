@@ -182,6 +182,9 @@ class SK_BACKEND_EXPORT WBackendUniversal : public WBackendNet
 protected:
     WBackendUniversal(const QString & id, const QString & source);
 
+public: // Static functions
+    Q_INVOKABLE static void clearCache();
+
 public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ QString getId   () const;
     /* Q_INVOKABLE virtual */ QString getTitle() const;
@@ -221,7 +224,9 @@ public: // WBackendNet reimplementation
 
     //---------------------------------------------------------------------------------------------
 
-    /* Q_INVOKABLE virtual */ WBackendNetQuery getQuerySource  (const QString & url) const;
+    /* Q_INVOKABLE virtual */
+    WBackendNetQuery getQuerySource(const QString & url, WAbstractBackend::SourceMode mode) const;
+
     /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryTrack   (const QString & url) const;
     /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QString & url) const;
     /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryFolder  (const QString & url) const;

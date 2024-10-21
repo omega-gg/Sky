@@ -4674,6 +4674,15 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WBackendUniversal::clearCache()
+{
+    if (cache) cache->clear();
+}
+
+//-------------------------------------------------------------------------------------------------
 // WBackendNet implementation
 //-------------------------------------------------------------------------------------------------
 
@@ -4703,6 +4712,8 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 
         return;
     }
+
+    cache->removeScripts(d->id);
 
     if (d->remote) delete d->remote;
 
@@ -4964,7 +4975,8 @@ QString WBackendUniversal::getUrlPlaylist(const WBackendNetPlaylistInfo & info) 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendUniversal::getQuerySource(const QString & url) const
+WBackendNetQuery WBackendUniversal::getQuerySource(const QString              & url,
+                                                   WAbstractBackend::SourceMode mode) const
 {
     Q_D(const WBackendUniversal);
 
@@ -4973,6 +4985,8 @@ WBackendNetQuery WBackendUniversal::getQuerySource(const QString & url) const
 #endif
 
     WBackendNetQuery query;
+
+    query.mode = mode;
 
     d->runQuery(&query, ".querySource", d->data.querySource, url);
 

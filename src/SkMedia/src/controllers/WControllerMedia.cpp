@@ -1625,6 +1625,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     WBackendNetQuery query;
 
+    WAbstractBackend::SourceMode mode = reply->_mode;
+
     // NOTE: The VBML uri is prioritized because it might contain an http url.
     if (WControllerPlaylist::urlIsVbmlUri(source))
     {
@@ -1651,7 +1653,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
         {
             QString backendId = backend->id();
 
-            query = backend->getQuerySource(source);
+            query = backend->getQuerySource(source, mode);
 
             backend->tryDelete();
 
@@ -1700,7 +1702,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
         }
     }
 
-    query.mode = reply->_mode;
+    query.mode = mode;
 
     WPrivateMediaData * media = new WPrivateMediaData;
 
@@ -2378,7 +2380,7 @@ bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuer
 
     if (backend == NULL) return query.isValid();
 
-    query = backend->getQuerySource(query.url);
+    query = backend->getQuerySource(query.url, query.mode);
 
     backend->tryDelete();
 
@@ -2671,7 +2673,7 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
         {
             QString backendId = backend->id();
 
-            query = backend->getQuerySource(origin);
+            query = backend->getQuerySource(origin, mode);
 
             backend->tryDelete();
 
@@ -2738,7 +2740,7 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
         QString backendId = backend->id();
 
-        query = backend->getQuerySource(source);
+        query = backend->getQuerySource(source, mode);
 
         backend->tryDelete();
 

@@ -155,6 +155,14 @@ WBackendCache::WBackendCache(QObject * parent)
     }
 }
 
+/* Q_INVOKABLE */ void WBackendCache::clear()
+{
+    Q_D(WBackendCache);
+
+    d->scripts.clear();
+    d->names  .clear();
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
