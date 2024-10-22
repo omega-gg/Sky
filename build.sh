@@ -40,7 +40,7 @@ WindowsKit_version="10"
 # Android
 
 SDK_version="34"
-SDK_version_minimum="21"
+SDK_version_minimum="24"
 
 NDK_version="26"
 
