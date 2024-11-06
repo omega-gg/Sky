@@ -195,6 +195,8 @@ void WBackendManagerPrivate::loadSources(bool play)
 
     if (reply->isLoaded() == false)
     {
+        loaded = false;
+
         QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q_func(), SLOT(onLoaded()));
 
         return;
@@ -1228,8 +1230,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->type == WBackendManagerPrivate::Track)
     {
-        if (d->currentMedia.isEmpty()) return false;
-
         d->backendInterface->play();
 
         d->connectBackend();
