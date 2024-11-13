@@ -67,9 +67,4 @@ output="$PWD/output"
 
 cd "$LivePortrait"
 
-if [ $# = 3 ]; then
-
-    ./../../run_crop.bat "$1" "$2" "$output" "$3"
-else
-    ./../../run.bat "$1" "$2" "$output"
-fi
+./../../run.bat "$1" "$2" "$output" "$3"
