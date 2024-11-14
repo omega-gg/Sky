@@ -754,6 +754,7 @@ if [ $os = "windows" ]; then
     cp bin/includeGenerator.exe deploy
     cp bin/deployer.exe         deploy
     cp bin/projectGenerator.exe deploy
+    cp bin/imageConverter.exe   deploy
 
     if [ -f bin/androiddeployqt.exe ]; then
 
@@ -767,6 +768,7 @@ else
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
     cp bin/projectGenerator deploy
+    cp bin/imageConverter   deploy
 
     if [ -f bin/androiddeployqt ]; then
 
@@ -793,6 +795,15 @@ if [ $1 = "macOS" ]; then
 
     install_name_tool -change @rpath/QtCore.framework/Versions/$qx/QtCore \
                               @loader_path/QtCore.dylib deploy/projectGenerator
+
+    #----------------------------------------------------------------------------------------------
+    # imageConverter
+
+    install_name_tool -change @rpath/QtCore.framework/Versions/$qx/QtCore \
+                              @loader_path/QtCore.dylib deploy/imageConverter
+
+    install_name_tool -change @rpath/QtGui.framework/Versions/$qx/QtGui \
+                              @loader_path/QtGui.dylib deploy/imageConverter
 fi
 
 #--------------------------------------------------------------------------------------------------

@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS = includeGenerator \
           deployer \
           projectGenerator \
+          imageConverter \
 
 include(ffmpeg/ffmpeg.pri)
 include(youtube-dl/youtube-dl.pri)
