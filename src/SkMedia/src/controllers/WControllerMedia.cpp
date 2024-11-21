@@ -1925,7 +1925,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 {
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
 
-    const QList<WChapter> & chapters = media->chapters;
+    const QList<WChapter>  & chapters  = media->chapters;
+    const QList<WSubtitle> & subtitles = media->subtitles;
 
     int timeB = media->timeB;
 
@@ -1971,7 +1972,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.medias = medias;
         slice.audios = audios;
 
-        slice.chapters = chapters;
+        slice.chapters  = chapters;
+        slice.subtitles = subtitles;
 
         slice.expiry = source.expiry;
 
@@ -1985,7 +1987,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             slice.vbml = false;
 
-            slice.chapters = QList<WChapter>();
+            slice.chapters  = QList<WChapter> ();
+            slice.subtitles = QList<WSubtitle>();
 
             appendSlice(slice, urlSource, mode);
         }
@@ -2002,7 +2005,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             reply->_medias = medias;
             reply->_audios = audios;
 
-            reply->_chapters = chapters;
+            reply->_chapters  = chapters;
+            reply->_subtitles = subtitles;
 
             reply->_loaded = true;
 
@@ -2037,8 +2041,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         QString contextId = media->contextId;
 
         QString ambient = media->ambient;
-
-        QList<WSubtitle> subtitles = media->subtitles;
 
         slice.urlSource = urlSource;
 
@@ -2636,6 +2638,8 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         media->chapters = source.chapters;
     }
     else applyChapters(media, source.chapters);
+
+    media->subtitles = source.subtitles;
 
     applySource(media, source, backendQuery.mode, true);
 

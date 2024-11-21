@@ -27,6 +27,7 @@
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 
 //-------------------------------------------------------------------------------------------------
@@ -80,6 +81,36 @@ signals:
     else content = Sk::readCodec(data, codec);
 
     content.remove('\r');
+
+    if (content.startsWith("<?xml"))
+    {
+        content = Sk::sliceIn(content, "<transcript>", "</transcript>");
+
+        QStringList array = Sk::split(content, "</text>");
+
+        foreach (const QString & string, array)
+        {
+            WBackendSubtitleData dataSubtitle;
+
+            start = WControllerNetwork::extractAttribute(string, "start").toFloat() * 1000;
+            end   = WControllerNetwork::extractAttribute(string, "dur")  .toFloat() * 1000;
+
+            dataSubtitle.start = start;
+            dataSubtitle.end   = start + end;
+
+            int index = string.indexOf('>') + 1;
+
+            dataSubtitle.text = WControllerNetwork::htmlToUtf8(string.mid(index));
+
+            list.append(dataSubtitle);
+        }
+
+        emit loaded(list);
+
+        deleteLater();
+
+        return;
+    }
 
     while (content.isEmpty() == false)
     {
@@ -417,7 +448,7 @@ void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString
 
     item = NULL;
 
-    if (extension == "srt")
+    //if (extension == "srt")
     {
         WBackendSubtitleQuery * query = new WBackendSubtitleQuery;
 
@@ -432,7 +463,7 @@ void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString
         }
         else query->extract(data);
     }
-    else emit q->loaded(false);
+    //else emit q->loaded(false);
 }
 
 void WBackendSubtitlePrivate::onQueryCompleted()

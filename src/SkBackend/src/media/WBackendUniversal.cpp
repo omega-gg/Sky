@@ -4091,6 +4091,7 @@ void WBackendUniversalPrivate::applySourceParameters(WBackendUniversalParameters
     parameters->add("audios");
 
     parameters->add("chapters");
+    parameters->add("subtitles");
 
     parameters->add("expiry", reply.expiry);
 
@@ -4107,7 +4108,8 @@ void WBackendUniversalPrivate::applySourceResults(WBackendUniversalParameters * 
     applyQualities(&(reply->medias), parameters->value("medias"));
     applyQualities(&(reply->audios), parameters->value("audios"));
 
-    applyChapters(&(reply->chapters), parameters->value("chapters"));
+    applyChapters (&(reply->chapters),  parameters->value("chapters"));
+    applySubtitles(&(reply->subtitles), parameters->value("subtitles"));
 
     reply->expiry = getDate(*(parameters->value("expiry")));
 
@@ -4447,6 +4449,24 @@ void WBackendUniversalPrivate::applyChapters(QList<WChapter> * chapters, QVarian
         chapter.setTitle(hash.value("title").toString());
 
         chapters->append(chapter);
+    }
+}
+
+void WBackendUniversalPrivate::applySubtitles(QList<WSubtitle> * subtitles, QVariant * value) const
+{
+    QVariantList list = value->toList();
+
+    for (int i = 0; i < list.count(); i++)
+    {
+        QHash<QString, QVariant> hash = list.at(i).toHash();
+
+        QString source = hash.value("source").toString();
+
+        if (source == QString()) continue;
+
+        WSubtitle subtitle(source, hash.value("title") .toString());
+
+        subtitles->append(subtitle);
     }
 }
 

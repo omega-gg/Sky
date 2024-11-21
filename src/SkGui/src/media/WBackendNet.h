@@ -183,7 +183,8 @@ public: // Variables
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
 
-    QList<WChapter> chapters;
+    QList<WChapter>  chapters;
+    QList<WSubtitle> subtitles;
 
     QDateTime expiry;
 };

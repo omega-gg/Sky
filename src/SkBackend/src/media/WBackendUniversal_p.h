@@ -213,7 +213,8 @@ public: // Functions
     void applyQualities(QHash<WAbstractBackend::Quality, QString> * qualities,
                         QVariant                                  * value) const;
 
-    void applyChapters(QList<WChapter> * chapters, QVariant * value) const;
+    void applyChapters (QList<WChapter>  * chapters,  QVariant * value) const;
+    void applySubtitles(QList<WSubtitle> * subtitles, QVariant * value) const;
 
     //---------------------------------------------------------------------------------------------
 
