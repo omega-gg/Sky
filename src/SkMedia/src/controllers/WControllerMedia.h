@@ -32,6 +32,7 @@
 #include <WControllerPlaylist>
 #include <WBackendNet>
 #include <WYamlReader>
+#include <WSubtitle>
 
 #ifndef SK_NO_CONTROLLERMEDIA
 
@@ -106,7 +107,7 @@ public: // Properties
 
     QString ambient() const;
 
-    QStringList subtitles() const;
+    QList<WSubtitle> subtitles() const;
 
     bool isLoaded() const;
 
@@ -145,7 +146,7 @@ private: // Variables
 
     QString _ambient;
 
-    QStringList _subtitles;
+    QList<WSubtitle> _subtitles;
 
     bool _loaded;
 
@@ -257,7 +258,7 @@ public: // Variables
 
     QString ambient;
 
-    QStringList subtitles;
+    QList<WSubtitle> subtitles;
 };
 
 //-------------------------------------------------------------------------------------------------

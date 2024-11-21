@@ -6894,19 +6894,44 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 }
 
 /* Q_INVOKABLE static */
-QStringList WControllerPlaylist::vbmlSubtitles(const WYamlNodeBase & node, const QString & baseUrl)
+QList<WSubtitle> WControllerPlaylist::vbmlSubtitles(const WYamlNodeBase & node,
+                                                    const QString       & baseUrl)
 {
     const WYamlNode * child = node.at("subtitles");
 
-    if (child == NULL || child->children.isEmpty() == false) return QStringList();
+    if (child == NULL) return QList<WSubtitle>();
 
-    QStringList result;
+    QList<WSubtitle> result;
 
-    QStringList list = child->value.split('\n');
+    const QList<WYamlNode> & children = child->children;
 
-    foreach (const QString & string, list)
+    if (children.isEmpty())
     {
-        result.append(WControllerPlaylist::vbmlSource(string.trimmed(), baseUrl));
+        QStringList list = child->value.split('\n');
+
+        foreach (const QString & string, list)
+        {
+            QString source = WControllerPlaylist::vbmlSource(string.trimmed(), baseUrl);
+
+            WSubtitle subtitle(source);
+
+            result.append(subtitle);
+        }
+    }
+    else
+    {
+        foreach (const WYamlNode & child, children)
+        {
+            QString source = child.extractString("source");
+
+            source = WControllerPlaylist::vbmlSource(source.trimmed(), baseUrl);
+
+            QString title  = child.extractString("title");
+
+            WSubtitle subtitle(source, title);
+
+            result.append(subtitle);
+        }
     }
 
     return result;

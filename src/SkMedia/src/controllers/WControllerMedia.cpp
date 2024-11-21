@@ -81,7 +81,8 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
 
     Sk::bmlPair(vbml, "type", "media", "\n\n");
 
-    QString tab = Sk::tabs(1);
+    QString tab  = Sk::tabs(1);
+    QString tab2 = Sk::tabs(2);
 
     if (_medias.isEmpty() == false)
     {
@@ -113,8 +114,6 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
 
     if (_chapters.isEmpty() == false)
     {
-        QString tab2 = Sk::tabs(2);
-
         Sk::bmlTag(vbml, "chapters");
 
         foreach (const WChapter & chapter, _chapters)
@@ -139,9 +138,12 @@ WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
     {
         Sk::bmlList(vbml, "subtitles");
 
-        foreach (const QString & subtitle, _subtitles)
+        foreach (const WSubtitle & subtitle, _subtitles)
         {
-            Sk::bmlValue(vbml, tab + subtitle);
+            Sk::bmlTag(vbml, tab + "subtitle");
+
+            Sk::bmlPair(vbml, tab2 + "source", subtitle.source());
+            Sk::bmlPair(vbml, tab2 + "title",  subtitle.title ());
         }
     }
 
@@ -252,7 +254,7 @@ QString WMediaReply::ambient() const
     return _ambient;
 }
 
-QStringList WMediaReply::subtitles() const
+QList<WSubtitle> WMediaReply::subtitles() const
 {
     return _subtitles;
 }
@@ -2036,7 +2038,7 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         QString ambient = media->ambient;
 
-        QStringList subtitles = media->subtitles;
+        QList<WSubtitle> subtitles = media->subtitles;
 
         slice.urlSource = urlSource;
 
@@ -2096,7 +2098,7 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             slice.ambient = QString();
 
-            slice.subtitles = QStringList();
+            slice.subtitles = QList<WSubtitle>();
 
             appendSlice(slice, urlSource, mode);
         }

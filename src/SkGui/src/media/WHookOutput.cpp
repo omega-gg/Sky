@@ -529,7 +529,30 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
     {
         Q_Q(WHookOutput);
 
-        q->setSubtitles(reply.parameters);
+        const QStringList & parameters = reply.parameters;
+
+        int count = parameters.count();
+
+        if (count % 2) return;
+
+        QList<WSubtitle> subtitles;
+
+        int index = 0;
+
+        while (index < count)
+        {
+            WSubtitle subtitle;
+
+            subtitle.setSource(parameters.at(index));
+
+            index++;
+
+            subtitle.setTitle(parameters.at(index));
+
+            index++;
+        }
+
+        q->setSubtitles(subtitles);
     }
     else if (type == WBroadcastReply::VOLUME)
     {

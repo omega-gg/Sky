@@ -344,6 +344,13 @@ void WDeclarativePlayer::updateFrame()
     return d->player->chaptersData(sort);
 }
 
+/* Q_INVOKABLE */ QVariantList WDeclarativePlayer::subtitlesData() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    return d->player->subtitlesData();
+}
+
 //---------------------------------------------------------------------------------------------
 // Tracks
 
@@ -1117,7 +1124,7 @@ QString WDeclarativePlayer::ambient() const
     return d->player->ambient();
 }
 
-QStringList WDeclarativePlayer::subtitles() const
+QList<WSubtitle> WDeclarativePlayer::subtitles() const
 {
     Q_D(const WDeclarativePlayer);
 

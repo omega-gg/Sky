@@ -39,6 +39,7 @@
 
 // Sk includes
 #include <WChapter>
+#include <WSubtitle>
 
 #ifndef SK_NO_ABSTRACTBACKEND
 
@@ -234,7 +235,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
 
-    Q_PROPERTY(QStringList subtitles READ subtitles NOTIFY subtitlesChanged)
+    Q_PROPERTY(QList<WSubtitle> subtitles READ subtitles NOTIFY subtitlesChanged)
 
 public:
     enum State
@@ -460,7 +461,7 @@ protected: // Functions
 
     void setAmbient(const QString & ambient);
 
-    void setSubtitles(const QStringList & subtitles);
+    void setSubtitles(const QList<WSubtitle> & subtitles);
 
     void deleteNow();
 
@@ -681,7 +682,7 @@ public: // Properties
 
     QString ambient() const;
 
-    QStringList subtitles() const;
+    QList<WSubtitle> subtitles() const;
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
@@ -800,7 +801,7 @@ public:
 
     virtual void filterAmbient(QString * ambient); // {}
 
-    virtual void filterSubtitles(QStringList * subtitles); // {}
+    virtual void filterSubtitles(QList<WSubtitle> * subtitles); // {}
 };
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false

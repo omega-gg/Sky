@@ -314,7 +314,7 @@ void WAbstractHook::setAmbient(const QString & ambient)
     Q_D(WAbstractHook); d->backend->setAmbient(ambient);
 }
 
-void WAbstractHook::setSubtitles(const QStringList & subtitles)
+void WAbstractHook::setSubtitles(const QList<WSubtitle> & subtitles)
 {
     Q_D(WAbstractHook); d->backend->setSubtitles(subtitles);
 }

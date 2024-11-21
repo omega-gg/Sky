@@ -6,6 +6,8 @@ HEADERS += src/media/WBackendNet.h \
            src/media/WTrack_p.h \
            src/media/WChapter.h \
            src/media/WChapter_p.h \
+           src/media/WSubtitle.h \
+           src/media/WSubtitle_p.h \
            src/media/WLibraryItem.h \
            src/media/WLibraryItem_p.h \
            src/media/WLibraryFolder.h \
@@ -40,6 +42,7 @@ HEADERS += src/media/WBackendNet.h \
 SOURCES += src/media/WBackendNet.cpp \
            src/media/WTrack.cpp \
            src/media/WChapter.cpp \
+           src/media/WSubtitle.cpp \
            src/media/WLibraryItem.cpp \
            src/media/WLibraryFolder.cpp \
            src/media/WLibraryFolderRelated.cpp \

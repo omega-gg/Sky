@@ -83,7 +83,7 @@ struct WPrivateMediaData
 
     QString ambient;
 
-    QStringList subtitles;
+    QList<WSubtitle> subtitles;
 
     WBackendNet * backend;
 
@@ -127,7 +127,7 @@ struct WPrivateMediaSlice
 
     QString ambient;
 
-    QStringList subtitles;
+    QList<WSubtitle> subtitles;
 
     QDateTime expiry;
 };

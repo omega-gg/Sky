@@ -123,7 +123,7 @@ public: // Variable
 
     QString ambient;
 
-    QStringList subtitles;
+    QList<WSubtitle> subtitles;
 
     QSizeF size;
 

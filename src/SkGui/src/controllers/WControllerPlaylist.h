@@ -463,8 +463,8 @@ public: // Static functions
 
     Q_INVOKABLE static QStringList vbmlTags(const WYamlNodeBase & node);
 
-    Q_INVOKABLE static QStringList vbmlSubtitles(const WYamlNodeBase & node,
-                                                 const QString       & baseUrl);
+    Q_INVOKABLE static QList<WSubtitle> vbmlSubtitles(const WYamlNodeBase & node,
+                                                      const QString       & baseUrl);
 
     Q_INVOKABLE static const WYamlNode * vbmlTemplate(const WYamlNodeBase & root,
                                                       const WYamlNodeBase & node);

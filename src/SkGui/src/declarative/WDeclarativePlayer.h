@@ -153,7 +153,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
 
-    Q_PROPERTY(QStringList subtitles READ subtitles NOTIFY subtitlesChanged)
+    Q_PROPERTY(QList<WSubtitle> subtitles READ subtitles NOTIFY subtitlesChanged)
 
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
@@ -245,6 +245,8 @@ public: // Interface
     Q_INVOKABLE void updateHighlightedTab();
 
     Q_INVOKABLE QVariantList chaptersData(bool sort = true) const;
+
+    Q_INVOKABLE QVariantList subtitlesData() const;
 
     //---------------------------------------------------------------------------------------------
     // Tracks
@@ -478,7 +480,7 @@ public: // Properties
 
     QString ambient() const;
 
-    QStringList subtitles() const;
+    QList<WSubtitle> subtitles() const;
 
     int  pauseTimeout() const;
     void setPauseTimeout(int msec);

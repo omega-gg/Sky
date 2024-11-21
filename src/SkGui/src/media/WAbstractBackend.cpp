@@ -722,7 +722,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
     setVbml(false);
     setLive(false);
 
-    setSubtitles(QStringList());
+    setSubtitles(QList<WSubtitle>());
 
     //---------------------------------------------------------------------------------------------
 
@@ -1206,11 +1206,11 @@ void WAbstractBackend::setAmbient(const QString & ambient)
     emit ambientChanged();
 }
 
-void WAbstractBackend::setSubtitles(const QStringList & subtitles)
+void WAbstractBackend::setSubtitles(const QList<WSubtitle> & subtitles)
 {
     Q_D(WAbstractBackend);
 
-    QStringList list = subtitles;
+    QList<WSubtitle> list = subtitles;
 
     if (d->filter) d->filter->filterSubtitles(&list);
 
@@ -1858,7 +1858,7 @@ QString WAbstractBackend::ambient() const
     Q_D(const WAbstractBackend); return d->ambient;
 }
 
-QStringList WAbstractBackend::subtitles() const
+QList<WSubtitle> WAbstractBackend::subtitles() const
 {
     Q_D(const WAbstractBackend); return d->subtitles;
 }
@@ -1999,6 +1999,6 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 
 /* virtual */ void WBackendFilter::filterAmbient(QString *) {}
 
-/* virtual */ void WBackendFilter::filterSubtitles(QStringList *) {}
+/* virtual */ void WBackendFilter::filterSubtitles(QList<WSubtitle> *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND

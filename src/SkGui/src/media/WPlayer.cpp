@@ -1157,7 +1157,17 @@ void WPlayerPrivate::onAmbient()
 
 void WPlayerPrivate::onSubtitles()
 {
-    server->sendReply(WBroadcastReply::SUBTITLES, backend->subtitles());
+    QStringList parameters;
+
+    QList<WSubtitle> subtitles = backend->subtitles();
+
+    foreach (const WSubtitle & subtitle, subtitles)
+    {
+        parameters.append(subtitle.source());
+        parameters.append(subtitle.title ());
+    }
+
+    server->sendReply(WBroadcastReply::SUBTITLES, parameters);
 }
 
 #ifndef SK_NO_QML
@@ -1666,6 +1676,18 @@ void WPlayer::updateFrame()
     foreach (const WChapter & chapter, chapters)
     {
         list.append(chapter.toMap());
+    }
+
+    return list;
+}
+
+/* Q_INVOKABLE */ QVariantList WPlayer::subtitlesData() const
+{
+    QVariantList list;
+
+    foreach (const WSubtitle & subtitle, subtitles())
+    {
+        list.append(subtitle.toMap());
     }
 
     return list;
@@ -2708,7 +2730,7 @@ QString WPlayer::ambient() const
     else return QString();
 }
 
-QStringList WPlayer::subtitles() const
+QList<WSubtitle> WPlayer::subtitles() const
 {
     Q_D(const WPlayer);
 
@@ -2716,7 +2738,7 @@ QStringList WPlayer::subtitles() const
     {
         return d->backend->subtitles();
     }
-    else return QStringList();
+    else return QList<WSubtitle>();
 }
 
 //-------------------------------------------------------------------------------------------------
