@@ -2639,7 +2639,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
     }
     else applyChapters(media, source.chapters);
 
-    media->subtitles = source.subtitles;
+    media->subtitles.append(source.subtitles);
 
     applySource(media, source, backendQuery.mode, true);
 
