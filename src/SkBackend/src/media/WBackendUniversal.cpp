@@ -4462,7 +4462,7 @@ void WBackendUniversalPrivate::applySubtitles(QList<WSubtitle> * subtitles, QVar
 
         QString source = hash.value("source").toString();
 
-        if (source == QString()) continue;
+        if (source.isEmpty()) continue;
 
         WSubtitle subtitle(source, hash.value("title") .toString());
 
