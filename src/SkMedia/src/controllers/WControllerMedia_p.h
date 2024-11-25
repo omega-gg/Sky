@@ -68,7 +68,9 @@ struct WPrivateMediaData
 
     QString timeZone;
 
+    int time;
     int currentTime;
+
     int duration;
 
     int timeA;
@@ -109,7 +111,6 @@ struct WPrivateMediaSlice
 
     QString timeZone;
 
-    int currentTime;
     int duration;
 
     int timeA;

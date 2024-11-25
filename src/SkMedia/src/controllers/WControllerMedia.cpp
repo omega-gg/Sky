@@ -1717,7 +1717,10 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     media->vbml = false;
 
     // NOTE: currentTime starts at zero to match the WControllerMediaData constraints.
-    media->currentTime = qMax(0, currentTime);
+    currentTime = qMax(0, currentTime);
+
+    media->time        = currentTime;
+    media->currentTime = currentTime;
 
     media->duration = -1;
 
@@ -1884,8 +1887,6 @@ void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
         media->timeZone = slice.timeZone;
     }
 
-    media->currentTime = slice.currentTime;
-
     media->duration = duration;
 
     media->timeB = timeB;
@@ -1961,8 +1962,7 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.vbml = vbml;
 
-        slice.currentTime = -1;
-        slice.duration    = -1;
+        slice.duration = -1;
 
         slice.timeA = -1;
         slice.timeB = -1;
@@ -2051,8 +2051,7 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.timeZone = timeZone;
 
-        slice.currentTime = currentTime;
-        slice.duration    = duration;
+        slice.duration = duration;
 
         slice.timeA = timeA;
         slice.timeB = timeB;
@@ -2073,36 +2072,39 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.expiry = source.expiry;
 
-        appendSlice(slice, url, mode);
-
-        if (cache && urlSource != url && medias.count())
+        // NOTE: If the currentTime was updated we don't cache.
+        if (media->time == currentTime)
         {
-            slice.urlSource = QString();
+            appendSlice(slice, url, mode);
 
-            slice.type = typeSource;
+            if (cache && urlSource != url && medias.count())
+            {
+                slice.urlSource = QString();
 
-            slice.vbml = false;
+                slice.type = typeSource;
 
-            slice.timeZone = QString();
+                slice.vbml = false;
 
-            slice.currentTime = -1;
-            slice.duration    = -1;
+                slice.timeZone = QString();
 
-            slice.timeA = -1;
-            slice.timeB = -1;
+                slice.duration = -1;
 
-            slice.start = 0;
+                slice.timeA = -1;
+                slice.timeB = -1;
 
-            slice.context   = QString();
-            slice.contextId = QString();
+                slice.start = 0;
 
-            slice.chapters = QList<WChapter>();
+                slice.context   = QString();
+                slice.contextId = QString();
 
-            slice.ambient = QString();
+                slice.chapters = QList<WChapter>();
 
-            slice.subtitles = QList<WSubtitle>();
+                slice.ambient = QString();
 
-            appendSlice(slice, urlSource, mode);
+                slice.subtitles = QList<WSubtitle>();
+
+                appendSlice(slice, urlSource, mode);
+            }
         }
 
         foreach (WMediaReply * reply, media->replies)
@@ -2944,8 +2946,9 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
             reply->_timeZone = slice->timeZone;
 
-            reply->_currentTime = slice->currentTime;
-            reply->_duration    = slice->duration;
+            reply->_currentTime = currentTime;
+
+            reply->_duration = slice->duration;
 
             reply->_timeA = slice->timeA;
             reply->_timeB = slice->timeB;
