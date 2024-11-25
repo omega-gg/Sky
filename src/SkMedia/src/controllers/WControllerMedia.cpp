@@ -1778,7 +1778,7 @@ void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
 
     WTrack::Type typeSource = data.typeSource;
 
-    if (typeSource)
+    if (typeSource > WTrack::Track)
     {
         media->typeSource = typeSource;
     }
@@ -1842,7 +1842,7 @@ void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
 
     WTrack::Type typeSource = slice.typeSource;
 
-    if (typeSource)
+    if (typeSource > WTrack::Track)
     {
         media->typeSource = typeSource;
     }
@@ -2235,6 +2235,8 @@ bool WControllerMediaPrivate::applyCache(WPrivateMediaData            * media,
     const WPrivateMediaSlice * slice = getSlice(source, mode, media->currentTime);
 
     if (slice == NULL) return false;
+
+    // NOTE: The typeSource has to be propagated corretly.
 
     applyDataSlice(media, *slice);
 
