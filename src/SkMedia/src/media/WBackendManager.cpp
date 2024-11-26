@@ -323,14 +323,14 @@ void WBackendManagerPrivate::applySources(bool play)
 
     WTrack::Type typeRoot = reply->type();
 
-    // NOTE VLC: An image is played like a hub to avoid the 10 seconds duration.
-    /*if (WControllerFile::urlIsImage(currentMedia))
+    hub = (reply->typeSource() == WTrack::Hub);
+
+    // NOTE VLC: An image is played like a hub at the backend level to avoid a bug when seeking
+    //           beyond 10 seconds.
+    if (WControllerFile::urlIsImage(currentMedia))
     {
         reply->setTypeSource(WTrack::Hub);
-
-        hub = true;
     }
-    else */hub = (reply->typeSource() == WTrack::Hub);
 
     timeA = time;
 

@@ -65,6 +65,15 @@ public: // Enums
 public:
     explicit WModelPlaylist(QObject * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE int idAt   (int index) const;
+    Q_INVOKABLE int indexAt(int index) const;
+
+    Q_INVOKABLE int indexFromId   (int id)    const;
+    Q_INVOKABLE int indexFromIndex(int index) const;
+
+    Q_INVOKABLE int indexFromRole(int role, const QVariant & value) const;
+
 public: // QAbstractItemModel implementation
     /* virtual */ int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
@@ -129,7 +138,8 @@ public: // Interface
     Q_INVOKABLE int idAt   (int index) const;
     Q_INVOKABLE int indexAt(int index) const;
 
-    Q_INVOKABLE int indexFromId(int id) const;
+    Q_INVOKABLE int indexFromId   (int id)    const;
+    Q_INVOKABLE int indexFromIndex(int index) const;
 
     Q_INVOKABLE int indexFromRole(int role, const QVariant & value) const;
 

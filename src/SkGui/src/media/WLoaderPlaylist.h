@@ -62,6 +62,10 @@ class SK_GUI_EXPORT WLoaderPlaylist : public QObject, public WPrivatable
 
     Q_ENUMS(Action)
 
+    Q_PROPERTY(WLibraryFolder * folder READ folder CONSTANT)
+
+    Q_PROPERTY(int id READ id CONSTANT)
+
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
 
 public: // Enums
@@ -107,6 +111,10 @@ signals:
     void runningChanged();
 
 public: // Properties
+    WLibraryFolder * folder() const;
+
+    int id() const;
+
     bool isRunning() const;
     void setRunning(bool running);
 

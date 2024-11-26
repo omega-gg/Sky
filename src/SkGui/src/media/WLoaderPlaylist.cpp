@@ -459,12 +459,26 @@ void WLoaderPlaylist::setQueryLoading(bool loading)
 
     if (d->item == NULL) return;
 
-    d->item->d_func()->setQueryLoading(loading);
+    if (loading)
+    {
+         d->item->d_func()->setQueryLoading(true);
+    }
+    else d->item->d_func()->setQueryFinished();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
+
+WLibraryFolder * WLoaderPlaylist::folder() const
+{
+    Q_D(const WLoaderPlaylist); return d->folder;
+}
+
+int WLoaderPlaylist::id() const
+{
+    Q_D(const WLoaderPlaylist); return d->id;
+}
 
 bool WLoaderPlaylist::isRunning() const
 {

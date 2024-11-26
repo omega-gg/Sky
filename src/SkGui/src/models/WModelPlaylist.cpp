@@ -71,6 +71,56 @@ void WModelPlaylistPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WModelPlaylist::idAt(int index) const
+{
+    Q_D(const WModelPlaylist);
+
+    if (d->playlist)
+    {
+        return d->playlist->idAt(index);
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ int WModelPlaylist::indexAt(int index) const
+{
+    return index;
+}
+
+/* Q_INVOKABLE */ int WModelPlaylist::indexFromId(int id) const
+{
+    Q_D(const WModelPlaylist);
+
+    if (d->playlist)
+    {
+        return d->playlist->indexFromId(id);
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ int WModelPlaylist::indexFromIndex(int index) const
+{
+    return index;
+}
+
+/* Q_INVOKABLE */ int WModelPlaylist::indexFromRole(int role,
+                                                    const QVariant & value) const
+{
+    QModelIndex index = this->index(0, 0);
+
+    QModelIndexList indexes = match(index, role, value, 1, Qt::MatchExactly);
+
+    if (indexes.isEmpty())
+    {
+        return -1;
+    }
+    else return indexes.first().row();
+}
+
+//-------------------------------------------------------------------------------------------------
 // QAbstractItemModel implementation
 //-------------------------------------------------------------------------------------------------
 
@@ -341,6 +391,17 @@ void WModelPlaylistFilteredPrivate::init()
     return indexFromRole(WModelPlaylist::RoleId, id);
 }
 
+/* Q_INVOKABLE */ int WModelPlaylistFiltered::indexFromIndex(int index) const
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist)
+    {
+        return indexFromId(playlist->idAt(index));
+    }
+    else return -1;
+}
+
 /* Q_INVOKABLE */ int WModelPlaylistFiltered::indexFromRole(int role,
                                                             const QVariant & value) const
 {
@@ -350,7 +411,7 @@ void WModelPlaylistFilteredPrivate::init()
 
     if (indexes.isEmpty())
     {
-         return -1;
+        return -1;
     }
     else return indexes.first().row();
 }
