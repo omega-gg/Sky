@@ -1972,10 +1972,12 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     if (d->dragging) return;
 
 #ifdef QT_4
-    d->scene->mouseGrabberItem()->ungrabMouse();
+    QGraphicsItem * item = d->scene->mouseGrabberItem();
 #else
-    mouseGrabberItem()->ungrabMouse();
+    QQuickItem * item = mouseGrabberItem();
 #endif
+
+    if (item) item->ungrabMouse();
 
     clearHover();
 
