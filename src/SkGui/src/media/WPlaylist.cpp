@@ -1736,15 +1736,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(const WPlaylist);
 
-    int closest = -1;
-
     QList<int> selected = d->getSelected();
+
+    if (selected.isEmpty()) return -1;
+
+    int closest = selected.first();
 
     foreach (int selectedIndex, selected)
     {
-        if (closest == -1 || (selectedIndex != index
-                              &&
-                              qAbs(index - selectedIndex) < qAbs(index - closest)))
+        if (selectedIndex != index
+            &&
+            qAbs(index - selectedIndex) < qAbs(index - closest))
         {
             closest = selectedIndex;
         }
@@ -2886,56 +2888,6 @@ void WPlaylist::setCurrentTime(int msec)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ int WPlaylist::firstSelected() const
-{
-    Q_D(const WPlaylist);
-
-    if (d->selectedTracks.isEmpty())
-    {
-         return -1;
-    }
-    else return indexOf(d->selectedTracks.first());
-}
-
-/* Q_INVOKABLE */ int WPlaylist::lastSelected() const
-{
-    Q_D(const WPlaylist);
-
-    if (d->selectedTracks.isEmpty())
-    {
-         return -1;
-    }
-    else return indexOf(d->selectedTracks.last());
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WPlaylist::selectedAligned() const
-{
-    Q_D(const WPlaylist);
-
-    QList<int> selected = d->getSelected();
-
-    if (selected.count() == 1) return true;
-
-    int lastIndex = -1;
-
-    foreach (int index, selected)
-    {
-        if (lastIndex != -1)
-        {
-            if (lastIndex != index) return false;
-
-            lastIndex++;
-        }
-        else lastIndex = index + 1;
-    }
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 int WPlaylist::count() const
 {
     Q_D(const WPlaylist); return d->tracks.count();
@@ -3022,6 +2974,52 @@ void WPlaylist::setSelectedTracks(const QList<int> & indexes)
 
         d->emitSelectedTracksChanged(changed);
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WPlaylist::firstSelected() const
+{
+    Q_D(const WPlaylist);
+
+    if (d->selectedTracks.isEmpty())
+    {
+         return -1;
+    }
+    else return indexOf(d->selectedTracks.first());
+}
+
+/* Q_INVOKABLE */ int WPlaylist::lastSelected() const
+{
+    Q_D(const WPlaylist);
+
+    if (d->selectedTracks.isEmpty())
+    {
+         return -1;
+    }
+    else return indexOf(d->selectedTracks.last());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WPlaylist::selectedAligned() const
+{
+    Q_D(const WPlaylist);
+
+    QList<int> selected = d->getSelected();
+
+    if (selected.isEmpty()) return false;
+
+    int at = selected.first();
+
+    foreach (int index, selected)
+    {
+        if (index != at) return false;
+
+        at++;
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

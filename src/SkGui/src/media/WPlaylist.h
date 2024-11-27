@@ -88,11 +88,6 @@ class SK_GUI_EXPORT WPlaylist : public WLibraryItem
 
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentTimeChanged)
 
-    Q_PROPERTY(int firstSelected READ firstSelected NOTIFY selectedTracksChanged)
-    Q_PROPERTY(int lastSelected  READ lastSelected  NOTIFY selectedTracksChanged)
-
-    Q_PROPERTY(bool selectedAligned READ selectedAligned NOTIFY selectedTracksChanged)
-
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 
     Q_PROPERTY(int maxCount READ maxCount WRITE setMaxCount NOTIFY maxCountChanged)
@@ -105,6 +100,11 @@ class SK_GUI_EXPORT WPlaylist : public WLibraryItem
 
     Q_PROPERTY(QList<int> selectedTracks READ selectedTracks WRITE setSelectedTracks
                NOTIFY selectedTracksChanged)
+
+    Q_PROPERTY(int firstSelected READ firstSelected NOTIFY selectedTracksChanged)
+    Q_PROPERTY(int lastSelected  READ lastSelected  NOTIFY selectedTracksChanged)
+
+    Q_PROPERTY(bool selectedAligned READ selectedAligned NOTIFY selectedTracksChanged)
 
     Q_PROPERTY(int     selectedCount   READ selectedCount   NOTIFY selectedTracksChanged)
     Q_PROPERTY(QString selectedSources READ selectedSources NOTIFY selectedTracksChanged)
@@ -407,11 +407,6 @@ public: // Properties
     int  currentTime() const;
     void setCurrentTime(int msec);
 
-    int firstSelected() const;
-    int lastSelected () const;
-
-    bool selectedAligned() const;
-
     int count() const;
 
     int  maxCount() const;
@@ -425,6 +420,11 @@ public: // Properties
 
     QList<int> selectedTracks() const;
     void       setSelectedTracks(const QList<int> & indexes);
+
+    int firstSelected() const;
+    int lastSelected () const;
+
+    bool selectedAligned() const;
 
     int     selectedCount  () const;
     QString selectedSources() const;

@@ -120,6 +120,45 @@ void WModelPlaylistPrivate::init()
     else return indexes.first().row();
 }
 
+/* Q_INVOKABLE */ void WModelPlaylist::selectTrack(int index)
+{
+    Q_D(WModelPlaylist);
+
+    if (d->playlist) d->playlist->selectTrack(index);
+}
+
+/* Q_INVOKABLE */ void WModelPlaylist::selectTracks(int from, int to)
+{
+    Q_D(WModelPlaylist);
+
+    if (d->playlist) d->playlist->selectTracks(from, to);
+}
+
+/* Q_INVOKABLE */ void WModelPlaylist::unselectTrack(int index)
+{
+    Q_D(WModelPlaylist);
+
+    if (d->playlist) d->playlist->unselectTrack(index);
+}
+
+/* Q_INVOKABLE */ void WModelPlaylist::unselectTracks()
+{
+    Q_D(WModelPlaylist);
+
+    if (d->playlist) d->playlist->unselectTracks();
+}
+
+/* Q_INVOKABLE */ int WModelPlaylist::closestSelected(int index) const
+{
+    Q_D(const WModelPlaylist);
+
+    if (d->playlist)
+    {
+        return d->playlist->closestSelected(index);
+    }
+    else return -1;
+}
+
 //-------------------------------------------------------------------------------------------------
 // QAbstractItemModel implementation
 //-------------------------------------------------------------------------------------------------
@@ -293,7 +332,12 @@ void WModelPlaylist::setPlaylist(WPlaylist * playlist)
 
     if (d->playlist == playlist) return;
 
-    if (d->playlist) d->playlist->unregisterWatcher(this);
+    if (d->playlist)
+    {
+        disconnect(d->playlist, 0, this, 0);
+
+        d->playlist->unregisterWatcher(this);
+    }
 
     beginResetModel();
 
@@ -303,13 +347,46 @@ void WModelPlaylist::setPlaylist(WPlaylist * playlist)
 
     if (d->playlist)
     {
-        d->playlist->registerWatcher(this);
+        playlist->registerWatcher(this);
 
-        d->oldTrack = d->playlist->currentTrackPointer();
+        d->oldTrack = playlist->currentTrackPointer();
+
+        connect(playlist, SIGNAL(selectedTracksChanged()), this, SIGNAL(selectedTracksChanged()));
     }
     else d->oldTrack = NULL;
 
     emit playlistChanged();
+}
+
+QList<int> WModelPlaylist::selectedTracks() const
+{
+    Q_D(const WModelPlaylist);
+
+    if (d->playlist)
+    {
+        return d->playlist->selectedTracks();
+    }
+    else return QList<int>();
+}
+
+void WModelPlaylist::setSelectedTracks(const QList<int> & indexes)
+{
+    Q_D(WModelPlaylist);
+
+    if (d->playlist == NULL) return;
+
+    d->playlist->setSelectedTracks(indexes);
+}
+
+bool WModelPlaylist::selectedAligned() const
+{
+    Q_D(const WModelPlaylist);
+
+    if (d->playlist)
+    {
+        return d->playlist->selectedAligned();
+    }
+    else return false;
 }
 
 //=================================================================================================
@@ -416,6 +493,74 @@ void WModelPlaylistFilteredPrivate::init()
     else return indexes.first().row();
 }
 
+/* Q_INVOKABLE */ void WModelPlaylistFiltered::selectTrack(int index)
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist) playlist->selectTrack(indexAt(index));
+}
+
+/* Q_INVOKABLE */ void WModelPlaylistFiltered::selectTracks(int from, int to)
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist == NULL) return;
+
+    if (from < to)
+    {
+        while (from <= to)
+        {
+            playlist->selectTrack(indexAt(from));
+
+            from++;
+        }
+    }
+    else
+    {
+        while (to <= from)
+        {
+            playlist->selectTrack(indexAt(to));
+
+            to++;
+        }
+    }
+}
+
+/* Q_INVOKABLE */ void WModelPlaylistFiltered::unselectTrack(int index)
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist) playlist->unselectTrack(indexAt(index));
+}
+
+/* Q_INVOKABLE */ void WModelPlaylistFiltered::unselectTracks()
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist) playlist->unselectTracks();
+}
+
+/* Q_INVOKABLE */ int WModelPlaylistFiltered::closestSelected(int index) const
+{
+    QList<int> selected = selectedTracks();
+
+    if (selected.isEmpty()) return -1;
+
+    int closest = selected.first();
+
+    foreach (int selectedIndex, selected)
+    {
+        if (selectedIndex != index
+            &&
+            qAbs(index - selectedIndex) < qAbs(index - closest))
+        {
+            closest = selectedIndex;
+        }
+    }
+
+    return closest;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
@@ -440,6 +585,8 @@ void WModelPlaylistFiltered::setModel(WModelPlaylist * model)
         setSourceModel(model);
 
         connect(model, SIGNAL(playlistChanged()), this, SIGNAL(playlistChanged()));
+
+        connect(model, SIGNAL(selectedTracksChanged()), this, SIGNAL(selectedTracksChanged()));
 
         if (sortRole()) sort(0, d->sortOrder);
     }
@@ -481,6 +628,62 @@ void WModelPlaylistFiltered::setSortOrder(Qt::SortOrder order)
     if (sortRole()) sort(0, order);
 
     emit sortOrderChanged();
+}
+
+QList<int> WModelPlaylistFiltered::selectedTracks() const
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist == NULL) return QList<int>();
+
+    QList<int> selected = playlist->selectedTracks();
+
+    if (selected.isEmpty()) return QList<int>();
+
+    QList<int> list;
+
+    foreach (int index, selected)
+    {
+        list.append(indexFromIndex(index));
+    }
+
+    std::sort(list.begin(), list.end());
+
+    return list;
+}
+
+void WModelPlaylistFiltered::setSelectedTracks(const QList<int> & indexes)
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist == NULL) return;
+
+    QList<int> list;
+
+    foreach (int index, indexes)
+    {
+        list.append(indexAt(index));
+    }
+
+    playlist->setSelectedTracks(list);
+}
+
+bool WModelPlaylistFiltered::selectedAligned() const
+{
+    QList<int> selected = selectedTracks();
+
+    if (selected.isEmpty()) return false;
+
+    int at = selected.first();
+
+    foreach (int index, selected)
+    {
+        if (index != at) return false;
+
+        at++;
+    }
+
+    return true;
 }
 
 #endif // SK_NO_MODELPLAYLIST
