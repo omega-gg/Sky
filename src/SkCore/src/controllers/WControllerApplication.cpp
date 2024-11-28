@@ -1726,13 +1726,13 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::extractMessage(const QString & message)
 {
-    int index = message.lastIndexOf(' ');
+    QStringList list = message.split(' ', Qt::SkipEmptyParts);
 
-    if (index == -1)
+    if (list.count() < 2)
     {
         return QString();
     }
-    else return message.mid(index + 1);
+    else return list.at(1);
 }
 
 //-------------------------------------------------------------------------------------------------
