@@ -323,15 +323,6 @@ void WBackendManagerPrivate::applySources(bool play)
 
     WTrack::Type typeRoot = reply->type();
 
-    // NOTE VLC: An image is played like a hub to avoid a bug when seeking beyond 10 seconds.
-    if (WControllerFile::urlIsImage(currentMedia))
-    {
-        reply->setTypeSource(WTrack::Hub);
-
-        hub = true;
-    }
-    else hub = (reply->typeSource() == WTrack::Hub);
-
     timeA = time;
 
     timeB = reply->timeB();
@@ -343,6 +334,16 @@ void WBackendManagerPrivate::applySources(bool play)
         type = Channel;
 
         timeZone = reply->timeZone();
+
+        // NOTE VLC: An image is played like a hub at the backend level to avoid a bug when seeking
+        //           beyond 10 seconds.
+        if (WControllerFile::urlIsImage(currentMedia))
+        {
+            hub = true;
+
+            reply->setTypeSource(WTrack::Hub);
+        }
+        else hub = (reply->typeSource() == WTrack::Hub);
 
         loop = true;
 
@@ -360,6 +361,25 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         type = Interactive;
 
+        // NOTE VLC: An image is played like a hub at the backend level to avoid a bug when seeking
+        //           beyond 10 seconds.
+        if (WControllerFile::urlIsImage(currentMedia))
+        {
+            hub = true;
+
+            // NOTE: In interactive mode we loop on the last hub, we only want to do that if the
+            //       image is a genuine hub.
+            loop = (reply->typeSource() == WTrack::Hub);
+
+            reply->setTypeSource(WTrack::Hub);
+        }
+        else
+        {
+            hub = (reply->typeSource() == WTrack::Hub);
+
+            loop = true;
+        }
+
         q->setDuration(reply->duration());
 
         q->setCurrentTime(reply->currentTime());
@@ -369,6 +389,16 @@ void WBackendManagerPrivate::applySources(bool play)
     else
     {
         type = MultiTrack;
+
+        // NOTE VLC: An image is played like a hub at the backend level to avoid a bug when seeking
+        //           beyond 10 seconds.
+        if (WControllerFile::urlIsImage(currentMedia))
+        {
+            hub = true;
+
+            reply->setTypeSource(WTrack::Hub);
+        }
+        else hub = (reply->typeSource() == WTrack::Hub);
 
         loop = (typeRoot == WTrack::Hub);
 
@@ -497,7 +527,7 @@ bool WBackendManagerPrivate::applyNext(int time)
     {
         if (type == Interactive)
         {
-            if (hub == false && timeB == duration)
+            if ((hub == false || loop == false) && timeB == duration)
             {
                 pauseBackend();
 

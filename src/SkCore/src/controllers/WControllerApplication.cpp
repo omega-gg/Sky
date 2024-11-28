@@ -1726,7 +1726,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::extractMessage(const QString & message)
 {
-    QStringList list = message.split(' ', Qt::SkipEmptyParts);
+    QStringList list = split(message, ' ');
 
     if (list.count() < 2)
     {
