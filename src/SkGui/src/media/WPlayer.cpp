@@ -1665,34 +1665,6 @@ void WPlayer::updateFrame()
     Q_D(WPlayer); d->onHighlightedTabChanged();
 }
 
-/* Q_INVOKABLE */ QVariantList WPlayer::chaptersData(bool sort) const
-{
-    QVariantList list;
-
-    QList<WChapter> chapters = this->chapters();
-
-    if (sort) std::sort(chapters.begin(), chapters.end(), sortChapter);
-
-    foreach (const WChapter & chapter, chapters)
-    {
-        list.append(chapter.toMap());
-    }
-
-    return list;
-}
-
-/* Q_INVOKABLE */ QVariantList WPlayer::subtitlesData() const
-{
-    QVariantList list;
-
-    foreach (const WSubtitle & subtitle, subtitles())
-    {
-        list.append(subtitle.toMap());
-    }
-
-    return list;
-}
-
 //---------------------------------------------------------------------------------------------
 // Tracks
 
@@ -1760,6 +1732,37 @@ void WPlayer::updateFrame()
          return d->backend->audioName(id);
     }
     else return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
+// QML
+
+/* Q_INVOKABLE */ QVariantList WPlayer::chaptersData(bool sort) const
+{
+    QVariantList list;
+
+    QList<WChapter> chapters = this->chapters();
+
+    if (sort) std::sort(chapters.begin(), chapters.end(), sortChapter);
+
+    foreach (const WChapter & chapter, chapters)
+    {
+        list.append(chapter.toMap());
+    }
+
+    return list;
+}
+
+/* Q_INVOKABLE */ QVariantList WPlayer::subtitlesData() const
+{
+    QVariantList list;
+
+    foreach (const WSubtitle & subtitle, subtitles())
+    {
+        list.append(subtitle.toMap());
+    }
+
+    return list;
 }
 
 //-------------------------------------------------------------------------------------------------

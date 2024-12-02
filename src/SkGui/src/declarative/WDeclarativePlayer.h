@@ -149,11 +149,13 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
     Q_PROPERTY(QString contextId READ contextId NOTIFY contextChanged)
 
-    Q_PROPERTY(QList<WChapter> chapters READ chapters NOTIFY chaptersChanged)
+    Q_PROPERTY(QList<WChapter> chapters     READ chapters     NOTIFY chaptersChanged)
+    Q_PROPERTY(QVariantList    chaptersData READ chaptersData NOTIFY chaptersChanged)
 
     Q_PROPERTY(QString ambient READ ambient NOTIFY ambientChanged)
 
-    Q_PROPERTY(QList<WSubtitle> subtitles READ subtitles NOTIFY subtitlesChanged)
+    Q_PROPERTY(QList<WSubtitle> subtitles     READ subtitles     NOTIFY subtitlesChanged)
+    Q_PROPERTY(QVariantList     subtitlesData READ subtitlesData NOTIFY subtitlesChanged)
 
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
@@ -244,10 +246,6 @@ public: // Interface
 
     Q_INVOKABLE void updateHighlightedTab();
 
-    Q_INVOKABLE QVariantList chaptersData(bool sort = true) const;
-
-    Q_INVOKABLE QVariantList subtitlesData() const;
-
     //---------------------------------------------------------------------------------------------
     // Tracks
 
@@ -259,6 +257,13 @@ public: // Interface
 
     Q_INVOKABLE QString videoName(int id) const;
     Q_INVOKABLE QString audioName(int id) const;
+
+    //---------------------------------------------------------------------------------------------
+    // QML
+
+    Q_INVOKABLE QVariantList chaptersData(bool sort = true) const;
+
+    Q_INVOKABLE QVariantList subtitlesData() const;
 
 public: // Virtual interface
     // NOTE: You can override the source and the currentTime. When passing -2 we skip the

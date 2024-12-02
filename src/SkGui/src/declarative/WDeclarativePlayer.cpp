@@ -337,20 +337,6 @@ void WDeclarativePlayer::updateFrame()
     return d->player->updateHighlightedTab();
 }
 
-/* Q_INVOKABLE */ QVariantList WDeclarativePlayer::chaptersData(bool sort) const
-{
-    Q_D(const WDeclarativePlayer);
-
-    return d->player->chaptersData(sort);
-}
-
-/* Q_INVOKABLE */ QVariantList WDeclarativePlayer::subtitlesData() const
-{
-    Q_D(const WDeclarativePlayer);
-
-    return d->player->subtitlesData();
-}
-
 //---------------------------------------------------------------------------------------------
 // Tracks
 
@@ -394,6 +380,23 @@ void WDeclarativePlayer::updateFrame()
     Q_D(const WDeclarativePlayer);
 
     return d->player->audioName(id);
+}
+
+//-------------------------------------------------------------------------------------------------
+// QML
+
+/* Q_INVOKABLE */ QVariantList WDeclarativePlayer::chaptersData(bool sort) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    return d->player->chaptersData(sort);
+}
+
+/* Q_INVOKABLE */ QVariantList WDeclarativePlayer::subtitlesData() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    return d->player->subtitlesData();
 }
 
 //-------------------------------------------------------------------------------------------------
