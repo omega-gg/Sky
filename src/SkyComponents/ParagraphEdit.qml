@@ -52,8 +52,6 @@ Item
     property alias isFocused: textEdit.isFocused
     property alias isHovered: textEdit.isHovered
 
-    property alias radius: background.radius
-
     property alias text: textEdit.text
 
     //---------------------------------------------------------------------------------------------
@@ -139,8 +137,6 @@ Item
 //#ELSE
         anchors.margins: -borderSizeFocus
 //#END
-
-        radius: background.radius
 
         z: -1
 
