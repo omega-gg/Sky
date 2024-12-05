@@ -116,6 +116,8 @@ LineEditValue    1.0 LineEditValue.qml
 LineEditBox      1.0 LineEditBox.qml
 LineEditBoxClear 1.0 LineEditBoxClear.qml
 
+ParagraphEdit 1.0 ParagraphEdit.qml
+
 Console 1.0 Console.qml
 
 ColumnScroll 1.0 ColumnScroll.qml
