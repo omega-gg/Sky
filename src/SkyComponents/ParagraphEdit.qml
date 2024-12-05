@@ -31,14 +31,6 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 8
-
-//#QT_4
-    property int radius: (height - margins * 2) / 5
-//#ELSE
-    property int radius: background.height / 5
-//#END
-
     property int borderSize     : st.border_size
     property int borderSizeFocus: st.border_sizeFocus
 
@@ -55,6 +47,15 @@ Item
 
     //---------------------------------------------------------------------------------------------
     // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias isFocused: textEdit.isFocused
+    property alias isHovered: textEdit.isHovered
+
+    property alias radius: background.radius
+
+    property alias text: textEdit.text
+
     //---------------------------------------------------------------------------------------------
 
     property alias padding: textEdit.padding
@@ -139,7 +140,7 @@ Item
         anchors.margins: -borderSizeFocus
 //#END
 
-        radius: Math.round(paragraphEdit.radius * (height / background.height))
+        radius: background.radius
 
         z: -1
 
@@ -152,7 +153,7 @@ Item
 //#END
 
         border.width: borderSize + borderSizeFocus
-        border.color: colorTextSelection
+        border.color: textEdit.colorTextSelection
     }
 
     Rectangle
@@ -160,10 +161,6 @@ Item
         id: background
 
         anchors.fill: parent
-
-        anchors.margins: margins
-
-        radius: paragraphEdit.radius
 
         z: -1
 
@@ -208,8 +205,6 @@ Item
 //#ELSE
             height: Math.max(paragraphEdit.height, contentHeight)
 //#END
-
-            padding: st.lineEdit_padding
         }
     }
 }

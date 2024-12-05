@@ -47,6 +47,7 @@ MouseArea
     default property alias content: content.data
 
     property alias contentHeight: content.height
+    property alias contentY     : content.y
 
     property alias value   : scrollBar.value
     property alias position: scrollBar.position
