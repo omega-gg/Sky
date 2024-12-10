@@ -76,18 +76,6 @@ MouseArea
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function getItemX(index)
-    {
-        return Math.round(index * tabWidth);
-    }
-
-    function getItemWidth(index)
-    {
-        return tabWidth;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
     function calculateTabWidth(count)
     {
         var size = Math.min((width - borderSize) / count, tabMaximum);
@@ -135,13 +123,26 @@ MouseArea
     }
 
     //---------------------------------------------------------------------------------------------
+    // Virtual
 
-    function setItemHovered(item)
+    /* virtual */ function getItemX(index)
+    {
+        return Math.round(index * tabWidth);
+    }
+
+    /* virtual */ function getItemWidth(index)
+    {
+        return tabWidth;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    /* virtual */ function setItemHovered(item)
     {
         itemHovered = item;
     }
 
-    function clearItemHovered()
+    /* virtual */ function clearItemHovered()
     {
         itemHovered = null;
     }

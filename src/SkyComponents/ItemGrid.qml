@@ -25,7 +25,7 @@ import Sky     1.0
 
 Panel
 {
-    id: itemWall
+    id: itemGrid
 
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -34,8 +34,7 @@ Panel
     property bool isHovered: hoverActive
     property bool isCurrent: false
 
-    property int textSpacing: st.dp8
-    property int textMargin : st.dp8
+    property int textMargin: st.dp8
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -53,30 +52,7 @@ Panel
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias isIconDefault: itemIcon.isSourceDefault
-
     property alias image: itemImage.source
-
-    property alias icon       : itemIcon.source
-    property alias iconDefault: itemIcon.sourceDefault
-
-    property alias iconWidth : itemIcon.width
-    property alias iconHeight: itemIcon.height
-
-    property alias iconSourceSize : itemIcon.sourceSize
-    property alias iconDefaultSize: itemIcon.defaultSize
-
-    property alias iconSourceArea: itemIcon.sourceArea
-
-    property alias iconLoadMode: itemIcon.loadMode
-    property alias iconFillMode: itemIcon.fillMode
-
-    property alias iconAsynchronous: itemIcon.asynchronous
-    property alias iconCache       : itemIcon.cache
-
-    property alias iconScaling: itemIcon.scaling
-
-    property alias iconStyle: itemIcon.style
 
     property alias text: itemText.text
     property alias font: itemText.font
@@ -90,157 +66,24 @@ Panel
     property alias itemImage: itemImage
 
     property alias bar     : bar
-    property alias itemIcon: itemIcon
     property alias itemText: itemText
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property alias enableFilter: itemIcon.enableFilter
-
-    property alias filterIcon      : itemIcon.filterDefault
-    property alias filterIconShadow: itemIcon.filterShadow
-    property alias filterIconSunken: itemIcon.filterSunken
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.itemWall_width
-    height: st.itemWall_height
+    width : st.itemGrid_width
+    height: st.itemGrid_height
 
     cursor: Qt.PointingHandCursor
 
-    color: st.wallVideo_colorPlayer
+    color: st.itemGrid_color
 
     colorBorder:
     {
         if      (isCurrent) return colorBarSelectB;
         else if (isHovered) return colorBarHoverA;
         else                return st.border_color;
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Animations
-    //---------------------------------------------------------------------------------------------
-
-    Behavior on x
-    {
-//#QT_4
-        enabled: (isAnimated && index != indexStatic)
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-//#ELSE
-        enabled: (parent.isAnimated && index != parent.indexStatic)
-
-        PropertyAnimation
-        {
-            duration: parent.durationAnimation
-
-            easing.type: st.easing
-        }
-//#END
-    }
-
-    Behavior on y
-    {
-//#QT_4
-        enabled: (isAnimated && index != indexStatic)
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-//#ELSE
-        enabled: (parent.isAnimated && index != parent.indexStatic)
-
-        PropertyAnimation
-        {
-            duration: parent.durationAnimation
-
-            easing.type: st.easing
-        }
-//#END
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    Behavior on width
-    {
-//#QT_4
-        enabled: (isAnimated && index != indexStatic)
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-//#ELSE
-        enabled: (parent.isAnimated && index != parent.indexStatic)
-
-        PropertyAnimation
-        {
-            duration: parent.durationAnimation
-
-            easing.type: st.easing
-        }
-//#END
-    }
-
-    Behavior on height
-    {
-//#QT_4
-        enabled: (isAnimated && index != indexStatic)
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-//#ELSE
-        enabled: (parent.isAnimated && index != parent.indexStatic)
-
-        PropertyAnimation
-        {
-            duration: parent.durationAnimation
-
-            easing.type: st.easing
-        }
-//#END
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    Behavior on opacity
-    {
-//#QT_4
-        enabled: (isAnimated && index != indexStatic)
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-//#ELSE
-        enabled: (parent.isAnimated && index != parent.indexStatic)
-
-        PropertyAnimation
-        {
-            duration: parent.durationAnimation
-
-            easing.type: st.easing
-        }
-//#END
     }
 
     //---------------------------------------------------------------------------------------------
@@ -284,7 +127,7 @@ Panel
 
         anchors.bottom: parent.bottom
 
-        height: st.itemWall_barHeight
+        height: st.itemGrid_barHeight
 
         gradient: Gradient
         {
@@ -313,45 +156,18 @@ Panel
             }
         }
 
-        Icon
-        {
-            id: itemIcon
-
-            width : st.itemWall_iconWidth
-            height: st.itemWall_iconHeight
-
-            sourceSize: Qt.size(width, height)
-            sourceArea: Qt.size(width, height)
-
-            opacity: (itemWall.enabled) ? 1.0 : st.icon_opacityDisable
-
-            clip: (fillMode == Image.PreserveAspectCrop)
-
-            style: (isCurrent) ? st.icon_raised
-                               : st.icon_sunken
-
-            enableFilter: isSourceDefault
-
-            filterDefault: (isCurrent) ? st.icon2_filter
-                                       : st.icon1_filter
-        }
-
         TextBase
         {
             id: itemText
 
-            anchors.left : itemIcon.right
-            anchors.right: parent.right
+            anchors.fill: parent
 
-            anchors.top   : parent.top
-            anchors.bottom: parent.bottom
-
-            anchors.leftMargin : textSpacing
+            anchors.leftMargin : textMargin
             anchors.rightMargin: textMargin
 
             verticalAlignment: Text.AlignVCenter
 
-            opacity: (itemWall.enabled) ? 1.0 : st.text_opacityDisable
+            opacity: (itemGrid.enabled) ? 1.0 : st.text_opacityDisable
 
             color: (isCurrent) ? st.text2_color
                                : st.text1_color

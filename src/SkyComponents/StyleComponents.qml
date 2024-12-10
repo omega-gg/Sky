@@ -629,6 +629,14 @@ Style
     property int list_itemSize  : list_itemHeight + border_size
 //#END
 
+//#BaseGrid
+    //---------------------------------------------------------------------------------------------
+    // Grid
+
+    property int grid_itemWidth : dp240
+    property int grid_itemHeight: dp180
+//#END
+
 //#GridPlaylist
     //---------------------------------------------------------------------------------------------
     // GridPlaylist
@@ -974,6 +982,18 @@ Style
     property color itemList_colorTextHover   : text_color
     property color itemList_colorTextSelected: text2_color
     property color itemList_colorTextCurrent : text_colorCurrent
+//#END
+
+//#ItemGrid
+    //---------------------------------------------------------------------------------------------
+    // ItemGrid
+
+    property int itemGrid_width : grid_itemWidth
+    property int itemGrid_height: grid_itemHeight
+
+    property int itemGrid_barHeight: dp32
+
+    property color itemGrid_color: "black"
 //#END
 
 //#ItemTab

@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ComponentWall
+ComponentGrid
 {
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -32,15 +32,11 @@ ComponentWall
 //#QT_4
     property bool isContextualHovered: (index == indexHover && index == indexContextual)
 
-    property bool isHighlighted: (item == highlightedTab)
-
     property int logoMargin: itemContent.width / logoRatio
 //#ELSE
     property bool isContextualHovered: (index == parent.indexHover
                                         &&
                                         index == parent.indexContextual)
-
-    property bool isHighlighted: (item == parent.highlightedTab)
 
     property int logoMargin: itemContent.width / parent.logoRatio
 //#END
@@ -61,30 +57,8 @@ ComponentWall
     property color colorHighlightContextualB: st.itemTab_colorHighlightContextualB
 
     //---------------------------------------------------------------------------------------------
-    // Private
-
-    property bool pCurrent: (isCurrent || isHighlighted)
-
-    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
-
-    iconWidth: st.componentWallBookmarkTrack_iconWidth
-
-    iconDefaultSize: st.size16x16
-
-    z:
-    {
-//#QT_4
-        if (index == indexTop) return 3;
-//#ELSE
-        if (index == parent.indexTop) return 3;
-//#END
-        else if (isHighlighted)          return  2;
-        else if (isCurrent || isHovered) return  1;
-        else if (opacity == 1.0)         return  0;
-        else                             return -1;
-    }
 
 //#QT_4
     isHovered: (index == indexHover || index == indexContextual)
@@ -92,43 +66,17 @@ ComponentWall
     isHovered: (index == parent.indexHover || index == parent.indexContextual)
 //#END
 
-    isCurrent: (item == currentTab)
+    isCurrent: (index == indexPlayer)
 
-    image: item.coverShot
+    image: item.cover
 
-    icon: (item.cover == "") ? item.videoShot
-                             : item.cover
+    text: st.getTrackTitle(title, loadState, source)
 
-//#QT_4
-    iconDefault: baseWall.iconDefault
-//#ELSE
-    iconDefault: parent.iconDefault
-//#END
-
-    text:
-    {
-        if (item.title)
-        {
-            return item.title;
-        }
-        else if (item.isLoading)
-        {
-            return qsTr("Loading...");
-        }
-        else return qsTr("New Tab");
-    }
-
-    iconFillMode: Image.PreserveAspectCrop
-
-    iconCache: (item.cover != "")
-
-    acceptedButtons: Qt.NoButton
+    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
     itemImage.anchors.leftMargin: (itemImage.isSourceDefault) ? logoMargin : 0
 
     itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
-
-    itemImage.clip: (itemImage.fillMode == Image.PreserveAspectCrop)
 
 //#QT_4
     itemImage.sourceDefault: logo
@@ -136,9 +84,7 @@ ComponentWall
     itemImage.sourceDefault: parent.logo
 //#END
 
-    itemImage.fillMode: player.fillMode
-
-    itemImage.cache: false
+    itemImage.fillMode: Image.PreserveAspectFit
 
     itemImage.scaling: itemImage.isSourceDefault
 
@@ -150,13 +96,7 @@ ComponentWall
 
             color:
             {
-                if (isHighlighted)
-                {
-                    if      (isContextualHovered) return colorHighlightContextualA;
-                    else if (isHovered)           return colorHighlightHoverA;
-                    else                          return colorHighlightA;
-                }
-                else if (isCurrent)           return colorBarSelectA;
+                if      (isCurrent)           return colorBarSelectA;
                 else if (isContextualHovered) return colorBarContextualHoverA;
                 else if (isHovered)           return colorBarHoverA;
                 else                          return colorBarA;
@@ -169,13 +109,7 @@ ComponentWall
 
             color:
             {
-                if (isHighlighted)
-                {
-                    if      (isContextualHovered) return colorHighlightContextualB;
-                    else if (isHovered)           return colorHighlightHoverB;
-                    else                          return colorHighlightB;
-                }
-                else if (isCurrent)           return colorBarSelectB;
+                if      (isCurrent)           return colorBarSelectB;
                 else if (isContextualHovered) return colorBarContextualHoverB;
                 else if (isHovered)           return colorBarHoverB;
                 else                          return colorBarB;
@@ -197,7 +131,7 @@ ComponentWall
 //#ELSE
             color: (itemImage.isSourceDefault) ? parent.defaultColorA
 //#END
-                                               : st.componentWallBookmarkTrack_colorA
+                                               : st.itemGrid_color
         }
 
         GradientStop
@@ -209,40 +143,26 @@ ComponentWall
 //#ELSE
             color: (itemImage.isSourceDefault) ? parent.defaultColorB
 //#END
-                                               : st.componentWallBookmarkTrack_colorB
+                                               : st.itemGrid_color
         }
     }
 
     colorBorder:
     {
-        if (isHighlighted)
-        {
-            if      (isContextualHovered) return colorHighlightContextualA;
-            else if (isHovered)           return colorHighlightHoverA;
-            else                          return st.border_color;
-        }
-        else if (isCurrent)           return colorBarSelectB;
+        if      (isCurrent)           return colorBarSelectB;
         else if (isContextualHovered) return colorBarContextualHoverA;
         else if (isHovered)           return colorBarHoverA;
         else                          return st.border_color;
     }
 
-    textColor: (pCurrent) ? st.text2_color
-                          : st.text1_color
+    textColor: (isCurrent) ? st.text2_color
+                           : st.text1_color
 
     textStyle: (isCurrent) ? st.text_raised
                            : st.text_sunken
 
-    iconStyle: (isCurrent) ? st.icon_raised
-                           : st.icon_sunken
-
     textStyleColor: (isCurrent) ? st.text1_colorShadow
                                 : st.text1_colorSunken
-
-    filterIcon: (pCurrent) ? st.icon2_filter
-                           : st.icon1_filter
-
-    filterIconShadow: st.icon1_filterShadow
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -277,7 +197,7 @@ ComponentWall
 
         x: itemIcon.width
 
-        visible: (isCurrent == false && isHighlighted == false && item.currentTime > 0)
+        visible: (isCurrent == false && item.currentTime > 0)
 
         enabled: player.isPlaying
     }

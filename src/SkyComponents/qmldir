@@ -129,6 +129,7 @@ List           1.0 List.qml
 ListCompletion 1.0 ListCompletion.qml
 ListContextual 1.0 ListContextual.qml
 
+BaseGrid     1.0 BaseGrid.qml
 GridPlaylist 1.0 GridPlaylist.qml
 
 ScrollArea 1.0 ScrollArea.qml
@@ -162,6 +163,7 @@ WallVideo         1.0 WallVideo.qml
 PlayerBrowser 1.0 PlayerBrowser.qml
 
 ItemList 1.0 ItemList.qml
+ItemGrid 1.0 ItemGrid.qml
 ItemTab  1.0 ItemTab.qml
 ItemWall 1.0 ItemWall.qml
 
@@ -169,6 +171,8 @@ ComponentList              1.0 ComponentList.qml
 ComponentListFull          1.0 ComponentListFull.qml
 ComponentContextual        1.0 ComponentContextual.qml
 ComponentCompletion        1.0 ComponentCompletion.qml
+ComponentGrid              1.0 ComponentGrid.qml
+ComponentGridTrack         1.0 ComponentGridTrack.qml
 ComponentTab               1.0 ComponentTab.qml
 ComponentTabBrowser        1.0 ComponentTabBrowser.qml
 ComponentTabTrack          1.0 ComponentTabTrack.qml

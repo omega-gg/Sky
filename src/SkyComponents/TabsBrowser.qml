@@ -451,8 +451,9 @@ BaseTabs
     }
 
     //---------------------------------------------------------------------------------------------
+    // BaseTabs reimplementation
 
-    function getItemX(index)
+    /* virtual */ function getItemX(index)
     {
         if (indexMove != -1)
         {
@@ -469,16 +470,14 @@ BaseTabs
         return Math.round(index * currentTabWidth);
     }
 
-    function getItemWidth(index)
+    /* virtual */ function getItemWidth(index)
     {
         if      (indexAdd    == index) return 0;
         else if (indexRemove == index) return 0;
         else                           return currentTabWidth;
     }
 
-    //---------------------------------------------------------------------------------------------
-
-    function getItemMargin(index)
+    /* virtual */ function getItemMargin(index)
     {
         if (pButtonsVisible && indexActive == index)
         {

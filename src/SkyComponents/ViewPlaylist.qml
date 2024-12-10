@@ -103,7 +103,7 @@ Item
 
         anchors.rightMargin: (isScrollable) ? scrollBar.width : 0
 
-        autoScroll: false
+        delegate: ComponentGridTrack {}
 
         onHeightChanged: pUpdateRange()
 

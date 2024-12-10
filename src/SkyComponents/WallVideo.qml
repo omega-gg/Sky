@@ -291,7 +291,7 @@ WallBookmarkTrack
     //---------------------------------------------------------------------------------------------
     // WallBookmarkTrack reimplementation
 
-    function getItemBarMargin(index)
+    /* virtual */ function getItemBarMargin(index)
     {
         if (pButtonsVisible && indexActive == index)
         {
@@ -1276,8 +1276,8 @@ WallBookmarkTrack
         width : st.wallVideo_overlayWidth
         height: st.wallVideo_overlayHeight
 
-        x: (itemHovered) ? itemHovered.x + itemHovered.borderLeft + itemHovered.itemBar.x : 0
-        y: (itemHovered) ? itemHovered.y + itemHovered.borderTop  + itemHovered.itemBar.y : 0
+        x: (itemHovered) ? itemHovered.x + itemHovered.borderLeft + itemHovered.bar.x : 0
+        y: (itemHovered) ? itemHovered.y + itemHovered.borderTop  + itemHovered.bar.y : 0
 
         z: buttonsItem.z
 

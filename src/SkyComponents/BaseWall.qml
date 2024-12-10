@@ -215,34 +215,6 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
 
-    function getItemX(index)
-    {
-        return calculateItemX(index);
-    }
-
-    function getItemY(index)
-    {
-        return calculateItemY(index);
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function getItemWidth(index)
-    {
-        return itemWidth;
-    }
-
-    function getItemHeight(index)
-    {
-        return itemHeight;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function getItemBarMargin(index) { return st.dp8; }
-
-    //---------------------------------------------------------------------------------------------
-
     function calculateItemX(index)
     {
         if (index >= count) index--;
@@ -380,6 +352,33 @@ MouseArea
 
         updateView();
     }
+
+    //---------------------------------------------------------------------------------------------
+    // Virtual
+
+    /* virtual */ function getItemX(index)
+    {
+        return calculateItemX(index);
+    }
+
+    /* virtual */ function getItemY(index)
+    {
+        return calculateItemY(index);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    /* virtual */ function getItemWidth(index)
+    {
+        return itemWidth;
+    }
+
+    /* virtual */ function getItemHeight(index)
+    {
+        return itemHeight;
+    }
+
+    /* virtual */ function getItemBarMargin(index) { return st.dp8; }
 
     //---------------------------------------------------------------------------------------------
     // Private

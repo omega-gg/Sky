@@ -333,30 +333,6 @@ BaseWall
 
     //---------------------------------------------------------------------------------------------
 
-    function getItemVisible(index)
-    {
-        if (isActive == false)
-        {
-            return false;
-        }
-        else if (isAnimated || isChangingPage || isFixedSize)
-        {
-            return true;
-        }
-        else
-        {
-            var pageIndex = pageFromIndex(index);
-
-            if (pageIndex == currentPage)
-            {
-                 return true;
-            }
-            else return false;
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------
-
     function setIndexContextual(index)
     {
         var item = itemAt(index);
@@ -412,6 +388,71 @@ BaseWall
 
         dragXMargin = 0;
         dragYMargin = 0;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // BaseWall reimplementation
+
+    /* virtual */ function getItemX(index)
+    {
+        if (indexMove != -1)
+        {
+            if (index != indexDrag)
+            {
+                if (index >  indexDrag) index--;
+                if (index >= indexMove) index++;
+            }
+            else return dragX;
+        }
+
+        if (indexRemove != -1 && index > indexRemove)
+        {
+            index--;
+        }
+
+        return calculateItemX(index);
+    }
+
+    /* virtual */ function getItemY(index)
+    {
+        if (indexMove != -1)
+        {
+            if (index != indexDrag)
+            {
+                if (index >  indexDrag) index--;
+                if (index >= indexMove) index++;
+            }
+            else return dragY;
+        }
+
+        if (indexRemove != -1 && index > indexRemove)
+        {
+            index--;
+        }
+
+        return calculateItemY(index);
+    }
+
+    /* virtual */ function getItemVisible(index)
+    {
+        if (isActive == false)
+        {
+            return false;
+        }
+        else if (isAnimated || isChangingPage || isFixedSize)
+        {
+            return true;
+        }
+        else
+        {
+            var pageIndex = pageFromIndex(index);
+
+            if (pageIndex == currentPage)
+            {
+                 return true;
+            }
+            else return false;
+        }
     }
 
     //---------------------------------------------------------------------------------------------
@@ -497,48 +538,6 @@ BaseWall
         setPageFromIndex(tabs.currentIndex);
 
         pSilentAnimation = false;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function getItemX(index)
-    {
-        if (indexMove != -1)
-        {
-            if (index != indexDrag)
-            {
-                if (index >  indexDrag) index--;
-                if (index >= indexMove) index++;
-            }
-            else return dragX;
-        }
-
-        if (indexRemove != -1 && index > indexRemove)
-        {
-            index--;
-        }
-
-        return calculateItemX(index);
-    }
-
-    function getItemY(index)
-    {
-        if (indexMove != -1)
-        {
-            if (index != indexDrag)
-            {
-                if (index >  indexDrag) index--;
-                if (index >= indexMove) index++;
-            }
-            else return dragY;
-        }
-
-        if (indexRemove != -1 && index > indexRemove)
-        {
-            index--;
-        }
-
-        return calculateItemY(index);
     }
 
     //---------------------------------------------------------------------------------------------
