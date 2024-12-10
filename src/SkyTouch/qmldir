@@ -56,11 +56,13 @@ Console 1.0 Console.qml
 ColumnWide   1.0 ColumnWide.qml
 ColumnScroll 1.0 ColumnScroll.qml
 
+BaseList       1.0 BaseList.qml
 ListTouch      1.0 ListTouch.qml
 ListCompletion 1.0 ListCompletion.qml
 ListLoading    1.0 ListLoading.qml
 ListPlaylist   1.0 ListPlaylist.qml
 
+BaseGrid     1.0 BaseGrid.qml
 GridTouch    1.0 GridTouch.qml
 GridLoading  1.0 GridLoading.qml
 GridPlaylist 1.0 GridPlaylist.qml
