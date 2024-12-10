@@ -73,6 +73,15 @@ GridView
 
     //---------------------------------------------------------------------------------------------
 
+    function scrollToY(y)
+    {
+//#QT_4
+        contentY = 0;
+//#ELSE
+        contentY = originY + y;
+//#END
+    }
+
     function scrollToTop()
     {
 //#QT_4
@@ -105,5 +114,26 @@ GridView
 //#ELSE
         return originY + contentY;
 //#END
+    }
+
+    function getReloadIndex()
+    {
+        var count = Math.round(width / cellWidth);
+
+//#QT_4
+        return Math.floor(contentY / cellHeight) * count;
+//#ELSE
+        // NOTE: We substract origin because we want to ignore it.
+        return Math.floor((contentY - originY) / cellHeight) * count;
+//#END
+    }
+
+    function getReloadCount()
+    {
+        var count = Math.round(width / cellWidth);
+
+        // NOTE: We add 1 to cover the entire region when half a track is exposed at the top and
+        //       the bottom of the list.
+        return (Math.ceil(height / cellHeight) + 1) * count;
     }
 }

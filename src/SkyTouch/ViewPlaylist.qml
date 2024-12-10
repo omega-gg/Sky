@@ -78,10 +78,16 @@ Loader
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function selectTrack(index)
+    function showTrack(index)
     {
         if (type) item.positionViewAtIndex(index, ListView.Contain);
         else      item.positionViewAtIndex(index, GridView.Contain);
+    }
+
+    function showTrackBegin(index)
+    {
+        if (type) item.positionViewAtIndex(index, ListView.Beginning);
+        else      item.positionViewAtIndex(index, GridView.Beginning);
     }
 
     function getPreferredWidth(width)

@@ -629,6 +629,14 @@ Style
     property int list_itemSize  : list_itemHeight + border_size
 //#END
 
+//#GridPlaylist
+    //---------------------------------------------------------------------------------------------
+    // GridPlaylist
+
+    property int gridPlaylist_intervalLoad  :   200
+    property int gridPlaylist_intervalReload: 60000 // 1 minute
+//#END
+
 //#ScrollBar
     //---------------------------------------------------------------------------------------------
     // ScrollBar

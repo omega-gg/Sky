@@ -1,5 +1,7 @@
 StyleComponents 1.0 StyleComponents.qml
 
+ViewPlaylist 1.0 ViewPlaylist.qml
+
 PageSlide 1.0 PageSlide.qml
 PageWipe  1.0 PageWipe.qml
 
@@ -126,6 +128,8 @@ BaseList       1.0 BaseList.qml
 List           1.0 List.qml
 ListCompletion 1.0 ListCompletion.qml
 ListContextual 1.0 ListContextual.qml
+
+GridPlaylist 1.0 GridPlaylist.qml
 
 ScrollArea 1.0 ScrollArea.qml
 ScrollBar  1.0 ScrollBar.qml

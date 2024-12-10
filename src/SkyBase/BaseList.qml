@@ -73,6 +73,15 @@ ListView
 
     //---------------------------------------------------------------------------------------------
 
+    function scrollTo(y)
+    {
+//#QT_4
+        contentY = 0;
+//#ELSE
+        contentY = originY + y;
+//#END
+    }
+
     function scrollToTop()
     {
 //#QT_4

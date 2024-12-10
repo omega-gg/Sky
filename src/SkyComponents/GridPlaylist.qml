@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyTouch.
+    This file is part of SkyComponents.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-GridTouch
+BaseGrid
 {
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -32,14 +32,6 @@ GridTouch
     // FIXME Qt6: Strangely, when using a var property we might get a changed events several times
     //            for the same playlist.
     /* mandatory */ property Playlist playlist
-
-    property int coverWidth : st.gridPlaylist_coverWidth
-    property int coverHeight: st.gridPlaylist_coverHeight
-
-    property int spacingBottom: st.gridPlaylist_spacingBottom
-
-    property int padding  : st.gridPlaylist_padding
-    property int padding2x: padding * 2
 
     // NOTE: The minimum tracks to load.
     property int minimumLoad: 8
@@ -54,8 +46,8 @@ GridTouch
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    cellWidth : coverWidth  + padding2x + spacing
-    cellHeight: coverHeight + padding2x + st.buttonTouch_size + spacingBottom
+    //cellWidth : coverWidth  + padding2x + spacing
+    //cellHeight: coverHeight + padding2x + st.buttonTouch_size + spacingBottom
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -141,7 +133,7 @@ GridTouch
     {
         id: timerLoad
 
-        interval: st.listPlaylist_intervalLoad
+        interval: st.gridPlaylist_intervalLoad
 
         onTriggered: pApplyReload()
     }
@@ -151,7 +143,7 @@ GridTouch
     {
         id: timerReload
 
-        interval: st.listPlaylist_intervalReload
+        interval: st.gridPlaylist_intervalReload
 
         repeat: true
 
