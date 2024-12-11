@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Panel
+MouseArea
 {
     id: itemGrid
 
@@ -31,7 +31,11 @@ Panel
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property bool isFocused: activeFocus
+
+    property bool isPressed: (pressed && (pressedButtons & Qt.LeftButton))
     property bool isHovered: hoverActive
+
     property bool isCurrent: false
 
     property int textMargin: st.dp8
@@ -52,6 +56,19 @@ Panel
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias borderSize : borders.size
+    property alias borderColor: borders.color
+
+    property alias borderLeft  : borders.borderLeft
+    property alias borderRight : borders.borderRight
+    property alias borderTop   : borders.borderTop
+    property alias borderBottom: borders.borderBottom
+
+    property alias borderSizeWidth : borders.sizeWidth
+    property alias borderSizeHeight: borders.sizeHeight
+
+    property alias backgroundOpacity: background.opacity
+
     property alias image: itemImage.source
 
     property alias text: itemText.text
@@ -63,10 +80,22 @@ Panel
 
     //---------------------------------------------------------------------------------------------
 
+    property alias background: background
+
     property alias itemImage: itemImage
 
     property alias bar     : bar
     property alias itemText: itemText
+
+    property alias borders: borders
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias color   : background.color
+    property alias gradient: background.gradient
+
+    property alias colorBorder: borders.color
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -74,6 +103,9 @@ Panel
 
     width : st.itemGrid_width
     height: st.itemGrid_height
+
+    hoverEnabled: true
+    hoverRetain : hoverEnabled
 
     cursor: Qt.PointingHandCursor
 
@@ -90,21 +122,35 @@ Panel
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function getIndex() { return index; }
+    function setFocus() { forceActiveFocus() }
+
+    function getIndex() { return index }
 
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
+    Rectangle
+    {
+        id: background
+
+        anchors.fill: parent
+
+        color: st.panel_color
+    }
+
     ImageScale
     {
         id: itemImage
 
-        anchors.left : parent.left
-        anchors.right: parent.right
-
+        anchors.left  : parent.left
+        anchors.right : parent.right
         anchors.top   : parent.top
         anchors.bottom: border.top
+
+        anchors.leftMargin : borderLeft
+        anchors.rightMargin: borderRight
+        anchors.topMargin  : borderTop
 
         fillMode: Image.PreserveAspectFit
     }
@@ -122,10 +168,13 @@ Panel
     {
         id: bar
 
-        anchors.left : parent.left
-        anchors.right: parent.right
-
+        anchors.left  : parent.left
+        anchors.right : parent.right
         anchors.bottom: parent.bottom
+
+        anchors.leftMargin  : borderLeft
+        anchors.rightMargin : borderRight
+        anchors.bottomMargin: borderBottom
 
         height: st.itemGrid_barHeight
 
@@ -175,5 +224,14 @@ Panel
             style: (isCurrent) ? st.text_raised
                                : st.text_sunken
         }
+    }
+
+    RectangleBorders
+    {
+        id: borders
+
+        anchors.fill: parent
+
+        color: st.border_color
     }
 }

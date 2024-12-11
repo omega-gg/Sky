@@ -34,7 +34,7 @@ ComponentWall
 
     property bool isHighlighted: (item == highlightedTab)
 
-    property int logoMargin: itemContent.width / logoRatio
+    property int logoMargin: (width - borderSizeWidth) / logoRatio
 //#ELSE
     property bool isContextualHovered: (index == parent.indexHover
                                         &&
@@ -42,7 +42,7 @@ ComponentWall
 
     property bool isHighlighted: (item == parent.highlightedTab)
 
-    property int logoMargin: itemContent.width / parent.logoRatio
+    property int logoMargin: (width - borderSizeWidth) / parent.logoRatio
 //#END
 
     //---------------------------------------------------------------------------------------------

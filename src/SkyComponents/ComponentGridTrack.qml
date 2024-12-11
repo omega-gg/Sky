@@ -39,7 +39,7 @@ ComponentGrid
     /* read */ property int time    : -1
     /* read */ property int duration: -1
 
-    property int logoMargin: itemContent.width / view.logoRatio
+    property int logoMargin: (width - borderSizeWidth) / view.logoRatio
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -203,6 +203,8 @@ ComponentGrid
         id: bar
 
         anchors.bottom: parent.bottom
+
+        anchors.bottomMargin: borderBottom
 
         width: pGetBarWidth()
 
