@@ -43,7 +43,7 @@ MouseArea
 
     property bool enableAnimation: true
 
-    property bool asynchronous: false
+    property bool asynchronous: true
 
     //---------------------------------------------------------------------------------------------
     // Item size

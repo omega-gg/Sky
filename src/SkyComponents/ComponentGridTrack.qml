@@ -25,21 +25,21 @@ import Sky     1.0
 
 ComponentGrid
 {
+    id: componentGridTrack
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    property bool isContextualHovered: (index == indexHover && index == indexContextual)
-
-    property int logoMargin: itemContent.width / logoRatio
-//#ELSE
-    property bool isContextualHovered: (index == parent.indexHover
+    property bool isContextualHovered: (index == view.indexHover
                                         &&
-                                        index == parent.indexContextual)
+                                        index == view.indexContextual)
 
-    property int logoMargin: itemContent.width / parent.logoRatio
-//#END
+
+    /* read */ property int time    : -1
+    /* read */ property int duration: -1
+
+    property int logoMargin: itemContent.width / view.logoRatio
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -57,18 +57,26 @@ ComponentGrid
     property color colorHighlightContextualB: st.itemTab_colorHighlightContextualB
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    // NOTE: This is required for the onPSourceChanged event.
+    property string pSource: source
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onPSourceChanged: pUpdateTime()
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    isHovered: (index == indexHover || index == indexContextual)
-//#ELSE
-    isHovered: (index == parent.indexHover || index == parent.indexContextual)
-//#END
+    isHovered: (index == view.indexHover || index == view.indexContextual)
 
-    isCurrent: (index == indexPlayer)
+    //isCurrent: (index == indexPlayer)
 
-    image: item.cover
+    image: cover
 
     text: st.getTrackTitle(title, loadState, source)
 
@@ -78,11 +86,7 @@ ComponentGrid
 
     itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
 
-//#QT_4
-    itemImage.sourceDefault: logo
-//#ELSE
-    itemImage.sourceDefault: parent.logo
-//#END
+    itemImage.sourceDefault: view.logo
 
     itemImage.fillMode: Image.PreserveAspectFit
 
@@ -126,11 +130,7 @@ ComponentGrid
         {
             position: 0.0
 
-//#QT_4
-            color: (itemImage.isSourceDefault) ? defaultColorA
-//#ELSE
-            color: (itemImage.isSourceDefault) ? parent.defaultColorA
-//#END
+            color: (itemImage.isSourceDefault) ? view.defaultColorA
                                                : st.itemGrid_color
         }
 
@@ -138,11 +138,7 @@ ComponentGrid
         {
             position: 1.0
 
-//#QT_4
-            color: (itemImage.isSourceDefault) ? defaultColorB
-//#ELSE
-            color: (itemImage.isSourceDefault) ? parent.defaultColorB
-//#END
+            color: (itemImage.isSourceDefault) ? view.defaultColorB
                                                : st.itemGrid_color
         }
     }
@@ -169,18 +165,33 @@ ComponentGrid
     //---------------------------------------------------------------------------------------------
     // Private
 
+    function pUpdateTime()
+    {
+        duration = playlist.trackDuration(index);
+
+        if (duration < 1)
+        {
+             componentGridTrack.time = -1;
+        }
+
+        var time = controllerPlaylist.extractTime(source);
+
+        if (time == 0 || time > duration)
+        {
+             componentGridTrack.time = -1;
+        }
+        else componentGridTrack.time = time;
+    }
+
     function pGetBarWidth()
     {
         if (bar.visible == false) return 0;
 
-        var time     = item.currentTime;
-        var duration = item.duration;
-
         if (time < duration)
         {
-            return time * (width - itemIcon.width) / duration;
+            return time * width / duration;
         }
-        else return width - itemIcon.x - itemIcon.width;
+        else return width;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -195,11 +206,7 @@ ComponentGrid
 
         width: pGetBarWidth()
 
-        x: itemIcon.width
-
-        visible: (isCurrent == false && item.currentTime > 0)
-
-        enabled: player.isPlaying
+        visible: (time > 0)
     }
 
     RectangleLive
@@ -207,8 +214,6 @@ ComponentGrid
         anchors.left  : parent.left
         anchors.bottom: parent.bottom
 
-        anchors.leftMargin: iconWidth - width
-
-        trackType: item.type
+        trackType: type
     }
 }

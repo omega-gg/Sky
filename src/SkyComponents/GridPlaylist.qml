@@ -36,6 +36,17 @@ BaseGrid
     // NOTE: The minimum tracks to load.
     property int minimumLoad: 8
 
+    property url logo     : st.logo
+    property int logoRatio: st.logoRatio
+
+    property bool asynchronous: true
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property color defaultColorA: st.logo_colorA
+    property color defaultColorB: st.logo_colorB
+
     //---------------------------------------------------------------------------------------------
     // Private
 

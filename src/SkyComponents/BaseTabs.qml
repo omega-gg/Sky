@@ -50,7 +50,7 @@ MouseArea
 
     /* read */ property int spacing: st.baseTabs_spacing
 
-    property bool asynchronous: false
+    property bool asynchronous: true
 
     //---------------------------------------------------------------------------------------------
     // Aliases

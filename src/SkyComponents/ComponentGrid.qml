@@ -28,48 +28,34 @@ ItemGrid
     id: componentGrid
 
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    /* read */ property GridView view: GridView.view
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    width : getItemWidth (index)
-    height: getItemHeight(index)
-//#ELSE
-    width : parent.getItemWidth (index)
-    height: parent.getItemHeight(index)
-//#END
+    width : view.getItemWidth (index)
+    height: view.getItemHeight(index)
 
-//#QT_4
-    isHovered: (index == indexHover)
-//#ELSE
-    isHovered: (index == parent.indexHover)
-//#END
+    isHovered: (index == view.indexHover)
 
-    isCurrent: (componentGrid == currentItem)
+    //isCurrent: (componentGrid == currentItem)
 
     image: sourceImage
 
     text: title
 
-//#QT_4
-    textMargin: getItemBarMargin(index)
+    textMargin: view.getItemBarMargin(index)
 
-    itemImage.asynchronous: asynchronous
-//#ELSE
-    textMargin: parent.getItemBarMargin(index)
-
-    itemImage.asynchronous: parent.asynchronous
-//#END
+    itemImage.asynchronous: view.asynchronous
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    onHoverEntered: setItemHovered  (componentGrid)
-    onHoverExited : clearItemHovered()
-//#ELSE
-    onHoverEntered: parent.setItemHovered  (componentGrid)
-    onHoverExited : parent.clearItemHovered()
-//#END
+    onHoverEntered: view.setItemHovered  (componentGrid)
+    onHoverExited : view.clearItemHovered()
 }
