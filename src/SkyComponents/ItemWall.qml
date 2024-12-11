@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Panel
+MouseArea
 {
     id: itemWall
 
@@ -31,7 +31,9 @@ Panel
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property bool isFocused: activeFocus
     property bool isHovered: hoverActive
+
     property bool isCurrent: false
 
     property int textSpacing: st.dp8
@@ -54,6 +56,19 @@ Panel
     //---------------------------------------------------------------------------------------------
 
     property alias isIconDefault: itemIcon.isSourceDefault
+
+    property alias borderSize : borders.size
+    property alias borderColor: borders.color
+
+    property alias borderLeft  : borders.borderLeft
+    property alias borderRight : borders.borderRight
+    property alias borderTop   : borders.borderTop
+    property alias borderBottom: borders.borderBottom
+
+    property alias borderSizeWidth : borders.sizeWidth
+    property alias borderSizeHeight: borders.sizeHeight
+
+    property alias backgroundOpacity: background.opacity
 
     property alias image: itemImage.source
 
@@ -87,14 +102,25 @@ Panel
 
     //---------------------------------------------------------------------------------------------
 
+    property alias background: background
+
     property alias itemImage: itemImage
+
+    property alias border: border
 
     property alias bar     : bar
     property alias itemIcon: itemIcon
     property alias itemText: itemText
 
+    property alias borders: borders
+
     //---------------------------------------------------------------------------------------------
     // Style
+
+    property alias color   : background.color
+    property alias gradient: background.gradient
+
+    property alias colorBorder: borders.color
 
     property alias enableFilter: itemIcon.enableFilter
 
@@ -108,6 +134,13 @@ Panel
 
     width : st.itemWall_width
     height: st.itemWall_height
+
+    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+
+    hoverEnabled: true
+    hoverRetain : hoverEnabled
+
+    wheelEnabled: hoverEnabled
 
     cursor: Qt.PointingHandCursor
 
@@ -253,15 +286,27 @@ Panel
     // Children
     //---------------------------------------------------------------------------------------------
 
+    Rectangle
+    {
+        id: background
+
+        anchors.fill: parent
+
+        color: st.panel_color
+    }
+
     ImageScale
     {
         id: itemImage
 
-        anchors.left : parent.left
-        anchors.right: parent.right
-
+        anchors.left  : parent.left
+        anchors.right : parent.right
         anchors.top   : parent.top
         anchors.bottom: border.top
+
+        anchors.leftMargin : borderLeft
+        anchors.rightMargin: borderRight
+        anchors.topMargin  : borderTop
 
         fillMode: Image.PreserveAspectFit
     }
@@ -279,10 +324,13 @@ Panel
     {
         id: bar
 
-        anchors.left : parent.left
-        anchors.right: parent.right
-
+        anchors.left  : parent.left
+        anchors.right : parent.right
         anchors.bottom: parent.bottom
+
+        anchors.leftMargin  : borderLeft
+        anchors.rightMargin : borderRight
+        anchors.bottomMargin: borderBottom
 
         height: st.itemWall_barHeight
 
@@ -340,9 +388,8 @@ Panel
         {
             id: itemText
 
-            anchors.left : itemIcon.right
-            anchors.right: parent.right
-
+            anchors.left  : itemIcon.right
+            anchors.right : parent.right
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
@@ -359,5 +406,14 @@ Panel
             style: (isCurrent) ? st.text_raised
                                : st.text_sunken
         }
+    }
+
+    RectangleBorders
+    {
+        id: borders
+
+        anchors.fill: parent
+
+        color: st.border_color
     }
 }

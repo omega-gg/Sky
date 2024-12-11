@@ -33,15 +33,19 @@ ComponentWall
     property bool isContextualHovered: (index == indexHover && index == indexContextual)
 
     property bool isHighlighted: (item == highlightedTab)
-
-    property int logoMargin: (width - borderSizeWidth) / logoRatio
 //#ELSE
     property bool isContextualHovered: (index == parent.indexHover
                                         &&
                                         index == parent.indexContextual)
 
     property bool isHighlighted: (item == parent.highlightedTab)
+//#END
 
+    property bool isSourceDefault: itemImage.isSourceDefault
+
+//#QT_4
+    property int logoMargin: (width - borderSizeWidth) / logoRatio
+//#ELSE
     property int logoMargin: (width - borderSizeWidth) / parent.logoRatio
 //#END
 
@@ -124,9 +128,8 @@ ComponentWall
 
     acceptedButtons: Qt.NoButton
 
-    itemImage.anchors.leftMargin: (itemImage.isSourceDefault) ? logoMargin : 0
-
-    itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
+    itemImage.anchors.leftMargin : (isSourceDefault) ? logoMargin : borderLeft
+    itemImage.anchors.rightMargin: (isSourceDefault) ? logoMargin : borderRight
 
     itemImage.clip: (itemImage.fillMode == Image.PreserveAspectCrop)
 
@@ -140,7 +143,7 @@ ComponentWall
 
     itemImage.cache: false
 
-    itemImage.scaling: itemImage.isSourceDefault
+    itemImage.scaling: isSourceDefault
 
     bar.gradient: Gradient
     {
@@ -193,11 +196,11 @@ ComponentWall
             position: 0.0
 
 //#QT_4
-            color: (itemImage.isSourceDefault) ? defaultColorA
+            color: (isSourceDefault) ? defaultColorA
 //#ELSE
-            color: (itemImage.isSourceDefault) ? parent.defaultColorA
+            color: (isSourceDefault) ? parent.defaultColorA
 //#END
-                                               : st.componentWallBookmarkTrack_colorA
+                                     : st.componentWallBookmarkTrack_colorA
         }
 
         GradientStop
@@ -205,11 +208,11 @@ ComponentWall
             position: 1.0
 
 //#QT_4
-            color: (itemImage.isSourceDefault) ? defaultColorB
+            color: (isSourceDefault) ? defaultColorB
 //#ELSE
-            color: (itemImage.isSourceDefault) ? parent.defaultColorB
+            color: (isSourceDefault) ? parent.defaultColorB
 //#END
-                                               : st.componentWallBookmarkTrack_colorB
+                                     : st.componentWallBookmarkTrack_colorB
         }
     }
 

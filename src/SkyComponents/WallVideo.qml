@@ -722,13 +722,11 @@ WallBookmarkTrack
                 {
                     target: player
 
-                    width: (item) ? item.itemImage.width
-                                    + item.itemImage.anchors.leftMargin
-                                    + item.itemImage.anchors.rightMargin : parent.width
+                    width: (item) ? item.width - item.borderSizeWidth
+                                  : parent.width
 
-                    height: (item) ? item.itemImage.height
-                                     + item.itemImage.anchors.topMargin
-                                     + item.itemImage.anchors.bottomMargin : parent.height
+                    height: (item) ? item.border.y - item.borderTop
+                                   : parent.height
 
                     x: (item) ? item.x + item.borderLeft : 0
                     y: (item) ? item.y + item.borderTop  : 0
@@ -1134,13 +1132,11 @@ WallBookmarkTrack
                 {
                     target: playerBrowser
 
-                    width: (item) ? item.itemImage.width
-                                    + item.itemImage.anchors.leftMargin
-                                    + item.itemImage.anchors.rightMargin : 0
+                    width:  (item) ? item.width - item.borderSizeWidth
+                                   : parent.width
 
-                    height: (item) ? item.itemImage.height
-                                     + item.itemImage.anchors.topMargin
-                                     + item.itemImage.anchors.bottomMargin : 0
+                    height: (item) ? item.border.y - item.borderTop
+                                   : parent.height
 
                     x: (item) ? item.x + item.borderLeft : 0
                     y: (item) ? item.y + item.borderTop  : 0

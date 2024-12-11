@@ -35,6 +35,7 @@ ComponentGrid
                                         &&
                                         index == view.indexContextual)
 
+    property bool isSourceDefault: itemImage.isSourceDefault
 
     /* read */ property int time    : -1
     /* read */ property int duration: -1
@@ -82,15 +83,14 @@ ComponentGrid
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-    itemImage.anchors.leftMargin: (itemImage.isSourceDefault) ? logoMargin : 0
-
-    itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
+    itemImage.anchors.leftMargin : (isSourceDefault) ? logoMargin : borderLeft
+    itemImage.anchors.rightMargin: (isSourceDefault) ? logoMargin : borderRight
 
     itemImage.sourceDefault: view.logo
 
     itemImage.fillMode: Image.PreserveAspectFit
 
-    itemImage.scaling: itemImage.isSourceDefault
+    itemImage.scaling: isSourceDefault
 
     bar.gradient: Gradient
     {
@@ -130,16 +130,16 @@ ComponentGrid
         {
             position: 0.0
 
-            color: (itemImage.isSourceDefault) ? view.defaultColorA
-                                               : st.itemGrid_color
+            color: (isSourceDefault) ? view.defaultColorA
+                                     : st.itemGrid_color
         }
 
         GradientStop
         {
             position: 1.0
 
-            color: (itemImage.isSourceDefault) ? view.defaultColorB
-                                               : st.itemGrid_color
+            color: (isSourceDefault) ? view.defaultColorB
+                                     : st.itemGrid_color
         }
     }
 

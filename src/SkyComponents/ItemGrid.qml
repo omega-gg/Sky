@@ -84,6 +84,8 @@ MouseArea
 
     property alias itemImage: itemImage
 
+    property alias border: border
+
     property alias bar     : bar
     property alias itemText: itemText
 
@@ -103,6 +105,8 @@ MouseArea
 
     width : st.itemGrid_width
     height: st.itemGrid_height
+
+    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
     hoverEnabled: true
     hoverRetain : hoverEnabled
