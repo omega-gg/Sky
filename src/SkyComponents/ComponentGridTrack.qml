@@ -40,7 +40,7 @@ ComponentGrid
     /* read */ property int time    : -1
     /* read */ property int duration: -1
 
-    property int logoMargin: (width - borderSizeWidth) / view.logoRatio
+    property int logoMargin: background.width / view.logoRatio
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -75,6 +75,8 @@ ComponentGrid
 
     isHovered: (index == view.indexHover || index == view.indexContextual)
 
+    spacing: view.spacingBottom
+
     //isCurrent: (index == indexPlayer)
 
     image: cover
@@ -83,8 +85,9 @@ ComponentGrid
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-    itemImage.anchors.leftMargin : (isSourceDefault) ? logoMargin : borderLeft
-    itemImage.anchors.rightMargin: (isSourceDefault) ? logoMargin : borderRight
+    itemImage.anchors.leftMargin: (isSourceDefault) ? logoMargin : 0
+
+    itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
 
     itemImage.sourceDefault: view.logo
 
@@ -185,11 +188,11 @@ ComponentGrid
 
     function pGetBarWidth()
     {
-        if (bar.visible == false) return 0;
+        if (barProgress.visible == false) return 0;
 
         if (time < duration)
         {
-            return time * width / duration;
+            return time * background.width / duration;
         }
         else return width;
     }
@@ -200,11 +203,13 @@ ComponentGrid
 
     BarProgress
     {
-        id: bar
+        id: barProgress
 
+        anchors.left  : parent.left
         anchors.bottom: parent.bottom
 
-        anchors.bottomMargin: borderBottom
+        anchors.leftMargin  : borderLeft
+        anchors.bottomMargin: spacing + borderBottom
 
         width: pGetBarWidth()
 
@@ -213,8 +218,11 @@ ComponentGrid
 
     RectangleLive
     {
-        anchors.left  : parent.left
-        anchors.bottom: parent.bottom
+        anchors.right : parent.right
+        anchors.bottom: barProgress.bottom
+
+        anchors.rightMargin : borderRight
+        anchors.bottomMargin: componentGridTrack.border.size + bar.height
 
         trackType: type
     }

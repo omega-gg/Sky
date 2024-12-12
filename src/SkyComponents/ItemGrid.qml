@@ -38,6 +38,8 @@ MouseArea
 
     property bool isCurrent: false
 
+    property int spacing: 0
+
     property int textMargin: st.dp8
 
     //---------------------------------------------------------------------------------------------
@@ -138,7 +140,15 @@ MouseArea
     {
         id: background
 
-        anchors.fill: parent
+        anchors.left  : parent.left
+        anchors.right : parent.right
+        anchors.top   : parent.top
+        anchors.bottom: borders.bottom
+
+        anchors.leftMargin  : borderLeft
+        anchors.rightMargin : borderRight
+        anchors.topMargin   : borderTop
+        anchors.bottomMargin: borderBottom
 
         color: st.panel_color
     }
@@ -147,14 +157,10 @@ MouseArea
     {
         id: itemImage
 
-        anchors.left  : parent.left
-        anchors.right : parent.right
-        anchors.top   : parent.top
+        anchors.left  : background.left
+        anchors.right : background.right
+        anchors.top   : background.top
         anchors.bottom: border.top
-
-        anchors.leftMargin : borderLeft
-        anchors.rightMargin: borderRight
-        anchors.topMargin  : borderTop
 
         fillMode: Image.PreserveAspectFit
     }
@@ -172,13 +178,9 @@ MouseArea
     {
         id: bar
 
-        anchors.left  : parent.left
-        anchors.right : parent.right
-        anchors.bottom: parent.bottom
-
-        anchors.leftMargin  : borderLeft
-        anchors.rightMargin : borderRight
-        anchors.bottomMargin: borderBottom
+        anchors.left  : background.left
+        anchors.right : background.right
+        anchors.bottom: background.bottom
 
         height: st.itemGrid_barHeight
 
@@ -235,6 +237,8 @@ MouseArea
         id: borders
 
         anchors.fill: parent
+
+        anchors.bottomMargin: spacing
 
         color: st.border_color
     }

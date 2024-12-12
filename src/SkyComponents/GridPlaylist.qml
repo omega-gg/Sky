@@ -33,6 +33,11 @@ BaseGrid
     //            for the same playlist.
     /* mandatory */ property Playlist playlist
 
+    property int coverWidth : st.gridPlaylist_coverWidth
+    property int coverHeight: st.gridPlaylist_coverHeight
+
+    property int spacingBottom: st.gridPlaylist_spacingBottom
+
     // NOTE: The minimum tracks to load.
     property int minimumLoad: 8
 
@@ -57,8 +62,8 @@ BaseGrid
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    //cellWidth : coverWidth  + padding2x + spacing
-    //cellHeight: coverHeight + padding2x + st.buttonTouch_size + spacingBottom
+    cellWidth : coverWidth  + st.border_size
+    cellHeight: coverHeight + st.border_size * 3 + st.itemGrid_barHeight + spacingBottom
 
     //---------------------------------------------------------------------------------------------
     // Events

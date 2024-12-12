@@ -643,6 +643,11 @@ Style
 
     property int gridPlaylist_intervalLoad  :   200
     property int gridPlaylist_intervalReload: 60000 // 1 minute
+
+    property int gridPlaylist_coverWidth : dp192
+    property int gridPlaylist_coverHeight: dp108 // coverWidth * 0.5625
+
+    property int gridPlaylist_spacingBottom: dp32
 //#END
 
 //#ScrollBar

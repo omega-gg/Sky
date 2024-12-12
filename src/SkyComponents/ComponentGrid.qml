@@ -37,8 +37,8 @@ ItemGrid
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : view.getItemWidth (index)
-    height: view.getItemHeight(index)
+    width : view.cellWidth
+    height: view.cellHeight
 
     isHovered: (index == view.indexHover)
 

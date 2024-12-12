@@ -44,9 +44,9 @@ ComponentWall
     property bool isSourceDefault: itemImage.isSourceDefault
 
 //#QT_4
-    property int logoMargin: (width - borderSizeWidth) / logoRatio
+    property int logoMargin: background.width / logoRatio
 //#ELSE
-    property int logoMargin: (width - borderSizeWidth) / parent.logoRatio
+    property int logoMargin: background.width / parent.logoRatio
 //#END
 
     //---------------------------------------------------------------------------------------------
@@ -128,8 +128,9 @@ ComponentWall
 
     acceptedButtons: Qt.NoButton
 
-    itemImage.anchors.leftMargin : (isSourceDefault) ? logoMargin : borderLeft
-    itemImage.anchors.rightMargin: (isSourceDefault) ? logoMargin : borderRight
+    itemImage.anchors.leftMargin: (isSourceDefault) ? logoMargin : 0
+
+    itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
 
     itemImage.clip: (itemImage.fillMode == Image.PreserveAspectCrop)
 

@@ -722,7 +722,7 @@ WallBookmarkTrack
                 {
                     target: player
 
-                    width: (item) ? item.width - item.borderSizeWidth
+                    width: (item) ? item.background.width
                                   : parent.width
 
                     height: (item) ? item.border.y - item.borderTop
@@ -1132,7 +1132,7 @@ WallBookmarkTrack
                 {
                     target: playerBrowser
 
-                    width:  (item) ? item.width - item.borderSizeWidth
+                    width:  (item) ? item.background.width
                                    : parent.width
 
                     height: (item) ? item.border.y - item.borderTop

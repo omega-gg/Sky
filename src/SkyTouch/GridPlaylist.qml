@@ -36,10 +36,10 @@ GridTouch
     property int coverWidth : st.gridPlaylist_coverWidth
     property int coverHeight: st.gridPlaylist_coverHeight
 
-    property int spacingBottom: st.gridPlaylist_spacingBottom
-
     property int padding  : st.gridPlaylist_padding
     property int padding2x: padding * 2
+
+    property int spacingBottom: st.gridPlaylist_spacingBottom
 
     // NOTE: The minimum tracks to load.
     property int minimumLoad: 8

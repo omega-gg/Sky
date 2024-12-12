@@ -29,12 +29,16 @@ GridView
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int itemWidth : st.grid_itemWidth
-    property int itemHeight: st.grid_itemHeight
-
     /* read */ property variant itemHovered: null
 
     property bool asynchronous: true
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    cellWidth : st.grid_itemWidth
+    cellHeight: st.grid_itemHeight
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -122,16 +126,6 @@ GridView
 
     //---------------------------------------------------------------------------------------------
     // Virtual
-
-    /* virtual */ function getItemWidth(index)
-    {
-        return itemWidth;
-    }
-
-    /* virtual */ function getItemHeight(index)
-    {
-        return itemHeight;
-    }
 
     /* virtual */ function getItemBarMargin(index) { return st.dp8; }
 
