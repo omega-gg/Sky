@@ -46,6 +46,8 @@ Item
     property alias model   : grid.model
     property alias delegate: grid.delegate
 
+    /* read */ property alias count: grid.count
+
     property alias currentIndex: grid.currentIndex
 
     //---------------------------------------------------------------------------------------------

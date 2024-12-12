@@ -31,6 +31,8 @@ GridView
 
     /* read */ property variant itemHovered: null
 
+    /* read */ property int indexHover: (itemHovered) ? itemHovered.getIndex() : -1
+
     property bool asynchronous: true
 
     //---------------------------------------------------------------------------------------------

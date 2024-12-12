@@ -42,7 +42,7 @@ ItemGrid
 
     isHovered: (index == view.indexHover)
 
-    //isCurrent: (componentGrid == currentItem)
+    isCurrent: (index == view.currentIndex)
 
     image: sourceImage
 

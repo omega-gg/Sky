@@ -33,7 +33,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int LOADERRECENT_TRACKS = 3;
+static const int LOADERRECENT_TRACKS = 5;
 
 static const int LOADERRECENT_DELAY = 1; // 10 minutes
 
