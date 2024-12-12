@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+MouseArea
 {
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -50,10 +50,34 @@ Item
 
     property alias currentIndex: grid.currentIndex
 
+    property alias singleStep: scrollBar.singleStep
+    property alias pageStep  : scrollBar.pageStep
+
+    property alias wheelMultiplier: scrollBar.wheelMultiplier
+
     //---------------------------------------------------------------------------------------------
 
     property alias grid     : grid
     property alias scrollBar: scrollBar
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    acceptedButtons: Qt.NoButton
+
+    wheelEnabled: true
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onWheeled:
+    {
+        if (scrollBar.visible == false || scrollBar.handle.pressed) return;
+
+        scrollBar.model.scroll(-steps * wheelMultiplier);
+    }
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -130,6 +154,8 @@ Item
         anchors.bottom: parent.bottom
 
         visible: isScrollable
+
+        singleStep: grid.cellHeight
 
         onValueChanged:
         {
