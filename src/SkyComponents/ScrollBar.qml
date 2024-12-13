@@ -210,9 +210,6 @@ Item
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        anchors.topMargin   : -st.border_size
-        anchors.bottomMargin: -st.border_size
-
         wheelEnabled: true
 
         onPressed:
@@ -273,10 +270,7 @@ Item
 
             Image
             {
-                anchors.left  : parent.left
-                anchors.right : parent.right
-                anchors.top   : borderA.bottom
-                anchors.bottom: borderB.top
+                anchors.fill: parent
 
                 sourceSize: st.size16x16
 
@@ -289,22 +283,20 @@ Item
                     else                         return filterHandle;
                 }
             }
+        }
 
-            BorderHorizontal
-            {
-                id: borderA
+        BorderHorizontal
+        {
+            anchors.bottom: handle.top
 
-                color: colorBorder
-            }
+            color: colorBorder
+        }
 
-            BorderHorizontal
-            {
-                id: borderB
+        BorderHorizontal
+        {
+            anchors.top: handle.bottom
 
-                anchors.bottom: parent.bottom
-
-                color: colorBorder
-            }
+            color: colorBorder
         }
     }
 

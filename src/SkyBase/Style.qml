@@ -653,9 +653,9 @@ Item
         else return Math.max(0, maximumHandle);
     }
 
-    function getHandleY(list, handle, maximumY, maximumHandle)
+    function getHandleY(list, position, maximumY, maximumHandle)
     {
-        var ratio = handle.y / maximumHandle;
+        var ratio = position / maximumHandle;
 
 //#QT_4
         if (ratio < 1.0)

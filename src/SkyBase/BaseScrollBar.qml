@@ -133,7 +133,7 @@ MouseArea
     {
         pUpdate = false;
 
-        view.contentY = st.getHandleY(view, handle, pMaximumY, pMaximumHandle);
+        view.contentY = st.getHandleY(view, handle.y, pMaximumY, pMaximumHandle);
 
         pUpdate = true;
     }

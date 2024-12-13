@@ -141,14 +141,21 @@ MouseArea
     {
         if (pUpdate == false) return;
 
-        handle.y = st.getHandlePosition(grid, pMaximumY, pMaximumHandle);
+        pUpdate = false;
+
+        scrollBar.position = st.getHandlePosition(grid, pMaximumY, pMaximumHandle);
+
+        pUpdate = true;
     }
 
     function pApplyPosition()
     {
+        if (pUpdate == false) return;
+
         pUpdate = false;
 
-        grid.contentY = st.getHandleY(grid, handle, pMaximumY, pMaximumHandle);
+        grid.contentY = Math.round(st.getHandleY(grid, scrollBar.position, pMaximumY,
+                                                 pMaximumHandle));
 
         pUpdate = true;
     }
