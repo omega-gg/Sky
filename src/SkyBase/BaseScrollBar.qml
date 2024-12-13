@@ -124,15 +124,7 @@ MouseArea
     {
         if (pUpdate == false) return;
 
-        // NOTE: We need to take the originY 'delta' into account to get the proper ratio.
-        var ratio = (view.contentY - pOriginY) / pMaximumY;
-
-        // NOTE: We don't want the scrollBar position to go under 0.
-        if (ratio < 1.0)
-        {
-             handle.y = Math.max(0, pMaximumHandle * ratio);
-        }
-        else handle.y = Math.max(0, pMaximumHandle);
+        handle.y = st.getHandlePosition(view, pMaximumY, pMaximumHandle);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -141,14 +133,7 @@ MouseArea
     {
         pUpdate = false;
 
-        var ratio = handle.y / pMaximumHandle;
-
-        // NOTE: We need to take originY into account to get the right position.
-        if (ratio < 1.0)
-        {
-             view.contentY = pOriginY + pMaximumY * ratio;
-        }
-        else view.contentY = pOriginY + pMaximumY;
+        view.contentY = st.getHandleY(view, handle, pMaximumY, pMaximumHandle);
 
         pUpdate = true;
     }

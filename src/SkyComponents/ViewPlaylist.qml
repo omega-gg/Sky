@@ -36,6 +36,10 @@ MouseArea
 
     property bool pUpdate: true
 
+    property int pMaximumY: grid.contentHeight - height
+
+    property int pMaximumHandle: height - handle.height
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -73,6 +77,7 @@ MouseArea
     property alias itemLoading: itemLoading
 
     property alias scrollBar: scrollBar
+    property alias handle   : scrollBar.handle
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -122,13 +127,30 @@ MouseArea
         }
         else
         {
-            scrollBar.value    = 0;
             scrollBar.pageStep = 0;
 
             scrollBar.model.setRange(0, 0);
 
             isScrollable = false;
         }
+
+        pUpdateHandle();
+    }
+
+    function pUpdateHandle()
+    {
+        if (pUpdate == false) return;
+
+        handle.y = st.getHandlePosition(grid, pMaximumY, pMaximumHandle);
+    }
+
+    function pApplyPosition()
+    {
+        pUpdate = false;
+
+        grid.contentY = st.getHandleY(grid, handle, pMaximumY, pMaximumHandle);
+
+        pUpdate = true;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -149,14 +171,7 @@ MouseArea
 
         onContentHeightChanged: pUpdateRange()
 
-        onContentYChanged:
-        {
-            pUpdate = false;
-
-            scrollBar.value = contentY;
-
-            pUpdate = true;
-        }
+        onContentYChanged: pUpdateHandle()
     }
 
     TextListDefault
@@ -206,16 +221,6 @@ MouseArea
         singleStep     : grid.cellHeight
         wheelMultiplier: 1
 
-        onValueChanged:
-        {
-            if (pUpdate == false) return;
-
-            // FIXME Qt5: This might make the content blurry due to the float value.
-            if (value == maximum)
-            {
-                 grid.scrollToY(value);
-            }
-            else grid.scrollToY(intValue);
-        }
+        onPositionChanged: pApplyPosition()
     }
 }

@@ -636,6 +636,45 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
+    function getHandlePosition(list, maximumY, maximumHandle)
+    {
+//#QT_4
+        var ratio = list.contentY / maximumY;
+//#ELSE
+        // NOTE: We need to take the originY 'delta' into account to get the proper ratio.
+        var ratio = (list.contentY - list.originY) / maximumY;
+//#END
+
+        // NOTE: We don't want the scrollBar position to go under 0.
+        if (ratio < 1.0)
+        {
+             return Math.max(0, maximumHandle * ratio);
+        }
+        else return Math.max(0, maximumHandle);
+    }
+
+    function getHandleY(list, handle, maximumY, maximumHandle)
+    {
+        var ratio = handle.y / maximumHandle;
+
+//#QT_4
+        if (ratio < 1.0)
+        {
+             return maximumY * ratio;
+        }
+        else return maximumY;
+//#ELSE
+        // NOTE: We need to take originY into account to get the right position.
+        if (ratio < 1.0)
+        {
+             return list.originY + maximumY * ratio;
+        }
+        else return list.originY + maximumY;
+//#END
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function getSliderX(slider, width, position)
     {
         var x = position - Math.round(width / 2);
