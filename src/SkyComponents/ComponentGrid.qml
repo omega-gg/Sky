@@ -39,7 +39,7 @@ ItemGrid
 
     isHovered: (index == view.indexHover)
 
-    isCurrent: (index == view.currentIndex)
+    isSelected: (index == view.currentIndex)
 
     image: sourceImage
 

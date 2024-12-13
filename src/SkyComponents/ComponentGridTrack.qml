@@ -43,21 +43,6 @@ ComponentGrid
     property int logoMargin: background.width / view.logoRatio
 
     //---------------------------------------------------------------------------------------------
-    // Style
-
-    property color colorBarContextualHoverA: st.itemTab_colorContextualHoverA
-    property color colorBarContextualHoverB: st.itemTab_colorContextualHoverB
-
-    property color colorHighlightA: st.itemTab_colorHighlightA
-    property color colorHighlightB: st.itemTab_colorHighlightB
-
-    property color colorHighlightHoverA: st.itemTab_colorHighlightHoverA
-    property color colorHighlightHoverB: st.itemTab_colorHighlightHoverB
-
-    property color colorHighlightContextualA: st.itemTab_colorHighlightContextualA
-    property color colorHighlightContextualB: st.itemTab_colorHighlightContextualB
-
-    //---------------------------------------------------------------------------------------------
     // Private
 
     // NOTE: This is required for the onPSourceChanged event.
@@ -96,35 +81,6 @@ ComponentGrid
 
     itemImage.scaling: isSourceDefault
 
-    bar.gradient: Gradient
-    {
-        GradientStop
-        {
-            position: 0.0
-
-            color:
-            {
-                if      (isCurrent)           return colorBarSelectA;
-                else if (isContextualHovered) return colorBarContextualHoverA;
-                else if (isHovered)           return colorBarHoverA;
-                else                          return colorBarA;
-            }
-        }
-
-        GradientStop
-        {
-            position: 1.0
-
-            color:
-            {
-                if      (isCurrent)           return colorBarSelectB;
-                else if (isContextualHovered) return colorBarContextualHoverB;
-                else if (isHovered)           return colorBarHoverB;
-                else                          return colorBarB;
-            }
-        }
-    }
-
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -146,23 +102,6 @@ ComponentGrid
                                      : st.itemGrid_color
         }
     }
-
-    colorBorder:
-    {
-        if      (isCurrent)           return colorBarSelectB;
-        else if (isContextualHovered) return colorBarContextualHoverA;
-        else if (isHovered)           return colorBarHoverA;
-        else                          return st.border_color;
-    }
-
-    textColor: (isCurrent) ? st.text2_color
-                           : st.text1_color
-
-    textStyle: (isCurrent) ? st.text_raised
-                           : st.text_sunken
-
-    textStyleColor: (isCurrent) ? st.text1_colorShadow
-                                : st.text1_colorSunken
 
     //---------------------------------------------------------------------------------------------
     // Functions

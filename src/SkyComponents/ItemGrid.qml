@@ -36,21 +36,12 @@ MouseArea
     property bool isPressed: (pressed && (pressedButtons & Qt.LeftButton))
     property bool isHovered: hoverActive
 
-    property bool isCurrent: false
+    property bool isDefault   : false
+    property bool isSelected  : false
+    property bool isCurrent   : false
+    property bool isContextual: false
 
     property int textMargin: st.dp8
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property color colorBarA: st.itemTab_colorA
-    property color colorBarB: st.itemTab_colorB
-
-    property color colorBarHoverA: st.itemTab_colorHoverA
-    property color colorBarHoverB: st.itemTab_colorHoverB
-
-    property color colorBarSelectA: st.itemTab_colorSelectA
-    property color colorBarSelectB: st.itemTab_colorSelectB
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -113,15 +104,6 @@ MouseArea
 
     cursor: Qt.PointingHandCursor
 
-    color: st.itemGrid_color
-
-    colorBorder:
-    {
-        if      (isCurrent) return colorBarSelectB;
-        else if (isHovered) return colorBarHoverA;
-        else                return st.border_color;
-    }
-
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
@@ -145,7 +127,7 @@ MouseArea
         anchors.topMargin   : borderTop
         anchors.bottomMargin: borderBottom
 
-        color: st.panel_color
+        color: st.itemGrid_color
     }
 
     ImageScale
@@ -187,9 +169,38 @@ MouseArea
 
                 color:
                 {
-                    if      (isCurrent) return colorBarSelectA;
-                    else if (isHovered) return colorBarHoverA;
-                    else                return colorBarA;
+                    if (isSelected)
+                    {
+                        if (isFocused == false)
+                        {
+                            if (isHovered) return st.itemList_colorSelectHoverA;
+                            else           return st.itemList_colorSelectA;
+                        }
+                        else return st.itemList_colorSelectFocusA;
+                    }
+                    else if (isCurrent)
+                    {
+                        if (isHovered) return st.itemList_colorCurrentHoverA;
+                        else           return st.itemList_colorCurrentA;
+                    }
+                    else if (isContextual)
+                    {
+                        if (isHovered) return st.itemList_colorContextualHoverA;
+                        else           return st.itemList_colorHoverA;
+                    }
+                    else if (isPressed)
+                    {
+                        return st.itemList_colorPressA;
+                    }
+                    else if (isHovered)
+                    {
+                        return st.itemList_colorHoverA;
+                    }
+                    else if (isDefault)
+                    {
+                        return st.itemList_colorDefaultA;
+                    }
+                    else return st.itemList_colorA;
                 }
             }
 
@@ -199,9 +210,38 @@ MouseArea
 
                 color:
                 {
-                    if      (isCurrent) return colorBarSelectB;
-                    else if (isHovered) return colorBarHoverB;
-                    else                return colorBarB;
+                    if (isSelected)
+                    {
+                        if (isFocused == false)
+                        {
+                            if (isHovered) return st.itemList_colorSelectHoverB;
+                            else           return st.itemList_colorSelectB;
+                        }
+                        else return st.itemList_colorSelectFocusB;
+                    }
+                    else if (isCurrent)
+                    {
+                        if (isHovered) return st.itemList_colorCurrentHoverB;
+                        else           return st.itemList_colorCurrentB;
+                    }
+                    else if (isContextual)
+                    {
+                        if (isHovered) return st.itemList_colorContextualHoverB;
+                        else           return st.itemList_colorHoverB;
+                    }
+                    else if (isPressed)
+                    {
+                        return st.itemList_colorPressB;
+                    }
+                    else if (isHovered)
+                    {
+                        return st.itemList_colorHoverB;
+                    }
+                    else if (isDefault)
+                    {
+                        return st.itemList_colorDefaultB;
+                    }
+                    else return st.itemList_colorB;
                 }
             }
         }
@@ -219,11 +259,27 @@ MouseArea
 
             opacity: (itemGrid.enabled) ? 1.0 : st.text_opacityDisable
 
-            color: (isCurrent) ? st.text2_color
-                               : st.text1_color
+            color:
+            {
+                if      (isSelected)                return st.itemList_colorTextSelected;
+                else if (isCurrent)                 return st.itemList_colorTextCurrent;
+                else if (isHovered || isContextual) return st.itemList_colorTextHover;
+                else                                return st.itemList_colorText;
+            }
 
-            style: (isCurrent) ? st.text_raised
-                               : st.text_sunken
+            style:
+            {
+                if (isSelected)
+                {
+                    if (isFocused) return st.text_raised;
+                    else           return st.text_sunken;
+                }
+                else if (isCurrent)
+                {
+                     return st.text_raised;
+                }
+                else return st.text_sunken;
+            }
         }
     }
 
@@ -233,6 +289,15 @@ MouseArea
 
         anchors.fill: parent
 
-        color: st.border_color
+        color:
+        {
+            if (isCurrent || isSelected)
+            {
+                if (isHovered) return st.itemTab_colorHighlightA;
+                else           return st.itemTab_colorSelectB;
+            }
+            else if (isHovered) return st.itemTab_colorHoverA;
+            else                return st.border_color;
+        }
     }
 }

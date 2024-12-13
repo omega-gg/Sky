@@ -144,15 +144,6 @@ MouseArea
 
     cursor: Qt.PointingHandCursor
 
-    color: st.wallVideo_colorPlayer
-
-    colorBorder:
-    {
-        if      (isCurrent) return colorBarSelectB;
-        else if (isHovered) return colorBarHoverA;
-        else                return st.border_color;
-    }
-
     //---------------------------------------------------------------------------------------------
     // Animations
     //---------------------------------------------------------------------------------------------
@@ -297,7 +288,7 @@ MouseArea
         anchors.topMargin   : borderTop
         anchors.bottomMargin: borderBottom
 
-        color: st.panel_color
+        color: st.wallVideo_colorPlayer
     }
 
     ImageScale
@@ -411,6 +402,11 @@ MouseArea
 
         anchors.fill: parent
 
-        color: st.border_color
+        color:
+        {
+            if      (isCurrent) return colorBarSelectB;
+            else if (isHovered) return colorBarHoverA;
+            else                return st.border_color;
+        }
     }
 }
