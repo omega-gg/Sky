@@ -28,6 +28,10 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
+
+    property string textDefault: qsTr("Playlist is empty")
+
+    //---------------------------------------------------------------------------------------------
     // Private
 
     property bool pUpdate: true
@@ -63,7 +67,11 @@ MouseArea
     property alias spacing      : grid.spacing
     property alias spacingBottom: grid.spacingBottom
 
-    property alias grid     : grid
+    property alias grid: grid
+
+    property alias itemText   : itemText
+    property alias itemLoading: itemLoading
+
     property alias scrollBar: scrollBar
 
     //---------------------------------------------------------------------------------------------
@@ -149,6 +157,40 @@ MouseArea
 
             pUpdate = true;
         }
+    }
+
+    TextListDefault
+    {
+        id: itemText
+
+        anchors.left : grid.left
+        anchors.right: grid.right
+        anchors.top  : parent.top
+
+        anchors.topMargin: st.dp20
+
+        horizontalAlignment: Text.AlignHCenter
+
+        visible: (playlist != null && playlist.queryIsLoading == false && count == 0)
+
+        text: qsTr("Playlist is empty")
+    }
+
+    LabelLoadingButton
+    {
+        id: itemLoading
+
+        anchors.top: parent.top
+
+        anchors.topMargin: st.dp16
+
+        anchors.horizontalCenter: grid.horizontalCenter
+
+        visible: (playlist != null && playlist.queryIsLoading && count == 0)
+
+        text: qsTr("Loading Tracks...")
+
+        onClicked: playlist.abortQuery()
     }
 
     ScrollBar
