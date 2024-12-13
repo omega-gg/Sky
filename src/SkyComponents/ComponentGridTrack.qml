@@ -75,9 +75,8 @@ ComponentGrid
 
     isHovered: (index == view.indexHover || index == view.indexContextual)
 
-    spacing: view.spacingBottom
-
-    //isCurrent: (index == indexPlayer)
+    width : GridView.view.cellWidth  - GridView.view.spacing
+    height: GridView.view.cellHeight - GridView.view.spacingBottom
 
     image: cover
 
@@ -88,6 +87,8 @@ ComponentGrid
     itemImage.anchors.leftMargin: (isSourceDefault) ? logoMargin : 0
 
     itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
+
+    itemImage.sourceSize: Qt.size(view.coverWidth, view.coverHeight)
 
     itemImage.sourceDefault: view.logo
 
@@ -209,7 +210,7 @@ ComponentGrid
         anchors.bottom: parent.bottom
 
         anchors.leftMargin  : borderLeft
-        anchors.bottomMargin: spacing + borderBottom
+        anchors.bottomMargin: borderBottom
 
         width: pGetBarWidth()
 
@@ -223,6 +224,8 @@ ComponentGrid
 
         anchors.rightMargin : borderRight
         anchors.bottomMargin: componentGridTrack.border.size + bar.height
+
+        width: st.componentGridTrack_sizeLive
 
         trackType: type
     }

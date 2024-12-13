@@ -57,6 +57,12 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
 
+    property alias coverWidth : grid.coverWidth
+    property alias coverHeight: grid.coverHeight
+
+    property alias spacing      : grid.spacing
+    property alias spacingBottom: grid.spacingBottom
+
     property alias grid     : grid
     property alias scrollBar: scrollBar
 
@@ -72,7 +78,7 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onWheeled:
+    /* QML_EVENT */ onWheeled: function(steps)
     {
         if (scrollBar.visible == false || scrollBar.handle.pressed) return;
 
@@ -155,7 +161,8 @@ MouseArea
 
         visible: isScrollable
 
-        singleStep: grid.cellHeight
+        singleStep     : grid.cellHeight
+        wheelMultiplier: 1
 
         onValueChanged:
         {

@@ -37,9 +37,6 @@ ItemGrid
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : view.cellWidth
-    height: view.cellHeight
-
     isHovered: (index == view.indexHover)
 
     isCurrent: (index == view.currentIndex)

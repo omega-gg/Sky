@@ -647,6 +647,7 @@ Style
     property int gridPlaylist_coverWidth : dp192
     property int gridPlaylist_coverHeight: dp108 // coverWidth * 0.5625
 
+    property int gridPlaylist_spacing      : dp8
     property int gridPlaylist_spacingBottom: dp32
 //#END
 
@@ -1052,6 +1053,13 @@ Style
     // ComponentList
 
     property int componentList_height: itemList_height
+//#END
+
+//#ComponentGridTrack
+    //---------------------------------------------------------------------------------------------
+    // ComponentGridTrack
+
+    property int componentGridTrack_sizeLive: dp12
 //#END
 
 //#ComponentCompletion

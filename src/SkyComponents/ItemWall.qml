@@ -290,10 +290,7 @@ MouseArea
     {
         id: background
 
-        anchors.left  : parent.left
-        anchors.right : parent.right
-        anchors.top   : parent.top
-        anchors.bottom: borders.bottom
+        anchors.fill: parent
 
         anchors.leftMargin  : borderLeft
         anchors.rightMargin : borderRight

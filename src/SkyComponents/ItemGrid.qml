@@ -38,8 +38,6 @@ MouseArea
 
     property bool isCurrent: false
 
-    property int spacing: 0
-
     property int textMargin: st.dp8
 
     //---------------------------------------------------------------------------------------------
@@ -140,10 +138,7 @@ MouseArea
     {
         id: background
 
-        anchors.left  : parent.left
-        anchors.right : parent.right
-        anchors.top   : parent.top
-        anchors.bottom: borders.bottom
+        anchors.fill: parent
 
         anchors.leftMargin  : borderLeft
         anchors.rightMargin : borderRight
@@ -237,8 +232,6 @@ MouseArea
         id: borders
 
         anchors.fill: parent
-
-        anchors.bottomMargin: spacing
 
         color: st.border_color
     }
