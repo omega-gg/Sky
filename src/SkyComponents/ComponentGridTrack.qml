@@ -60,6 +60,8 @@ ComponentGrid
 
     isHovered: (index == view.indexHover || index == view.indexContextual)
 
+    isContextual: (index == view.indexContextual)
+
     width : GridView.view.cellWidth  - GridView.view.spacing
     height: GridView.view.cellHeight - GridView.view.spacingBottom
 

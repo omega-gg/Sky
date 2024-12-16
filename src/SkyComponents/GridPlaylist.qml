@@ -39,6 +39,8 @@ BaseGrid
     property int spacing      : st.gridPlaylist_spacing
     property int spacingBottom: st.gridPlaylist_spacingBottom
 
+    property int indexContextual: -1
+
     // NOTE: The minimum tracks to load.
     property int minimumLoad: 8
 

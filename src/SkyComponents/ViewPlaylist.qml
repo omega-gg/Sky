@@ -56,7 +56,8 @@ MouseArea
 
     /* read */ property alias count: grid.count
 
-    property alias currentIndex: grid.currentIndex
+    property alias currentIndex   : grid.currentIndex
+    property alias indexContextual: grid.indexContextual
 
     property alias singleStep: scrollBar.singleStep
     property alias pageStep  : scrollBar.pageStep
