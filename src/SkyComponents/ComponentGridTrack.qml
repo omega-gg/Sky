@@ -112,6 +112,8 @@ ComponentGrid
 
     function pUpdateTime()
     {
+        if (playlist == null) return;
+
         duration = playlist.trackDuration(index);
 
         if (duration < 1)
