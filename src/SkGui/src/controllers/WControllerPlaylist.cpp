@@ -4776,11 +4776,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         int index = playlist->count() - 1;
 
-        QString title = playlist->trackTitle(index);
-
-        if (title.isEmpty()) title = data.title;
-
-        source = q->sourceRelatedTracks(playlist->trackSource(index), title);
+        source = q->sourceRelatedTracks(playlist->trackSource(index),
+                                        playlist->trackTitle (index));
 
         // NOTE: Is this sufficient to avoid redundant calls ?
         if (urlBase != source
@@ -5093,11 +5090,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         int index = playlist->count() - 1;
 
-        QString title = playlist->trackTitle(index);
-
-        if (title.isEmpty()) title = data.title;
-
-        source = q->sourceRelatedTracks(playlist->trackSource(index), title);
+        source = q->sourceRelatedTracks(playlist->trackSource(index),
+                                        playlist->trackTitle (index));
 
         // NOTE: Is this sufficient to avoid redundant calls ?
         if (urlBase != source
