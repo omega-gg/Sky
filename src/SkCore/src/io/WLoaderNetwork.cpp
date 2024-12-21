@@ -59,6 +59,31 @@ void WLoaderNetworkPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+QNetworkReply * WLoaderNetworkPrivate::getReply(const QNetworkRequest & request,
+                                                WRemoteData           * data) const
+{
+    QString method = data->method();
+    QString body   = data->body();
+
+    if (method.isEmpty())
+    {
+        if (body.isEmpty())
+        {
+            return manager->get(request);
+        }
+        else return manager->post(request, body.toUtf8());
+    }
+    else if (body.isEmpty())
+    {
+         return manager->sendCustomRequest(request, method.toLatin1());
+    }
+    else return manager->sendCustomRequest(request, method.toLatin1(), body.toUtf8());
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -219,27 +244,15 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
         }
     }
 
-    QString body = data->body();
-
     if (data->scope() == ScopeText)
     {
-        QNetworkReply * reply;
-
-        if (body.isEmpty())
-        {
-            reply = d->manager->get(request);
-        }
-        else reply = d->manager->post(request, body.toUtf8());
+        QNetworkReply * reply = d->getReply(request, data);
 
         connect(reply, SIGNAL(metaDataChanged()), this, SLOT(onMetaDataChanged()));
 
         return reply;
     }
-    else if (body.isEmpty())
-    {
-        return d->manager->get(request);
-    }
-    else return d->manager->post(request, body.toUtf8());
+    else return d->getReply(request, data);
 }
 
 //-------------------------------------------------------------------------------------------------

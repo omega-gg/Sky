@@ -1815,8 +1815,6 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist     * playlist,
                                                   const QString & url,
                                                   const QString & urlBase, int index)
 {
-    if (url.isEmpty()) return true;
-
     Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);
@@ -1939,8 +1937,6 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist     * playlist,
                                                      const QString & urlBase,
                                                      WTrack::Type    type, int index)
 {
-    if (url.isEmpty()) return true;
-
     Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);
@@ -2176,8 +2172,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
                                                    const QString  & url,
                                                    const QString  & urlBase, int index)
 {
-    if (url.isEmpty()) return true;
-
     Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);
@@ -2454,10 +2448,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder,
 bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem  * item,
                                                  const QString & url, int index)
 {
-    abortQueriesItem(item);
-
-    if (url.isEmpty()) return true;
-
     Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);
@@ -2538,6 +2528,10 @@ bool WControllerPlaylistPrivate::applyNextTrack(WPlaylist     * playlist,
 
         return false;
     }
+    else if (url.isEmpty())
+    {
+        return false;
+    }
     else return applySourceTrack(playlist, track, url, urlBase, index + 1);
 }
 
@@ -2550,6 +2544,10 @@ bool WControllerPlaylistPrivate::applyNextPlaylist(WPlaylist     * playlist,
     {
         qWarning("WControllerPlaylistPrivate::applyNextPlaylist: Maximum queries reached.");
 
+        return false;
+    }
+    else if (url.isEmpty())
+    {
         return false;
     }
     else return applySourcePlaylist(playlist, url, urlBase, type, index + 1);
@@ -2565,6 +2563,10 @@ bool WControllerPlaylistPrivate::applyNextFolder(WLibraryFolder * folder,
 
         return false;
     }
+    else if (url.isEmpty())
+    {
+        return false;
+    }
     else return applySourceFolder(folder, url, urlBase, index + 1);
 }
 
@@ -2575,6 +2577,10 @@ bool WControllerPlaylistPrivate::applyNextItem(WLibraryItem   * item,
     {
         qWarning("WControllerPlaylistPrivate::applyNextItem: Maximum queries reached.");
 
+        return false;
+    }
+    else if (url.isEmpty())
+    {
         return false;
     }
     else return applySourceItem(item, url, index + 1);
@@ -4770,8 +4776,11 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         int index = playlist->count() - 1;
 
-        source = q->sourceRelatedTracks(playlist->trackSource(index),
-                                        playlist->trackTitle (index));
+        QString title = playlist->trackTitle(index);
+
+        if (title.isEmpty()) title = data.title;
+
+        source = q->sourceRelatedTracks(playlist->trackSource(index), title);
 
         // NOTE: Is this sufficient to avoid redundant calls ?
         if (urlBase != source
@@ -5084,8 +5093,11 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         int index = playlist->count() - 1;
 
-        source = q->sourceRelatedTracks(playlist->trackSource(index),
-                                        playlist->trackTitle (index));
+        QString title = playlist->trackTitle(index);
+
+        if (title.isEmpty()) title = data.title;
+
+        source = q->sourceRelatedTracks(playlist->trackSource(index), title);
 
         // NOTE: Is this sufficient to avoid redundant calls ?
         if (urlBase != source
@@ -6032,6 +6044,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
     parameters.scope = query.scope;
 
+    parameters.method = query.method;
     parameters.header = query.header;
     parameters.body   = query.body;
 

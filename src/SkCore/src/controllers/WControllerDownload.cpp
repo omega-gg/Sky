@@ -165,6 +165,11 @@ WAbstractLoader::Scope WRemoteData::scope() const
     return _parameters.scope;
 }
 
+QString WRemoteData::method() const
+{
+    return _parameters.method;
+}
+
 QString WRemoteData::header() const
 {
     return _parameters.header;

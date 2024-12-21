@@ -2617,6 +2617,8 @@ void WLibraryFolder::updateIndex()
 {
     clearItems();
 
+    if (source.isEmpty()) return true;
+
     return wControllerPlaylist->d_func()->applySourceFolder(this, source, source, 0);
 }
 

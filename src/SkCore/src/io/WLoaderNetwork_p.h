@@ -39,6 +39,7 @@
 
 // Forward declarations
 class QNetworkAccessManager;
+class QNetworkRequest;
 class QNetworkReply;
 
 class SK_CORE_EXPORT WLoaderNetworkPrivate : public WAbstractLoaderPrivate
@@ -47,6 +48,9 @@ public:
     WLoaderNetworkPrivate(WLoaderNetwork * p);
 
     void init();
+
+public: // Functions
+    QNetworkReply * getReply(const QNetworkRequest & request, WRemoteData * data) const;
 
 public: // Slots
     void onMetaDataChanged();

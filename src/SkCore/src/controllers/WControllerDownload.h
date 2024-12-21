@@ -64,6 +64,7 @@ struct WRemoteParameters
 
     WAbstractLoader::Scope scope;
 
+    QString method;
     QString header;
     QString body;
 
@@ -113,6 +114,7 @@ public: // Properties
 
     WAbstractLoader::Scope scope() const;
 
+    QString method() const;
     QString header() const;
     QString body  () const;
 

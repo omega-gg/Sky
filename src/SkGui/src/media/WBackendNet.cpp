@@ -161,6 +161,7 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
 
     data = other.data;
 
+    method = other.method;
     header = other.header;
     body   = other.body;
 

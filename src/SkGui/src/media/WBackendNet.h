@@ -117,6 +117,7 @@ public: // Variables
 
     QVariant data;
 
+    QString method;
     QString header;
     QString body;
 

@@ -794,25 +794,33 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
     // NOTE: Sometimes we don't want to reload a track too soon.
     if (p->timeUpdate - timeUpdate < delay) return;
 
+    QString source = p->source;
+
 #ifdef SK_NO_TORRENT
     WControllerPlaylistPrivate * pController = wControllerPlaylist->d_func();
 
     pController->abortQueryTrack(track);
 
-    pController->applySourceTrack(q, track, p->source, p->source, 0);
+    if (source.isEmpty() == false)
+    {
+        pController->applySourceTrack(q, track, source, source, 0);
+    }
 #else
     // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
     //        is not responding well.
     if (p->state == WTrack::Default
         ||
-        WControllerPlaylist::urlIsTorrent(p->source) == false)
+        WControllerPlaylist::urlIsTorrent(source) == false)
 #endif
     {
         WControllerPlaylistPrivate * pController = wControllerPlaylist->d_func();
 
         pController->abortQueryTrack(track);
 
-        pController->applySourceTrack(q, track, p->source, p->source, 0);
+        if (source.isEmpty() == false)
+        {
+            pController->applySourceTrack(q, track, source, source, 0);
+        }
     }
 
     WTrack::State state = p->state;
@@ -2753,6 +2761,8 @@ void WPlaylist::endTracksRemove() const
 /* virtual */ bool WPlaylist::onApplySource(const QString & source)
 {
     clearTracks();
+
+    if (source.isEmpty()) return true;
 
     return wControllerPlaylist->d_func()->applySourcePlaylist(this, source, source, WTrack::Track,
                                                               0);
