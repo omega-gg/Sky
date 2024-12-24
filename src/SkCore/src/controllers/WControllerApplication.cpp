@@ -1732,7 +1732,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     {
         return QString();
     }
-    else return list.at(1);
+    else return list.last();
 }
 
 //-------------------------------------------------------------------------------------------------
