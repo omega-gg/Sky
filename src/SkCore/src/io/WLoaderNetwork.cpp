@@ -249,19 +249,40 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
             return d->manager->get(request);
         }
 
-        QStringList list = Sk::slicesIn(header, "\"", "\"");
-
-        int count = list.count() - 1;
-
-        if (count > 0)
+        // FIXME: This syntax should be deprecated at some point.
+        if (header.startsWith('"'))
         {
-            int index = 0;
+            QStringList list = Sk::slicesIn(header, "\"", "\"");
 
-            while (index < count)
+            int count = list.count() - 1;
+
+            if (count > 0)
             {
-                request.setRawHeader(list.at(index).C_STR, list.at(index + 1).C_STR);
+                int index = 0;
 
-                index += 2;
+                while (index < count)
+                {
+                    request.setRawHeader(list.at(index).C_STR, list.at(index + 1).C_STR);
+
+                    index += 2;
+                }
+            }
+        }
+        else
+        {
+            QStringList list = Sk::split(header, '\n');
+
+            foreach (const QString & string, list)
+            {
+                int index = string.indexOf(':');
+
+                if (index == -1) continue;
+
+                QString key = string.left(index).trimmed();
+
+                QString value = string.mid(index + 1).trimmed();
+
+                request.setRawHeader(key.C_STR, value.C_STR);
             }
         }
     }
