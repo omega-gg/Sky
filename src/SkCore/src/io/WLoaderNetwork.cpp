@@ -76,11 +76,35 @@ QNetworkReply * WLoaderNetworkPrivate::getReply(const QNetworkRequest & request,
         }
         else return manager->post(request, body.toUtf8());
     }
+#ifdef QT_4
+    else
+    {
+        if (body.isEmpty())
+        {
+            return manager->sendCustomRequest(request, method.toLatin1());
+        }
+
+        QBuffer * buffer = new QBuffer;
+
+        buffer->setData(data);
+
+        buffer->open(QIODevice::ReadOnly);
+
+        QNetworkReply * reply;
+
+        reply = manager->sendCustomRequest(request, method.toLatin1(), buffer);
+
+        buffer->setParent(reply);
+
+        return reply;
+    }
+#else
     else if (body.isEmpty())
     {
          return manager->sendCustomRequest(request, method.toLatin1());
     }
     else return manager->sendCustomRequest(request, method.toLatin1(), body.toUtf8());
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
