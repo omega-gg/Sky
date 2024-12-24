@@ -90,9 +90,7 @@ QNetworkReply * WLoaderNetworkPrivate::getReply(const QNetworkRequest & request,
 
         buffer->open(QIODevice::ReadOnly);
 
-        QNetworkReply * reply;
-
-        reply = manager->sendCustomRequest(request, method.toLatin1(), buffer);
+        QNetworkReply * reply = manager->sendCustomRequest(request, method.toLatin1(), buffer);
 
         buffer->setParent(reply);
 
