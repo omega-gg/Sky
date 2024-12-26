@@ -1728,14 +1728,9 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 {
     QStringList list = split(message, ' ');
 
-#ifdef Q_OS_WIN
-    qDebug("MESSAGE [%s]", message);
+    qDebug("MESSAGE [%s]", message.C_STR);
 
-    // NOTE Windows; It seems we receive a three part message.
-    if (list.count() < 3)
-#else
     if (list.count() < 2)
-#endif
     {
         return QString();
     }

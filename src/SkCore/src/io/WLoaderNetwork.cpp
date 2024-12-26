@@ -27,6 +27,9 @@
 // Qt includes
 #include <QNetworkProxy>
 #include <QSslConfiguration>
+#ifdef QT_4
+#include <QBuffer>
+#endif
 
 // Sk includes
 #include <WControllerApplication>
