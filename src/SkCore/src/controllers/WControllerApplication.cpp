@@ -1017,6 +1017,83 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     return split(string, QString(separator));
 }
 
+/* Q_INVOKABLE static */
+QStringList WControllerApplication::splitArguments(const QString & arguments)
+{
+    QStringList list;
+
+    QString argument;
+
+    bool escape = false;
+
+    int state = 0; // Idle, Quote, Argument
+
+    foreach (const QChar & character, arguments)
+    {
+        if (escape == false && character == '\\')
+        {
+            escape = true;
+
+            continue;
+        }
+
+        if (state == 0) // Idle
+        {
+            if (character == '"')
+            {
+                state = 2; // Quote
+            }
+            else if (character.isSpace() == false)
+            {
+                state = 1; // Argument
+
+                argument += character;
+            }
+        }
+        else if (state == 1) // Argument
+        {
+            if (escape)
+            {
+                argument += character;
+            }
+            else if (character == '"')
+            {
+                state = 2; // Quote
+            }
+            else if (character.isSpace() == false)
+            {
+                argument += character;
+            }
+            else
+            {
+                state = 0; // Idle
+
+                list.append(argument);
+
+                argument.clear();
+            }
+        }
+        else if (state == 2) // Quote
+        {
+            if (escape == false && character == '"')
+            {
+                if (argument.isEmpty()) state = 0; // Idle
+                else                    state = 1; // Argument
+            }
+            else argument += character;
+        }
+
+        escape = false;
+    }
+
+    if (argument.isEmpty() == false)
+    {
+        list.append(argument);
+    }
+
+    return list;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ void WControllerApplication::insertLine(QString       * string,
@@ -1726,9 +1803,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::extractMessage(const QString & message)
 {
-    QStringList list = split(message, ' ');
-
-    qDebug("MESSAGE [%s]", message.C_STR);
+    QStringList list = splitArguments(message);
 
     if (list.count() < 2)
     {

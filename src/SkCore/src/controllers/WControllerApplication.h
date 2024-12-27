@@ -299,6 +299,8 @@ public: // Static functions
     Q_INVOKABLE static QStringList split(const QString & string, const QString & separator);
     Q_INVOKABLE static QStringList split(const QString & string, const QChar   & separator);
 
+    Q_INVOKABLE static QStringList splitArguments(const QString & arguments);
+
     //---------------------------------------------------------------------------------------------
     // NOTE: Insert a line on the next line(s) after the matched 'pattern'.
 
