@@ -89,7 +89,7 @@ QNetworkReply * WLoaderNetworkPrivate::getReply(const QNetworkRequest & request,
 
         QBuffer * buffer = new QBuffer;
 
-        buffer->setData(data);
+        buffer->setData(body.toUtf8());
 
         buffer->open(QIODevice::ReadOnly);
 
