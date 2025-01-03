@@ -411,30 +411,57 @@ else
 
     elif [ $1 = "iOS" ]; then
 
-        cp "$Qt/lib/lib$QtX"Core.a            deploy
-        cp "$Qt/lib/lib$QtX"Gui.a             deploy
-        cp "$Qt/lib/lib$QtX"Network.a         deploy
-        cp "$Qt/lib/lib$QtX"OpenGL.a          deploy
-        cp "$Qt/lib/lib$QtX"Qml.a             deploy
-        cp "$Qt/lib/lib$QtX"Quick.a           deploy
-        cp "$Qt/lib/lib$QtX"Svg.a             deploy
-        cp "$Qt/lib/lib$QtX"Widgets.a         deploy
-        cp "$Qt/lib/lib$QtX"Xml.a             deploy
-        cp "$Qt/lib/lib$QtX"Multimedia.a      deploy
-        cp "$Qt/lib/lib$QtX"MultimediaQuick.a deploy
-
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt/lib/lib$QtX"XmlPatterns.a deploy
+            cp "$Qt/lib/lib$QtX"Core.a            deploy
+            cp "$Qt/lib/lib$QtX"Gui.a             deploy
+            cp "$Qt/lib/lib$QtX"Network.a         deploy
+            cp "$Qt/lib/lib$QtX"OpenGL.a          deploy
+            cp "$Qt/lib/lib$QtX"Qml.a             deploy
+            cp "$Qt/lib/lib$QtX"Quick.a           deploy
+            cp "$Qt/lib/lib$QtX"Svg.a             deploy
+            cp "$Qt/lib/lib$QtX"Widgets.a         deploy
+            cp "$Qt/lib/lib$QtX"Xml.a             deploy
+            cp "$Qt/lib/lib$QtX"Multimedia.a      deploy
+            cp "$Qt/lib/lib$QtX"MultimediaQuick.a deploy
+
+            if [ $qt = "qt5" ]; then
+
+                cp "$Qt/lib/lib$QtX"XmlPatterns.a deploy
+            else
+                cp "$Qt/lib/lib$QtX"Core5Compat.a deploy
+                cp "$Qt/lib/lib$QtX"QmlMeta.a deploy
+            fi
+
+            if [ -f "$Qt/lib/lib$QtX"QmlModels.a ]; then
+
+                cp "$Qt/lib/lib$QtX"QmlModels.a       deploy
+                cp "$Qt/lib/lib$QtX"QmlWorkerScript.a deploy
+            fi
         else
-            cp "$Qt/lib/lib$QtX"Core5Compat.a deploy
-            cp "$Qt/lib/lib$QtX"QmlMeta.a deploy
-        fi
+            cp "$Qt"/lib/QtCore.framework/QtCore                       deploy/QtCore.a
+            cp "$Qt"/lib/QtGui.framework/QtGui                         deploy/QtGui.a
+            cp "$Qt"/lib/QtNetwork.framework/QtNetwork                 deploy/QtNetwork.a
+            cp "$Qt"/lib/QtOpenGL.framework/QtOpenGL                   deploy/QtOpenGL.a
+            cp "$Qt"/lib/QtQml.framework/QtQml                         deploy/QtQml.a
+            cp "$Qt"/lib/QtQuick.framework/QtQuick                     deploy/QtQuick.a
+            cp "$Qt"/lib/QtSvg.framework/QtSvg                         deploy/QtSvg.a
+            cp "$Qt"/lib/QtWidgets.framework/QtWidgets                 deploy/QtWidgets.a
+            cp "$Qt"/lib/QtXml.framework/QtXml                         deploy/QtXml.a
+            cp "$Qt"/lib/QtMultimedia.framework/QtMultimedia           deploy/QtMultimedia.a
+            cp "$Qt"/lib/QtMultimediaQuick.framework/QtMultimediaQuick deploy/QtMultimediaQuick.a
 
-        if [ -f "$Qt/lib/lib$QtX"QmlModels.a ]; then
+            cp "$Qt"/lib/QtCore5Compat.framework/Versions/$qx/QtCore5Compat deploy/QtCore5Compat.a
 
-            cp "$Qt/lib/lib$QtX"QmlModels.a       deploy
-            cp "$Qt/lib/lib$QtX"QmlWorkerScript.a deploy
+            cp "$Qt"/lib/QtQmlMeta.framework/Versions/$qx/QtQmlMeta deploy/QtQmlMeta.a
+
+            if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels ]; then
+
+                cp "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels deploy/QtQmlModels.a
+
+                cp "$Qt"/lib/QtQmlWorkerScript.framework/Versions/$qx/QtQmlWorkerScript \
+                   deploy/QtQmlWorkerScript.a
+            fi
         fi
 
         cp "$Qt"/plugins/platforms/libqios.a deploy/platforms
