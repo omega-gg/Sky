@@ -1805,6 +1805,13 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 {
     QStringList list = splitArguments(message);
 
+    qDebug("MESSAGE [%s]", message.C_STR);
+
+    foreach (const QString & string, list)
+    {
+        qDebug("ARG [%s]", string.C_STR);
+    }
+
     if (list.count() < 2)
     {
         return QString();
