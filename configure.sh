@@ -276,16 +276,23 @@ else
 
         elif [ $1 = "iOS" ]; then
 
-            cp -r "$Qt"/include/QtCore  $include
-            cp -r "$Qt"/include/QtGui   $include
-            cp -r "$Qt"/include/QtQml   $include
-            cp -r "$Qt"/include/QtQuick $include
+            if [ $qt = "qt5" ]; then
 
-            cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
+                cp -r "$Qt"/include/QtCore  $include
+                cp -r "$Qt"/include/QtGui   $include
+                cp -r "$Qt"/include/QtQml   $include
+                cp -r "$Qt"/include/QtQuick $include
 
-            if [ $qt = "qt6" ]; then
+                cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
+            else
+                cp -r "$Qt"/lib/QtCore.framework/Headers/*  $include/QtCore
+                cp -r "$Qt"/lib/QtGui.framework/Headers/*   $include/QtGui
+                cp -r "$Qt"/lib/QtQml.framework/Headers/*   $include/QtQml
+                cp -r "$Qt"/lib/QtQuick.framework/Headers/* $include/QtQuick
 
-                cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/rhi $include/QtGui
+                cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa $include/QtGui
+
+                cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/rhi $include/QtGui
             fi
 
         elif [ $1 = "linux" ]; then
