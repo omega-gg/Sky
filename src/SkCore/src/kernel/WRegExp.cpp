@@ -183,7 +183,7 @@ bool WRegExp::operator==(const WRegExp & other) const
 #ifdef QT_4
     return QRegExp::operator==(static_cast<const QRegExp &> (other));
 #else
-    return QRegularExpression::operator==(static_cast<const QRegularExpression &> (other));
+    return (pattern() == other.pattern() && patternOptions() == other.patternOptions());
 #endif
 }
 
@@ -234,7 +234,7 @@ WRegExp::WRegExp(const QRegularExpression & other)
 
 bool WRegExp::operator==(const QRegularExpression & other) const
 {
-    return QRegularExpression::operator==(other);
+    return (pattern() == other.pattern() && patternOptions() == other.patternOptions());
 }
 
 WRegExp & WRegExp::operator=(const QRegularExpression & other)
