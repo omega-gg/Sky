@@ -57,6 +57,7 @@ copyAndroid()
         cp "$1/lib/lib$QtX"XmlPatterns_*.so deploy
     else
         cp "$1/lib/lib$QtX"Core5Compat_*.so deploy
+        cp "$1/lib/lib$QtX"QmlMeta_*.so   deploy
     fi
 
     if [ -f "$1/lib/lib$QtX"QmlModels_"$2".so ]; then
@@ -311,6 +312,7 @@ else
             cp "$Qt/bin/$QtX"WinExtras.dll   deploy
         else
             cp "$Qt/bin/$QtX"Core5Compat.dll deploy
+            cp "$Qt/bin/$QtX"QmlMeta.dll deploy
         fi
 
         if [ -f "$Qt/bin/$QtX"QmlModels.dll ]; then
@@ -370,6 +372,8 @@ else
         else
             cp "$Qt"/lib/QtCore5Compat.framework/Versions/$qx/QtCore5Compat \
                 deploy/QtCore5Compat.dylib
+
+            cp "$Qt"/lib/QtQmlMeta.framework/Versions/$qx/QtQmlMeta deploy/QtQmlMeta.dylib
         fi
 
         if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels ]; then
@@ -424,6 +428,7 @@ else
             cp "$Qt/lib/lib$QtX"XmlPatterns.a deploy
         else
             cp "$Qt/lib/lib$QtX"Core5Compat.a deploy
+            cp "$Qt/lib/lib$QtX"QmlMeta.a deploy
         fi
 
         if [ -f "$Qt/lib/lib$QtX"QmlModels.a ]; then
@@ -505,6 +510,7 @@ else
             cp "$Qt/lib/lib$QtX"XmlPatterns.so.$qx deploy
         else
             cp "$Qt/lib/lib$QtX"Core5Compat.so.$qx deploy
+            cp "$Qt/lib/lib$QtX"QmlMeta.so.$qx     deploy
         fi
 
         if [ -f "$Qt/lib/lib$QtX"QmlModels.so.$qx ]; then
