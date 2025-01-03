@@ -11,7 +11,7 @@ external="../3rdparty"
 
 Qt4_version="4.8.7"
 Qt5_version="5.15.2"
-Qt6_version="6.6.0"
+Qt6_version="6.8.1"
 
 VLC_version="3.0.21"
 
