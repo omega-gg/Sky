@@ -31,7 +31,7 @@ jobs:
 
 - job: macOS_qt5
   pool:
-    vmImage: "macOS-13"
+    vmImage: "macOS-12"
   steps:
   - bash: |
       sh build.sh macOS all
