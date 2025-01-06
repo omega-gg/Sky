@@ -451,15 +451,15 @@ else
             cp "$Qt"/lib/QtMultimedia.framework/QtMultimedia           deploy/QtMultimedia.a
             cp "$Qt"/lib/QtMultimediaQuick.framework/QtMultimediaQuick deploy/QtMultimediaQuick.a
 
-            cp "$Qt"/lib/QtCore5Compat.framework/Versions/$qx/QtCore5Compat deploy/QtCore5Compat.a
+            cp "$Qt"/lib/QtCore5Compat.framework/QtCore5Compat deploy/QtCore5Compat.a
 
-            cp "$Qt"/lib/QtQmlMeta.framework/Versions/$qx/QtQmlMeta deploy/QtQmlMeta.a
+            cp "$Qt"/lib/QtQmlMeta.framework/QtQmlMeta deploy/QtQmlMeta.a
 
-            if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels ]; then
+            if [ -f "$Qt"/lib/QtQmlModels.framework/QtQmlModels ]; then
 
-                cp "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels deploy/QtQmlModels.a
+                cp "$Qt"/lib/QtQmlModels.framework/QtQmlModels deploy/QtQmlModels.a
 
-                cp "$Qt"/lib/QtQmlWorkerScript.framework/Versions/$qx/QtQmlWorkerScript \
+                cp "$Qt"/lib/QtQmlWorkerScript.framework/QtQmlWorkerScript \
                    deploy/QtQmlWorkerScript.a
             fi
         fi
