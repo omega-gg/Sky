@@ -439,28 +439,28 @@ else
                 cp "$Qt/lib/lib$QtX"QmlWorkerScript.a deploy
             fi
         else
-            cp "$Qt"/lib/QtCore.framework/QtCore                       deploy/QtCore.a
-            cp "$Qt"/lib/QtGui.framework/QtGui                         deploy/QtGui.a
-            cp "$Qt"/lib/QtNetwork.framework/QtNetwork                 deploy/QtNetwork.a
-            cp "$Qt"/lib/QtOpenGL.framework/QtOpenGL                   deploy/QtOpenGL.a
-            cp "$Qt"/lib/QtQml.framework/QtQml                         deploy/QtQml.a
-            cp "$Qt"/lib/QtQuick.framework/QtQuick                     deploy/QtQuick.a
-            cp "$Qt"/lib/QtSvg.framework/QtSvg                         deploy/QtSvg.a
-            cp "$Qt"/lib/QtWidgets.framework/QtWidgets                 deploy/QtWidgets.a
-            cp "$Qt"/lib/QtXml.framework/QtXml                         deploy/QtXml.a
-            cp "$Qt"/lib/QtMultimedia.framework/QtMultimedia           deploy/QtMultimedia.a
-            cp "$Qt"/lib/QtMultimediaQuick.framework/QtMultimediaQuick deploy/QtMultimediaQuick.a
+            cp "$Qt"/lib/QtCore.framework/QtCore                       deploy/libQt6Core.a
+            cp "$Qt"/lib/QtGui.framework/QtGui                         deploy/libQt6Gui.a
+            cp "$Qt"/lib/QtNetwork.framework/QtNetwork                 deploy/libQt6Network.a
+            cp "$Qt"/lib/QtOpenGL.framework/QtOpenGL                   deploy/libQt6OpenGL.a
+            cp "$Qt"/lib/QtQml.framework/QtQml                         deploy/libQt6Qml.a
+            cp "$Qt"/lib/QtQuick.framework/QtQuick                     deploy/libQt6Quick.a
+            cp "$Qt"/lib/QtSvg.framework/QtSvg                         deploy/libQt6Svg.a
+            cp "$Qt"/lib/QtWidgets.framework/QtWidgets                 deploy/libQt6Widgets.a
+            cp "$Qt"/lib/QtXml.framework/QtXml                         deploy/libQt6Xml.a
+            cp "$Qt"/lib/QtMultimedia.framework/QtMultimedia           deploy/libQt6Multimedia.a
+            cp "$Qt"/lib/QtMultimediaQuick.framework/QtMultimediaQuick deploy/libQt6MultimediaQuick.a
 
-            cp "$Qt"/lib/QtCore5Compat.framework/QtCore5Compat deploy/QtCore5Compat.a
+            cp "$Qt"/lib/QtCore5Compat.framework/QtCore5Compat deploy/libQt6Core5Compat.a
 
-            cp "$Qt"/lib/QtQmlMeta.framework/QtQmlMeta deploy/QtQmlMeta.a
+            cp "$Qt"/lib/QtQmlMeta.framework/QtQmlMeta deploy/libQt6QmlMeta.a
 
             if [ -f "$Qt"/lib/QtQmlModels.framework/QtQmlModels ]; then
 
-                cp "$Qt"/lib/QtQmlModels.framework/QtQmlModels deploy/QtQmlModels.a
+                cp "$Qt"/lib/QtQmlModels.framework/QtQmlModels deploy/libQt6QmlModels.a
 
                 cp "$Qt"/lib/QtQmlWorkerScript.framework/QtQmlWorkerScript \
-                   deploy/QtQmlWorkerScript.a
+                   deploy/libQt6QmlWorkerScript.a
             fi
         fi
 
