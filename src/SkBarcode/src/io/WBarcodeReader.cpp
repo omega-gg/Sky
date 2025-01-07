@@ -426,7 +426,7 @@ void WBarcodeReaderPrivate::init() {}
 
     QStringList list;
 
-    foreach (const Result & output, outputs)
+    W_FOREACH (const Result & output, outputs)
     {
         if (output.isValid() == false) continue;
 
