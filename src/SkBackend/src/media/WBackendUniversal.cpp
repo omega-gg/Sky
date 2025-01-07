@@ -4397,7 +4397,7 @@ void WBackendUniversalPrivate::applyQueries(QList<WBackendNetQuery> * queries,
                                             QVariant * value) const
 {
     // NOTE: If it's a list we extract each query. Otherwise it's a single query.
-    if (value->canConvert<QVariantList>())
+    if (value->typeId() == QMetaType::QVariantList)
     {
         QVariantList list = value->toList();
 

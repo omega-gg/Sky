@@ -158,7 +158,7 @@ QByteArray WCrypter::encryptToByteArray(const QByteArray & bytes) const
     {
         QByteArray compressed = qCompress(array, 9);
 
-        if (compressed.count() < array.count())
+        if (compressed.length() < array.length())
         {
             array = compressed;
 
@@ -191,7 +191,7 @@ QByteArray WCrypter::encryptToByteArray(const QByteArray & bytes) const
 
     char lastChar = 0;
 
-    for (int i = 0; i < array.count(); i++)
+    for (int i = 0; i < array.length(); i++)
     {
         array[i] = array.at(i) ^ d->keyParts.at(i % 8) ^ lastChar;
 
@@ -257,7 +257,7 @@ QByteArray WCrypter::decryptToByteArray(const QByteArray & bytes) const
 
     char lastChar = 0;
 
-    for (int i = 0; i < array.count(); i++)
+    for (int i = 0; i < array.length(); i++)
     {
         char currentChar = array[i];
 

@@ -154,7 +154,7 @@ WallBookmarkTrack
         if (isActive) pExpanded = false;
     }
 
-    onClicked:
+    /* QML_EVENT */ onClicked: function(mouse)
     {
         if (mouse.button & Qt.RightButton) return;
 

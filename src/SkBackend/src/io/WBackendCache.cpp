@@ -127,11 +127,13 @@ WBackendCache::WBackendCache(QObject * parent)
 
     i = d->scripts.insert(name, script);
 
+    WBackendUniversalScript * pointer = &(i.value());
+
     d->names.append(name);
 
     d->updateCache();
 
-    return &(i.value());
+    return pointer;
 }
 
 /* Q_INVOKABLE */ void WBackendCache::removeScripts(const QString & pattern)

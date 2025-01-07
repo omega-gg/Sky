@@ -235,11 +235,14 @@ void WVlcEnginePrivate::clearDiscoverers()
     options.append("--no-media-library");
     options.append("--text-renderer=none");
 
+    // NOTE VLC 3.0.20: This is required for the preferred-resolution to be applied.
+    options.append("--adaptive-logic=highest");
+
     // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
-    options.append("--http-reconnect");
+    //options.append("--http-reconnect");
 
     // NOTE: This is useful for the mkv default language.
-    options.append("--audio-language=en");
+    //options.append("--audio-language=en");
 
     return options;
 }
