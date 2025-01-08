@@ -98,7 +98,7 @@ void WList<T>::move(int from, int to)
 {
     Q_ASSERT(from >= 0 && from < (int) this->size()
              &&
-             to >= 0 && to < (int) this->size());
+             to >= 0 && to <= (int) this->size());
 
     typename WList<T>::iterator itA = std::next(this->begin(), from);
     typename WList<T>::iterator itB = std::next(this->begin(), to);

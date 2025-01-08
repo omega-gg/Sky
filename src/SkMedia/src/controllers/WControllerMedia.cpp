@@ -1850,21 +1850,16 @@ void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
         media->typeSource = typeSource;
     }
 
-    media->chapters.append(slice.chapters);
+    media->subtitles.append(slice.subtitles);
 
-    if (slice.ambient.isEmpty() == false)
+    if (media->timeB != -1)
     {
-        media->ambient = slice.ambient;
+        applyChapters(media, slice.chapters);
+
+        return;
     }
 
-    if (slice.subtitles.isEmpty() == false)
-    {
-        media->subtitles = slice.subtitles;
-    }
-
-    int timeB = slice.timeB;
-
-    if (timeB == -1) return;
+    media->chapters = slice.chapters;
 
     int duration = slice.duration;
 
@@ -1874,10 +1869,7 @@ void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
 
     if (duration == -1)
     {
-        if (media->timeB == -1 || timeB < media->timeB)
-        {
-            media->timeB = timeB;
-        }
+        media->timeB = slice.timeB;
 
         return;
     }
@@ -1889,7 +1881,7 @@ void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
 
     media->duration = duration;
 
-    media->timeB = timeB;
+    media->timeB = slice.timeB;
 
     media->context   = slice.context;
     media->contextId = slice.contextId;
@@ -2463,8 +2455,6 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
         if (timeA != -1
             &&
             (currentTime < timeA || currentTime >= slice.timeB)) continue;
-
-        count--;
 
         // NOTE: We pop the slice at the top of the stack.
         slices.move(i, count);

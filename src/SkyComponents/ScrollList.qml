@@ -121,11 +121,18 @@ ScrollArea
 
         scrollArea: scrollList
 
-        onItemPressed : scrollList.itemPressed (index)
-        onItemReleased: scrollList.itemReleased(index)
+        /* QML_EVENT */ onItemPressed : function(index) { scrollList.itemPressed (index) }
+        /* QML_EVENT */ onItemReleased: function(index) { scrollList.itemReleased(index) }
 
-        onItemClicked      : scrollList.itemClicked      (index)
-        onItemDoubleClicked: scrollList.itemDoubleClicked(index)
+        /* QML_EVENT */ onItemClicked: function(index)
+        {
+            scrollList.itemClicked(index);
+        }
+
+        /* QML_EVENT */ onItemDoubleClicked: function(index)
+        {
+            scrollList.itemDoubleClicked(index);
+        }
 
         onCurrentIndexChanged: scrollToItem(currentIndex)
     }
