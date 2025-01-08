@@ -37,7 +37,7 @@
 #if defined(QT_6) == false && defined(SK_NO_QML) == false
 #include <QGLWidget>
 #endif
-//#include <QMutex>
+#include <QMutex>
 #include <QMetaMethod>
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
 #include <QSGMaterial>
@@ -301,7 +301,8 @@ public: // Slots
 
 public: // Variables
     // NOTE: Do we really need a mutex on here after all ?
-    //QMutex mutex;
+    // NOTE Qt6: The absence of mutex seems to cause random freezes when starting the playback.
+    QMutex mutex;
 
     WVlcPlayer * player;
 

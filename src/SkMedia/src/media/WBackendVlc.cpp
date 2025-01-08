@@ -1423,7 +1423,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
     int cursorV = cursorU + pitches[1] * lines[1];
 
     // NOTE: We make sure we're not writing a new frame while applying it on a texture.
-    //d->mutex.lock();
+    d->mutex.lock();
 
     // NOTE: We need to swap image(s) in case we're still reading bits from the rendering thread.
     if (d->frameSwap)
@@ -1441,7 +1441,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
         applyFrames(d, d->frames[2], d->frames[3], cursorU, cursorV);
     }
 
-    //d->mutex.unlock();
+    d->mutex.unlock();
 
     d->frameIndex = false;
 
@@ -1465,7 +1465,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
 {
     WBackendVlcPrivate * d = static_cast<WBackendVlc *> (data)->d_func();
 
-    //d->mutex.lock();
+    d->mutex.lock();
 
     d->frameIndex = !(d->frameIndex);
 
@@ -1504,7 +1504,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
         d->textures[2].bits = d->textures[2].bitsB;
     }
 
-    //d->mutex.unlock();
+    d->mutex.unlock();
 
     d->method.invoke(backend);
 }
@@ -1957,7 +1957,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
             WBackendTexture * textures = frame->textures;
 
-            //d->mutex.lock();
+            d->mutex.lock();
 
             for (int i = 0; i < 3; i++)
             {
@@ -1984,7 +1984,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
             d->frameSwap = !(d->frameSwap);
 
-            //d->mutex.unlock();
+            d->mutex.unlock();
 
             frame->state = WAbstractBackend::FrameReset;
         }
@@ -1994,9 +1994,13 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
             WBackendTexture * textures = frame->textures;
 
+            d->mutex.lock();
+
             textures[0].bits = d->textures[0].bits;
             textures[1].bits = d->textures[1].bits;
             textures[2].bits = d->textures[2].bits;
+
+            d->mutex.unlock();
 
             // NOTE: When frame reset is pending we keep it that way. Otherwise we won't reset the
             //       texture properly in 'updatePaintNode'.
