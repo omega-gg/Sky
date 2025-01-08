@@ -527,7 +527,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             QList<WControllerMediaObject> timelineNew;
 
+#ifdef QT_OLD
+            if (result.type() == QVariant::List)
+#else
             if (result.typeId() == QMetaType::QVariantList)
+#endif
             {
                 QVariantList variants = result.toList();
 
