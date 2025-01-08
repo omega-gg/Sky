@@ -1968,10 +1968,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
                 textureA->width  = textureB->width;
                 textureA->height = textureB->height;
 #else
-                int width  = textureB->width;
-                int height = textureB->height;
-
-                textureA->size = QSize(width, height);
+                textureA->size = QSize(textureB->width, textureB->height);
 #endif
 
                 textureA->bits = textureB->bits;
