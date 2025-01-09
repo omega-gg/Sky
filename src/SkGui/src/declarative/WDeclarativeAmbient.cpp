@@ -154,9 +154,9 @@ void WDeclarativeAmbient::setPlayerSource(WDeclarativePlayer * playerSource)
 
     if (d->playerSource == playerSource) return;
 
-    if (playerSource)
+    if (d->playerSource)
     {
-        disconnect(playerSource, 0, this, 0);
+        disconnect(d->playerSource, 0, this, 0);
 
         clear();
 

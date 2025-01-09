@@ -508,10 +508,7 @@ void WImageFilterColor::setGradient(WDeclarativeGradient * gradient)
 
     if (d->gradient == gradient) return;
 
-    if (d->gradient)
-    {
-        disconnect(d->gradient, 0, this, 0);
-    }
+    if (d->gradient) disconnect(d->gradient, 0, this, 0);
 
     d->gradient = gradient;
 

@@ -1175,10 +1175,7 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
 
     if (d->filter == filter) return;
 
-    if (d->filter)
-    {
-        disconnect(d->filter, 0, this, 0);
-    }
+    if (d->filter) disconnect(d->filter, 0, this, 0);
 
     d->filter = filter;
 

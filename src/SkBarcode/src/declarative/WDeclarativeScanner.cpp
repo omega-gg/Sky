@@ -384,7 +384,7 @@ void WDeclarativeScanner::setPlayer(WDeclarativePlayer * player)
 
     d->clearItem();
 
-    if (d->player) disconnect(player, 0, this, 0);
+    if (d->player) disconnect(d->player, 0, this, 0);
 
     d->player = player;
 
@@ -406,7 +406,7 @@ void WDeclarativeScanner::setCover(WDeclarativeImage * cover)
 
     d->clearItem();
 
-    if (d->cover) disconnect(cover, 0, this, 0);
+    if (d->cover) disconnect(d->cover, 0, this, 0);
 
     d->cover = cover;
 

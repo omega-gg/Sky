@@ -102,7 +102,7 @@ void WLoaderPlaylistPrivate::setItem(WLibraryItem * item)
 
     Q_Q(WLoaderPlaylist);
 
-    if (item) QObject::disconnect(item, 0, q, 0);
+    if (this->item) QObject::disconnect(this->item, 0, q, 0);
 
     this->item = item;
 
