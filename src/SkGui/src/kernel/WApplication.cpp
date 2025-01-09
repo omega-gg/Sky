@@ -124,7 +124,7 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
         QQuickWindow::setGraphicsApi(QSGRendererInterface::Software);
 #else
         // NOTE Qt6: Let's stick to OpenGL by default.
-        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+        //QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 #endif
     }
     else QQuickWindow::setGraphicsApi(api);

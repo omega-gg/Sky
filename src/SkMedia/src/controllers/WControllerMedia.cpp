@@ -2461,7 +2461,7 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
             (currentTime < timeA || currentTime >= slice.timeB)) continue;
 
         // NOTE: We pop the slice at the top of the stack.
-        slices.move(i, count);
+        slices.move(i, count - 1);
 
         return &(slices.last());
     }
@@ -2485,7 +2485,7 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
     if (id.isEmpty())
     {
-         backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
+        backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
     }
     else if (id == "vbml")
     {
