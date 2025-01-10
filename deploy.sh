@@ -811,6 +811,12 @@ fi
 
 if [ $1 = "macOS" ]; then
 
+    # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
+    if [ $qt = "qt6" ]; then
+
+        codesign --force --deep --sign - "$QtX"/lib/Qt*.dylib
+    fi
+
     #----------------------------------------------------------------------------------------------
     # includeGenerator
 
