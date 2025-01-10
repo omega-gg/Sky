@@ -409,6 +409,12 @@ else
             cp "$Qt"/qml/QtQml/WorkerScript/qmldir                      deploy/QtQml/WorkerScript
         fi
 
+        # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
+        if [ $qt = "qt6" ]; then
+
+            codesign --force --deep --sign - deploy/Qt*.dylib
+        fi
+
     elif [ $1 = "iOS" ]; then
 
         if [ $qt = "qt5" ]; then
@@ -810,14 +816,6 @@ else
 fi
 
 if [ $1 = "macOS" ]; then
-
-    # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
-    if [ $qt = "qt6" ]; then
-
-        echo "SIGNING Qt"
-
-        codesign --force --deep --sign - deploy/Qt*.dylib
-    fi
 
     #----------------------------------------------------------------------------------------------
     # includeGenerator
