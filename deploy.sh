@@ -814,6 +814,8 @@ if [ $1 = "macOS" ]; then
     # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
     if [ $qt = "qt6" ]; then
 
+        echo "SIGNING Qt"
+
         codesign --force --deep --sign - deploy/Qt*.dylib
     fi
 
