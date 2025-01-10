@@ -331,6 +331,7 @@ else
 
             cp "$Qt"/plugins/mediaservice/dsengine.dll deploy/mediaservice
         else
+            cp "$Qt"/plugins/tls/qopensslbackend.dll  deploy/tls
             cp "$Qt"/plugins/tls/qschannelbackend.dll deploy/tls
         fi
 
