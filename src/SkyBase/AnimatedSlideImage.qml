@@ -49,7 +49,8 @@ AnimatedSlide
         width : parent.width
         height: parent.height
 
-        source: imageA.source
+        // FIXME Qt6.8.1: We get a 'Type error' with imageA.source when deploying using qrc.
+        source: parent.source
 
         smooth: imageA.smooth
     }
