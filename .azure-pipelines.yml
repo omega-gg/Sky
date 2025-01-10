@@ -25,6 +25,18 @@ jobs:
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-win64-qt5
 
+- job: win64_qt6
+  pool:
+    vmImage: "windows-latest"
+  steps:
+  - bash: |
+      sh environment.sh qt6
+      sh build.sh win64 all
+      cd deploy
+      7z a ../Sky.zip *
+  - publish: $(System.DefaultWorkingDirectory)/Sky.zip
+    artifact: Sky-win64-qt6
+
 #--------------------------------------------------------------------------------------------------
 # macOS
 #--------------------------------------------------------------------------------------------------
