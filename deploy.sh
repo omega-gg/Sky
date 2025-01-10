@@ -408,11 +408,8 @@ else
 
             cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.dylib deploy/QtQml/WorkerScript
             cp "$Qt"/qml/QtQml/WorkerScript/qmldir                      deploy/QtQml/WorkerScript
-        fi
 
-        # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
-        if [ $qt = "qt6" ]; then
-
+            # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
             codesign --force --deep --sign - deploy/Qt*.dylib
         fi
 
