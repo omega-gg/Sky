@@ -273,6 +273,10 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 
     if (d->deleting) return false;
 
+#ifndef SK_NO_PLAYER
+    setPlayer(NULL);
+#endif
+
     if (backendDelete())
     {
         delete this;
@@ -284,10 +288,6 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
         d->deleting = true;
 
         setParent(NULL);
-
-#ifndef SK_NO_PLAYER
-        setPlayer(NULL);
-#endif
 
         setState(StateStopped);
 
