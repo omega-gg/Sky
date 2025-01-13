@@ -104,7 +104,7 @@
 #endif
 
 // macOS includes
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include <CoreServices/CoreServices.h>
 #endif
 
@@ -333,7 +333,7 @@ void WControllerApplication::initController()
     {
         component.loadUrl(QUrl("qrc:/Main.qml"));
     }
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
     // NOTE macOS: We have to take the application bundle into account.
     else if (d->gui)
     {
@@ -544,7 +544,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     Qt::KeyboardModifiers flags = static_cast<Qt::KeyboardModifiers> (modifiers);
 #endif
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
     // NOTE: On macOS an arrow key is considered part of the keypad.
     return (flags | Qt::KeypadModifier);
 #else
@@ -2282,7 +2282,7 @@ bool WControllerApplication::osWin() const
 
 bool WControllerApplication::osMac() const
 {
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
     return true;
 #else
     return false;
@@ -2402,7 +2402,7 @@ void WControllerApplication::setApplicationUrl(const QString & url)
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(Q_OS_MACX) || defined(SK_MOBILE)
+#if defined(Q_OS_MACOS) || defined(SK_MOBILE)
 
 QString WControllerApplication::message() const
 {
@@ -2624,7 +2624,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         SystemParametersInfo(SPI_SETPOWEROFFTIMEOUT,   d->timeoutPowerOff,   NULL, 0);
         SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, d->timeoutScreenSave, NULL, 0);
     }
-#elif defined(Q_OS_MACX)
+#elif defined(Q_OS_MACOS)
     if (enabled == false)
     {
         CFStringRef name = CFStringCreateWithCString(NULL, d->name.C_STR, kCFStringEncodingASCII);

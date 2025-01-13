@@ -225,7 +225,7 @@ void WVlcEnginePrivate::clearDiscoverers()
     options.append("--intf=dummy");
 #ifdef Q_OS_WIN
     options.append("--dummy-quiet");
-#elif defined(Q_OS_MACX)
+#elif defined(Q_OS_MACOS)
     options.append("--vout=macosx");
 #endif
     options.append("--ignore-config");
@@ -259,7 +259,7 @@ void WVlcEnginePrivate::clearDiscoverers()
 
     if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventCreate))
     {
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
         qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
 #endif
 
@@ -270,7 +270,7 @@ void WVlcEnginePrivate::clearDiscoverers()
                 "--intf=dummy",             /* No interface     */
 #ifdef Q_OS_WIN
                 "--dummy-quiet",            /* No command-line  */
-#elif defined(Q_OS_MACX)
+#elif defined(Q_OS_MACOS)
                 "--vout=macosx",
 #endif
                 "--ignore-config",          /* No configuration */

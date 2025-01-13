@@ -52,7 +52,7 @@
 #include <WUnzipper>
 
 // macOS includes
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include <CoreServices/CoreServices.h>
 #endif
 
@@ -2712,7 +2712,7 @@ void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item)
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(SK_CONSOLE) == false && defined(Q_OS_MACX)
+#if defined(SK_CONSOLE) == false && defined(Q_OS_MACOS)
 
 bool WControllerPlaylistPrivate::compareBundle(const CFStringRef bundle,
                                                const CFStringRef handler) const
@@ -7030,7 +7030,7 @@ bool WControllerPlaylist::associateVbml() const
     if (settings.value("vbml/shell/open/command/Default") != value) return false;
 
     return true;
-#elif defined(Q_OS_MACX)
+#elif defined(Q_OS_MACOS)
     const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
 
     if (bundle == NULL) return false;
@@ -7100,7 +7100,7 @@ void WControllerPlaylist::setAssociateVbml(bool associate)
 
         emit associateVbmlChanged();
     }
-#elif defined(Q_OS_MACX)
+#elif defined(Q_OS_MACOS)
     const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
 
     if (bundle == NULL) return;

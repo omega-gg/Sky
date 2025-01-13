@@ -92,7 +92,7 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
-#if defined(Q_OS_MACX) || defined(SK_MOBILE)
+#if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
 #endif
 
@@ -528,7 +528,7 @@ signals:
 
     void applicationUrlChanged();
 
-#if defined(Q_OS_MACX) || defined(SK_MOBILE)
+#if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     // NOTE android: This is useful to notify that the 'intent' has changed.
     void messageChanged();
 #endif
@@ -584,7 +584,7 @@ public: // Properties
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
 
-#if defined(Q_OS_MACX) || defined(SK_MOBILE)
+#if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     // NOTE android: This returns the 'intent' text.
     QString message() const;
 
@@ -632,7 +632,7 @@ private:
     friend class WControllerPrivate;
     friend class WCoreApplication;
     friend class WApplication;
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
     friend class WSingleApplication;
 #endif
 };

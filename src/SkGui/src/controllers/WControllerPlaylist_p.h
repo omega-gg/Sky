@@ -143,7 +143,7 @@ public: // Functions
 
     void registerItemId(WLibraryItem * item);
 
-#if defined(SK_CONSOLE) == false && defined(Q_OS_MACX)
+#if defined(SK_CONSOLE) == false && defined(Q_OS_MACOS)
     bool compareBundle(const CFStringRef bundle, const CFStringRef handler) const;
 #endif
 
