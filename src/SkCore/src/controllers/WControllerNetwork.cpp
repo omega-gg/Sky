@@ -487,15 +487,16 @@ void WControllerNetworkPrivate::checkConnection()
 //-------------------------------------------------------------------------------------------------
 // Json
 
-/* static */ int WControllerNetworkPrivate::indexJsonEndA(const QString & text, int at)
+/* static */ int WControllerNetworkPrivate::indexJsonEndA(const QString & text,
+                                                          const QChar   & charA, int at)
 {
-    at = text.indexOf('"', at + 1);
+    at = text.indexOf(charA, at + 1);
 
     if (at == -1) return -1;
 
     while (Sk::checkEscaped(text, at))
     {
-        at = text.indexOf('"', at + 1);
+        at = text.indexOf(charA, at + 1);
 
         if (at == -1) return -1;
     }
@@ -503,8 +504,8 @@ void WControllerNetworkPrivate::checkConnection()
     return at;
 }
 
-/* static */ int WControllerNetworkPrivate::indexJsonEndB(const QString & text, int at,
-                                                          const QChar   & charA)
+/* static */ int WControllerNetworkPrivate::indexJsonEndB(const QString & text,
+                                                          const QChar   & charA, int at)
 {
     QChar charB;
 
@@ -518,7 +519,7 @@ void WControllerNetworkPrivate::checkConnection()
     }
     else
     {
-        int index = text.indexOf(WRegExp("[,\"}\\]]"), at);
+        int index = text.indexOf(WRegExp("[,'\"/}\\]]"), at);
 
         if (index == -1)
         {
@@ -531,13 +532,15 @@ void WControllerNetworkPrivate::checkConnection()
 
     while (at < text.length())
     {
-        int indexA = text.indexOf('"', at);
+        QChar character;
+
+        int indexA = indexJsonCharacter(text, &character, at);
 
         if (indexA != -1)
         {
             while (Sk::checkEscaped(text, indexA))
             {
-                indexA = text.indexOf('"', indexA + 1);
+                indexA = text.indexOf(character, indexA + 1);
 
                 if (indexA == -1) break;
             }
@@ -556,11 +559,11 @@ void WControllerNetworkPrivate::checkConnection()
         {
             QChar character = text.at(indexA);
 
-            if (character == '"')
+            if (character == '\'' || character == '"' || character == '/')
             {
-                 at = indexJsonEndA(text, indexA);
+                 at = indexJsonEndA(text, character, indexA);
             }
-            else at = indexJsonEndB(text, indexA, character);
+            else at = indexJsonEndB(text, character, indexA);
 
             if (at == -1) return -1;
 
@@ -570,6 +573,38 @@ void WControllerNetworkPrivate::checkConnection()
     }
 
     return -1;
+}
+
+/* static */ int WControllerNetworkPrivate::indexJsonCharacter(const QString & text,
+                                                               QChar         * character, int at)
+{
+#ifdef QT_4
+    QList<QChar> list;
+
+    list.append('\'');
+    list.append('\"');
+    list.append('/');
+#else
+    QList<QChar> list = {'\'', '"', '/'};
+#endif
+
+    int result = -1;
+
+    foreach (const QChar & value, list)
+    {
+        int index = text.indexOf(value, at);
+
+        if (index == -1) continue;
+
+        if (result == -1 || index < result)
+        {
+            *character = value;
+
+            result = index;
+        }
+    }
+
+    return result;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2366,13 +2401,13 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
         return -1;
     }
 
-    QChar charA = text.at(at);
+    QChar character = text.at(at);
 
-    if (charA == '"')
+    if (character == '\'' || character == '"' || character == '/')
     {
-         return WControllerNetworkPrivate::indexJsonEndA(text, at);
+         return WControllerNetworkPrivate::indexJsonEndA(text, character, at);
     }
-    else return WControllerNetworkPrivate::indexJsonEndB(text, at, charA);
+    else return WControllerNetworkPrivate::indexJsonEndB(text, character, at);
 }
 
 //-------------------------------------------------------------------------------------------------

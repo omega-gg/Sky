@@ -63,8 +63,10 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // Json
 
-    static int indexJsonEndA(const QString & text, int at);
-    static int indexJsonEndB(const QString & text, int at, const QChar & charA);
+    static int indexJsonEndA(const QString & text, const QChar & charA, int at);
+    static int indexJsonEndB(const QString & text, const QChar & charA, int at);
+
+    static int indexJsonCharacter(const QString & text, QChar * character, int at);
 
     //---------------------------------------------------------------------------------------------
     // Bencode
