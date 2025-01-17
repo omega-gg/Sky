@@ -425,7 +425,8 @@ void WBackendManagerPrivate::applySources(bool play)
         freeze     = false;
         freezeLoop = false;
 
-        backendInterface->stop();
+        // NOTE: We want to stop and clear the source.
+        backendInterface->clear();
 
         if (play) startClock();
     }
@@ -460,6 +461,9 @@ void WBackendManagerPrivate::applyEmpty()
     q->setChapters(QList<WChapter>());
 
     q->setAmbient(QString());
+
+    // NOTE: We want to stop and clear the source.
+    backendInterface->clear();
 }
 
 void WBackendManagerPrivate::loadSource(const QString & source,
