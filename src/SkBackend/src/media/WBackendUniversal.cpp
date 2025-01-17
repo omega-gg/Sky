@@ -2232,7 +2232,7 @@ inline QVariant jsCall(const WBackendUniversalNode * node,
         variants.append(list);
     }
 
-    return WBackendUniversalEngine::call(node->getString(parameters, 0), variants);
+    return WBackendUniversalEngine::call(node->getString(parameters, 0), variants).first();
 }
 
 inline QVariant jsCalls(const WBackendUniversalNode * node,
