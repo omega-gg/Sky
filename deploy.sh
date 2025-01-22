@@ -671,6 +671,7 @@ elif [ $1 = "linux" ]; then
     cp -r "$VLC"/vlc/lib*.so* deploy/vlc
 
     cp "$VLC"/libvlc*.so* deploy
+    cp "$VLC"/libidn.so*  deploy
 
     #----------------------------------------------------------------------------------------------
     # NOTE: Patching VLC libraries rpath for standalone packages.
