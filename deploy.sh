@@ -40,6 +40,14 @@ qt="qt5"
 
 copyAndroid()
 {
+    cp -r "$1"/armeabi-v7a "$2"
+    cp -r "$1"/arm64-v8a   "$2"
+    cp -r "$1"/x86         "$2"
+    cp -r "$1"/x86_64      "$2"
+}
+
+copyAndroidQt()
+{
     cp "$1/lib/lib$QtX"Core_*.so            deploy
     cp "$1/lib/lib$QtX"Gui_*.so             deploy
     cp "$1/lib/lib$QtX"Network_*.so         deploy
@@ -586,12 +594,12 @@ else
 
         if [ $qt = "qt5" ]; then
 
-            copyAndroid "$Qt" armeabi-v7a
+            copyAndroidQt "$Qt" armeabi-v7a
         else
-            copyAndroid "$Qt"/android_armv7     armeabi-v7a
-            copyAndroid "$Qt"/android_arm64_v8a arm64-v8a
-            copyAndroid "$Qt"/android_x86       x86
-            copyAndroid "$Qt"/android_x86_64    x86_64
+            copyAndroidQt "$Qt"/android_armv7     armeabi-v7a
+            copyAndroidQt "$Qt"/android_arm64_v8a arm64-v8a
+            copyAndroidQt "$Qt"/android_x86       x86
+            copyAndroidQt "$Qt"/android_x86_64    x86_64
         fi
     fi
 fi
@@ -600,24 +608,34 @@ fi
 # SSL
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING SSL"
-
 if [ $os = "windows" ]; then
+
+    echo "COPYING SSL"
 
     cp "$SSL"/*.dll deploy
 
 elif [ $1 = "linux" ]; then
 
+    echo "COPYING SSL"
+
     cp "$SSL"/*.so* deploy
+
+elif [ $1 = "android" ]; then
+
+    echo "COPYING SSL"
+
+    mkdir deploy/ssl
+
+    copyAndroid "$SSL" deploy/ssl
 fi
 
 #--------------------------------------------------------------------------------------------------
 # VLC
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING VLC"
-
 if [ $os = "windows" ]; then
+
+    echo "COPYING VLC"
 
     mkdir deploy/plugins
 
@@ -641,6 +659,8 @@ if [ $os = "windows" ]; then
 
 elif [ $1 = "macOS" ]; then
 
+    echo "COPYING VLC"
+
     mkdir -p deploy/plugins
 
     cp -r "$VLC"/plugins/*.dylib deploy/plugins
@@ -649,6 +669,8 @@ elif [ $1 = "macOS" ]; then
     cp "$VLC"/lib/libvlccore.9.dylib deploy/libvlccore.dylib
 
 elif [ $1 = "linux" ]; then
+
+    echo "COPYING VLC"
 
     mkdir -p deploy/vlc/plugins
 
@@ -691,26 +713,46 @@ elif [ $1 = "linux" ]; then
     else
         echo "patchelf is not installed"
     fi
+
+elif [ $1 = "android" ]; then
+
+    echo "COPYING VLC"
+
+    mkdir deploy/vlc
+
+    copyAndroid "$VLC" deploy/vlc
 fi
 
 #--------------------------------------------------------------------------------------------------
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING libtorrent"
-
 if [ $os = "windows" ]; then
+
+    echo "COPYING libtorrent"
 
     cp "$libtorrent"/*torrent-rasterbar.dll deploy
 
 elif [ $1 = "macOS" ]; then
 
+    echo "COPYING libtorrent"
+
     cp "$libtorrent"/libtorrent-rasterbar.dylib deploy
 
 elif [ $1 = "linux" ]; then
 
+    echo "COPYING libtorrent"
+
     # NOTE: We make sure the deployed library will be resolved by the binary.
     cp "$libtorrent"/libtorrent-rasterbar.so deploy/libtorrent-rasterbar.so.$libtorrent_version
+
+elif [ $1 = "android" ]; then
+
+    echo "COPYING libtorrent"
+
+    mkdir deploy/libtorrent
+
+    copyAndroid "$libtorrent" deploy/libtorrent
 fi
 
 #--------------------------------------------------------------------------------------------------
