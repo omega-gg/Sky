@@ -251,7 +251,13 @@ if [ $os = "mobile" ]; then
 
     if [ "$2" = "tools" ]; then
 
-        exit 0
+        echo ""
+        echo "DEPLOYING tools"
+        echo "---------------"
+
+        sh deploy.sh $1 tools
+
+        echo "---------------"
     fi
 fi
 
