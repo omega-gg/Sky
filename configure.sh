@@ -386,9 +386,9 @@ elif [ $1 = "iOS" ]; then
 
     if [ $mobile = "simulator" ]; then
 
-        cp -r "$VLC"/ios-arm64_i386_x86_64-simulator/MobileVLCKit.framework lib
+        cp -r "$VLC"/ios-simulator/*.framework lib
     else
-        cp -r "$VLC"/ios-arm64_armv7_armv7s/MobileVLCKit.framework lib
+        cp -r "$VLC"/ios/*.framework lib
     fi
 
 elif [ $1 = "android" ]; then
