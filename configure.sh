@@ -13,7 +13,8 @@ Qt4_version="4.8.7"
 Qt5_version="5.15.2"
 Qt6_version="6.8.1"
 
-VLC_version="3.0.21"
+VLC3_version="3.0.21"
+VLC4_version="4.0.0"
 
 libtorrent_version="2.0.10"
 
@@ -30,6 +31,8 @@ MinGW_version="13.1.0"
 compiler_win="mingw"
 
 qt="qt5"
+
+vlc="vlc3"
 
 mobile="simulator"
 
@@ -147,7 +150,12 @@ fi
 
 zlib="$external/zlib"
 
-VLC="$external/VLC/$VLC_version"
+if [ $vlc  = "vlc3" ]; then
+
+    VLC="$external/VLC/$VLC3_version"
+else
+    VLC="$external/VLC/$VLC4_version"
+fi
 
 libtorrent="$external/libtorrent/$libtorrent_version"
 

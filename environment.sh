@@ -14,6 +14,8 @@ compiler_win="mingw"
 
 qt="qt5"
 
+vlc="vlc3"
+
 mobile="simulator"
 
 #--------------------------------------------------------------------------------------------------
@@ -60,13 +62,16 @@ getOs()
 
 if [ $# != 1 -a $# != 2 ] \
    || \
-   [ $1 != "mingw" -a $1 != "msvc" -a $1 != "qt4" -a $1 != "qt5" -a $1 != "qt6" -a \
+   [ $1 != "mingw"     -a $1 != "msvc" -a \
+     $1 != "qt4"       -a $1 != "qt5"  -a $1 != "qt6" -a \
+     $1 != "vlc3"      -a $1 != "vlc4" -a \
      $1 != "simulator" -a $1 != "device" ] \
    || \
    [ $# = 2 -a "$2" != "all" ]; then
 
     echo "Usage: environment <mingw | msvc"
     echo "                    qt4 | qt5 | qt6 |"
+    echo "                    vlc3 | vlc4 |"
     echo "                    simulator | device> [all]"
 
     exit 1
@@ -108,6 +113,10 @@ if [ $1 = "msvc" -o $1 = "mingw" ]; then
 elif [ $1 = "qt4" -o $1 = "qt5" -o $1 = "qt6" ]; then
 
     replace qt $qt $1
+
+elif [ $1 = "vlc3" -o $1 = "vlc4" ]; then
+
+    replace vlc $vlc $1
 else
     replace mobile $mobile $1
 fi

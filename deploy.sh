@@ -16,7 +16,8 @@ Qt6_version="6.8.1"
 SSL_versionA="1.0.2u"
 SSL_versionB="1.1.1s"
 
-VLC_version="3.0.21"
+VLC3_version="3.0.21"
+VLC4_version="4.0.0"
 
 libtorrent_version="2.0.10"
 
@@ -180,7 +181,13 @@ else
     SSL="$external/OpenSSL/$SSL_versionB"
 fi
 
-VLC="$external/VLC/$VLC_version"
+if [ $vlc  = "vlc3" ]; then
+
+    VLC="$external/VLC/$VLC3_version"
+else
+    VLC="$external/VLC/$VLC4_version"
+fi
+
 
 libtorrent="$external/libtorrent/$libtorrent_version"
 
