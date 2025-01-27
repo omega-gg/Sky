@@ -33,6 +33,8 @@ MinGW_version="13.1.0"
 
 compiler_win="mingw"
 
+vlc="vlc3"
+
 qt="qt5"
 
 #--------------------------------------------------------------------------------------------------
@@ -181,7 +183,7 @@ else
     SSL="$external/OpenSSL/$SSL_versionB"
 fi
 
-if [ $vlc  = "vlc3" ]; then
+if [ $vlc = "vlc3" ]; then
 
     VLC="$external/VLC/$VLC3_version"
 else

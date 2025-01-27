@@ -150,7 +150,7 @@ fi
 
 zlib="$external/zlib"
 
-if [ $vlc  = "vlc3" ]; then
+if [ $vlc = "vlc3" ]; then
 
     VLC="$external/VLC/$VLC3_version"
 else
