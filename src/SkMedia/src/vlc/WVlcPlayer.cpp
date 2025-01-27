@@ -49,6 +49,8 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     backend = NULL;
 
+    trackId = 0;
+
     output  = WAbstractBackend::OutputMedia;
     quality = "";
 
@@ -67,6 +69,26 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
+
+void WVlcPlayerPrivate::stop() const
+{
+#if LIBVLC_VERSION_MAJOR < 4
+    libvlc_media_player_stop(player);
+#else
+    libvlc_media_player_pause(player);
+
+    libvlc_media_player_set_time(player, 0, false);
+#endif
+}
+
+libvlc_media_t * WVlcPlayerPrivate::createMedia(const QString & url) const
+{
+#if LIBVLC_VERSION_MAJOR < 4
+    return libvlc_media_new_location(engine->d_func()->instance, encodeUrl(url).C_UTF);
+#else
+    return libvlc_media_new_location(encodeUrl(url).C_UTF);
+#endif
+}
 
 QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 {
@@ -98,6 +120,35 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
                                                          (WVlcPlayer::EventOutputClear)));
 }
 
+#if LIBVLC_VERSION_MAJOR > 3
+
+libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t type) const
+{
+    libvlc_media_t * media = libvlc_media_player_get_media(player);
+
+    libvlc_media_tracklist_t * tracks = libvlc_media_get_tracklist(media, type);
+
+    int count = libvlc_media_tracklist_count(tracks);
+
+    for (int i = 0; i < count; i++)
+    {
+        libvlc_media_track_t * track = libvlc_media_tracklist_at(tracks, i);
+
+        if (track->i_id == id)
+        {
+            libvlc_media_tracklist_delete(tracks);
+
+            return track;
+        }
+    }
+
+    libvlc_media_tracklist_delete(tracks);
+
+    return NULL;
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private static events
 //-------------------------------------------------------------------------------------------------
@@ -114,6 +165,7 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
 
     // NOTE: When the playback started the media tracks should be retrievable.
 
+#if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_track_t ** tracks;
 
     int count = libvlc_media_tracks_get(libvlc_media_player_get_media(d->player), &tracks);
@@ -121,6 +173,8 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
     if (count == 0) return;
 
     QList<WBackendTrack> backendTracks;
+
+    d->trackId = 0;
 
     int trackVideo = -1;
     int trackAudio = -1;
@@ -138,7 +192,12 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
         {
             int id = track->i_id;
 
-            if (id == idVideo) trackVideo = id;
+            if (id == idVideo)
+            {
+                d->trackId = id;
+
+                trackVideo = id;
+            }
 
             backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackVideo,
                                                track->psz_language));
@@ -155,6 +214,60 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
     }
 
     libvlc_media_tracks_release(tracks, count);
+#else
+    libvlc_media_t * media = libvlc_media_player_get_media(d->player);
+
+    libvlc_media_tracklist_t * videos = libvlc_media_get_tracklist(media, libvlc_track_video);
+    libvlc_media_tracklist_t * audios = libvlc_media_get_tracklist(media, libvlc_track_audio);
+
+    int countVideo = libvlc_media_tracklist_count(videos);
+    int countAudio = libvlc_media_tracklist_count(audios);
+
+    if (countVideo + countAudio == 0)
+    {
+        libvlc_media_tracklist_delete(videos);
+        libvlc_media_tracklist_delete(audios);
+
+        return;
+    }
+
+    QList<WBackendTrack> backendTracks;
+
+    d->trackId = 0;
+
+    int trackVideo = -1;
+    int trackAudio = -1;
+
+    for (int i = 0; i < countVideo; i++)
+    {
+        libvlc_media_track_t * track = libvlc_media_tracklist_at(videos, i);
+
+        int id = track->i_id;
+
+        if (track->selected)
+        {
+            d->trackId = id;
+
+            trackVideo = id;
+        }
+
+        backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackVideo, track->psz_language));
+    }
+
+    for (int i = 0; i < countAudio; i++)
+    {
+        libvlc_media_track_t * track = libvlc_media_tracklist_at(audios, i);
+
+        int id = track->i_id;
+
+        if (track->selected) trackAudio = id;
+
+        backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackAudio, track->psz_language));
+    }
+
+    libvlc_media_tracklist_delete(videos);
+    libvlc_media_tracklist_delete(audios);
+#endif
 
     WVlcTracksEvent * eventTracks = new WVlcTracksEvent(backendTracks, trackVideo, trackAudio);
 
@@ -176,6 +289,16 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
     if (d->backend == NULL) return;
+
+#if LIBVLC_VERSION_MAJOR > 3
+    if (libvlc_media_player_get_position(d->player) >= 1.0)
+    {
+        QCoreApplication::postEvent(d->backend, new QEvent(static_cast<QEvent::Type>
+                                                           (WVlcPlayer::EventEndReached)));
+
+        return;
+    }
+#endif
 
     QCoreApplication::postEvent(d->backend,
                                 new QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventStopped)));
@@ -227,6 +350,8 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
 
 //-------------------------------------------------------------------------------------------------
 
+#if LIBVLC_VERSION_MAJOR < 4
+
 /* static */ void WVlcPlayerPrivate::onEndReached(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
@@ -236,6 +361,8 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
     QCoreApplication::postEvent(d->backend, new QEvent(static_cast<QEvent::Type>
                                                        (WVlcPlayer::EventEndReached)));
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -442,7 +569,9 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         libvlc_event_attach(manager, libvlc_MediaPlayerLengthChanged, d->onLengthChanged, d);
         libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged,   d->onTimeChanged,   d);
 
+#if LIBVLC_VERSION_MAJOR < 4
         libvlc_event_attach(manager, libvlc_MediaPlayerEndReached, d->onEndReached, d);
+#endif
 
         libvlc_event_attach(manager, libvlc_MediaPlayerEncounteredError, d->onEncounteredError, d);
 
@@ -511,19 +640,16 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
             if (audio.isEmpty())
             {
-                media = libvlc_media_new_location(d->engine->d_func()->instance,
-                                                  d->encodeUrl(eventSource->media).C_UTF);
+                media = d->createMedia(eventSource->media);
 
                 // FIXME VLC 3.0.18: This option seems to fail the second time we call it.
                 libvlc_media_add_option(media, "no-video");
             }
-            else media = libvlc_media_new_location(d->engine->d_func()->instance,
-                                                   d->encodeUrl(eventSource->audio).C_UTF);
+            else media = d->createMedia(eventSource->audio);
         }
         else
         {
-            media = libvlc_media_new_location(d->engine->d_func()->instance,
-                                              d->encodeUrl(eventSource->media).C_UTF);
+            media = d->createMedia(eventSource->media);
 
             if (output != WAbstractBackend::OutputVideo)
             {
@@ -583,7 +709,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         libvlc_media_player_play(d->player);
 
+#if LIBVLC_VERSION_MAJOR < 4
         if (at) libvlc_media_player_set_time(d->player, at);
+#else
+        if (at) libvlc_media_player_set_time(d->player, at, false);
+#endif
 
         return true;
     }
@@ -595,7 +725,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventStop))
     {
-        libvlc_media_player_stop(d->player);
+        d->stop();
 
         return true;
     }
@@ -603,7 +733,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
+#if LIBVLC_VERSION_MAJOR < 4
         libvlc_media_player_set_time(d->player, eventPlayer->value.toInt());
+#else
+        libvlc_media_player_set_time(d->player, eventPlayer->value.toInt(), false);
+#endif
 
         return true;
     }
@@ -627,7 +761,15 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
+#if LIBVLC_VERSION_MAJOR < 4
         libvlc_video_set_track(d->player, eventPlayer->value.toInt());
+#else
+        libvlc_media_track_t * track = d->getTrack(eventPlayer->value.toInt(), libvlc_track_video);
+
+        if (track == NULL) return true;
+
+        libvlc_media_player_select_track(d->player, track);
+#endif
 
         return true;
     }
@@ -635,7 +777,15 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
+#if LIBVLC_VERSION_MAJOR < 4
         libvlc_audio_set_track(d->player, eventPlayer->value.toInt());
+#else
+        libvlc_media_track_t * track = d->getTrack(eventPlayer->value.toInt(), libvlc_track_audio);
+
+        if (track == NULL) return true;
+
+        libvlc_media_player_select_track(d->player, track);
+#endif
 
         return true;
     }
@@ -667,7 +817,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventDelete))
     {
-        libvlc_media_player_stop(d->player);
+        d->stop();
 
         libvlc_media_player_release(d->player);
 

@@ -1382,9 +1382,9 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
 {
     WBackendVlcPrivate * d = static_cast<WBackendVlc *> (*data)->d_func();
 
-    int index = libvlc_video_get_track(d->player->d_func()->player);
+    WVlcPlayerPrivate * p = d->player->d_func();
 
-    libvlc_video_get_size(d->player->d_func()->player, index, vlcWidth, vlcHeight);
+    libvlc_video_get_size(p->player, p->trackId, vlcWidth, vlcHeight);
 
     *vlcWidth  = qMin((int) (*vlcWidth),  PLAYER_MAX_WIDTH);
     *vlcHeight = qMin((int) (*vlcHeight), PLAYER_MAX_HEIGHT);

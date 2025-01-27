@@ -72,9 +72,17 @@ public:
     void init(WVlcEngine * engine, QThread * thread);
 
 public: // Functions
+    void stop() const;
+
+    libvlc_media_t * createMedia(const QString & url) const;
+
     QString encodeUrl(const QString & url) const;
 
     void setScanOutput(bool enabled);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    libvlc_media_track_t * getTrack(int id, libvlc_track_type_t type) const;
+#endif
 
 public: // Static events
     //---------------------------------------------------------------------------------------------
@@ -89,7 +97,9 @@ public: // Static events
     static void onLengthChanged(const struct libvlc_event_t * event, void * data);
     static void onTimeChanged  (const struct libvlc_event_t * event, void * data);
 
+#if LIBVLC_VERSION_MAJOR < 4
     static void onEndReached(const struct libvlc_event_t * event, void * data);
+#endif
 
     static void onEncounteredError(const struct libvlc_event_t * event, void * data);
 
@@ -110,6 +120,8 @@ public: // Variables
     QObject * backend;
 
     QStringList options;
+
+    int trackId;
 
     WAbstractBackend::Output output;
     QString                  quality;

@@ -269,7 +269,9 @@ void WVlcEnginePrivate::clearDiscoverers()
             {
                 "--intf=dummy",             /* No interface     */
 #ifdef Q_OS_WIN
+    #if LIBVLC_VERSION_MAJOR < 4
                 "--dummy-quiet",            /* No command-line  */
+    #endif
 #elif defined(Q_OS_MACOS)
                 "--vout=macosx",
 #endif
