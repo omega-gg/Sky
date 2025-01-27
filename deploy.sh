@@ -190,7 +190,6 @@ else
     VLC="$external/VLC/$VLC4_version"
 fi
 
-
 libtorrent="$external/libtorrent/$libtorrent_version"
 
 Boost="$external/Boost/$Boost_version"
