@@ -3109,8 +3109,6 @@ WVlcEngine * WControllerMedia::engine() const
 
 #endif
 
-//-------------------------------------------------------------------------------------------------
-
 WAbstractLoader * WControllerMedia::loader() const
 {
     Q_D(const WControllerMedia); return d->loader;
@@ -3126,6 +3124,17 @@ void WControllerMedia::setLoader(WAbstractLoader * loader)
 
     emit loaderChanged();
 }
+
+#ifndef SK_NO_PLAYER
+
+/* static */ QString WControllerMedia::versionVlc()
+{
+    return QString("%1.%2.%3").arg(LIBVLC_VERSION_MAJOR)
+                              .arg(LIBVLC_VERSION_MINOR)
+                              .arg(LIBVLC_VERSION_REVISION);
+}
+
+#endif
 
 #endif // SK_NO_CONTROLLERMEDIA
 

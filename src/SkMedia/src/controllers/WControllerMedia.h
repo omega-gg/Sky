@@ -275,6 +275,10 @@ class SK_MEDIA_EXPORT WControllerMedia : public WController
 
     Q_PROPERTY(WAbstractLoader * loader READ loader WRITE setLoader NOTIFY loaderChanged)
 
+#ifndef SK_NO_PLAYER
+    Q_PROPERTY(QString versionVlc READ versionVlc CONSTANT)
+#endif
+
 private:
     WControllerMedia();
 
@@ -313,6 +317,10 @@ public: // Properties
 
     WAbstractLoader * loader() const;
     void              setLoader(WAbstractLoader * loader);
+
+#ifndef SK_NO_PLAYER
+    static QString versionVlc();
+#endif
 
 private:
     W_DECLARE_PRIVATE   (WControllerMedia)
