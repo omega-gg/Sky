@@ -134,12 +134,11 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     {
         libvlc_media_track_t * track = libvlc_media_tracklist_at(tracks, i);
 
-        if (track->i_id == id)
-        {
-            libvlc_media_tracklist_delete(tracks);
+        if (track->i_id != id) continue;
 
-            return track;
-        }
+        libvlc_media_tracklist_delete(tracks);
+
+        return track;
     }
 
     libvlc_media_tracklist_delete(tracks);
