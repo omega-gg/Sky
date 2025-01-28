@@ -27,6 +27,10 @@
 // Qt includes
 #include <QThread>
 
+// VLC includes
+// FIXME VLC 3: Apparently this needs to be included manually.
+#include <vlc/libvlc_version.h>
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
