@@ -291,7 +291,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     if (d->backend == NULL) return;
 
 #if LIBVLC_VERSION_MAJOR > 3
-    if (libvlc_media_player_get_position(d->player) >= 1.0)
+    if (libvlc_media_player_get_position(d->player) == -1.0)
     {
         QCoreApplication::postEvent(d->backend, new QEvent(static_cast<QEvent::Type>
                                                            (WVlcPlayer::EventEndReached)));
