@@ -639,12 +639,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
             if (audio.isEmpty())
             {
-                media = d->createMedia(eventSource->media);
-
-                // FIXME VLC 3.0.18: This option seems to fail the second time we call it.
-                libvlc_media_add_option(media, "no-video");
+                 media = d->createMedia(eventSource->media);
             }
             else media = d->createMedia(eventSource->audio);
+
+            // FIXME VLC 3.0.18: This option seems to fail the second time we call it.
+            libvlc_media_add_option(media, "no-video");
         }
         else
         {
