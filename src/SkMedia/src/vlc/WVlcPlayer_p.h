@@ -41,6 +41,9 @@
 
 #ifndef SK_NO_VLCPLAYER
 
+// Forward declarations
+class WVlcPlayerPrivateAudio;
+
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivate
 //-------------------------------------------------------------------------------------------------
@@ -72,22 +75,30 @@ public:
     void init(WVlcEngine * engine, QThread * thread);
 
 public: // Functions
-    void stop() const;
-
     libvlc_media_t * createMedia(const QString & url) const;
 
     QString encodeUrl(const QString & url) const;
 
+    void play(int time);
+
+    void pause();
+    void stop ();
+
+    void seek(int time);
+
+    void setSpeed(float speed);
+
+    void setVolume(int volume);
+
     void setScanOutput(bool enabled);
+
+    void applyPlay();
 
 #if LIBVLC_VERSION_MAJOR > 3
     libvlc_media_track_t * getTrack(int id, libvlc_track_type_t type) const;
 #endif
 
 public: // Static events
-    //---------------------------------------------------------------------------------------------
-    // Player
-
     static void onPlaying(const struct libvlc_event_t * event, void * data);
     static void onPaused (const struct libvlc_event_t * event, void * data);
     static void onStopped(const struct libvlc_event_t * event, void * data);
@@ -117,11 +128,20 @@ public: // Variables
 
     libvlc_media_player_t * player;
 
+    WVlcPlayerPrivateAudio * audio;
+
     QObject * backend;
 
     QStringList options;
 
+    bool hasAudio;
+    bool hasOutput;
+
+    bool playing;
+
     int trackId;
+
+    int currentTime;
 
     WAbstractBackend::Output output;
     QString                  quality;
@@ -136,6 +156,57 @@ public: // Variables
 protected:
     W_DECLARE_PUBLIC(WVlcPlayer)
 };
+
+//-------------------------------------------------------------------------------------------------
+// WVlcPlayerPrivateAudio
+//-------------------------------------------------------------------------------------------------
+
+class WVlcPlayerPrivateAudio
+{
+public:
+    WVlcPlayerPrivateAudio(WVlcPlayerPrivate * p, libvlc_instance_t * instance);
+
+    virtual ~WVlcPlayerPrivateAudio();
+
+public: // Interface
+    void pause();
+    void stop ();
+
+    void setSpeed(float speed);
+
+    void setVolume(int volume);
+
+    void applyBuffering();
+
+    void applyDelay(int time);
+
+public: // Static events
+    static void onOpening(const struct libvlc_event_t * event, void * data);
+    static void onPlaying(const struct libvlc_event_t * event, void * data);
+    static void onPaused (const struct libvlc_event_t * event, void * data);
+    static void onStopped(const struct libvlc_event_t * event, void * data);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    static void onTime(const struct libvlc_event_t * event, void * data);
+#endif
+
+private: // Functions
+    void applyPlay();
+
+    void applyTime(int time);
+
+    void clearDelay();
+
+public: // Variables
+    libvlc_media_player_t * player;
+
+    bool opening;
+    bool playing;
+    bool buffering;
+
+    qint64 delay;
+};
+
 
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivateEvent
