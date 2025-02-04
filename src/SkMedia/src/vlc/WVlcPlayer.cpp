@@ -45,7 +45,7 @@ WVlcPlayerPrivateAudio::WVlcPlayerPrivateAudio(WVlcPlayerPrivate * p, libvlc_ins
 {
     player = libvlc_media_player_new(instance);
 
-    opening   = true;
+    opening   = false;
     playing   = false;
     buffering = false;
 
@@ -155,6 +155,10 @@ void WVlcPlayerPrivateAudio::applyDelay(int time)
         return;
     }
 
+    if (opening) return;
+
+    opening = true;
+
     buffering = false;
 
     if (libvlc_media_player_get_state(player) == libvlc_Paused)
@@ -187,7 +191,7 @@ void WVlcPlayerPrivateAudio::applyDelay(int time)
 {
     WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
 
-    d->opening   = true;
+    d->opening   = false;
     d->playing   = false;
     d->buffering = false;
 }
@@ -1095,21 +1099,13 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-        int at = eventPlayer->value.toInt();
-
-        libvlc_media_player_play(d->player);
-
-#if LIBVLC_VERSION_MAJOR < 4
-        if (at) libvlc_media_player_set_time(d->player, at);
-#else
-        if (at) libvlc_media_player_set_time(d->player, at, false);
-#endif
+        d->play(eventPlayer->value.toInt());
 
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventPause))
     {
-        libvlc_media_player_set_pause(d->player, true);
+        d->pause();
 
         return true;
     }
@@ -1123,11 +1119,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-#if LIBVLC_VERSION_MAJOR < 4
-        libvlc_media_player_set_time(d->player, eventPlayer->value.toInt());
-#else
-        libvlc_media_player_set_time(d->player, eventPlayer->value.toInt(), false);
-#endif
+        d->seek(eventPlayer->value.toInt());
 
         return true;
     }
@@ -1135,7 +1127,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-        libvlc_media_player_set_rate(d->player, eventPlayer->value.toFloat());
+        d->setSpeed(eventPlayer->value.toFloat());
 
         return true;
     }
@@ -1143,7 +1135,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-        libvlc_audio_set_volume(d->player, eventPlayer->value.toInt());
+        d->setVolume(eventPlayer->value.toInt());
 
         return true;
     }
