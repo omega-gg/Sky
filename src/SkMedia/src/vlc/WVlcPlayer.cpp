@@ -445,7 +445,7 @@ void WVlcPlayerPrivate::applyOpen()
 {
     opening = false;
 
-    if (currentTime == 0) return;,
+    if (currentTime == 0) return;
 
     libvlc_media_player_set_time(player, currentTime, false);
 
@@ -964,7 +964,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         libvlc_event_manager_t * manager = libvlc_media_player_event_manager(d->player);
 
 #if LIBVLC_VERSION_MAJOR > 3
-        libvlc_event_attach(manager, libvlc_MediaPlayerMediaChanged, d->onChanged, xd);
+        libvlc_event_attach(manager, libvlc_MediaPlayerMediaChanged, d->onChanged, d);
         libvlc_event_attach(manager, libvlc_MediaPlayerOpening,      d->onOpening, d);
 #endif
 
