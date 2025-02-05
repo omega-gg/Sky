@@ -44,6 +44,11 @@
 // Forward declarations
 class WVlcPlayerPrivateAudio;
 
+// Defines
+#if LIBVLC_VERSION_MAJOR > 3
+#define VLCPLAYER_AUDIO
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivate
 //-------------------------------------------------------------------------------------------------
@@ -128,20 +133,26 @@ public: // Variables
 
     libvlc_media_player_t * player;
 
+#ifdef VLCPLAYER_AUDIO
     WVlcPlayerPrivateAudio * audio;
+#endif
 
     QObject * backend;
 
     QStringList options;
 
+#ifdef VLCPLAYER_AUDIO
     bool hasAudio;
+#endif
     bool hasOutput;
 
     bool playing;
 
     int trackId;
 
+#if LIBVLC_VERSION_MAJOR > 3
     int currentTime;
+#endif
 
     WAbstractBackend::Output output;
     QString                  quality;
@@ -156,6 +167,8 @@ public: // Variables
 protected:
     W_DECLARE_PUBLIC(WVlcPlayer)
 };
+
+#ifdef VLCPLAYER_AUDIO
 
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivateAudio
@@ -200,13 +213,13 @@ private: // Functions
 public: // Variables
     libvlc_media_player_t * player;
 
-    bool opening;
     bool playing;
     bool buffering;
 
     qint64 delay;
 };
 
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivateEvent
