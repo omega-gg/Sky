@@ -97,6 +97,9 @@ public: // Functions
 
     void setScanOutput(bool enabled);
 
+#if LIBVLC_VERSION_MAJOR > 3
+    void applyOpen();
+#endif
     void applyPlay();
 
 #if LIBVLC_VERSION_MAJOR > 3
@@ -104,6 +107,11 @@ public: // Functions
 #endif
 
 public: // Static events
+#if LIBVLC_VERSION_MAJOR > 3
+    static void onChanged(const struct libvlc_event_t * event, void * data);
+    static void onOpening(const struct libvlc_event_t * event, void * data);
+#endif
+
     static void onPlaying(const struct libvlc_event_t * event, void * data);
     static void onPaused (const struct libvlc_event_t * event, void * data);
     static void onStopped(const struct libvlc_event_t * event, void * data);
@@ -146,6 +154,9 @@ public: // Variables
 #endif
     bool hasOutput;
 
+#if LIBVLC_VERSION_MAJOR > 3
+    bool opening;
+#endif
     bool playing;
 
     int trackId;

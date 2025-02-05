@@ -82,7 +82,7 @@ void WVlcPlayerPrivateAudio::pause()
 
     playing = false;
 
-    libvlc_media_player_set_pause(player, true);
+    libvlc_media_player_set_pause(player, 1);
 
     clearDelay();
 }
@@ -97,7 +97,7 @@ void WVlcPlayerPrivateAudio::stop()
 
     clearDelay();
 #else
-    libvlc_media_player_set_pause(player, true);
+    libvlc_media_player_set_pause(player, 1);
 
     clearDelay();
 
@@ -121,7 +121,11 @@ void WVlcPlayerPrivateAudio::applyBuffering()
 {
     if (playing)
     {
-        pause();
+        playing = false;
+
+        libvlc_media_player_set_pause(player, 1);
+
+        clearDelay();
     }
     else buffering = true;
 }
@@ -219,7 +223,7 @@ void WVlcPlayerPrivateAudio::applyPlay()
     {
         buffering = false;
 
-        libvlc_media_player_set_pause(player, true);
+        libvlc_media_player_set_pause(player, 1);
     }
     else playing = true;
 }
@@ -271,6 +275,9 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 #endif
     hasOutput = false;
 
+#if LIBVLC_VERSION_MAJOR > 3
+    opening = false;
+#endif
     playing = false;
 
     trackId = 0;
@@ -316,7 +323,21 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 
 void WVlcPlayerPrivate::play(int time)
 {
-    if (playing) return;
+#if LIBVLC_VERSION_MAJOR > 3
+    if (opening)
+    {
+        currentTime = time;
+
+        return;
+    }
+#endif
+
+    if (playing)
+    {
+        if (time) seek(time);
+
+        return;
+    }
 
 #if LIBVLC_VERSION_MAJOR > 3
     currentTime = time;
@@ -335,7 +356,7 @@ void WVlcPlayerPrivate::pause()
 
     playing = false;
 
-    libvlc_media_player_set_pause(player, true);
+    libvlc_media_player_set_pause(player, 1);
 
 #ifdef VLCPLAYER_AUDIO
     if (hasAudio) audio->pause();
@@ -344,6 +365,9 @@ void WVlcPlayerPrivate::pause()
 
 void WVlcPlayerPrivate::stop()
 {
+#if LIBVLC_VERSION_MAJOR > 3
+    opening = false;
+#endif
     playing = false;
 
 #if LIBVLC_VERSION_MAJOR < 4
@@ -415,18 +439,24 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
                                                          (WVlcPlayer::EventOutputClear)));
 }
 
+#if LIBVLC_VERSION_MAJOR > 3
+
+void WVlcPlayerPrivate::applyOpen()
+{
+    opening = false;
+
+    if (currentTime == 0) return;,
+
+    libvlc_media_player_set_time(player, currentTime, false);
+
+    currentTime = 0;
+}
+
+#endif
+
 void WVlcPlayerPrivate::applyPlay()
 {
     playing = true;
-
-#if LIBVLC_VERSION_MAJOR > 3
-    if (currentTime)
-    {
-        libvlc_media_player_set_time(player, currentTime, false);
-
-        currentTime = 0;
-    }
-#endif
 
     if (backend == NULL) return;
 
@@ -573,6 +603,24 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 //-------------------------------------------------------------------------------------------------
 // Private static events
 //-------------------------------------------------------------------------------------------------
+
+#if LIBVLC_VERSION_MAJOR > 3
+
+/* static */ void WVlcPlayerPrivate::onChanged(const struct libvlc_event_t *, void * data)
+{
+    WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
+
+    d->applyOpen();
+}
+
+/* static */ void WVlcPlayerPrivate::onOpening(const struct libvlc_event_t *, void * data)
+{
+    WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
+
+    d->applyOpen();
+}
+
+#endif
 
 /* static */ void WVlcPlayerPrivate::onPlaying(const struct libvlc_event_t *, void * data)
 {
@@ -915,6 +963,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         libvlc_event_manager_t * manager = libvlc_media_player_event_manager(d->player);
 
+#if LIBVLC_VERSION_MAJOR > 3
+        libvlc_event_attach(manager, libvlc_MediaPlayerMediaChanged, d->onChanged, xd);
+        libvlc_event_attach(manager, libvlc_MediaPlayerOpening,      d->onOpening, d);
+#endif
+
         libvlc_event_attach(manager, libvlc_MediaPlayerPlaying, d->onPlaying, d);
         libvlc_event_attach(manager, libvlc_MediaPlayerPaused,  d->onPaused,  d);
         libvlc_event_attach(manager, libvlc_MediaPlayerStopped, d->onStopped, d);
@@ -1079,6 +1132,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                             libvlc_media_add_option(mediaAudio, string);
                         }
 
+#if LIBVLC_VERSION_MAJOR > 3
+                        d->opening = true;
+#endif
+
                         libvlc_media_player_set_media(d->player,        media);
                         libvlc_media_player_set_media(d->audio->player, mediaAudio);
 
@@ -1129,6 +1186,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         {
             libvlc_media_add_option(media, option.C_STR);
         }
+
+#if LIBVLC_VERSION_MAJOR > 3
+        d->opening = true;
+#endif
 
         libvlc_media_player_set_media(d->player, media);
 
