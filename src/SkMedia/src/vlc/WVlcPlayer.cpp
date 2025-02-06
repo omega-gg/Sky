@@ -50,18 +50,9 @@ WVlcPlayerPrivateAudio::WVlcPlayerPrivateAudio(WVlcPlayerPrivate * p, libvlc_ins
     playing   = false;
     buffering = false;
 
-#if LIBVLC_VERSION_MAJOR > 3
-    currentTime = 0;
-#endif
-
     delay = -1;
 
     libvlc_event_manager_t * manager = libvlc_media_player_event_manager(player);
-
-#if LIBVLC_VERSION_MAJOR > 3
-    libvlc_event_attach(manager, libvlc_MediaPlayerMediaChanged, onChanged, this);
-    libvlc_event_attach(manager, libvlc_MediaPlayerOpening,      onOpening, this);
-#endif
 
     libvlc_event_attach(manager, libvlc_MediaPlayerPlaying, onPlaying, this);
     libvlc_event_attach(manager, libvlc_MediaPlayerPaused,  onPaused,  this);
@@ -100,10 +91,6 @@ void WVlcPlayerPrivateAudio::stop()
 {
     playing   = false;
     buffering = false;
-
-#if LIBVLC_VERSION_MAJOR > 3
-    currentTime = 0;
-#endif
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_stop(player);
@@ -174,12 +161,7 @@ void WVlcPlayerPrivateAudio::applyDelay(int time)
 
     libvlc_state_t state = libvlc_media_player_get_state(player);
 
-    if (state == libvlc_Opening)
-    {
-        currentTime = time;
-
-        return;
-    }
+    if (state == libvlc_Opening) return;
 
     buffering = false;
 
@@ -187,7 +169,6 @@ void WVlcPlayerPrivateAudio::applyDelay(int time)
     {
         if (delay == -1) applyTime(time);
     }
-    else currentTime = time;
 
     libvlc_media_player_play(player);
 }
@@ -195,24 +176,6 @@ void WVlcPlayerPrivateAudio::applyDelay(int time)
 //-------------------------------------------------------------------------------------------------
 // Static events
 //-------------------------------------------------------------------------------------------------
-
-#if LIBVLC_VERSION_MAJOR > 3
-
-/* static */ void WVlcPlayerPrivateAudio::onChanged(const struct libvlc_event_t *, void * data)
-{
-    WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
-
-    d->applyOpen();
-}
-
-/* static */ void WVlcPlayerPrivateAudio::onOpening(const struct libvlc_event_t *, void * data)
-{
-    WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
-
-    d->applyOpen();
-}
-
-#endif
 
 /* static */ void WVlcPlayerPrivateAudio::onPlaying(const struct libvlc_event_t *, void * data)
 {
@@ -253,21 +216,6 @@ void WVlcPlayerPrivateAudio::applyDelay(int time)
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
-
-#if LIBVLC_VERSION_MAJOR > 3
-
-void WVlcPlayerPrivateAudio::applyOpen()
-{
-    if (currentTime == 0) return;
-
-    libvlc_media_player_set_time(player, currentTime, false);
-
-    currentTime = 0;
-
-    delay = 0;
-}
-
-#endif
 
 void WVlcPlayerPrivateAudio::applyPlay()
 {

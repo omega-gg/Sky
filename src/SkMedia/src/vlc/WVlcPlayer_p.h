@@ -205,11 +205,6 @@ public: // Interface
     void applyDelay(int time);
 
 public: // Static events
-#if LIBVLC_VERSION_MAJOR > 3
-    static void onChanged(const struct libvlc_event_t * event, void * data);
-    static void onOpening(const struct libvlc_event_t * event, void * data);
-#endif
-
     static void onPlaying(const struct libvlc_event_t * event, void * data);
     static void onPaused (const struct libvlc_event_t * event, void * data);
     static void onStopped(const struct libvlc_event_t * event, void * data);
@@ -219,9 +214,6 @@ public: // Static events
 #endif
 
 private: // Functions
-#if LIBVLC_VERSION_MAJOR > 3
-    void applyOpen();
-#endif
     void applyPlay();
 
     void applyTime(int time);
@@ -233,10 +225,6 @@ public: // Variables
 
     bool playing;
     bool buffering;
-
-#if LIBVLC_VERSION_MAJOR > 3
-    int currentTime;
-#endif
 
     qint64 delay;
 };
