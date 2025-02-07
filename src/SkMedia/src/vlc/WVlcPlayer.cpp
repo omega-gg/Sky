@@ -1050,7 +1050,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             {
                 d->hasAudio = false;
 
-                d->audio->stop();)
+                d->audio->stop();
             }
 #endif
 
@@ -1076,7 +1076,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                 {
                     d->hasAudio = false;
 
-                    d->audio->stop();)
+                    d->audio->stop();
                 }
 #endif
 
@@ -1157,7 +1157,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                     {
                         d->hasAudio = false;
 
-                        d->audio->stop();)
+                        d->audio->stop();
                     }
 #endif
 
@@ -1174,7 +1174,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                 {
                     d->hasAudio = false;
 
-                    d->audio->stop();)
+                    d->audio->stop();
                 }
 #endif
             }
