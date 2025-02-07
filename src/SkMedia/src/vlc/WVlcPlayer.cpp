@@ -206,9 +206,10 @@ void WVlcPlayerPrivateAudio::applyDelay(int time)
     WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
 
     // FIXME VLC 4.0.0: Sometimes the playing event is not called.
-    if (d->playing) return;
-
-    d->applyPlay();
+    if (d->playing == false && libvlc_media_player_get_state(d->player) == libvlc_Playing)
+    {
+        d->applyPlay();
+    }
 }
 
 #endif
@@ -721,7 +722,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 
 #if LIBVLC_VERSION_MAJOR > 3
     // FIXME VLC 4.0.0: Sometimes the playing event is not called.
-    if (d->playing == false)
+    if (d->playing == false && libvlc_media_player_get_state(d->player) == libvlc_Playing)
     {
         d->applyPlay();
     }
@@ -732,7 +733,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     {
         int time = event->u.media_player_time_changed.new_time;
 
-        d->audio->applyDelay(time);
+        if (d->playing) d->audio->applyDelay(time);
 
         if (d->backend == NULL) return;
 
@@ -1045,7 +1046,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         if (output == WAbstractBackend::OutputAudio)
         {
 #ifdef VLCPLAYER_AUDIO
-            d->hasAudio = false;
+            if (d->hasAudio)
+            {
+                d->hasAudio = false;
+
+                d->audio->stop();)
+            }
 #endif
 
             const QString & audio = eventSource->audio;
@@ -1066,7 +1072,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             if (output == WAbstractBackend::OutputVideo)
             {
 #ifdef VLCPLAYER_AUDIO
-                d->hasAudio = false;
+                if (d->hasAudio)
+                {
+                    d->hasAudio = false;
+
+                    d->audio->stop();)
+                }
 #endif
 
                 libvlc_media_add_option(media, "no-audio");
@@ -1142,7 +1153,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                         return true;
                     }
 
-                    d->hasAudio = false;
+                    if (d->hasAudio)
+                    {
+                        d->hasAudio = false;
+
+                        d->audio->stop();)
+                    }
 #endif
 
                     QString input = "input-slave=" + d->encodeUrl(audio);
@@ -1154,7 +1170,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                     libvlc_media_add_option(media, "demux=avformat");
                 }
 #ifdef VLCPLAYER_AUDIO
-                else d->hasAudio = false;
+                else if (d->hasAudio)
+                {
+                    d->hasAudio = false;
+
+                    d->audio->stop();)
+                }
 #endif
             }
 
