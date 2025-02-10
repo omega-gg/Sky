@@ -32,12 +32,12 @@
 #include "WVlcPlayer_p.h"
 #include <private/WVlcEngine_p>
 
+#ifdef VLCPLAYER_AUDIO
+
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int PLAYER_RESYNCHRONIZE = 10000; // 10 seconds
-
-#ifdef VLCPLAYER_AUDIO
 
 //=================================================================================================
 // WVlcPlayerPrivateAudio
