@@ -44,6 +44,7 @@ class WYamlNode;
 #ifndef SK_NO_PLAYER
 class WVlcEngine;
 class WVlcPlayer;
+class WVlcAudio;
 #endif
 
 #ifdef QT_6
@@ -288,6 +289,7 @@ public: // Initialize
 public: // Interface
 #ifndef SK_NO_PLAYER
     Q_INVOKABLE WVlcPlayer * createVlcPlayer() const;
+    Q_INVOKABLE WVlcAudio  * createVlcAudio () const;
 #endif
 
     Q_INVOKABLE

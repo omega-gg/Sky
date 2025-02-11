@@ -65,6 +65,8 @@ private:
 
     friend class WVlcPlayer;
     friend class WVlcPlayerPrivate;
+    friend class WVlcAudio;
+    friend class WVlcAudioPrivate;
 };
 
 #endif // SK_NO_VLCENGINE

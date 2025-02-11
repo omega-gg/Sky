@@ -28,232 +28,19 @@
 #include <QCoreApplication>
 #include <QMutex>
 
+// Sk includes
+#ifdef VLCPLAYER_AUDIO
+#include <WControllerMedia>
+#include <WVlcAudio>
+#endif
+#include <WVlcEngine>
+
 // Private includes
-#include "WVlcPlayer_p.h"
 #include <private/WVlcEngine_p>
 
-#ifdef VLCPLAYER_AUDIO
-
 //-------------------------------------------------------------------------------------------------
-// Static variables
-
-static const int PLAYER_RESYNCHRONIZE = 10000; // 10 seconds
-
-//=================================================================================================
-// WVlcPlayerPrivateAudio
-//=================================================================================================
-
-WVlcPlayerPrivateAudio::WVlcPlayerPrivateAudio(WVlcPlayerPrivate * p, libvlc_instance_t * instance)
-{
-    player = libvlc_media_player_new(instance);
-
-    playing   = false;
-    buffering = false;
-
-    delay = -1;
-
-    libvlc_event_manager_t * manager = libvlc_media_player_event_manager(player);
-
-    libvlc_event_attach(manager, libvlc_MediaPlayerPlaying, onPlaying, this);
-    libvlc_event_attach(manager, libvlc_MediaPlayerPaused,  onPaused,  this);
-    libvlc_event_attach(manager, libvlc_MediaPlayerStopped, onStopped, this);
-
-#if LIBVLC_VERSION_MAJOR > 3
-    libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged, onTime, this);
-#endif
-
-    libvlc_media_player_set_rate(player, libvlc_media_player_get_rate(p->player));
-
-    libvlc_audio_set_volume(player, libvlc_audio_get_volume(p->player));
-}
-
-/* virtual */ WVlcPlayerPrivateAudio::~WVlcPlayerPrivateAudio()
-{
-    libvlc_media_player_release(player);
-}
-
+// Private
 //-------------------------------------------------------------------------------------------------
-// Interface
-//-------------------------------------------------------------------------------------------------
-
-void WVlcPlayerPrivateAudio::pause()
-{
-    if (playing == false) return;
-
-    playing = false;
-
-    libvlc_media_player_set_pause(player, 1);
-
-    clearDelay();
-}
-
-void WVlcPlayerPrivateAudio::stop()
-{
-    playing   = false;
-    buffering = false;
-
-#if LIBVLC_VERSION_MAJOR < 4
-    libvlc_media_player_stop(player);
-
-    clearDelay();
-#else
-    libvlc_media_player_set_pause(player, 1);
-
-    clearDelay();
-
-    libvlc_media_player_set_time(player, 0, false);
-#endif
-}
-
-void WVlcPlayerPrivateAudio::setSpeed(float speed)
-{
-    libvlc_media_player_set_rate(player, speed);
-}
-
-void WVlcPlayerPrivateAudio::setVolume(int volume)
-{
-    libvlc_audio_set_volume(player, volume);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WVlcPlayerPrivateAudio::applyBuffering()
-{
-    if (playing)
-    {
-        playing = false;
-
-        libvlc_media_player_set_pause(player, 1);
-
-        clearDelay();
-    }
-    else buffering = true;
-}
-
-void WVlcPlayerPrivateAudio::applyDelay(int time)
-{
-    if (playing)
-    {
-        if (delay == -1)
-        {
-            applyTime(time);
-
-            return;
-        }
-
-        qint64 gap = libvlc_media_player_get_time(player) - time;
-
-        if (delay == gap) return;
-
-        if (qAbs(gap) > PLAYER_RESYNCHRONIZE)
-        {
-            applyTime(time);
-
-            return;
-        }
-
-        delay = gap;
-
-        libvlc_audio_set_delay(player, gap * 1000);
-
-        return;
-    }
-
-    libvlc_state_t state = libvlc_media_player_get_state(player);
-
-    if (state == libvlc_Opening) return;
-
-    buffering = false;
-
-    if (state == libvlc_Paused)
-    {
-        if (delay == -1) applyTime(time);
-    }
-
-    libvlc_media_player_play(player);
-}
-
-//-------------------------------------------------------------------------------------------------
-// Static events
-//-------------------------------------------------------------------------------------------------
-
-/* static */ void WVlcPlayerPrivateAudio::onPlaying(const struct libvlc_event_t *, void * data)
-{
-    WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
-
-    d->applyPlay();
-}
-
-/* static */ void WVlcPlayerPrivateAudio::onPaused(const struct libvlc_event_t *, void * data)
-{
-    WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
-
-    d->playing = false;
-}
-
-/* static */ void WVlcPlayerPrivateAudio::onStopped(const struct libvlc_event_t *, void * data)
-{
-    WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
-
-    d->playing   = false;
-    d->buffering = false;
-}
-
-#if LIBVLC_VERSION_MAJOR > 3
-
-/* static */ void WVlcPlayerPrivateAudio::onTime(const struct libvlc_event_t *, void * data)
-{
-    WVlcPlayerPrivateAudio * d = static_cast<WVlcPlayerPrivateAudio *> (data);
-
-    // FIXME VLC 4.0.0: Sometimes the playing event is not called.
-    if (d->playing == false && libvlc_media_player_get_state(d->player) == libvlc_Playing)
-    {
-        d->applyPlay();
-    }
-}
-
-#endif
-
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
-
-void WVlcPlayerPrivateAudio::applyPlay()
-{
-    if (buffering)
-    {
-        buffering = false;
-
-        libvlc_media_player_set_pause(player, 1);
-    }
-    else playing = true;
-}
-
-void WVlcPlayerPrivateAudio::applyTime(int time)
-{
-    delay = 0;
-
-#if LIBVLC_VERSION_MAJOR < 4
-    libvlc_media_player_set_time(player, time);
-#else
-    libvlc_media_player_set_time(player, time, false);
-#endif
-}
-
-void WVlcPlayerPrivateAudio::clearDelay()
-{
-    if (delay == -1) return;
-
-    delay = -1;
-
-    libvlc_audio_set_delay(player, 0);
-}
-
-#endif
-
-//=================================================================================================
-// WVlcPlayerPrivate
-//=================================================================================================
 
 WVlcPlayerPrivate::WVlcPlayerPrivate(WVlcPlayer * p) : WPrivate(p) {}
 
@@ -637,7 +424,13 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     d->playing = false;
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->audio->pause();
+    if (d->hasAudio)
+    {
+        // NOTE: We avoid sending EventPaused when we're waiting for the audio.
+        if (d->audio->isWaiting()) return;
+
+        d->audio->pause();
+    }
 #endif
 
     if (d->backend == NULL) return;
@@ -698,8 +491,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::onLengthChanged(const struct libvlc_event_t * event,
-                                                     void                        * data)
+/* static */ void WVlcPlayerPrivate::onLength(const struct libvlc_event_t * event, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -715,8 +507,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
                                 new WVlcPlayerEvent(WVlcPlayer::EventLengthChanged, length));
 }
 
-/* static */ void WVlcPlayerPrivate::onTimeChanged(const struct libvlc_event_t * event,
-                                                   void                        * data)
+/* static */ void WVlcPlayerPrivate::onTime(const struct libvlc_event_t * event, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -733,7 +524,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     {
         int time = event->u.media_player_time_changed.new_time;
 
-        if (d->playing) d->audio->applyDelay(time);
+        if (d->playing) d->audio->play(time);
 
         if (d->backend == NULL) return;
 
@@ -784,6 +575,23 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
+void WVlcPlayerPrivate::onPlay()
+{
+    if (player) libvlc_media_player_play(player);
+}
+
+void WVlcPlayerPrivate::onPause()
+{
+    if (player == NULL) return;
+
+    libvlc_media_player_set_pause(player, 1);
+
+    if (backend == NULL) return;
+
+    QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
+                                                    (WVlcPlayer::EventBuffering)));
+}
+
 void WVlcPlayerPrivate::onOutputAdded(const WBackendOutput & output)
 {
     QList<WBackendOutput> outputs;
@@ -805,9 +613,9 @@ void WVlcPlayerPrivate::onOutputCleared()
                                                     (WVlcPlayer::EventOutputClear)));
 }
 
-//=================================================================================================
-// WVlcPlayer
-//=================================================================================================
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
 
 WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     : QObject(parent), WPrivatable(new WVlcPlayerPrivate(this))
@@ -975,8 +783,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         libvlc_event_attach(manager, libvlc_MediaPlayerBuffering, d->onBuffering, d);
 
-        libvlc_event_attach(manager, libvlc_MediaPlayerLengthChanged, d->onLengthChanged, d);
-        libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged,   d->onTimeChanged,   d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerLengthChanged, d->onLength, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged,   d->onTime,   d);
 
 #if LIBVLC_VERSION_MAJOR < 4
         libvlc_event_attach(manager, libvlc_MediaPlayerEndReached, d->onEndReached, d);
@@ -1023,6 +831,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         QString proxy;
         QString proxyPassword;
 
+        QStringList options;
+
         d->mutex.lock();
 
         output = d->output;
@@ -1038,6 +848,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             proxy         = "http-proxy="     + d->proxyHost;
             proxyPassword = "http-proxy-pwd=" + d->proxyPassword;
         }
+
+        options = d->options;
 
         d->mutex.unlock();
 
@@ -1097,77 +909,47 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
                         if (d->audio == NULL)
                         {
-                            d->audio = new WVlcPlayerPrivateAudio(d,
-                                                                  d->engine->d_func()->instance);
+                            d->audio = new WVlcAudio(d->engine);
+
+                            d->audio->setSpeed(libvlc_media_player_get_rate(d->player));
+
+                            d->audio->setVolume(libvlc_audio_get_volume(d->player));
+
+                            d->mutex.lock();
+
+                            // FIXME
+                            //d->audio->setProxy
+
+                            d->audio->setOptions(options);
+
+                            d->audio->setNetworkCache(d->networkCache);
+
+                            d->mutex.unlock();
+
+                            connect(d->audio, SIGNAL(triggerPlay ()), this, SLOT(onPlay ()));
+                            connect(d->audio, SIGNAL(triggerPause()), this, SLOT(onPause()));
                         }
 
-                        libvlc_media_t * mediaAudio = d->createMedia(audio);
-
-                        libvlc_media_add_option(media,      "no-audio");
-                        libvlc_media_add_option(mediaAudio, "no-video");
-
-                        if (eventSource->loop)
-                        {
-                            const char * string = "input-repeat=65535";
-
-                            // NOTE: We use the maximum value given we can't set an infinite value.
-                            libvlc_media_add_option(media,      string);
-                            libvlc_media_add_option(mediaAudio, string);
-                        }
-
-                        if (cache.isNull() == false)
-                        {
-                            const char * string = cache.C_STR;
-
-                            libvlc_media_add_option(media,      string);
-                            libvlc_media_add_option(mediaAudio, string);
-                        }
-
-                        if (proxy.isNull() == false)
-                        {
-                            const char * stringA = proxy        .C_STR;
-                            const char * stringB = proxyPassword.C_STR;
-
-                            libvlc_media_add_option(media, stringA);
-                            libvlc_media_add_option(media, stringB);
-
-                            libvlc_media_add_option(mediaAudio, stringA);
-                            libvlc_media_add_option(mediaAudio, stringB);
-                        }
-
-                        foreach (const QString & option, d->options)
-                        {
-                            const char * string = option.C_STR;
-
-                            libvlc_media_add_option(media,      string);
-                            libvlc_media_add_option(mediaAudio, string);
-                        }
-
-#if LIBVLC_VERSION_MAJOR > 3
-                        d->opening = true;
-#endif
-
-                        libvlc_media_player_set_media(d->player,        media);
-                        libvlc_media_player_set_media(d->audio->player, mediaAudio);
-
-                        return true;
+                        d->audio->setSource(audio, eventSource->loop);
                     }
-
-                    if (d->hasAudio)
+                    else
                     {
-                        d->hasAudio = false;
+                        if (d->hasAudio)
+                        {
+                            d->hasAudio = false;
 
-                        d->audio->stop();
-                    }
+                            d->audio->stop();
+                        }
 #endif
 
-                    QString input = "input-slave=" + d->encodeUrl(audio);
+                        QString input = "input-slave=" + d->encodeUrl(audio);
 
-                    libvlc_media_add_option(media, input.C_UTF);
+                        libvlc_media_add_option(media, input.C_UTF);
 
-                    // FIXME VLC 3.0.18: This seems to fix the missing audio bytes at the end of
-                    //                   the video.
-                    libvlc_media_add_option(media, "demux=avformat");
+                        // FIXME VLC 3.0.18: This seems to fix the missing audio bytes at the end of
+                        //                   the video.
+                        libvlc_media_add_option(media, "demux=avformat");
+                    }
                 }
 #ifdef VLCPLAYER_AUDIO
                 else if (d->hasAudio)
@@ -1203,7 +985,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             libvlc_media_add_option(media, proxyPassword.C_STR);
         }
 
-        foreach (const QString & option, d->options)
+        foreach (const QString & option, options)
         {
             libvlc_media_add_option(media, option.C_STR);
         }

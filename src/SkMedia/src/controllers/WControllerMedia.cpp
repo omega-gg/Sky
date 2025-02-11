@@ -45,6 +45,7 @@
 #ifndef SK_NO_PLAYER
 #include <WVlcEngine>
 #include <WVlcPlayer>
+#include <WVlcAudio>
 #endif
 
 W_INIT_CONTROLLER(WControllerMedia)
@@ -2880,6 +2881,13 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
     Q_D(const WControllerMedia);
 
     return new WVlcPlayer(d->engine, d->thread);
+}
+
+/* Q_INVOKABLE */ WVlcAudio * WControllerMedia::createVlcAudio() const
+{
+    Q_D(const WControllerMedia);
+
+    return new WVlcAudio(d->engine, d->thread);
 }
 
 #endif

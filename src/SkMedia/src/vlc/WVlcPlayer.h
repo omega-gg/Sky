@@ -38,12 +38,18 @@ typedef SSIZE_T ssize_t;
 #include <vlc/vlc.h>
 
 // Sk includes
-#include <WVlcEngine>
 #include <WAbstractBackend>
+
+// Defines
+#if LIBVLC_VERSION_MAJOR > 3
+#define VLCPLAYER_AUDIO
+#endif
 
 #ifndef SK_NO_VLCPLAYER
 
+// Forward declarations
 class WVlcPlayerPrivate;
+class WVlcEngine;
 
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayer
@@ -142,6 +148,11 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WVlcPlayer)
 
+#ifdef VLCPLAYER_AUDIO
+    Q_PRIVATE_SLOT(d_func(), void onPlay ())
+    Q_PRIVATE_SLOT(d_func(), void onPause())
+#endif
+
     friend class WBackendVlc;
     friend class WBackendVlcPrivate;
 };
@@ -202,6 +213,8 @@ public:
 public: // Variables
     QList<WBackendOutput> outputs;
 };
+
+#include <private/WVlcPlayer_p>
 
 #endif // SK_NO_VLCPLAYER
 #endif // WVLCPLAYER_H
