@@ -909,6 +909,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
                         if (d->audio == NULL)
                         {
+                            // NOTE: We create this instance on the VLC threads.
                             d->audio = new WVlcAudio(d->engine);
 
                             d->audio->setSpeed(libvlc_media_player_get_rate(d->player));
