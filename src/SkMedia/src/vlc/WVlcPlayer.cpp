@@ -719,15 +719,18 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::setProxy(const QString & host,
-                                            int             port, const QString & password)
+/* Q_INVOKABLE */ void WVlcPlayer::setProxy(const QString & host, const QString & password)
 {
     Q_D(WVlcPlayer);
 
     d->mutex.lock();
 
-    d->proxyHost     = host + ':' + QString::number(port);
+    d->proxyHost     = host;
     d->proxyPassword = password;
+
+#ifdef VLCPLAYER_AUDIO
+    if (d->hasAudio) d->audio->setProxy(host, password);
+#endif
 
     d->mutex.unlock();
 }
@@ -740,6 +743,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
     d->proxyHost     = QString();
     d->proxyPassword = QString();
+
+#ifdef VLCPLAYER_AUDIO
+    if (d->hasAudio) d->audio->clearProxy();
+#endif
 
     d->mutex.unlock();
 }
@@ -918,8 +925,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
                             d->mutex.lock();
 
-                            // FIXME
-                            //d->audio->setProxy
+                            d->audio->setProxy(d->proxyHost, d->proxyPassword);
 
                             d->audio->setOptions(options);
 
@@ -1119,6 +1125,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         {
             d->hasAudio = false;
 
+            d->audio->deletePlayer();
+
             delete d->audio;
 
             d->audio = NULL;
@@ -1163,6 +1171,10 @@ void WVlcPlayer::setOptions(const QStringList & options)
     if (d->options == options) return;
 
     d->options = options;
+
+#ifdef VLCPLAYER_AUDIO
+    if (d->hasAudio) d->audio->setOptions(options);
+#endif
 
     locker.unlock();
 
@@ -1239,6 +1251,10 @@ void WVlcPlayer::setNetworkCache(int msec)
     if (d->networkCache == msec) return;
 
     d->networkCache = msec;
+
+#ifdef VLCPLAYER_AUDIO
+    if (d->hasAudio) d->audio->setNetworkCache(msec);
+#endif
 
     locker.unlock();
 

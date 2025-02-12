@@ -114,8 +114,7 @@ public: // Interface
 
     Q_INVOKABLE void setOutput(int index);
 
-    Q_INVOKABLE void setProxy(const QString & host,
-                              int             port, const QString & password = QString());
+    Q_INVOKABLE void setProxy(const QString & host, const QString & password = QString());
 
     Q_INVOKABLE void clearProxy();
 

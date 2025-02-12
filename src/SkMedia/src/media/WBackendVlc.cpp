@@ -1595,7 +1595,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
     d->clearReply();
 
-    d->player->setProxy(host, port, password);
+    d->player->setProxy(host + ':' + QString::number(port), password);
 
     d->clearSources();
 }

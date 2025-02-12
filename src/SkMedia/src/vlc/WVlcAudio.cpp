@@ -516,14 +516,13 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcAudio::setProxy(const QString & host,
-                                           int             port, const QString & password)
+/* Q_INVOKABLE */ void WVlcAudio::setProxy(const QString & host, const QString & password)
 {
     Q_D(WVlcAudio);
 
     d->mutex.lock();
 
-    d->proxyHost     = host + ':' + QString::number(port);
+    d->proxyHost     = host;
     d->proxyPassword = password;
 
     d->mutex.unlock();
