@@ -39,6 +39,11 @@
 #include <private/WVlcEngine_p>
 
 //-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int PLAYER_RETRY_GAP = 1000; // 1 second
+
+//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -67,6 +72,8 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
     opening = false;
 #endif
     playing = false;
+
+    retry = 0;
 
     trackId = 0;
 
@@ -144,6 +151,8 @@ void WVlcPlayerPrivate::pause()
 
     playing = false;
 
+    retry = 0;
+
     libvlc_media_player_set_pause(player, 1);
 
 #ifdef VLCPLAYER_AUDIO
@@ -157,6 +166,8 @@ void WVlcPlayerPrivate::stop()
     opening = false;
 #endif
     playing = false;
+
+    retry = 0;
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_stop(player);
@@ -175,6 +186,8 @@ void WVlcPlayerPrivate::stop()
 
 void WVlcPlayerPrivate::seek(int time)
 {
+    retry = 0;
+
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_time(player, time);
 #else
@@ -360,6 +373,34 @@ void WVlcPlayerPrivate::applyPlay()
     QCoreApplication::postEvent(backend, eventTracks);
 }
 
+void WVlcPlayerPrivate::applyEnd()
+{
+    int at = libvlc_media_player_get_time(player);
+
+    // FIXME VLC 3.0.21: Sometimes we don't really reach the end, so we try try again.
+    if (libvlc_media_player_get_length(player) - at > PLAYER_RETRY_GAP
+        &&
+        retry < 3)
+    {
+        Q_Q(WVlcPlayer);
+
+        qDebug("PLAYER RETRY");
+
+        retry++;
+
+        q->stop();
+
+        q->play(at);
+
+        return;
+    }
+
+    if (backend == NULL) return;
+
+    QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
+                                                    (WVlcPlayer::EventEndReached)));
+}
+
 #if LIBVLC_VERSION_MAJOR > 3
 
 libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t type) const
@@ -446,16 +487,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 #if LIBVLC_VERSION_MAJOR > 3
     if (d->playing)
     {
-        d->playing = false;
-
-#ifdef VLCPLAYER_AUDIO
-        if (d->hasAudio) d->audio->stop();
-#endif
-
-        if (d->backend == NULL) return;
-
-        QCoreApplication::postEvent(d->backend, new QEvent(static_cast<QEvent::Type>
-                                                           (WVlcPlayer::EventEndReached)));
+        d->applyEnd();
 
         return;
     }
@@ -551,10 +583,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
-    if (d->backend == NULL) return;
-
-    QCoreApplication::postEvent(d->backend, new QEvent(static_cast<QEvent::Type>
-                                                       (WVlcPlayer::EventEndReached)));
+    d->applyEnd();
 }
 
 #endif
@@ -1002,6 +1031,9 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 #if LIBVLC_VERSION_MAJOR > 3
         d->opening = true;
 #endif
+        d->playing = false;
+
+        d->retry = 0;
 
         libvlc_media_player_set_media(d->player, media);
 

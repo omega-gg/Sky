@@ -168,6 +168,11 @@ void WVlcAudioPrivate::setSource(const QString & url, int loop)
         libvlc_media_add_option(media, option.C_STR);
     }
 
+    playing   = false;
+    buffering = false;
+
+    wait = false;
+
     libvlc_media_player_set_media(player, media);
 }
 

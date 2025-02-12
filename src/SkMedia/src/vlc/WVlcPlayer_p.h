@@ -102,6 +102,7 @@ public: // Functions
     void applyOpen();
 #endif
     void applyPlay();
+    void applyEnd ();
 
 #if LIBVLC_VERSION_MAJOR > 3
     libvlc_media_track_t * getTrack(int id, libvlc_track_type_t type) const;
@@ -160,6 +161,8 @@ public: // Variables
     bool opening;
 #endif
     bool playing;
+
+    int retry;
 
     int trackId;
 
