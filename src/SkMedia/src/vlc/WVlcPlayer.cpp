@@ -956,7 +956,9 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                         // FIXME VLC 3.0.18: This seems to fix the missing audio bytes at the end of
                         //                   the video.
                         libvlc_media_add_option(media, "demux=avformat");
+#ifdef VLCPLAYER_AUDIO
                     }
+#endif
                 }
 #ifdef VLCPLAYER_AUDIO
                 else if (d->hasAudio)
