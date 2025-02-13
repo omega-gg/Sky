@@ -375,30 +375,34 @@ void WVlcPlayerPrivate::applyPlay()
 
 void WVlcPlayerPrivate::applyEnd()
 {
-    int at = libvlc_media_player_get_time(player);
-
-    // FIXME VLC 3.0.21: Sometimes we don't really reach the end, so we try try again.
-    if (libvlc_media_player_get_length(player) - at > PLAYER_RETRY_GAP
-        &&
-        retry < 3)
+    if (backend)
     {
-        Q_Q(WVlcPlayer);
+        if (checkTime(backend->currentTime())) return;
 
-        qDebug("PLAYER RETRY");
-
-        retry++;
-
-        q->stop();
-
-        q->play(at);
-
-        return;
+        QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
+                                                        (WVlcPlayer::EventEndReached)));
     }
+    else if (checkTime(libvlc_media_player_get_time(player))) return;
+}
 
-    if (backend == NULL) return;
+bool WVlcPlayerPrivate::checkTime(int at)
+{
+    // FIXME VLC 3.0.21: Sometimes we don't really reach the end, so we try try again.
+    if (libvlc_media_player_get_length(player) - at < PLAYER_RETRY_GAP
+        ||
+        retry >= 3) return false;
 
-    QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
-                                                    (WVlcPlayer::EventEndReached)));
+    Q_Q(WVlcPlayer);
+
+    qDebug("PLAYER RETRY");
+
+    retry++;
+
+    q->stop();
+
+    q->play(at);
+
+    return true;
 }
 
 #if LIBVLC_VERSION_MAJOR > 3
@@ -656,11 +660,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::setBackend(QObject * backend, libvlc_video_format_cb  setup,
-                                                                 libvlc_video_cleanup_cb cleanup,
-                                                                 libvlc_video_lock_cb    lock,
-                                                                 libvlc_video_unlock_cb  unlock,
-                                                                 libvlc_video_display_cb display)
+/* Q_INVOKABLE */ void WVlcPlayer::setBackend(WAbstractBackend      * backend,
+                                              libvlc_video_format_cb  setup,
+                                              libvlc_video_cleanup_cb cleanup,
+                                              libvlc_video_lock_cb    lock,
+                                              libvlc_video_unlock_cb  unlock,
+                                              libvlc_video_display_cb display)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerEventBackend(backend, setup, cleanup, lock,
                                                                  unlock, display));

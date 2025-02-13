@@ -104,6 +104,8 @@ public: // Functions
     void applyPlay();
     void applyEnd ();
 
+    bool checkTime(int at);
+
 #if LIBVLC_VERSION_MAJOR > 3
     libvlc_media_track_t * getTrack(int id, libvlc_track_type_t type) const;
 #endif
@@ -148,7 +150,7 @@ public: // Variables
     WVlcAudio * audio;
 #endif
 
-    QObject * backend;
+    WAbstractBackend * backend;
 
     QStringList options;
 
@@ -210,7 +212,7 @@ public: // Variables
 class WVlcPlayerEventBackend : public QEvent
 {
 public:
-    WVlcPlayerEventBackend(QObject * backend,
+    WVlcPlayerEventBackend(WAbstractBackend      * backend,
                            libvlc_video_format_cb  setup,
                            libvlc_video_cleanup_cb cleanup,
                            libvlc_video_lock_cb    lock,
@@ -229,7 +231,7 @@ public:
     }
 
 public: // Variables
-    QObject * backend;
+    WAbstractBackend * backend;
 
     libvlc_video_format_cb  setup;
     libvlc_video_cleanup_cb cleanup;

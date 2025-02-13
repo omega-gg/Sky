@@ -87,11 +87,12 @@ public:
     WVlcPlayer(WVlcEngine * engine, QThread * thread = NULL, QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void setBackend(QObject * backend, libvlc_video_format_cb  setup   = NULL,
-                                                   libvlc_video_cleanup_cb cleanup = NULL,
-                                                   libvlc_video_lock_cb    lock    = NULL,
-                                                   libvlc_video_unlock_cb  unlock  = NULL,
-                                                   libvlc_video_display_cb display = NULL);
+    Q_INVOKABLE void setBackend(WAbstractBackend      * backend,
+                                libvlc_video_format_cb  setup   = NULL,
+                                libvlc_video_cleanup_cb cleanup = NULL,
+                                libvlc_video_lock_cb    lock    = NULL,
+                                libvlc_video_unlock_cb  unlock  = NULL,
+                                libvlc_video_display_cb display = NULL);
 
     Q_INVOKABLE void setSource(const QString & media,
                                const QString & audio = QString(), int loop = false);
