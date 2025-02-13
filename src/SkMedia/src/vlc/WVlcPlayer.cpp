@@ -72,6 +72,7 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
     opening = false;
 #endif
     playing = false;
+    seeking = false;
 
     retry = 0;
 
@@ -123,6 +124,8 @@ void WVlcPlayerPrivate::play(int time)
     {
         currentTime = time;
 
+        seeking = true;
+
         return;
     }
 #endif
@@ -136,12 +139,14 @@ void WVlcPlayerPrivate::play(int time)
 
 #if LIBVLC_VERSION_MAJOR > 3
     currentTime = time;
+
+    seeking = true;
 #endif
 
     libvlc_media_player_play(player);
 
 #if LIBVLC_VERSION_MAJOR < 4
-    if (time) libvlc_media_player_set_time(player, time);
+    if (time) seek(time);
 #endif
 }
 
@@ -150,8 +155,6 @@ void WVlcPlayerPrivate::pause()
     if (playing == false) return;
 
     playing = false;
-
-    retry = 0;
 
     libvlc_media_player_set_pause(player, 1);
 
@@ -166,8 +169,6 @@ void WVlcPlayerPrivate::stop()
     opening = false;
 #endif
     playing = false;
-
-    retry = 0;
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_stop(player);
@@ -186,6 +187,8 @@ void WVlcPlayerPrivate::stop()
 
 void WVlcPlayerPrivate::seek(int time)
 {
+    seeking = true;
+
     retry = 0;
 
 #if LIBVLC_VERSION_MAJOR < 4
@@ -387,10 +390,10 @@ void WVlcPlayerPrivate::applyEnd()
 
 bool WVlcPlayerPrivate::checkTime(int at)
 {
-    // FIXME VLC 3.0.21: Sometimes we don't really reach the end, so we try try again.
-    if (libvlc_media_player_get_length(player) - at < PLAYER_RETRY_GAP
+    // FIXME VLC 3.0.21: Sometimes the seeking fails, so we try try again.
+    if (seeking == false
         ||
-        retry >= 3) return false;
+        (libvlc_media_player_get_length(player) - at < PLAYER_RETRY_GAP || retry >= 3)) return false;
 
     Q_Q(WVlcPlayer);
 
@@ -554,6 +557,8 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
         d->applyPlay();
     }
 #endif
+
+    d->seeking = false;
 
 #ifdef VLCPLAYER_AUDIO
     if (d->hasAudio)
