@@ -81,6 +81,10 @@ void WDeclarativeMouseAreaPrivate::init()
     cursor     = Qt::ArrowCursor;
     cursorDrop = Qt::ArrowCursor;
 
+#ifdef QT_6
+    q->setAcceptTouchEvents(true);
+#endif
+
     QObject::connect(q, SIGNAL(hoverEnabledChanged()), q, SLOT(onHoverEnabledChanged()));
 }
 
@@ -478,6 +482,17 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             p->setEntered(true);
 
             p->setTouch(point.id());
+
+#ifdef QT_6
+            QPointF localPos = d->view->mapFromGlobal(screenPos);
+
+            QMouseEvent eventPress(QEvent::MouseButtonPress, localPos, screenPos,
+                                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+            mousePressEvent(&eventPress);
+
+            return;
+#endif
         }
     }
     else
@@ -507,6 +522,12 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             else if (point.state() == QEventPoint::Released)
 #endif
             {
+#ifdef QT_6
+                QPointF screenPos = point.globalPosition();
+
+                QPointF localPos = d->view->mapFromGlobal(screenPos);
+#endif
+
                 // NOTE Qt5.15: We handle double click for touch ourselves because it seems broken.
                 if (p->touchItem == this && p->touchTimer.isActive())
                 {
@@ -516,14 +537,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
 #ifdef QT_5
                     QPointF screenPos = point.screenPos();
-#else
-                    QPointF screenPos = point.globalPosition();
-#endif
 
-#ifdef QT_5
                     QPointF localPos = d->view->mapFromGlobal(screenPos.toPoint());
-#else
-                    QPointF localPos = d->view->mapFromGlobal(screenPos);
 #endif
 
                     QMouseEvent eventClick(QEvent::MouseButtonDblClick, localPos, screenPos,
@@ -537,6 +552,15 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
                     p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
                 }
+
+#ifdef QT_6
+                QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
+                                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+                mouseReleaseEvent(&eventRelease);
+
+                return;
+#endif
             }
 
             break;
