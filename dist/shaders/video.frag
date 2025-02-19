@@ -16,9 +16,9 @@ layout(std140, binding = 0) uniform buf
 };
 
 void main() {
-    vec4 color = vec4(texture(y, vector.st).r,
-                      texture(u, vector.st).r,
-                      texture(v, vector.st).r, 1.0);
+    vec4 color = vec4(texture(y, vector).r,
+                      texture(u, vector).r,
+                      texture(v, vector).r, 1.0);
 					  
     fragColor = matrixColor * color * opacity;
 }
