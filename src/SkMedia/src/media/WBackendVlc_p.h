@@ -243,7 +243,11 @@ public: // Functions
 #endif
 
     void convertFrameSoftware();
-    void convertFrameSse     ();
+#ifdef CAN_COMPILE_SSE2
+    void convertFrameSse();
+#elif defined(CAN_COMPILE_NEON)
+    void convertFrameNeon();
+#endif
 
     void loadSources(bool play);
 
