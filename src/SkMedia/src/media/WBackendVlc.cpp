@@ -61,11 +61,6 @@
 #include <GL/glx.h>
 #endif
 
-// Android includes
-#ifdef CAN_COMPILE_NEON
-#include <arm_neon.h>
-#endif
-
 #endif // SK_NO_QML
 
 // Private includes
@@ -1041,112 +1036,6 @@ void WBackendVlcPrivate::convertFrameSse()
     SSE2_END;
 }
 
-#elif defined(CAN_COMPILE_NEON)
-
-void WBackendVlcPrivate::convertFrameNeon()
-{
-    if (frameReset) return;
-
-    uint32_t * p_buffer = (uint32_t *) frameSoftware.bits();
-
-    uint8_t * p_y = textures[0].bits;
-    uint8_t * p_u = textures[1].bits;
-    uint8_t * p_v = textures[2].bits;
-
-    int width  = textures[0].width;
-    int height = textures[0].height;
-
-    int pitch_y  = textures[0].pitch;
-    int pitch_uv = textures[1].pitch;
-
-    for (int y = 0; y < height; y++)
-    {
-        uint8_t * p_y_row = p_y;
-        uint8_t * p_u_row = p_u;
-        uint8_t * p_v_row = p_v;
-
-        uint32_t * p_out = p_buffer;
-
-        for (int x = 0; x < width; x += 16)
-        {
-            // Load 16 Y pixels
-            uint8x16_t y_val = vld1q_u8(p_y_row);
-
-            // Load 8 U and V values (subsampled)
-            uint8x8_t u_val = vld1_u8(p_u_row);
-            uint8x8_t v_val = vld1_u8(p_v_row);
-
-            // Convert to 16-bit
-            int16x8_t y_s16_low  = vmovl_u8(vget_low_u8 (y_val));
-            int16x8_t y_s16_high = vmovl_u8(vget_high_u8(y_val));
-
-            int16x8_t u_s16 = vmovl_u8(u_val);
-            int16x8_t v_s16 = vmovl_u8(v_val);
-
-            // Offset YUV values
-            y_s16_low  = vsubq_s16(y_s16_low,  vdupq_n_s16(16));
-            y_s16_high = vsubq_s16(y_s16_high, vdupq_n_s16(16));
-
-            u_s16 = vsubq_s16(u_s16, vdupq_n_s16(128));
-            v_s16 = vsubq_s16(v_s16, vdupq_n_s16(128));
-
-            // Convert YUV to RGB
-            int16_t ratioA = 1.402 * 256;
-            int16_t ratioB = 1.772 * 256;
-
-            int16x8_t r_low = vaddq_s16(y_s16_low, vqrdmulhq_n_s16(v_s16, ratioA));
-            int16x8_t b_low = vaddq_s16(y_s16_low, vqrdmulhq_n_s16(u_s16, ratioB));
-
-            int16x8_t r_high = vaddq_s16(y_s16_high, vqrdmulhq_n_s16(v_s16, ratioA));
-            int16x8_t b_high = vaddq_s16(y_s16_high, vqrdmulhq_n_s16(u_s16, ratioB));
-
-            // Optimize by precomputing multiplications
-            int16x8_t g_offset = vsubq_s16(vqrdmulhq_n_s16(v_s16, (int16_t)(0.714 * 256)),
-                                           vqrdmulhq_n_s16(u_s16, (int16_t)(0.344 * 256)));
-
-            int16x8_t g_low  = vsubq_s16(y_s16_low,  g_offset);
-            int16x8_t g_high = vsubq_s16(y_s16_high, g_offset);
-
-            // Convert RGB back to 8-bit
-            uint8x8_t r_u8_low = vqmovun_s16(r_low);
-            uint8x8_t g_u8_low = vqmovun_s16(g_low);
-            uint8x8_t b_u8_low = vqmovun_s16(b_low);
-
-            uint8x8_t r_u8_high = vqmovun_s16(r_high);
-            uint8x8_t g_u8_high = vqmovun_s16(g_high);
-            uint8x8_t b_u8_high = vqmovun_s16(b_high);
-
-            uint8x8_t alpha = vdup_n_u8(255);
-
-            // Store ARGB (Lower Half)
-            uint8x8x4_t argb_low  = { b_u8_low,  g_u8_low,  r_u8_low,  alpha };
-            uint8x8x4_t argb_high = { b_u8_high, g_u8_high, r_u8_high, alpha };
-
-            vst4_u8((uint8_t *) p_out, argb_low);
-
-            vst4_u8((uint8_t *) (p_out + 8), argb_high);
-
-            // Advance pointers
-            p_y_row += 16;
-            p_u_row += 8;
-            p_v_row += 8;
-
-            p_out += 16;
-        }
-
-        // Advance row pointers
-        p_y += pitch_y;
-
-        if (!(y & 0x1)) // Only update U/V every second row
-        {
-            p_u += pitch_uv;
-            p_v += pitch_uv;
-        }
-
-        p_buffer += width;
-    }
-}
-
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -1576,7 +1465,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
 {
     WBackendVlcPrivate * d = static_cast<WBackendVlc *> (data)->d_func();
 
-    d->mutex.lock();
+    //d->mutex.lock();
 
     d->frameIndex = !(d->frameIndex);
 
@@ -1615,7 +1504,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
         d->textures[2].bits = d->textures[2].bitsB;
     }
 
-    d->mutex.unlock();
+    //d->mutex.unlock();
 
     d->method.invoke(backend);
 }
@@ -2102,13 +1991,13 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
             WBackendTexture * textures = frame->textures;
 
-            d->mutex.lock();
+            //d->mutex.lock();
 
             textures[0].bits = d->textures[0].bits;
             textures[1].bits = d->textures[1].bits;
             textures[2].bits = d->textures[2].bits;
 
-            d->mutex.unlock();
+            //d->mutex.unlock();
 
             // NOTE: When frame reset is pending we keep it that way. Otherwise we won't reset the
             //       texture properly in 'updatePaintNode'.
@@ -2331,8 +2220,6 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 #ifdef CAN_COMPILE_SSE2
     d->convertFrameSse();
-#elif defined(CAN_COMPILE_NEON)
-    d->convertFrameNeon();
 #else
     d->convertFrameSoftware();
 #endif

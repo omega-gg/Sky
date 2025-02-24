@@ -470,13 +470,13 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 #endif
         {
 #ifdef QT_5
-            QPointF screenPos = point.screenPos();
+            QPointF globalPosition = point.screenPos();
 #else
-            QPointF screenPos = point.globalPosition();
+            QPointF globalPosition = point.globalPosition();
 #endif
 
             // NOTE: This is useful for WView::mouseX and mouseY.
-            p->setMousePos(screenPos.toPoint());
+            p->setMousePos(globalPosition.toPoint());
 
             // NOTE: This call requires the mouse position to update hovering.
             p->setEntered(true);
@@ -484,9 +484,9 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             p->setTouch(point.id());
 
 #ifdef QT_6
-            QPointF localPos = d->view->mapFromGlobal(screenPos);
-
-            QMouseEvent eventPress(QEvent::MouseButtonPress, localPos, screenPos,
+            // NOTE Qt6: Scene position matters.
+            QMouseEvent eventPress(QEvent::MouseButtonPress,
+                                   point.position(), point.scenePosition(), globalPosition,
                                    Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
             mousePressEvent(&eventPress);
@@ -508,13 +508,23 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 #endif
             {
 #ifdef QT_5
-                QPointF screenPos = point.screenPos();
+                QPointF globalPosition = point.screenPos();
 #else
-                QPointF screenPos = point.globalPosition();
+                QPointF globalPosition = point.globalPosition();
 #endif
 
                 // NOTE: This is useful for WView::mouseX and mouseY.
-                p->setMousePos(screenPos.toPoint());
+                p->setMousePos(globalPosition.toPoint());
+
+#ifdef QT_6
+                QMouseEvent eventMove(QEvent::MouseMove,
+                                      point.position(), point.scenePosition(), globalPosition,
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+                mouseMoveEvent(&eventMove);
+
+                return;
+#endif
             }
 #ifdef QT_5
             else if (point.state() == Qt::TouchPointReleased)
@@ -523,9 +533,9 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 #endif
             {
 #ifdef QT_6
-                QPointF screenPos = point.globalPosition();
-
-                QPointF localPos = d->view->mapFromGlobal(screenPos);
+                QPointF position       = point.position      ();
+                QPointF scenePosition  = point.scenePosition ();
+                QPointF globalPosition = point.globalPosition();
 #endif
 
                 // NOTE Qt5.15: We handle double click for touch ourselves because it seems broken.
@@ -536,13 +546,17 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
                     p->touchItem = NULL;
 
 #ifdef QT_5
-                    QPointF screenPos = point.screenPos();
+                    QPointF globalPosition = point.screenPos();
 
-                    QPointF localPos = d->view->mapFromGlobal(screenPos.toPoint());
-#endif
+                    QPointF position = d->view->mapFromGlobal(globalPosition.toPoint());
 
-                    QMouseEvent eventClick(QEvent::MouseButtonDblClick, localPos, screenPos,
+                    QMouseEvent eventClick(QEvent::MouseButtonDblClick, position, globalPosition,
                                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+#else
+                    QMouseEvent eventClick(QEvent::MouseButtonDblClick,
+                                           position, scenePosition, globalPosition,
+                                           Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+#endif
 
                     QQuickMouseArea::mouseDoubleClickEvent(&eventClick);
                 }
@@ -554,7 +568,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
                 }
 
 #ifdef QT_6
-                QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
+                QMouseEvent eventRelease(QEvent::MouseButtonRelease,
+                                         position, scenePosition, globalPosition,
                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
                 mouseReleaseEvent(&eventRelease);

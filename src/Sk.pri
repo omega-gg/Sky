@@ -55,7 +55,5 @@ ios {
 # FIXME Qt5.12.2: This can be useful when Q_OS_IOS is broken in certain scenarios.
 ios:DEFINES += SK_OS_IOS
 
-android:contains(ANDROID_TARGET_ARCH, arm64-v8a):DEFINES += CAN_COMPILE_NEON
-
 # NOTE iOS: Sky projects should be prefixed with the omega domain.
 ios:QMAKE_TARGET_BUNDLE_PREFIX = gg.omega
