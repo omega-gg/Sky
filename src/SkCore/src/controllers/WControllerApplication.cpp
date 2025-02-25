@@ -753,7 +753,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
                                        "DISPLAY_NAME",
                                        "Ljava/lang/String;"
                                    ).object(),
-                                   QJniObject::fromString(fileName).object());
+                                   QJniObject::fromString(name).object());
 
     contentValues.callMethod<void>("put", "(Ljava/lang/String;Ljava/lang/String;)V",
                                    QJniObject::getStaticObjectField
