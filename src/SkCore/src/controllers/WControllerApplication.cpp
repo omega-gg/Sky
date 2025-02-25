@@ -108,6 +108,12 @@
 #include <CoreServices/CoreServices.h>
 #endif
 
+// Typedefs
+#if defined(Q_OS_ANDROID) && defined(QT_5)
+typedef QAndroidJniObject QJniObject
+#endif
+
+
 W_INIT_CONTROLLER(WControllerApplication)
 
 //-------------------------------------------------------------------------------------------------
@@ -680,6 +686,124 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 #endif // SK_MOBILE
 
 #ifdef Q_OS_ANDROID
+
+/* Q_INVOKABLE static */ bool WControllerApplication::checkPermission(const QString & permission)
+{
+#ifdef QT_OLD
+    Q_UNUSED(permission);
+
+    return false;
+#else
+    QtAndroidPrivate::PermissionResult result
+        = QtAndroidPrivate::checkPermission(permission).result();
+
+    if (result == QtAndroidPrivate::Authorized) return true;
+
+    result = QtAndroidPrivate::requestPermission(permission).result();
+
+    return (result != QtAndroidPrivate::Denied);
+#endif
+}
+
+/* Q_INVOKABLE static */ bool WControllerApplication::saveMedia(const QString    & name,
+                                                                const QString    & type,
+                                                                const QString    & mime,
+                                                                const QString    & path,
+                                                                const QByteArray & data)
+{
+#ifdef QT_5
+    QJniObject jni = QtAndroid::androidActivity();
+#else
+    QJniObject jni = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (jni.isValid() == false) return false;
+
+    QJniObject contentResolver = jni.callObjectMethod
+    (
+        "getContentResolver", "()Landroid/content/ContentResolver;"
+    );
+
+    QJniObject uri;
+
+    // NOTE: Use MediaStore.Files for non-media files.
+    if (type == "Files")
+    {
+        uri = QJniObject::callStaticObjectMethod
+        (
+            "android/provider/MediaStore$Files",
+            "getContentUri",
+            "(Ljava/lang/String;)Landroid/net/Uri;",
+            QJniObject::fromString("external").object<jstring>()
+        );
+    }
+    else uri = QJniObject::getStaticObjectField
+    (
+        QString("android/provider/MediaStore$" + type).C_STR,
+        "EXTERNAL_CONTENT_URI",
+        "Landroid/net/Uri;"
+    );
+
+    QJniObject contentValues("android/content/ContentValues");
+
+    contentValues.callMethod<void>("put", "(Ljava/lang/String;Ljava/lang/String;)V",
+                                   QJniObject::getStaticObjectField
+                                   (
+                                       "android/provider/MediaStore$MediaColumns",
+                                       "DISPLAY_NAME",
+                                       "Ljava/lang/String;"
+                                   ).object(),
+                                   QJniObject::fromString(fileName).object());
+
+    contentValues.callMethod<void>("put", "(Ljava/lang/String;Ljava/lang/String;)V",
+                                   QJniObject::getStaticObjectField
+                                   (
+                                       "android/provider/MediaStore$MediaColumns",
+                                       "MIME_TYPE",
+                                       "Ljava/lang/String;"
+                                   ).object(),
+                                   QJniObject::fromString(mime).object());
+
+    contentValues.callMethod<void>("put", "(Ljava/lang/String;Ljava/lang/String;)V",
+                                   QJniObject::getStaticObjectField
+                                   (
+                                       "android/provider/MediaStore$MediaColumns",
+                                       "RELATIVE_PATH",
+                                       "Ljava/lang/String;"
+                                   ).object(),
+                                   QJniObject::fromString(path).object());
+
+    const char * signature = "(Landroid/net/Uri;Landroid/content/ContentValues;)Landroid/net/Uri;";
+
+    uri = contentResolver.callObjectMethod("insert", signature, uri.object(),
+                                           contentValues.object());
+
+    if (uri.isValid() == false) return false;
+
+    QJniObject stream
+        = contentResolver.callObjectMethod("openOutputStream",
+                                           "(Landroid/net/Uri;)Ljava/io/OutputStream;",
+                                           uri.object());
+
+    if (stream.isValid() == false) return false;
+
+#ifdef QT_5
+    QAndroidJniEnvironment env;
+#else
+    QJniEnvironment env;
+#endif
+
+    jbyteArray array = env->NewByteArray(data.size());
+
+    env->SetByteArrayRegion(array, 0, data.size(), reinterpret_cast<const jbyte*> (data.data()));
+
+    stream.callMethod<void>("write", "([B)V", array);
+    stream.callMethod<void>("close", "()V");
+
+    env->DeleteLocalRef(array);
+
+    return true;
+}
 
 /* Q_INVOKABLE static */ void WControllerApplication::scanFile(const QString & fileName)
 {

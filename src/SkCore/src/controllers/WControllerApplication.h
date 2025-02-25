@@ -231,6 +231,13 @@ public: // Static functions
 #endif
 
 #ifdef Q_OS_ANDROID
+    Q_INVOKABLE static bool checkPermission(const QString & permission);
+
+    Q_INVOKABLE static void saveMedia(const QString & name,
+                                      const QString & type,
+                                      const QString & mime,
+                                      const QString & path, const QByteArray & data);
+
     Q_INVOKABLE static void scanFile(const QString & fileName);
 
     // NOTE android: This is required to avoid the notch in full screen.
