@@ -110,7 +110,7 @@
 
 // Typedefs
 #if defined(Q_OS_ANDROID) && defined(QT_5)
-typedef QAndroidJniObject QJniObject
+typedef QAndroidJniObject QJniObject;
 #endif
 
 
