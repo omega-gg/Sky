@@ -72,8 +72,8 @@
 #elif defined (Q_OS_IOS)
 #include <QDesktopServices>
 #elif defined (Q_OS_ANDROID)
+#include <QtAndroid>
 #ifdef QT_5
-    #include <QtAndroid>
     #include <QAndroidJniEnvironment>
 #else
     #include <QJniObject>
