@@ -113,7 +113,6 @@
 typedef QAndroidJniObject QJniObject;
 #endif
 
-
 W_INIT_CONTROLLER(WControllerApplication)
 
 //-------------------------------------------------------------------------------------------------
@@ -590,7 +589,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
         ==
         QtAndroid::PermissionResult::Denied) return;
 
-    QAndroidJniObject jni = QtAndroid::androidActivity();
+    QJniObject jni = QtAndroid::androidActivity();
 #else
     // FIXME Qt6: We should check for permission before doing this, otherwise we might crash.
 
@@ -599,15 +598,9 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     if (jni.isValid() == false) return;
 
-#ifdef QT_5
-    QAndroidJniObject service
-        = QAndroidJniObject::getStaticObjectField<jstring>("android/content/Context",
-                                                           "VIBRATOR_SERVICE");
-#else
     QJniObject service
         = QJniObject::getStaticObjectField<jstring>("android/content/Context",
                                                     "VIBRATOR_SERVICE");
-#endif
 
     if (jni.isValid() == false) return;
 
@@ -634,7 +627,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ void WControllerApplication::openGallery()
 {
 #ifdef QT_5
-    QAndroidJniObject jni = QtAndroid::androidActivity();
+    QJniObject jni = QtAndroid::androidActivity();
 #else
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
@@ -653,24 +646,17 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 {
 #ifdef Q_OS_ANDROID
 #ifdef QT_5
-    QAndroidJniObject jni = QtAndroid::androidActivity();
+    QJniObject jni = QtAndroid::androidActivity();
 #else
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
 
     if (jni.isValid() == false) return;
 
-#ifdef QT_5
-    QAndroidJniObject jniTitle    = QAndroidJniObject::fromString(title);
-    QAndroidJniObject jniText     = QAndroidJniObject::fromString(text);
-    QAndroidJniObject jniFileName = QAndroidJniObject::fromString(fileName);
-    QAndroidJniObject jniType     = QAndroidJniObject::fromString(type);
-#else
     QJniObject jniTitle    = QJniObject::fromString(title);
     QJniObject jniText     = QJniObject::fromString(text);
     QJniObject jniFileName = QJniObject::fromString(fileName);
     QJniObject jniType     = QJniObject::fromString(type);
-#endif
 
     jni.callMethod<void>("share",
                          "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;"
@@ -808,18 +794,14 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ void WControllerApplication::scanFile(const QString & fileName)
 {
 #ifdef QT_5
-    QAndroidJniObject jni = QtAndroid::androidActivity();
+    QJniObject jni = QtAndroid::androidActivity();
 #else
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
 
     if (jni.isValid() == false) return;
 
-#ifdef QT_5
-    QAndroidJniObject jniName = QAndroidJniObject::fromString(fileName);
-#else
     QJniObject jniName = QJniObject::fromString(fileName);
-#endif
 
     jni.callMethod<void>("scanFile", "(Ljava/lang/String;)V", jniName.object<jstring>());
 }
@@ -833,7 +815,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 #endif
     {
 #ifdef QT_5
-        QAndroidJniObject jni = QtAndroid::androidActivity();
+        QJniObject jni = QtAndroid::androidActivity();
 #else
         QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
@@ -847,7 +829,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ void WControllerApplication::goBack()
 {
 #ifdef QT_5
-    QAndroidJniObject jni = QtAndroid::androidActivity();
+    QJniObject jni = QtAndroid::androidActivity();
 #else
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
@@ -1950,7 +1932,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 /* Q_INVOKABLE static */ QString WControllerApplication::getIntentText()
 {
 #ifdef QT_5
-    QAndroidJniObject jni = QtAndroid::androidActivity();
+    QJniObject jni = QtAndroid::androidActivity();
 #else
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
@@ -1963,7 +1945,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 /* Q_INVOKABLE static */ void WControllerApplication::clearIntent()
 {
 #ifdef QT_5
-    QAndroidJniObject jni = QtAndroid::androidActivity();
+    QJniObject jni = QtAndroid::androidActivity();
 #else
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
@@ -2800,7 +2782,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
 #endif
     {
 #ifdef QT_5
-        QAndroidJniObject jni = QtAndroid::androidActivity();
+        QJniObject jni = QtAndroid::androidActivity();
 #else
         QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
@@ -2894,11 +2876,7 @@ Java_gg_omega_WActivity_updateIntent(JNIEnv *, jobject)
 JNIEXPORT void JNICALL
 Java_gg_omega_WActivity_imageSelected(JNIEnv *, jobject, jstring fileName)
 {
-#ifdef QT_5
-    emit sk->imageSelected(QAndroidJniObject(fileName).toString());
-#else
     emit sk->imageSelected(QJniObject(fileName).toString());
-#endif
 }
 
 JNIEXPORT void JNICALL
