@@ -72,8 +72,8 @@
 #elif defined (Q_OS_IOS)
 #include <QDesktopServices>
 #elif defined (Q_OS_ANDROID)
-#include <QtAndroid>
 #ifdef QT_5
+    #include <QtAndroid>
     #include <QAndroidJniEnvironment>
 #else
     #include <QJniObject>
@@ -106,6 +106,11 @@
 // macOS includes
 #ifdef Q_OS_MACOS
 #include <CoreServices/CoreServices.h>
+#endif
+
+// Qt private includes
+#if defined(Q_OS_ANDROID) && defined(QT_6)
+#include <QtCore/private/qandroidextras_p.h>
 #endif
 
 // Typedefs
