@@ -233,7 +233,7 @@ public: // Static functions
 #ifdef Q_OS_ANDROID
     Q_INVOKABLE static bool checkPermission(const QString & permission);
 
-    Q_INVOKABLE static void saveMedia(const QString & name,
+    Q_INVOKABLE static bool saveMedia(const QString & name,
                                       const QString & type,
                                       const QString & mime,
                                       const QString & path, const QByteArray & data);
