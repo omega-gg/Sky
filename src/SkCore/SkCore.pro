@@ -57,6 +57,12 @@ include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private
 
+android:greaterThan(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += $$SK/include/$$QTX \
+                   $$SK/include/$$QTX/QtCore
+}
+
+# NOTE android: Required for qandroidextras_p
 unix:!macx:!ios:!android:greaterThan(QT_MAJOR_VERSION, 4) {
 
     INCLUDEPATH += $$SK/include/$$QTX/QtDBus
