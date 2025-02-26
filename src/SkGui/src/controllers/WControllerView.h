@@ -99,6 +99,14 @@ public: // Static functions
     Q_INVOKABLE static qreal screenRatioPixel(QScreen * screen);
 #endif
 
+    Q_INVOKABLE static QByteArray imageData(const QImage & image,
+                                            const char   * format = NULL, int quality = -1);
+
+    Q_INVOKABLE static QImage desaturate(const QImage & image);
+
+    //---------------------------------------------------------------------------------------------
+    // Shots
+
 #ifdef QT_4
     Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject * item,
                                             const QColor    & background = Qt::transparent);
@@ -118,8 +126,6 @@ public: // Static functions
                                          const QString & format = "png", int quality = -1,
                                          const QColor  & background = Qt::transparent);
 #endif
-
-    Q_INVOKABLE static QImage desaturate(const QImage & image);
 
     Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);

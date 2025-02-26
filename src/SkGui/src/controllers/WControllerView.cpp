@@ -46,6 +46,7 @@
 #endif
 #include <QPainter>
 #include <QDir>
+#include <QBuffer>
 
 // Sk includes
 #include <WControllerNetwork>
@@ -440,6 +441,49 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QByteArray WControllerView::imageData(const QImage & image,
+                                                               const char   * format, int quality)
+{
+    QByteArray array;
+
+    QBuffer buffer(&array);
+
+    buffer.open(QIODevice::WriteOnly);
+
+    image.save(&buffer, format, quality);
+
+    return array;
+}
+
+/* Q_INVOKABLE static */ QImage WControllerView::desaturate(const QImage & image)
+{
+    QImage result(image.width(), image.height(), image.format());
+
+    for (int y = 0; y < image.height(); y++)
+    {
+        const QRgb * lineA = (QRgb *) image.scanLine(y);
+
+        QRgb * lineB = (QRgb *) result.scanLine(y);
+
+        for (int x = 0; x < image.width(); x++)
+        {
+            const QRgb & color = *lineA;
+
+            int average = (qRed(color) + qGreen(color) + qBlue(color)) / 3;
+
+            *lineB = qRgba(average, average, average, qAlpha(color));
+
+            lineA++;
+            lineB++;
+        }
+    }
+
+    return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Shots
+
 #ifdef QT_4
 /* Q_INVOKABLE static */ QPixmap WControllerView::takeItemShot(QGraphicsObject * item,
                                                                const QColor    & background)
@@ -507,34 +551,6 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     QImage image = takeItemShot(item, background).toImage();
 
     return image.save(fileName, format.C_STR, quality);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QImage WControllerView::desaturate(const QImage & image)
-{
-    QImage result(image.width(), image.height(), image.format());
-
-    for (int y = 0; y < image.height(); y++)
-    {
-        const QRgb * lineA = (QRgb *) image.scanLine(y);
-
-        QRgb * lineB = (QRgb *) result.scanLine(y);
-
-        for (int x = 0; x < image.width(); x++)
-        {
-            const QRgb & color = *lineA;
-
-            int average = (qRed(color) + qGreen(color) + qBlue(color)) / 3;
-
-            *lineB = qRgba(average, average, average, qAlpha(color));
-
-            lineA++;
-            lineB++;
-        }
-    }
-
-    return result;
 }
 
 //-------------------------------------------------------------------------------------------------
