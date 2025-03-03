@@ -61,6 +61,11 @@
 #include <GL/glx.h>
 #endif
 
+// Android includes
+#ifdef CAN_COMPILE_NEON
+#include <arm_neon.h>
+#endif
+
 #endif // SK_NO_QML
 
 // Private includes
@@ -1034,6 +1039,165 @@ void WBackendVlcPrivate::convertFrameSse()
     }
 
     SSE2_END;
+}
+
+#elif defined(CAN_COMPILE_NEON)
+
+// NOTE: Inspired from the following: https://github.com/dwy838184016/ImageDecoder
+void WBackendVlcPrivate::convertFrameNeon()
+{
+    if (frameReset) return;
+
+    // Get pointers to the YUV frame data
+    uint8_t * p_buffer = (uint8_t *) frameSoftware.bits();
+
+    uint8_t * p_y = textures[0].bits;
+    uint8_t * p_u = textures[1].bits;
+    uint8_t * p_v = textures[2].bits;
+
+    // Get frame dimensions
+    int width  = textures[0].width;
+    int height = textures[0].height;
+
+    int row = width * 4;
+
+    // Determine the number of 16-pixel blocks and remaining pixels
+    //int count = width % 16; // Remaining pixels that don’t fit into NEON processing
+    int n = width / 16; // Number of full 16-pixel blocks
+
+    // Get texture pitch (stride) values
+    int pitchY = textures[0].pitch;
+    int pitchU = textures[1].pitch;
+    int pitchV = textures[2].pitch;
+
+    // NEON constants for YUV to RGB conversion
+    uint8x8_t all_yfac = vdup_n_u8  (298 >> 2);
+    uint8x8_t t_yfac   = vdup_n_u8  (16);
+    int16x4_t g_ufac   = vdup_n_s16 (101 >> 2);
+    int16x4_t b_ufac   = vdup_n_s16 (519 >> 2);
+    int16x4_t r_vfac   = vdup_n_s16 (411 >> 2);
+    int16x4_t g_vfac   = vdup_n_s16 (211 >> 2);
+    int16x8_t addfac   = vdupq_n_s16(128);
+
+    // Process each row of the image
+    for (int i = 0; i < height; i++)
+    {
+        uint8_t *n_py = p_y;
+        uint8_t *n_pu = p_u;
+        uint8_t *n_pv = p_v;
+
+        uint8_t *dest_rgb = p_buffer;
+
+        // Process 16 pixels at a time using NEON
+        for (int j = 0; j < n; j++)
+        {
+            uint8x8x2_t  y = vld2_u8(n_py); // Load 16 Y values interleaved
+            uint8x8_t uRow = vld1_u8(n_pu); // Load 8 U values
+            uint8x8_t vRow = vld1_u8(n_pv); // Load 8 V values
+
+            // Convert U and V to signed 16-bit and subtract 128
+            int16x8_t u = vsubq_s16(vreinterpretq_s16_u16(vmovl_u8(uRow)), addfac);
+            int16x8_t v = vsubq_s16(vreinterpretq_s16_u16(vmovl_u8(vRow)), addfac);
+
+            // Subtract 16 from Y values
+            y.val[0] = vqsub_u8(y.val[0], t_yfac);
+            y.val[1] = vqsub_u8(y.val[1], t_yfac);
+
+            // Scale Y values
+            int16x8x2_t y_data;
+
+            y_data.val[0] = vreinterpretq_s16_u16(vmull_u8(y.val[0], all_yfac));
+            y_data.val[1] = vreinterpretq_s16_u16(vmull_u8(y.val[1], all_yfac));
+
+            uint8x8x2_t r, g, b;
+
+            // Compute R, G, B for both 8-pixel sets
+            for (int k = 0; k < 2; k++)
+            {
+                int16x4_t tmpDataH = vmla_s16(vget_high_s16(y_data.val[k]), vget_high_s16(v), r_vfac);
+                int16x4_t tmpDataL = vmla_s16(vget_low_s16(y_data.val[k]), vget_low_s16(v), r_vfac);
+                r.val[k] = vqshrun_n_s16(vcombine_s16(tmpDataL, tmpDataH), 6);
+
+                tmpDataH = vmls_s16(vget_high_s16(y_data.val[k]), vget_high_s16(u), g_ufac);
+                tmpDataH = vmls_s16(tmpDataH, vget_high_s16(v), g_vfac);
+
+                tmpDataL = vmls_s16(vget_low_s16(y_data.val[k]), vget_low_s16(u), g_ufac);
+                tmpDataL = vmls_s16(tmpDataL, vget_low_s16(v), g_vfac);
+
+                g.val[k] = vqshrun_n_s16(vcombine_s16(tmpDataL, tmpDataH), 6);
+
+                tmpDataH = vmla_s16(vget_high_s16(y_data.val[k]), vget_high_s16(u), b_ufac);
+                tmpDataL = vmla_s16(vget_low_s16(y_data.val[k]), vget_low_s16(u), b_ufac);
+                b.val[k] = vqshrun_n_s16(vcombine_s16(tmpDataL, tmpDataH), 6);
+            }
+
+            // Interleave R, G, B and store results
+            uint8x8x2_t r_data = vzip_u8(r.val[0], r.val[1]);
+            uint8x8x2_t g_data = vzip_u8(g.val[0], g.val[1]);
+            uint8x8x2_t b_data = vzip_u8(b.val[0], b.val[1]);
+
+            uint8x8x4_t resultRgb;
+
+            for (int k = 0; k < 2; k++)
+            {
+                resultRgb.val[0] = b_data.val[k];
+                resultRgb.val[1] = g_data.val[k];
+                resultRgb.val[2] = r_data.val[k];
+                resultRgb.val[3] = vdup_n_u8(255); // Alpha
+
+                vst4_u8(dest_rgb, resultRgb);
+
+                dest_rgb += 32;
+            }
+
+            n_py += 16;
+            n_pu +=  8;
+            n_pv +=  8;
+        }
+
+        // // Process remaining pixels (scalar fallback)
+        // for (int j = 0; j < count; j += 2)
+        // {
+        //     int u = n_pu[0] - 128;
+        //     int v = n_pv[0] - 128;
+
+        //     for (int k = 0; k < 2; k++)
+        //     {
+        //         int y = n_py[k] - 16;
+
+        //         // Convert YUV to RGB
+        //         int r = (298 * y + 409 * v)           >> 8;
+        //         int g = (298 * y - 100 * u - 208 * v) >> 8;
+        //         int b = (298 * y + 516 * u)           >> 8;
+
+        //         int index = k * 4;
+
+        //         // Clamp values and store
+        //         dest_rgb[index + 0] = (b < 0) ? 0 : (b > 255 ? 255 : b);
+        //         dest_rgb[index + 1] = (g < 0) ? 0 : (g > 255 ? 255 : g);
+        //         dest_rgb[index + 2] = (r < 0) ? 0 : (r > 255 ? 255 : r);
+        //         dest_rgb[index + 3] = 0xFF; // Alpha
+        //     }
+
+        //     n_py += 2;
+        //     n_pu += 1;
+        //     n_pv += 1;
+
+        //     dest_rgb += 8;
+        // }
+
+        // Move to the next row
+        p_buffer += row;
+
+        p_y += pitchY;
+
+        // Update U/V row pointers every other row (since U and V are subsampled)
+        if (i & 1)
+        {
+            p_u += pitchU;
+            p_v += pitchV;
+        }
+    }
 }
 
 #endif
@@ -2220,6 +2384,8 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 #ifdef CAN_COMPILE_SSE2
     d->convertFrameSse();
+#elif defined(CAN_COMPILE_NEON)
+    d->convertFrameNeon();
 #else
     d->convertFrameSoftware();
 #endif
