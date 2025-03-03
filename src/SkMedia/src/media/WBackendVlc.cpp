@@ -1120,10 +1120,8 @@ void WBackendVlcPrivate::convertFrameNeon()
 
                 tmpDataH = vmls_s16(vget_high_s16(y_data.val[k]), vget_high_s16(u), g_ufac);
                 tmpDataH = vmls_s16(tmpDataH, vget_high_s16(v), g_vfac);
-
                 tmpDataL = vmls_s16(vget_low_s16(y_data.val[k]), vget_low_s16(u), g_ufac);
                 tmpDataL = vmls_s16(tmpDataL, vget_low_s16(v), g_vfac);
-
                 g.val[k] = vqshrun_n_s16(vcombine_s16(tmpDataL, tmpDataH), 6);
 
                 tmpDataH = vmla_s16(vget_high_s16(y_data.val[k]), vget_high_s16(u), b_ufac);
