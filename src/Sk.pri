@@ -56,7 +56,7 @@ ios {
 ios:DEFINES += SK_OS_IOS
 
 android {
-    contains(ANDROID_TARGET_ARCH, armeabi-v7a) | contains(ANDROID_TARGET_ARCH, arm64-v8a)
+    contains($$ABI, armeabi-v7a) | contains($$ABI, arm64-v8a)
     {
         DEFINES += CAN_COMPILE_NEON
     }
