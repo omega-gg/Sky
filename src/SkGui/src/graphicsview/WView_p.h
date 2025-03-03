@@ -115,7 +115,7 @@ public: // Functions
     void setResizing(bool resizing);
 
 #ifdef QT_NEW
-    void setTouch(int id);
+    void setTouch(WDeclarativeMouseArea * area, int id);
 #endif
 
 #ifdef SK_DESKTOP
@@ -273,7 +273,8 @@ public: // Variables
     //---------------------------------------------------------------------------------------------
     // Touch
 
-    int touchId;
+    WDeclarativeMouseArea * touchArea;
+    int                     touchId;
 
     WDeclarativeMouseArea * touchItem;
     QTimer                  touchTimer;

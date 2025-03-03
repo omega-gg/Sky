@@ -2885,9 +2885,13 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 /* Q_INVOKABLE */ WVlcAudio * WControllerMedia::createVlcAudio() const
 {
+#ifdef VLCPLAYER_AUDIO
     Q_D(const WControllerMedia);
 
     return new WVlcAudio(d->engine, d->thread);
+#else
+    return NULL;
+#endif
 }
 
 #endif

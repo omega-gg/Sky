@@ -56,6 +56,8 @@ WDeclarativeMouseAreaPrivate::WDeclarativeMouseAreaPrivate(WDeclarativeMouseArea
 
     if (hoverActive) p->itemsHovered.removeOne(q);
 
+    if (p->touchArea == q) p->setTouch(NULL, -1);
+
     if (p->areaDrop == q) p->areaDrop = NULL;
 }
 
@@ -416,7 +418,7 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     WViewPrivate * p = d->view->d_func();
 
-    p->setTouch(-1);
+    p->setTouch(NULL, -1);
 
     p->setEntered(false);
 }
@@ -481,7 +483,7 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             // NOTE: This call requires the mouse position to update hovering.
             p->setEntered(true);
 
-            p->setTouch(point.id());
+            p->setTouch(this, point.id());
 
 #ifdef QT_6
             // NOTE Qt6: Scene position matters.
@@ -600,7 +602,7 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     if (p->touchId != -1)
     {
-        p->setTouch(-1);
+        p->setTouch(NULL, -1);
 
         p->setEntered(false);
     }

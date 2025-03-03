@@ -372,7 +372,9 @@ void WViewPrivate::init(QQuickItem * item)
     //---------------------------------------------------------------------------------------------
     // Touch
 
+    touchArea = NULL;
     touchId   = -1;
+
     touchItem = NULL;
 
     touchTimer.setSingleShot(true);
@@ -1053,11 +1055,12 @@ void WViewPrivate::setResizing(bool resizing)
 
 #ifdef QT_NEW
 
-void WViewPrivate::setTouch(int id)
+void WViewPrivate::setTouch(WDeclarativeMouseArea * area, int id)
 {
     if (touchId == id) return;
 
-    touchId = id;
+    touchArea = area;
+    touchId   = id;
 
     if (id == -1)
     {
