@@ -454,21 +454,62 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     int id = p->touchId;
 
-    if (id == -1)
+    if (points.isEmpty())
     {
-        if (points.isEmpty())
+        QQuickMouseArea::touchEvent(event);
+
+        return;
+    }
+
+    QTouchEvent::TouchPoint point = points.first();
+
+#ifdef QT_5
+    if (point.state() == Qt::TouchPointPressed)
+#else
+    if (point.state() == QEventPoint::Pressed)
+#endif
+    {
+        if (p->touchArea == this)
         {
             QQuickMouseArea::touchEvent(event);
 
             return;
         }
 
-        QTouchEvent::TouchPoint point = points.first();
+#ifdef QT_5
+        QPointF globalPosition = point.screenPos();
+#else
+        QPointF globalPosition = point.globalPosition();
+#endif
+
+        // NOTE: This is useful for WView::mouseX and mouseY.
+        p->setMousePos(globalPosition.toPoint());
+
+        // NOTE: This call requires the mouse position to update hovering.
+        p->setEntered(true);
+
+        p->setTouch(this, point.id());
+
+#ifdef QT_6
+        // NOTE Qt6: Scene position matters.
+        QMouseEvent eventPress(QEvent::MouseButtonPress,
+                               point.position(), point.scenePosition(), globalPosition,
+                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+        QCoreApplication::sendEvent(this, &eventPress);
+
+        return;
+#endif
+    }
+
+    foreach (const QTouchEvent::TouchPoint & point, points)
+    {
+        if (point.id() != id) continue;
 
 #ifdef QT_5
-        if (point.state() == Qt::TouchPointPressed)
+        if (point.state() == Qt::TouchPointMoved)
 #else
-        if (point.state() == QEventPoint::Pressed)
+        if (point.state() == QEventPoint::Updated)
 #endif
         {
 #ifdef QT_5
@@ -480,108 +521,80 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             // NOTE: This is useful for WView::mouseX and mouseY.
             p->setMousePos(globalPosition.toPoint());
 
-            // NOTE: This call requires the mouse position to update hovering.
-            p->setEntered(true);
-
-            p->setTouch(this, point.id());
-
 #ifdef QT_6
-            // NOTE Qt6: Scene position matters.
-            QMouseEvent eventPress(QEvent::MouseButtonPress,
-                                   point.position(), point.scenePosition(), globalPosition,
-                                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            QMouseEvent eventMove(QEvent::MouseMove,
+                                  point.position(), point.scenePosition(), globalPosition,
+                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
-            mousePressEvent(&eventPress);
+            QCoreApplication::sendEvent(this, &eventMove);
 
             return;
 #endif
         }
-    }
-    else
-    {
-        foreach (const QTouchEvent::TouchPoint & point, points)
-        {
-            if (point.id() != id) continue;
-
 #ifdef QT_5
-            if (point.state() == Qt::TouchPointMoved)
+        else if (point.state() == Qt::TouchPointReleased)
 #else
-            if (point.state() == QEventPoint::Updated)
+        else if (point.state() == QEventPoint::Released)
 #endif
+        {
+#ifdef QT_6
+            QPointF position       = point.position      ();
+            QPointF scenePosition  = point.scenePosition ();
+            QPointF globalPosition = point.globalPosition();
+#endif
+
+            // NOTE Qt5.15: We handle double click for touch ourselves because it seems broken.
+            if (p->touchItem == this && p->touchTimer.isActive())
             {
+                p->touchTimer.stop();
+
+                p->touchItem = NULL;
+
 #ifdef QT_5
                 QPointF globalPosition = point.screenPos();
+
+                QPointF position = d->view->mapFromGlobal(globalPosition.toPoint());
+
+                QMouseEvent eventClick(QEvent::MouseButtonDblClick, position, globalPosition,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+                QQuickMouseArea::mouseDoubleClickEvent(&eventClick);
 #else
-                QPointF globalPosition = point.globalPosition();
-#endif
-
-                // NOTE: This is useful for WView::mouseX and mouseY.
-                p->setMousePos(globalPosition.toPoint());
-
-#ifdef QT_6
-                QMouseEvent eventMove(QEvent::MouseMove,
-                                      point.position(), point.scenePosition(), globalPosition,
-                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-
-                mouseMoveEvent(&eventMove);
-
-                return;
-#endif
-            }
-#ifdef QT_5
-            else if (point.state() == Qt::TouchPointReleased)
-#else
-            else if (point.state() == QEventPoint::Released)
-#endif
-            {
-#ifdef QT_6
-                QPointF position       = point.position      ();
-                QPointF scenePosition  = point.scenePosition ();
-                QPointF globalPosition = point.globalPosition();
-#endif
-
-                // NOTE Qt5.15: We handle double click for touch ourselves because it seems broken.
-                if (p->touchItem == this && p->touchTimer.isActive())
-                {
-                    p->touchTimer.stop();
-
-                    p->touchItem = NULL;
-
-#ifdef QT_5
-                    QPointF globalPosition = point.screenPos();
-
-                    QPointF position = d->view->mapFromGlobal(globalPosition.toPoint());
-
-                    QMouseEvent eventClick(QEvent::MouseButtonDblClick, position, globalPosition,
-                                           Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-#else
-                    QMouseEvent eventClick(QEvent::MouseButtonDblClick,
-                                           position, scenePosition, globalPosition,
-                                           Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-#endif
-
-                    QQuickMouseArea::mouseDoubleClickEvent(&eventClick);
-                }
-                else
-                {
-                    p->touchItem = this;
-
-                    p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
-                }
-
-#ifdef QT_6
+                // NOTE Qt: MouseButtonRelease should be called before MouseButtonDblClick.
                 QMouseEvent eventRelease(QEvent::MouseButtonRelease,
                                          position, scenePosition, globalPosition,
                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
-                mouseReleaseEvent(&eventRelease);
+                QCoreApplication::sendEvent(this, &eventRelease);
+
+                QMouseEvent eventClick(QEvent::MouseButtonDblClick,
+                                       position, scenePosition, globalPosition,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+                QCoreApplication::sendEvent(this, &eventClick);
 
                 return;
 #endif
             }
+            else
+            {
+                p->touchItem = this;
 
-            break;
+                p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
+            }
+
+#ifdef QT_6
+            QMouseEvent eventRelease(QEvent::MouseButtonRelease,
+                                     position, scenePosition, globalPosition,
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+            QCoreApplication::sendEvent(this, &eventRelease);
+
+            return;
+#endif
         }
+
+        break;
     }
 
     QQuickMouseArea::touchEvent(event);

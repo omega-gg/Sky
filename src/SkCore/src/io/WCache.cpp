@@ -509,6 +509,9 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
                 ids.removeOne(job->id);
 
+                // NOTE Qt: onProgress might be called after deletion.
+                disconnect(reply, 0, cache, 0);
+
                 delete reply;
                 delete job;
 

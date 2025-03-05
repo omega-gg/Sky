@@ -278,10 +278,11 @@ void WBarcodeReaderPrivate::init() {}
     {
         return ImageFormat::RGBX;
     }
-    else if (format == QImage::Format_Grayscale8)
+    // NOTE ZXing: ImageFormat::Lum does not seem to work with Format_Grayscale8.
+    /*else if (format == QImage::Format_Grayscale8)
     {
         return ImageFormat::Lum;
-    }
+    }*/
 #endif
     else return ImageFormat::None;
 }
