@@ -257,9 +257,24 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
     QImage image;
 
 #ifdef Q_OS_ANDROID
+    QVideoFrame videoFrame = frame;
+
+    if (videoFrame.map(QVideoFrame::ReadOnly) == false) return;
+
+    // NOTE: We need to copy the QVideoFrame buffer.
+    image = QImage(videoFrame.bits(0), videoFrame.width(), videoFrame.height(),
+                   videoFrame.bytesPerLine(0), QImage::Format_Grayscale8)
+            .copy();
+
+    videoFrame.unmap();
 #else
     image = frame.toImage();
 #endif
+
+    // FIXME: Transform in the thread.
+    QTransform transform;
+    transform.rotate(orientation);
+    image = image.transformed(transform);
 
     reader.startRead(image, WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)), target);
 
@@ -342,8 +357,16 @@ void WFilterBarcodePrivate::onLoaded(const QString & text)
                                                                const QRect & target,
                                                                int           orientation)
 {
-    return QRect(mapPointToSource(source, content, target.topLeft    (), orientation),
-                 mapPointToSource(source, content, target.bottomRight(), orientation))
+    QRect rect;
+
+    if (orientation % 180)
+    {
+         rect = QRect(source.x(), source.y(), source.height(), source.width());
+    }
+    else rect = QRect(source.x(), source.y(), source.width(), source.height());
+
+    return QRect(mapPointToSource(rect, content, target.topLeft    (), orientation),
+                 mapPointToSource(rect, content, target.bottomRight(), orientation))
            .normalized();
 }
 
