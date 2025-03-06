@@ -146,7 +146,15 @@ void WVlcPlayerPrivate::play(int time)
     libvlc_media_player_play(player);
 
 #if LIBVLC_VERSION_MAJOR < 4
-    if (time) seek(time);
+    if (time == 0) return;
+
+    seeking = true;
+
+    libvlc_media_player_set_time(player, time);
+
+#ifdef VLCPLAYER_AUDIO
+    if (hasAudio) audio->pause();
+#endif
 #endif
 }
 

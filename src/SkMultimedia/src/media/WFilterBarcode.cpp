@@ -223,10 +223,10 @@ void WFilterBarcodePrivate::applyRotation(const QVideoFrame & frame)
 
     int value;
 
-    if      (rotation == QtVideo::Clockwise90)  value =  90;
-    else if (rotation == QtVideo::Clockwise180) value = 180;
-    else if (rotation == QtVideo::Clockwise270) value = 270;
-    else                                        value =   0;
+    if      (rotation == QtVideo::Rotation::Clockwise90)  value =  90;
+    else if (rotation == QtVideo::Rotation::Clockwise180) value = 180;
+    else if (rotation == QtVideo::Rotation::Clockwise270) value = 270;
+    else                                                  value =   0;
 
     if (orientation == value) return;
 
