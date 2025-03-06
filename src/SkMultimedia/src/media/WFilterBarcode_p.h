@@ -53,6 +53,11 @@ public:
 
     void init();
 
+public: // Functions
+#ifdef QT_6
+    void applyRotation(const QVideoFrame & frame);
+#endif
+
 public: // Slots
 #ifdef QT_6
     void onUpdated(const QVideoFrame & frame);
@@ -65,6 +70,8 @@ public: // Variables
 
 #ifdef QT_6
     QVideoSink * videoSink;
+
+    int orientation;
 #endif
 
     QRect target;

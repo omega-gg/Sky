@@ -78,8 +78,9 @@ void WTextureVideo::create(QSGMaterialShader::RenderState & state,
 
     d->texture->create();
 
-    d->description.setData(QByteArray(reinterpret_cast<const char *> (texture.bits),
-                                      texture.length));
+    // NOTE Qt6: Using fromRawData is faster than using the ctor.
+    d->description.setData(QByteArray::fromRawData(reinterpret_cast<const char *> (texture.bits),
+                                                   texture.length));
 
     // NOTE: This is required when the data is padded on each line.
     d->description.setDataStride(texture.pitch);
@@ -97,8 +98,9 @@ void WTextureVideo::upload(QSGMaterialShader::RenderState & state,
 {
     Q_D(WTextureVideo);
 
-    d->description.setData(QByteArray(reinterpret_cast<const char *> (texture.bits),
-                                      texture.length));
+    // NOTE Qt6: Using fromRawData is faster than using the ctor.
+    d->description.setData(QByteArray::fromRawData(reinterpret_cast<const char *> (texture.bits),
+                                                   texture.length));
 
     QRhiTextureUploadDescription description(QRhiTextureUploadEntry(0, 0, d->description));
 

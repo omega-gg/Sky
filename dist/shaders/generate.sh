@@ -21,7 +21,8 @@ qt="qt5"
 generate()
 {
     # FIXME Qt6.2.1: It shouldn't be mandatory to provide the batchable option.
-    $qsb --glsl "100 es,120,150,440" --hlsl 50 --msl 12 --batchable -o qsb/$1.qsb $1
+    # NOTE: --qt is equivalent to --glsl "100 es,120,150" --hlsl 50 --msl 12.
+    $qsb --qt6 --batchable -o qsb/$1.qsb $1
 }
 
 #--------------------------------------------------------------------------------------------------

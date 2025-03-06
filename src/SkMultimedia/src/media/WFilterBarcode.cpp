@@ -157,6 +157,14 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
         // NOTE android: Swapping rgb probably does not matter for QR codes and this call impacts
         //               performances.
         //image = image.rgbSwapped();
+
+        // NOTE ZXing Pre-2.0: We need to mirror the image before scanning it.
+        p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
+                            p->target, true);
+
+        timer->start();
+
+        return *frame;
     }
 #elif QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     if (frame->map(QAbstractVideoBuffer::ReadOnly) == false) return *frame;
@@ -168,14 +176,8 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     image = frame->image();
 #endif
 
-#ifdef Q_OS_ANDROID
-    // NOTE ZXing Pre-2.0: We need to mirror the image before scanning it.
-    p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
-                        p->target, true);
-#else
     p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
                         p->target);
-#endif
 
     timer->start();
 
@@ -194,6 +196,8 @@ void WFilterBarcodePrivate::init()
 {
 #ifdef QT_6
     videoSink = NULL;
+
+    orientation = 0;
 #endif
 
     interval = FILTERBARCODE_INTERVAL;
@@ -208,6 +212,32 @@ void WFilterBarcodePrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_6
+
+void WFilterBarcodePrivate::applyRotation(const QVideoFrame & frame)
+{
+    QtVideo::Rotation rotation = frame.surfaceFormat().rotation();
+
+    int value;
+
+    if      (rotation == QtVideo::Clockwise90)  value =  90;
+    else if (rotation == QtVideo::Clockwise180) value = 180;
+    else if (rotation == QtVideo::Clockwise270) value = 270;
+    else                                        value =   0;
+
+    if (orientation == value) return;
+
+    orientation = value;
+
+    emit q_func()->orientationChanged();
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -218,12 +248,20 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
     // NOTE: We wait for the last run to finish before starting a new one.
     if (loading || timer.isActive()) return;
 
+    applyRotation(frame);
+
     Q_Q(WFilterBarcode);
 
     loading = true;
 
-    reader.startRead(frame.toImage(), WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)),
-                     target);
+    QImage image;
+
+#ifdef Q_OS_ANDROID
+#else
+    image = frame.toImage();
+#endif
+
+    reader.startRead(image, WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)), target);
 
     timer.start();
 }
@@ -350,6 +388,11 @@ void WFilterBarcode::setVideoSink(QVideoSink * videoSink)
     }
 
     emit videoSinkChanged();
+}
+
+int WFilterBarcode::orientation() const
+{
+    Q_D(const WFilterBarcode); return d->orientation;
 }
 
 #endif
