@@ -405,9 +405,7 @@ WBookmarkTrack & WBookmarkTrack::operator=(const WBookmarkTrack & other)
 
     d->parentTab = op->parentTab;
 
-    d->playlist = op->playlist;
-
-    if (d->playlist) d->playlist->registerWatcher(this);
+    d->setPlaylist(op->playlist);
 
     d->track = op->track;
 

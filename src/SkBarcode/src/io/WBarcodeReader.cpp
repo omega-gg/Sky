@@ -186,11 +186,6 @@ public: // Variables
 {
     WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *> (this->reply());
 
-    if (target.isValid())
-    {
-        image = image.copy(target);
-    }
-
     if (rotate)
     {
         QTransform transform;
@@ -198,6 +193,11 @@ public: // Variables
         transform.rotate(rotate);
 
         image = image.transformed(transform);
+    }
+
+    if (target.isValid())
+    {
+        image = image.copy(target);
     }
 
     if (mirror) image = image.mirrored();
