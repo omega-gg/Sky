@@ -1627,7 +1627,8 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
 {
     WBackendVlcPrivate * d = static_cast<WBackendVlc *> (data)->d_func();
 
-    d->mutex.lock();
+    // NOTE: We use a pool of textures, so we should not need this.
+    //d->mutex.lock();
 
     d->frameIndex = !(d->frameIndex);
 
@@ -1666,7 +1667,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
         d->textures[2].bits = d->textures[2].bitsB;
     }
 
-    d->mutex.unlock();
+    //d->mutex.unlock();
 
     d->method.invoke(backend);
 }
@@ -2153,13 +2154,14 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
             WBackendTexture * textures = frame->textures;
 
-            d->mutex.lock();
+            // NOTE: We use a pool of textures, so we should not need this.
+            //d->mutex.lock();
 
             textures[0].bits = d->textures[0].bits;
             textures[1].bits = d->textures[1].bits;
             textures[2].bits = d->textures[2].bits;
 
-            d->mutex.unlock();
+            //d->mutex.unlock();
 
             // NOTE: When frame reset is pending we keep it that way. Otherwise we won't reset the
             //       texture properly in 'updatePaintNode'.
