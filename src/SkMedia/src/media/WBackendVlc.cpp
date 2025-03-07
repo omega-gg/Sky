@@ -2393,17 +2393,11 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 {
     Q_D(const WBackendVlc);
 
-    if (d->frameWidth == -1) return QImage();
-
-    QImage image(d->frameWidth, d->frameHeight, QImage::Format_RGB32);
-
-    QPainter painter(&image);
-
-    painter.setRenderHint(QPainter::SmoothPixmapTransform);
-
-    painter.drawImage(QRect(0, 0, d->frameWidth, d->frameHeight), d->frameSoftware);
-
-    return image;
+    if (d->frameWidth == -1)
+    {
+        return QImage();
+    }
+    else return d->frameSoftware;
 }
 
 //-------------------------------------------------------------------------------------------------
