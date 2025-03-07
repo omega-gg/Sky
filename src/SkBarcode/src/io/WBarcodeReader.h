@@ -117,6 +117,7 @@ public: // Static functions
                                                          QObject      * receiver = NULL,
                                                          const char   * method   = NULL,
                                                          const QRect  & target   = QRect(),
+                                                         int            rotate   = 0,
                                                          bool           mirror   = false);
 
     // NOTE: The 'method' format is loaded(const QString &).

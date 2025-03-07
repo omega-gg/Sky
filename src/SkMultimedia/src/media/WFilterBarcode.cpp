@@ -160,7 +160,7 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
 
         // NOTE ZXing Pre-2.0: We need to mirror the image before scanning it.
         p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
-                            p->target, true);
+                            p->target, 0, true);
 
         timer->start();
 
@@ -256,7 +256,6 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 
     QImage image;
 
-#ifdef Q_OS_ANDROID
     QVideoFrame videoFrame = frame;
 
     if (videoFrame.map(QVideoFrame::ReadOnly) == false) return;
@@ -267,16 +266,9 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
             .copy();
 
     videoFrame.unmap();
-#else
-    image = frame.toImage();
-#endif
 
-    // FIXME: Transform in the thread.
-    QTransform transform;
-    transform.rotate(orientation);
-    image = image.transformed(transform);
-
-    reader.startRead(image, WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)), target);
+    reader.startRead(image, WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)), target,
+                     orientation);
 
     timer.start();
 }
