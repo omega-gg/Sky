@@ -88,8 +88,10 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendDrawFrame(QPainter * painter, const QRect & rect);
 
-    /* virtual */ void   backendUpdateFrame();
-    /* virtual */ QImage backendGetFrame   () const;
+    /* virtual */ void backendUpdateFrame();
+
+    /* virtual */ QImage backendGetFrame    () const;
+    /* virtual */ QImage backendGetFrameGray() const;
 
     /* virtual */ QRectF backendRect() const;
 

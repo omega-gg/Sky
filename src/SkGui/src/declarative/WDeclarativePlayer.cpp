@@ -287,6 +287,13 @@ void WDeclarativePlayer::updateFrame()
     return d->player->getFrame();
 }
 
+/* Q_INVOKABLE */ QImage WDeclarativePlayer::getFrameGray() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    return d->player->getFrameGray();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ QRectF WDeclarativePlayer::getRect() const

@@ -335,8 +335,10 @@ public: // Interface
 
     Q_INVOKABLE void drawFrame(QPainter * painter, const QRect & rect);
 
-    Q_INVOKABLE void   updateFrame();
-    Q_INVOKABLE QImage getFrame   () const;
+    Q_INVOKABLE void updateFrame();
+
+    Q_INVOKABLE QImage getFrame    () const;
+    Q_INVOKABLE QImage getFrameGray() const;
 
     Q_INVOKABLE QRectF getRect() const;
 #endif
@@ -516,8 +518,10 @@ protected: // Virtual functions
 
     virtual void backendDrawFrame(QPainter * painter, const QRect & rect); // {}
 
-    virtual void   backendUpdateFrame();       // {}
-    virtual QImage backendGetFrame   () const; // {}
+    virtual void backendUpdateFrame(); // {}
+
+    virtual QImage backendGetFrame    () const; // {}
+    virtual QImage backendGetFrameGray() const; // {}
 
     virtual QRectF backendRect() const; // {}
 #endif

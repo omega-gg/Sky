@@ -94,7 +94,7 @@ bool WDeclarativeScannerPrivate::scan()
 
         if (rect.contains(x, y) == false) return false;
 
-        image = player->getFrame();
+        image = player->getFrameGray();
     }
 
     Q_Q(WDeclarativeScanner);

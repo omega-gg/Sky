@@ -241,6 +241,11 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
     return backendGetFrame();
 }
 
+/* Q_INVOKABLE */ QImage WAbstractBackend::getFrameGray() const
+{
+    return backendGetFrameGray();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ QRectF WAbstractBackend::getRect() const
@@ -1376,6 +1381,13 @@ void WAbstractBackend::endOutputRemove() const
 /* virtual */ QImage WAbstractBackend::backendGetFrame() const
 {
     qWarning("WAbstractBackend::backendGetFrame: Not supported.");
+
+    return QImage();
+}
+
+/* virtual */ QImage WAbstractBackend::backendGetFrameGray() const
+{
+    qWarning("WAbstractBackend::backendGetFrameGray: Not supported.");
 
     return QImage();
 }

@@ -1535,6 +1535,17 @@ void WPlayer::updateFrame()
     else return QImage();
 }
 
+/* Q_INVOKABLE */ QImage WPlayer::getFrameGray() const
+{
+    Q_D(const WPlayer);
+
+    if (d->backend)
+    {
+        return d->backend->getFrameGray();
+    }
+    else return QImage();
+}
+
 /* Q_INVOKABLE */ QRectF WPlayer::getRect() const
 {
     Q_D(const WPlayer);

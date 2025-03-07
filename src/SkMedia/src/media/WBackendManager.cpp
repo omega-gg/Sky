@@ -1603,6 +1603,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     return d->backend->getFrame();
 }
 
+/* virtual */ QImage WBackendManager::backendGetFrameGray() const
+{
+    Q_D(const WBackendManager);
+
+    return d->backend->getFrameGray();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ QRectF WBackendManager::backendRect() const

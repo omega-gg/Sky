@@ -158,8 +158,10 @@ protected: // Functions
 
     void backendDrawFrame(QPainter * painter, const QRect & rect);
 
-    void   backendUpdateFrame();
-    QImage backendGetFrame   () const;
+    void backendUpdateFrame();
+
+    QImage backendGetFrame    () const;
+    QImage backendGetFrameGray() const;
 
     QRectF backendRect() const;
 #endif

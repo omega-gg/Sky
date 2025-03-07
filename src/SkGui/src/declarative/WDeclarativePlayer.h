@@ -237,7 +237,8 @@ public: // Interface
 
     Q_INVOKABLE void updateFrame();
 
-    Q_INVOKABLE QImage getFrame() const;
+    Q_INVOKABLE QImage getFrame    () const;
+    Q_INVOKABLE QImage getFrameGray() const;
 
     Q_INVOKABLE QRectF getRect() const;
 

@@ -470,6 +470,13 @@ QImage WAbstractHook::backendGetFrame() const
     return d->backend->backendGetFrame();
 }
 
+QImage WAbstractHook::backendGetFrameGray() const
+{
+    Q_D(const WAbstractHook);
+
+    return d->backend->backendGetFrameGray();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 QRectF WAbstractHook::backendRect() const
