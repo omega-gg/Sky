@@ -82,6 +82,8 @@ Item
         anchors.right: (buttonIcon.visible) ? buttonIcon.left
                                             : parent.right
 
+        enabled: buttonExtra.enabled
+
         /* QML_EVENT */ onPressed: function(mouse) { buttonExtra.pressed(mouse) }
 
         /* QML_EVENT */ onClicked: function(mouse) { buttonExtra.clicked(mouse) }
@@ -94,5 +96,7 @@ Item
         id: buttonIcon
 
         anchors.right: parent.right
+
+        enabled: buttonExtra.enabled
     }
 }

@@ -94,6 +94,8 @@ Item
 
         anchors.rightMargin: (buttonIcon.visible) ? st.margins : 0
 
+        enabled: buttonExtra.enabled
+
         opacityBackground: 0.0
 
         /* QML_EVENT */ onPressed: function(mouse) { buttonExtra.pressed(mouse) }
@@ -110,6 +112,8 @@ Item
         anchors.right: parent.right
 
         radius: buttonExtra.radius
+
+        enabled: buttonExtra.enabled
 
         opacityBackground: 0.0
     }

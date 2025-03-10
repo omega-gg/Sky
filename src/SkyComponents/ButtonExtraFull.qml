@@ -124,6 +124,8 @@ Item
         anchors.right: (buttonIcon.visible) ? buttonIcon.left
                                             : parent.right
 
+        enabled: buttonExtraFull.enabled
+
         /* QML_EVENT */ onPressed: function(mouse) { buttonExtraFull.pressed(mouse) }
 
         /* QML_EVENT */ onClicked: function(mouse) { buttonExtraFull.clicked(mouse) }
@@ -136,5 +138,7 @@ Item
         id: buttonIcon
 
         anchors.right: parent.right
+
+        enabled: buttonExtraFull.enabled
     }
 }
