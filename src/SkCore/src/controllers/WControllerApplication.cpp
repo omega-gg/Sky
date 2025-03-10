@@ -678,12 +678,12 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 #ifdef Q_OS_ANDROID
 
-/* Q_INVOKABLE static */ bool WControllerApplication::checkPermission(const QString & permission)
+/* Q_INVOKABLE static */ int WControllerApplication::checkPermission(const QString & permission)
 {
 #ifdef QT_OLD
     Q_UNUSED(permission);
 
-    return false;
+    return 0;
 #else
     QtAndroidPrivate::PermissionResult result
         = QtAndroidPrivate::checkPermission(permission).result();
