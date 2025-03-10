@@ -688,11 +688,12 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     QtAndroidPrivate::PermissionResult result
         = QtAndroidPrivate::checkPermission(permission).result();
 
-    if (result == QtAndroidPrivate::Authorized) return true;
+    if (result == QtAndroidPrivate::Authorized) return 1;
 
     result = QtAndroidPrivate::requestPermission(permission).result();
 
-    return (result != QtAndroidPrivate::Denied);
+    if (result == QtAndroidPrivate::Denied) return 0;
+    else                                    return 2;
 #endif
 }
 

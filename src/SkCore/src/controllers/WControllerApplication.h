@@ -231,7 +231,8 @@ public: // Static functions
 #endif
 
 #ifdef Q_OS_ANDROID
-    Q_INVOKABLE static bool checkPermission(const QString & permission);
+    // NOTE: Return types are 0=failed, 1=success, 2=prompted and success.
+    Q_INVOKABLE static int checkPermission(const QString & permission);
 
     Q_INVOKABLE static bool saveMedia(const QString & name,
                                       const QString & type,
