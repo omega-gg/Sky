@@ -435,8 +435,6 @@ void WDeclarativePlayer::updateFrame()
     if (isVisible() == false) return;
 #endif
 
-    Q_D(WDeclarativePlayer);
-
     WAbstractBackend * backend = this->backend();
 
     if (backend)
