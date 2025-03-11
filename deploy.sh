@@ -14,7 +14,7 @@ Qt5_version="5.15.2"
 Qt6_version="6.8.1"
 
 SSL_versionA="1.0.2u"
-SSL_versionB="1.1.1s"
+SSL_versionB="3.4.1"
 
 VLC3_version="3.0.21"
 VLC4_version="4.0.0"
