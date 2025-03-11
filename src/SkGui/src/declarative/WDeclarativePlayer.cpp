@@ -565,7 +565,7 @@ void WDeclarativePlayer::updateFrame()
         {
             backend->setSize(newGeometry.size());
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#ifdef QT_NEW
             d->frameUpdate = true;
 #endif
         }
@@ -988,7 +988,7 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
 
     d->player->setFillMode(fillMode);
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#ifdef QT_NEW
     d->frameUpdate = true;
 #endif
 

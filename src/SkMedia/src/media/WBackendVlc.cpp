@@ -2144,6 +2144,11 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
             d->frameSwap = !(d->frameSwap);
 
+#ifdef SK_SOFTWARE
+            // FIXME Qt5: SSE does not seem to work.
+            if (d->frameFreeze == false) d->convertFrameSoftware();
+#endif
+
             d->mutex.unlock();
 
             frame->state = WAbstractBackend::FrameReset;
@@ -2160,6 +2165,11 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
             textures[0].bits = d->textures[0].bits;
             textures[1].bits = d->textures[1].bits;
             textures[2].bits = d->textures[2].bits;
+
+#ifdef SK_SOFTWARE
+            // FIXME Qt5: SSE does not seem to work.
+            if (d->frameFreeze == false) d->convertFrameSoftware();
+#endif
 
             //d->mutex.unlock();
 
@@ -2361,9 +2371,6 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
 #ifdef QT_4
         if (d->frameFreeze == false) d->convertFrameSse();
-#else
-        // FIXME Qt5: SSE does not seem to work.
-        if (d->frameFreeze == false) d->convertFrameSoftware();
 #endif
 
         bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);

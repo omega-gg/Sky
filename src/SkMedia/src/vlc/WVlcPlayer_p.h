@@ -163,7 +163,6 @@ public: // Variables
     bool opening;
 #endif
     bool playing;
-    bool seeking;
 
     int retry;
 

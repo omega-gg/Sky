@@ -59,7 +59,7 @@ public:
 public: // Variables
     WPlayer * player;
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#ifdef QT_NEW
     WBackendFrame frame;
 
     bool frameUpdate;
