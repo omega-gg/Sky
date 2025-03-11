@@ -53,7 +53,7 @@ void WDeclarativePlayerPrivate::init()
 
     player->setView(q);
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#ifdef QT_NEW
     frameUpdate = false;
 #endif
 
@@ -271,7 +271,7 @@ WDeclarativePlayer::WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem
 
 void WDeclarativePlayer::updateFrame()
 {
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#ifdef QT_NEW
     Q_D(WDeclarativePlayer);
 
     backend()->synchronize(&d->frame);

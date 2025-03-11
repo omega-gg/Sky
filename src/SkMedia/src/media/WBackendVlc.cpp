@@ -2146,7 +2146,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 #ifdef SK_SOFTWARE
             // FIXME Qt5: SSE does not seem to work.
-            if (d->frameFreeze == false) d->convertFrameSoftware();
+            d->convertFrameSoftware();
 #endif
 
             d->mutex.unlock();
@@ -2168,7 +2168,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 #ifdef SK_SOFTWARE
             // FIXME Qt5: SSE does not seem to work.
-            if (d->frameFreeze == false) d->convertFrameSoftware();
+            d->convertFrameSoftware();
 #endif
 
             //d->mutex.unlock();
