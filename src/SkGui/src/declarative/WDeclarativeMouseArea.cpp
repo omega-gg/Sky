@@ -56,7 +56,9 @@ WDeclarativeMouseAreaPrivate::WDeclarativeMouseAreaPrivate(WDeclarativeMouseArea
 
     if (hoverActive) p->itemsHovered.removeOne(q);
 
+#ifdef QT_NEW
     if (p->touchArea == q) p->setTouch(NULL, -1);
+#endif
 
     if (p->areaDrop == q) p->areaDrop = NULL;
 }
