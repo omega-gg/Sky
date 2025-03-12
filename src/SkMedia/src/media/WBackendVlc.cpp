@@ -2411,6 +2411,9 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 /* virtual */ QImage WBackendVlc::backendGetFrameGray() const
 {
+#ifdef QT_4
+    return backendGetFrame();
+#else
     Q_D(const WBackendVlc);
 
     if (d->frameWidth == -1) return QImage();
@@ -2418,6 +2421,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     const WBackendVlcTexture & texture = d->textures[0];
 
     return QImage(texture.bits, texture.width, texture.height, QImage::Format_Grayscale8);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
