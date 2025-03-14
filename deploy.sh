@@ -589,7 +589,7 @@ else
 
             cp "$Qt"/plugins/mediaservice/libgstcamerabin.so deploy/mediaservice
         else
-            cp "$Qt"/plugins/tls/libffmpegmediaplugin.so deploy/multimedia
+            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.so deploy/multimedia
 
             cp "$Qt"/plugins/tls/libqopensslbackend.so deploy/tls
         fi
