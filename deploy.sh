@@ -87,6 +87,8 @@ copyAndroidQt()
 
         cp "$1"/plugins/mediaservice/lib*qtmedia_*.so deploy/mediaservice
     else
+        cp "$1"/plugins/multimedia/lib*ffmpegmediaplugin_*.so deploy/multimedia
+
         cp "$1"/plugins/tls/lib*qopensslbackend_*.so deploy/tls
     fi
 
@@ -290,6 +292,7 @@ else
 
         mkdir -p deploy/mediaservice
     else
+        mkdir -p deploy/multimedia
         mkdir -p deploy/tls
 
         mkdir -p deploy/QtQml/WorkerScript
@@ -347,6 +350,8 @@ else
 
             cp "$Qt"/plugins/mediaservice/dsengine.dll deploy/mediaservice
         else
+            cp "$Qt"/plugins/multimedia/ffmpegmediaplugin.dll deploy/multimedia
+
             cp "$Qt"/plugins/tls/qopensslbackend.dll  deploy/tls
             cp "$Qt"/plugins/tls/qschannelbackend.dll deploy/tls
         fi
@@ -411,6 +416,8 @@ else
 
             cp "$Qt"/plugins/mediaservice/libqavfcamera.dylib deploy/mediaservice
         else
+            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.dylib deploy/multimedia
+
             cp "$Qt"/plugins/tls/libqopensslbackend.dylib deploy/tls
         fi
 
@@ -494,6 +501,8 @@ else
 
             cp "$Qt"/plugins/mediaservice/libqavfcamera.a deploy/mediaservice
         else
+            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.a deploy/multimedia
+
             cp "$Qt"/plugins/tls/libqsecuretransportbackend.a deploy/tls
         fi
 
@@ -580,6 +589,8 @@ else
 
             cp "$Qt"/plugins/mediaservice/libgstcamerabin.so deploy/mediaservice
         else
+            cp "$Qt"/plugins/tls/libffmpegmediaplugin.so deploy/multimedia
+
             cp "$Qt"/plugins/tls/libqopensslbackend.so deploy/tls
         fi
 
