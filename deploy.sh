@@ -87,9 +87,9 @@ copyAndroidQt()
 
         cp "$1"/plugins/mediaservice/lib*qtmedia_*.so deploy/mediaservice
     else
-        cp "$1"/plugins/multimedia/lib*ffmpegmediaplugin_*.so deploy/multimedia
-
         cp "$1"/plugins/tls/lib*qopensslbackend_*.so deploy/tls
+
+        cp "$1"/plugins/multimedia/lib*ffmpegmediaplugin_*.so deploy/multimedia
     fi
 
     cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
@@ -292,8 +292,8 @@ else
 
         mkdir -p deploy/mediaservice
     else
-        mkdir -p deploy/multimedia
         mkdir -p deploy/tls
+        mkdir -p deploy/multimedia
 
         mkdir -p deploy/QtQml/WorkerScript
     fi
@@ -350,10 +350,10 @@ else
 
             cp "$Qt"/plugins/mediaservice/dsengine.dll deploy/mediaservice
         else
-            cp "$Qt"/plugins/multimedia/ffmpegmediaplugin.dll deploy/multimedia
-
             cp "$Qt"/plugins/tls/qopensslbackend.dll  deploy/tls
             cp "$Qt"/plugins/tls/qschannelbackend.dll deploy/tls
+
+            cp "$Qt"/plugins/multimedia/ffmpegmediaplugin.dll deploy/multimedia
         fi
 
         cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll deploy/$QtQuick
@@ -416,9 +416,9 @@ else
 
             cp "$Qt"/plugins/mediaservice/libqavfcamera.dylib deploy/mediaservice
         else
-            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.dylib deploy/multimedia
-
             cp "$Qt"/plugins/tls/libqopensslbackend.dylib deploy/tls
+
+            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.dylib deploy/multimedia
         fi
 
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib deploy/$QtQuick
@@ -501,9 +501,9 @@ else
 
             cp "$Qt"/plugins/mediaservice/libqavfcamera.a deploy/mediaservice
         else
-            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.a deploy/multimedia
-
             cp "$Qt"/plugins/tls/libqsecuretransportbackend.a deploy/tls
+
+            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.a deploy/multimedia
         fi
 
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.a deploy/$QtQuick
@@ -589,9 +589,9 @@ else
 
             cp "$Qt"/plugins/mediaservice/libgstcamerabin.so deploy/mediaservice
         else
-            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.so deploy/multimedia
-
             cp "$Qt"/plugins/tls/libqopensslbackend.so deploy/tls
+
+            cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.so deploy/multimedia
         fi
 
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
