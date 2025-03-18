@@ -62,7 +62,7 @@
 #endif
 
 // Android includes
-#ifdef CAN_COMPILE_NEON
+#ifdef __ARM_NEON
 #include <arm_neon.h>
 #endif
 
@@ -1042,7 +1042,7 @@ void WBackendVlcPrivate::convertFrameSse()
     SSE2_END;
 }
 
-#elif defined(CAN_COMPILE_NEON)
+#elif defined(__ARM_NEON)
 
 // NOTE: Inspired from the following: https://github.com/dwy838184016/ImageDecoder
 void WBackendVlcPrivate::convertFrameNeon()
@@ -2413,7 +2413,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 #ifdef CAN_COMPILE_SSE2
     d->convertFrameSse();
-#elif defined(CAN_COMPILE_NEON)
+#elif defined(__ARM_NEON)
     d->convertFrameNeon();
 #else
     d->convertFrameSoftware();

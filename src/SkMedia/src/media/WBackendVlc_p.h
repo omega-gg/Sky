@@ -245,7 +245,7 @@ public: // Functions
     void convertFrameSoftware();
 #ifdef CAN_COMPILE_SSE2
     void convertFrameSse();
-#elif defined(CAN_COMPILE_NEON)
+#elif defined(__ARM_NEON)
     void convertFrameNeon();
 #endif
 
