@@ -115,6 +115,12 @@ public: // Interface
 
     Q_INVOKABLE void setOutput(int index);
 
+    Q_INVOKABLE void adjust(bool enable, float contrast   = 1.0f,
+                                         float brightness = 1.0f,
+                                         float hue        = 0.0f,
+                                         float saturation = 1.0f,
+                                         float gamma      = 1.0f);
+
     Q_INVOKABLE void setProxy(const QString & host, const QString & password = QString());
 
     Q_INVOKABLE void clearProxy();

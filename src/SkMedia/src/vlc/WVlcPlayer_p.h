@@ -51,6 +51,32 @@ class WVlcAudio;
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// WVlcPlayerAdjust
+//-------------------------------------------------------------------------------------------------
+
+class SK_MEDIA_EXPORT WVlcPlayerAdjust
+{
+public:
+    WVlcPlayerAdjust();
+
+public: // Operators
+    WVlcPlayerAdjust(const WVlcPlayerAdjust & other);
+
+    bool operator==(const WVlcPlayerAdjust & other) const;
+
+    WVlcPlayerAdjust & operator=(const WVlcPlayerAdjust & other);
+
+public: // Variables
+    bool enable;
+
+    float contrast;
+    float brightness;
+    float hue;
+    float saturation;
+    float gamma;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivate
 //-------------------------------------------------------------------------------------------------
 
@@ -72,6 +98,7 @@ public: // Enums
         EventAudio,  // WVlcPlayerEvent int
         EventScan,   // WVlcPlayerEvent bool
         EventOutput, // WVlcPlayerEvent int
+        EventAdjust, // WVlcPlayerEventAdjust
         EventDelete
     };
 
@@ -103,6 +130,8 @@ public: // Functions
 #endif
     void applyPlay();
     void applyEnd ();
+
+    void applyAdjust();
 
     bool checkTime(int at);
 
@@ -178,6 +207,9 @@ public: // Variables
     bool scanOutput;
 
     int networkCache;
+
+    WVlcPlayerAdjust adjust;
+    bool             adjustReady;
 
     QString proxyHost;
     QString proxyPassword;
@@ -262,6 +294,33 @@ public: // Variables
     QString audio;
 
     bool loop;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WVlcPlayerEventAdjust
+//-------------------------------------------------------------------------------------------------
+
+class WVlcPlayerEventAdjust : public QEvent
+{
+public:
+    WVlcPlayerEventAdjust(bool enable, float contrast,
+                                       float brightness,
+                                       float hue,
+                                       float saturation,
+                                       float gamma)
+        : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventAdjust))
+    {
+        adjust.enable = enable;
+
+        adjust.contrast   = contrast;
+        adjust.brightness = brightness;
+        adjust.hue        = hue;
+        adjust.saturation = saturation;
+        adjust.gamma      = gamma;
+    }
+
+public: // Variables
+    WVlcPlayerAdjust adjust;
 };
 
 #endif // SK_NO_VLCPLAYER

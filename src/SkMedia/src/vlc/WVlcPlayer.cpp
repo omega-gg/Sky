@@ -43,9 +43,55 @@
 
 static const int PLAYER_RETRY_GAP = 1000; // 1 second
 
+//=================================================================================================
+// WVlcPlayerAdjust
+//=================================================================================================
+
+WVlcPlayerAdjust::WVlcPlayerAdjust()
+{
+    enable = false;
+
+    contrast   = 1.0f;
+    brightness = 1.0f;
+    hue        = 0.0f;
+    saturation = 1.0f;
+    gamma      = 1.0f;
+}
+
 //-------------------------------------------------------------------------------------------------
-// Private
+// Operators
 //-------------------------------------------------------------------------------------------------
+
+WVlcPlayerAdjust::WVlcPlayerAdjust(const WVlcPlayerAdjust & other)
+{
+    *this = other;
+}
+
+bool WVlcPlayerAdjust::operator==(const WVlcPlayerAdjust & other) const
+{
+    return (enable == other.enable && contrast   == other.contrast   &&
+                                      brightness == other.brightness &&
+                                      hue        == other.hue        &&
+                                      saturation == other.saturation &&
+                                      gamma      == other.gamma);
+}
+
+WVlcPlayerAdjust & WVlcPlayerAdjust::operator=(const WVlcPlayerAdjust & other)
+{
+    enable = other.enable;
+
+    contrast   = other.contrast;
+    brightness = other.brightness;
+    hue        = other.hue;
+    saturation = other.saturation;
+    gamma      = other.gamma;
+
+    return *this;
+}
+
+//=================================================================================================
+// WVlcPlayerPrivate
+//=================================================================================================
 
 WVlcPlayerPrivate::WVlcPlayerPrivate(WVlcPlayer * p) : WPrivate(p) {}
 
@@ -88,6 +134,8 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     // FIXME: Should we set this to 1000 by default like VLC ?
     networkCache = -1;
+
+    adjustReady = false;
 
     if (thread) q->moveToThread(thread);
 
@@ -387,6 +435,21 @@ void WVlcPlayerPrivate::applyEnd()
     else if (checkTime(libvlc_media_player_get_time(player))) return;
 }
 
+void WVlcPlayerPrivate::applyAdjust()
+{
+    bool enable = adjust.enable;
+
+    libvlc_video_set_adjust_int(player, libvlc_adjust_Enable, enable);
+
+    if (enable == false) return;
+
+    libvlc_video_set_adjust_float(player, libvlc_adjust_Contrast,   adjust.contrast);
+    libvlc_video_set_adjust_float(player, libvlc_adjust_Brightness, adjust.brightness);
+    libvlc_video_set_adjust_float(player, libvlc_adjust_Hue,        adjust.hue);
+    libvlc_video_set_adjust_float(player, libvlc_adjust_Saturation, adjust.saturation);
+    libvlc_video_set_adjust_float(player, libvlc_adjust_Gamma,      adjust.gamma);
+}
+
 bool WVlcPlayerPrivate::checkTime(int at)
 {
     // FIXME VLC 3.0.21: Sometimes the seeking fails, so we try try again. The position has to be
@@ -559,6 +622,13 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     }
 #endif
 
+    if (d->adjustReady)
+    {
+        d->adjustReady = false;
+
+        d->applyAdjust();
+    }
+
 #ifdef VLCPLAYER_AUDIO
     if (d->hasAudio)
     {
@@ -650,9 +720,9 @@ void WVlcPlayerPrivate::onOutputCleared()
                                                     (WVlcPlayer::EventOutputClear)));
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WVlcPlayer
+//=================================================================================================
 
 WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     : QObject(parent), WPrivatable(new WVlcPlayerPrivate(this))
@@ -703,15 +773,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                  (WVlcPlayerPrivate::EventStop)));
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WVlcPlayer::seek(int msec)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSeek,
                                                                  msec));
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WVlcPlayer::setSpeed(qreal speed)
 {
@@ -719,15 +785,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                                  speed));
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WVlcPlayer::setVolume(int percent)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventVolume,
                                                                  percent));
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WVlcPlayer::setVideo(int id)
 {
@@ -741,8 +803,6 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                                  id));
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WVlcPlayer::setScanOutput(bool enabled)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventScan,
@@ -753,6 +813,16 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventOutput,
                                                                  index));
+}
+
+/* Q_INVOKABLE */ void WVlcPlayer::adjust(bool enable, float contrast,
+                                                       float brightness,
+                                                       float hue,
+                                                       float saturation,
+                                                       float gamma)
+{
+    QCoreApplication::postEvent(this, new WVlcPlayerEventAdjust(enable, contrast, brightness, hue,
+                                                                saturation, gamma));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1154,6 +1224,21 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
             libvlc_media_player_set_renderer(d->player, renderers.at(index));
         }
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventAdjust))
+    {
+        WVlcPlayerEventAdjust * eventAdjust = static_cast<WVlcPlayerEventAdjust *> (event);
+
+        const WVlcPlayerAdjust & adjust = eventAdjust->adjust;
+
+        if (d->adjust == adjust) return true;
+
+        d->adjust = adjust;
+
+        // NOTE VLC: Adjustments only works when the player is genuinely playing (onTime event).
+        d->adjustReady = true;
 
         return true;
     }

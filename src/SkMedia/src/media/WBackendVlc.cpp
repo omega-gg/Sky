@@ -721,6 +721,7 @@ void WBackendVlcPrivate::init()
     started = false;
     active  = false;
     playing = false;
+    hdr     = false;
 
     frameReset   = false;
     frameUpdated = false;
@@ -1533,6 +1534,20 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
     else return output;
 }
 
+void WBackendVlcPrivate::setHdr(bool enabled)
+{
+    if (hdr == enabled) return;
+
+    hdr = enabled;
+
+    if (hdr)
+    {
+        // NOTE VLC: We boost the colors to avoid the washed out effect.
+        player->adjust(true, 1.6f, 1.2f, 0.0f, 2.4f, 0.8f);
+    }
+    else player->adjust(false);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Static private functions
 //-------------------------------------------------------------------------------------------------
@@ -1555,6 +1570,13 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
     int height = *vlcHeight;
 
     if (width == 0 || height == 0) return 0;
+
+    // NOTE VLC: When the chroma is set to I0AL it usally means HDR.
+    if (strcmp(chroma, "I0AL") == 0)
+    {
+         d->setHdr(true);
+    }
+    else d->setHdr(false);
 
     strcpy(chroma, "I420");
 

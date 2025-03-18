@@ -282,6 +282,8 @@ public: // Functions
 
     WAbstractBackend::Output getOutput(WAbstractBackend::Output output);
 
+    void setHdr(bool enabled);
+
 public: // Static functions
     static unsigned setup(void     ** data,     char     * chroma,
                           unsigned *  vlcWidth, unsigned * vlcHeight,
@@ -343,6 +345,7 @@ public: // Variables
     bool started;
     bool active;
     bool playing;
+    bool hdr;
 
     bool frameReset;
     bool frameUpdated;
