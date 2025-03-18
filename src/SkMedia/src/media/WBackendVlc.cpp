@@ -1571,7 +1571,7 @@ void WBackendVlcPrivate::setHdr(bool enabled)
 
     if (width == 0 || height == 0) return 0;
 
-    // NOTE VLC: When the chroma is set to I0AL it usally means HDR.
+    // NOTE VLC: When the chroma is set to I0AL it usually means HDR.
     if (strcmp(chroma, "I0AL") == 0)
     {
          d->setHdr(true);
