@@ -44,7 +44,6 @@ class WYamlNode;
 #ifndef SK_NO_PLAYER
 class WVlcEngine;
 class WVlcPlayer;
-class WVlcAudio;
 #endif
 
 #ifdef QT_6

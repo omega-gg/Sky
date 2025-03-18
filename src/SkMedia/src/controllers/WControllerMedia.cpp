@@ -45,7 +45,6 @@
 #ifndef SK_NO_PLAYER
 #include <WVlcEngine>
 #include <WVlcPlayer>
-#include <WVlcAudio>
 #endif
 
 W_INIT_CONTROLLER(WControllerMedia)
