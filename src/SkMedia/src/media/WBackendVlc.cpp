@@ -61,12 +61,12 @@
 #include <GL/glx.h>
 #endif
 
+#endif // SK_NO_QML
+
 // Android includes
 #ifdef __ARM_NEON
 #include <arm_neon.h>
 #endif
-
-#endif // SK_NO_QML
 
 // Private includes
 #include <private/WVlcPlayer_p>
