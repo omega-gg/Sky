@@ -1572,13 +1572,13 @@ void WBackendVlcPrivate::setHdr(bool enabled)
     if (width == 0 || height == 0) return 0;
 
     // NOTE VLC: When the chroma is set to I0AL it usually means HDR.
-    if (strcmp(chroma, "I0AL") == 0)
+    if (strncmp(chroma, "I0AL", 4) == 0)
     {
          d->setHdr(true);
     }
     else d->setHdr(false);
 
-    strcpy(chroma, "I420");
+    memcpy(chroma, "I420", 4);
 
     pitches[0] = width;
     pitches[1] = width / 2;
