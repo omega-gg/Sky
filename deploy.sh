@@ -416,7 +416,8 @@ else
 
             cp "$Qt"/plugins/mediaservice/libqavfcamera.dylib deploy/mediaservice
         else
-            cp "$Qt"/plugins/tls/libqopensslbackend.dylib deploy/tls
+            cp "$Qt"/plugins/tls/libqopensslbackend.dylib         deploy/tls
+            cp "$Qt"/plugins/tls/libqsecuretransportbackend.dylib deploy/tls
 
             cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.dylib deploy/multimedia
         fi
