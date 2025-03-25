@@ -40,9 +40,7 @@ WindowsKit_version="10"
 # Android
 
 SDK_version="34"
-SDK_version_minimum="21"
-
-NDK_version="25"
+SDK_version_minimum="24"
 
 #--------------------------------------------------------------------------------------------------
 # environment
@@ -339,7 +337,7 @@ elif [ $1 = "android" ]; then
 
     spec=android-clang
 
-    export ANDROID_NDK_ROOT="$external/NDK/$NDK_version"
+    export ANDROID_NDK_ROOT="$external/NDK/default"
 
     export ANDROID_NDK_PLATFORM="android-$SDK_version_minimum"
 
