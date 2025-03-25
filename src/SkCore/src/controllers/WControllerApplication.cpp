@@ -681,9 +681,8 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ int WControllerApplication::checkPermission(const QString & permission)
 {
 #ifdef QT_OLD
-    Q_UNUSED(permission);
-
-    return 0;
+    if (QtAndroid::checkPermission(permission) == QtAndroid::PermissionResult::Denied) return 0;
+    else                                                                               return 1;
 #else
     QtAndroidPrivate::PermissionResult result
         = QtAndroidPrivate::checkPermission(permission).result();

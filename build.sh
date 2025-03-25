@@ -341,7 +341,7 @@ elif [ $1 = "android" ]; then
 
     export ANDROID_NDK_ROOT="$external/NDK/$NDK_version"
 
-    export ANDROID_NDK_PLATFORM="android-$SDK_version"
+    export ANDROID_NDK_PLATFORM="android-$SDK_version_minimum"
 
     # NOTE android: This variable enforces the linux clang compiler.
     export ANDROID_NDK_HOST="linux-x86_64"
