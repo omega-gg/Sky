@@ -26,6 +26,9 @@
 
 // Qt includes
 #include <QCoreApplication>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Sk includes
 #include <WVlcEngine>
