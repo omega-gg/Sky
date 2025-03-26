@@ -8,6 +8,7 @@ jobs:
     vmImage: "windows-latest"
   steps:
   - bash: |
+      sh environment.sh qt5
       sh build.sh win32 all
       cd deploy
       7z a ../Sky.zip *
@@ -19,6 +20,7 @@ jobs:
     vmImage: "windows-latest"
   steps:
   - bash: |
+      sh environment.sh qt5
       sh build.sh win64 all
       cd deploy
       7z a ../Sky.zip *
@@ -46,6 +48,7 @@ jobs:
     vmImage: "macOS-14"
   steps:
   - bash: |
+      sh environment.sh qt5
       sh build.sh macOS all
       cd deploy
       zip -rq ../Sky.zip *
@@ -73,6 +76,7 @@ jobs:
     vmImage: "macOS-14"
   steps:
   - bash: |
+      sh environment.sh qt5
       sh build.sh iOS all
       cd deploy
       zip -rq ../Sky.zip *
@@ -104,6 +108,7 @@ jobs:
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo curl zip git;
+                                     sh environment.sh qt5;
                                      sh build.sh linux all;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
@@ -115,6 +120,7 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
+      sh environment.sh qt5
       sh build.sh linux all
       cd deploy
       zip -rq ../Sky.zip *
@@ -144,6 +150,7 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
+      sh environment.sh qt5
       sh build.sh android all
       cd deploy
       zip -rq ../Sky.zip *

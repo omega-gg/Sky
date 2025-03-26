@@ -30,7 +30,7 @@ MinGW_version="13.1.0"
 
 compiler_win="mingw"
 
-qt="qt5"
+qt="qt6"
 
 vlc="vlc3"
 
