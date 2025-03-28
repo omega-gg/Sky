@@ -301,6 +301,21 @@ else
                 cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa $include/QtGui
 
                 cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/rhi $include/QtGui
+
+                if [ $mobile = "simulator" ]; then
+
+                    name="ios-arm64-simulator"
+                else
+                    name="ios-arm64"
+                fi
+
+                ffmpeg="$Qt/lib/ffmpeg"
+
+                cp -r "$ffmpeg"/libswscale.xcframework/$name/*.framework    lib
+                cp -r "$ffmpeg"/libswresample.xcframework/$name/*.framework lib
+                cp -r "$ffmpeg"/libavutil.xcframework/$name/*.framework     lib
+                cp -r "$ffmpeg"/libavformat.xcframework/$name/*.framework   lib
+                cp -r "$ffmpeg"/libavcodec.xcframework/$name/*.framework    lib
             fi
 
         elif [ $1 = "linux" ]; then
