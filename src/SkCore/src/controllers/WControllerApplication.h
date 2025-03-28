@@ -133,6 +133,8 @@ public: // Enums
     enum Mode { Normal, Maximized, FullScreen, FullScreenMaximized };
 #endif
 
+    enum Permission { Denied, Granted, Requested, RequestedGranted };
+
     enum Playback { Play, Pause, Stop };
 
     //---------------------------------------------------------------------------------------------
@@ -162,6 +164,11 @@ public: // Interface
 
     Q_INVOKABLE void clearComponentCache() const;
 #endif
+
+    // NOTE: The following id(s) are supported:
+    //       - camera
+    //       - vibrate
+    Q_INVOKABLE Permission checkPermission(const QString & id);
 
 #ifdef Q_OS_IOS
     void applyUrlHandler(const QString & scheme, bool enabled = true);
@@ -231,9 +238,6 @@ public: // Static functions
 #endif
 
 #ifdef Q_OS_ANDROID
-    // NOTE: Return types are 0=failed, 1=success, 2=prompted and success.
-    Q_INVOKABLE static int checkPermission(const QString & permission);
-
     Q_INVOKABLE static bool saveMedia(const QString & name,
                                       const QString & type,
                                       const QString & mime,
@@ -522,6 +526,8 @@ signals:
 
     void shareFinished(bool ok);
 #endif
+
+    void permissionUpdated(const QString & id, WControllerApplication::Permission status);
 
     void playbackUpdated(Playback status);
 

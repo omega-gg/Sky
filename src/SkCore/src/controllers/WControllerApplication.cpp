@@ -69,8 +69,11 @@
 #endif
 #ifdef Q_OS_WIN
 #include <QSettings>
-#elif defined (Q_OS_IOS)
+#elif defined(Q_OS_IOS)
 #include <QDesktopServices>
+    #ifdef QT_6
+        #include <QPermissions>
+    #endif
 #elif defined (Q_OS_ANDROID)
 #ifdef QT_5
     #include <QtAndroid>
@@ -402,6 +405,75 @@ void WControllerApplication::initController()
 
 #endif
 
+/* Q_INVOKABLE static */
+WControllerApplication::Permission WControllerApplication::checkPermission(const QString & id)
+{
+#ifdef Q_OS_ANDROID
+    QString string;
+
+    if (id == "camera")
+    {
+        string = "android.permission.CAMERA";
+    }
+    else if (id == "vibrate")
+    {
+        string = "android.permission.VIBRATE";
+    }
+    else return Granted;
+
+#ifdef QT_OLD
+    if (QtAndroid::checkPermission(string) != QtAndroid::PermissionResult::Denied) return Granted;
+
+    QtAndroid::requestPermissions(QStringList(permission),
+                                  [permission](QtAndroid::PermissionResultMap hash)
+    {
+        if (hash.value(permission) == QtAndroid::PermissionResult::Denied)
+        {
+             emit permissionUpdated(id, Denied);
+        }
+        else emit permissionUpdated(id, RequestedGranted);
+    }
+
+    return Requested;
+#else
+    QtAndroidPrivate::PermissionResult result = QtAndroidPrivate::checkPermission(string).result();
+
+    if (result == QtAndroidPrivate::Authorized) return Granted;
+
+    result = QtAndroidPrivate::requestPermission(string).result();
+
+    if (result == QtAndroidPrivate::Denied) return Denied;
+    else                                    return RequestedGranted;
+#endif
+#elif defined(Q_OS_IOS)
+    QPermission permission;
+
+    if (id == "camera")
+    {
+        permission = QCameraPermission();
+    }
+    else return Granted;
+
+    if (qApp->checkPermission(permission) != Qt::PermissionStatus::Denied) return Granted;
+
+    qApp->requestPermission(permission, [](const QPermission & permission)
+    {
+        if (permission.status() == QtAndroidPrivate::Denied)
+        {
+             emit permissionUpdated(id, Denied);
+        }
+        else emit permissionUpdated(id, RequestedGranted);
+    });
+
+    return Requested;
+#else
+    Q_UNUSED(id);
+
+    return Granted;
+#endif
+}
+
+
 #ifdef Q_OS_IOS
 
 void WControllerApplication::applyUrlHandler(const QString & scheme, bool enabled)
@@ -573,15 +645,6 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ void WControllerApplication::shutdown()
-{
-#ifdef Q_OS_WIN
-    QProcess::startDetached("shutdown", QStringList() << "/s" << "/f" << "/t" << "0");
-#elif defined(Q_OS_IOS) == false
-    QProcess::startDetached("shutdown", QStringList() << "-h" << "now");
-#endif
-}
-
 //-------------------------------------------------------------------------------------------------
 
 #ifndef Q_OS_IOS
@@ -596,7 +659,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     QJniObject jni = QtAndroid::androidActivity();
 #else
-    // FIXME Qt6: We should check for permission before doing this, otherwise we might crash.
+    if (checkPermission("vibrate") == Denied) return;
 
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
@@ -622,6 +685,15 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 }
 
 #endif // Q_OS_IOS
+
+/* Q_INVOKABLE static */ void WControllerApplication::shutdown()
+{
+#ifdef Q_OS_WIN
+    QProcess::startDetached("shutdown", QStringList() << "/s" << "/f" << "/t" << "0");
+#elif defined(Q_OS_IOS) == false
+    QProcess::startDetached("shutdown", QStringList() << "-h" << "now");
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -677,24 +749,6 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 #endif // SK_MOBILE
 
 #ifdef Q_OS_ANDROID
-
-/* Q_INVOKABLE static */ int WControllerApplication::checkPermission(const QString & permission)
-{
-#ifdef QT_OLD
-    if (QtAndroid::checkPermission(permission) == QtAndroid::PermissionResult::Denied) return 0;
-    else                                                                               return 1;
-#else
-    QtAndroidPrivate::PermissionResult result
-        = QtAndroidPrivate::checkPermission(permission).result();
-
-    if (result == QtAndroidPrivate::Authorized) return 1;
-
-    result = QtAndroidPrivate::requestPermission(permission).result();
-
-    if (result == QtAndroidPrivate::Denied) return 0;
-    else                                    return 2;
-#endif
-}
 
 /* Q_INVOKABLE static */ bool WControllerApplication::saveMedia(const QString    & name,
                                                                 const QString    & type,

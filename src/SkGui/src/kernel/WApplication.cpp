@@ -96,6 +96,9 @@ WSingleApplication::WSingleApplication(int & argc, char ** argv)
                                                     QSGRendererInterface::GraphicsApi api)
 #endif
 {
+    // NOTE Qt: This one can be useful to debug plugins.
+    //qputenv("QT_DEBUG_PLUGINS", "1");
+
 #ifdef QT_4
     QCoreApplication::setAttribute(Qt::AA_ImmediateWidgetCreation);
 #elif defined(QT_5)

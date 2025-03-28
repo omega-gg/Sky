@@ -256,16 +256,20 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 
     QImage image;
 
-    QVideoFrame videoFrame = frame;
+    if (frame.isMapped())
+    {
+        QVideoFrame videoFrame = frame;
 
-    if (videoFrame.map(QVideoFrame::ReadOnly) == false) return;
+        if (videoFrame.map(QVideoFrame::ReadOnly) == false) return;
 
-    // NOTE: We need to copy the QVideoFrame buffer.
-    image = QImage(videoFrame.bits(0), videoFrame.width(), videoFrame.height(),
-                   videoFrame.bytesPerLine(0), QImage::Format_Grayscale8)
-            .copy();
+        // NOTE: We need to copy the QVideoFrame buffer.
+        image = QImage(videoFrame.bits(0), videoFrame.width(), videoFrame.height(),
+                       videoFrame.bytesPerLine(0), QImage::Format_Grayscale8)
+                .copy();
 
-    videoFrame.unmap();
+        videoFrame.unmap();
+    }
+    else image = frame.toImage();
 
     reader.startRead(image, WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)), target,
                      orientation);
