@@ -1525,6 +1525,10 @@ void WViewPrivate::onGeometryChanged()
     q->setGeometry(q->availableGeometry());
 #endif
 
+#ifdef Q_OS_IOS
+    updateSafeMargins();
+#endif
+
     emit q->availableGeometryChanged();
 }
 
@@ -1535,6 +1539,10 @@ void WViewPrivate::onScreenChanged()
     Q_Q(WView);
 
     updateRatio();
+
+#ifdef Q_OS_IOS
+    updateSafeMargins();
+#endif
 
     emit q->availableGeometryChanged();
 }
