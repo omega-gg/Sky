@@ -118,10 +118,6 @@ class SK_GUI_EXPORT WWindow : public WView
     Q_PROPERTY(int width  READ width  WRITE setWidth  NOTIFY viewWidthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY viewHeightChanged)
 
-#ifdef Q_OS_IOS
-    Q_PROPERTY(QMargins safeMargins READ safeMargins NOTIFY safeMarginsChanged)
-#endif
-
     Q_PROPERTY(int centerX READ centerX NOTIFY centerXChanged)
     Q_PROPERTY(int centerY READ centerY NOTIFY centerYChanged)
 
@@ -490,10 +486,6 @@ signals:
     void viewWidthChanged ();
     void viewHeightChanged();
 
-#ifdef Q_OS_IOS
-    void safeMarginsChanged();
-#endif
-
     void centerXChanged();
     void centerYChanged();
 
@@ -658,10 +650,6 @@ public: // Properties
 
     int  height() const;
     void setHeight(int height);
-
-#ifdef Q_OS_IOS
-    QMargins safeMargins() const;
-#endif
 
     int centerX() const;
     int centerY() const;
