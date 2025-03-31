@@ -422,16 +422,16 @@ WControllerApplication::Permission WControllerApplication::checkPermission(const
     else return Granted;
 
 #ifdef QT_OLD
-    if (QtAndroid::checkPermission(string) != QtAndroid::PermissionResult::Denied) return Granted;
+    if (QtAndroid::checkPermission(string) == QtAndroid::PermissionResult::Granted) return Granted;
 
-    QtAndroid::requestPermissions(QStringList(permission),
-                                  [permission](QtAndroid::PermissionResultMap hash)
+    QtAndroid::requestPermissions(QStringList(string),
+                                  [this, id, string](QtAndroid::PermissionResultMap hash)
     {
-        if (hash.value(permission) == QtAndroid::PermissionResult::Denied)
+        if (hash.value(string) == QtAndroid::PermissionResult::Granted)
         {
-             emit permissionUpdated(id, Denied);
+             emit permissionUpdated(id, RequestedGranted);
         }
-        else emit permissionUpdated(id, RequestedGranted);
+        else emit permissionUpdated(id, Denied);
     }
 
     return Requested;
@@ -442,10 +442,10 @@ WControllerApplication::Permission WControllerApplication::checkPermission(const
 
     result = QtAndroidPrivate::requestPermission(string).result();
 
-    if (result == QtAndroidPrivate::Denied) return Denied;
-    else                                    return RequestedGranted;
+    if (result == QtAndroidPrivate::Granted) return RequestedGranted;
+    else                                     return Denied;
 #endif
-#elif defined(Q_OS_IOS)
+#elif defined(Q_OS_IOS) && defined(QT_NEW)
     QPermission permission;
 
     if (id == "camera")
@@ -454,15 +454,15 @@ WControllerApplication::Permission WControllerApplication::checkPermission(const
     }
     else return Granted;
 
-    if (qApp->checkPermission(permission) != Qt::PermissionStatus::Denied) return Granted;
+    if (qApp->checkPermission(permission) == Qt::PermissionStatus::Granted) return Granted;
 
-    qApp->requestPermission(permission, [](const QPermission & permission)
+    qApp->requestPermission(permission, [this, id](const QPermission & permission)
     {
-        if (permission.status() == QtAndroidPrivate::Denied)
+        if (permission.status() == Qt::PermissionStatus::Granted)
         {
-             emit permissionUpdated(id, Denied);
+             emit permissionUpdated(id, RequestedGranted);
         }
-        else emit permissionUpdated(id, RequestedGranted);
+        else emit permissionUpdated(id, Denied);
     });
 
     return Requested;

@@ -246,7 +246,9 @@ void WFilterBarcodePrivate::applyRotation(const QVideoFrame & frame)
 void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 {
     // NOTE: We wait for the last run to finish before starting a new one.
-    if (loading || timer.isActive()) return;
+    if (loading || timer.isActive()
+        ||
+        frame.isMapped() == false) return;
 
     applyRotation(frame);
 
@@ -254,22 +256,16 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 
     loading = true;
 
-    QImage image;
+    QVideoFrame videoFrame = frame;
 
-    if (frame.isMapped())
-    {
-        QVideoFrame videoFrame = frame;
+    if (videoFrame.map(QVideoFrame::ReadOnly) == false) return;
 
-        if (videoFrame.map(QVideoFrame::ReadOnly) == false) return;
+    // NOTE: We need to copy the QVideoFrame buffer.
+    QImage image = QImage(videoFrame.bits(0), videoFrame.width(), videoFrame.height(),
+                   videoFrame.bytesPerLine(0), QImage::Format_Grayscale8)
+                   .copy();
 
-        // NOTE: We need to copy the QVideoFrame buffer.
-        image = QImage(videoFrame.bits(0), videoFrame.width(), videoFrame.height(),
-                       videoFrame.bytesPerLine(0), QImage::Format_Grayscale8)
-                .copy();
-
-        videoFrame.unmap();
-    }
-    else image = frame.toImage();
+    videoFrame.unmap();
 
     reader.startRead(image, WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)), target,
                      orientation);
