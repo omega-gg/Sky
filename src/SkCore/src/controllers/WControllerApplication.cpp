@@ -71,7 +71,6 @@
 #include <QSettings>
 #elif defined(Q_OS_IOS)
 #include <QDesktopServices>
-#include <qpa/qplatformwindow.h>
     #ifdef QT_6
         #include <QPermissions>
     #endif

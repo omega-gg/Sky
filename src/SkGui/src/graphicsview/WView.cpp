@@ -36,6 +36,9 @@
 #include <QImageReader>
 #include <QDrag>
 #include <QMimeData>
+#ifdef Q_OS_IOS
+#include <qpa/qplatformwindow.h>
+#endif
 
 #if defined(Q_OS_WIN) && defined(QT_6)
 // Windows includes
