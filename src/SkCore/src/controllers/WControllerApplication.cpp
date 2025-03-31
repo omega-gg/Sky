@@ -659,7 +659,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     QJniObject jni = QtAndroid::androidActivity();
 #else
-    if (checkPermission("vibrate") == Denied) return;
+    if (sk->checkPermission("vibrate") == Denied) return;
 
     QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
