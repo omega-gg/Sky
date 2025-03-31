@@ -442,8 +442,8 @@ WControllerApplication::Permission WControllerApplication::checkPermission(const
 
     result = QtAndroidPrivate::requestPermission(string).result();
 
-    if (result == QtAndroidPrivate::Granted) return RequestedGranted;
-    else                                     return Denied;
+    if (result == QtAndroidPrivate::Authorized) return RequestedGranted;
+    else                                        return Denied;
 #endif
 #elif defined(Q_OS_IOS) && defined(QT_NEW)
     QPermission permission;
