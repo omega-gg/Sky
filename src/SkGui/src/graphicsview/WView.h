@@ -173,6 +173,10 @@ class SK_GUI_EXPORT WView : public WAbstractView
     Q_PROPERTY(int width  READ width  WRITE setWidth  NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
 
+#ifdef Q_OS_IOS
+    Q_PROPERTY(QMargins safeMargins READ safeMargins NOTIFY safeMarginsChanged)
+#endif
+
     Q_PROPERTY(int centerX READ centerX NOTIFY centerXChanged)
     Q_PROPERTY(int centerY READ centerY NOTIFY centerYChanged)
 
@@ -511,6 +515,10 @@ signals:
     void widthChanged ();
     void heightChanged();
 
+#ifdef Q_OS_IOS
+    void safeMarginsChanged();
+#endif
+
     void centerXChanged();
     void centerYChanged();
 
@@ -607,6 +615,10 @@ public: // Properties
 
     void setWidth (int width);
     void setHeight(int height);
+
+#ifdef Q_OS_IOS
+    QMargins safeMargins() const;
+#endif
 
     int centerX() const;
     int centerY() const;

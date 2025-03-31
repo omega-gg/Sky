@@ -660,6 +660,21 @@ void WViewPrivate::applySize(int width, int height)
     item->setSize(QSizeF(width * zoom, height * zoom));
 }
 
+#ifdef Q_OS_IOS
+
+void WViewPrivate::updateSafeMargins()
+{
+#ifdef QT_NEW
+    Q_Q(WView);
+
+    QPlatformWindow * window = q->handle();
+
+    safeArea = window->safeAreaMargins();
+#endif
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_NEW
@@ -3375,6 +3390,15 @@ void WView::setHeight(int height)
 
     emit heightChanged();
 }
+
+#ifdef Q_OS_IOS
+
+QMargins WView::safeMargins() const
+{
+    Q_D(const WView); return d->safeMargins;
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

@@ -201,6 +201,10 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(widthChanged ()), q, SIGNAL(viewWidthChanged ()));
     QObject::connect(view, SIGNAL(heightChanged()), q, SIGNAL(viewHeightChanged()));
 
+#ifdef Q_OS_IOS
+    QObject::connect(view, SIGNAL(safeMarginsChanged()), q, SIGNAL(safeMarginsChanged()));
+#endif
+
     QObject::connect(view, SIGNAL(centerXChanged()), q, SIGNAL(centerXChanged()));
     QObject::connect(view, SIGNAL(centerYChanged()), q, SIGNAL(centerYChanged()));
 
@@ -1154,6 +1158,15 @@ void WWindow::setHeight(int height)
 {
     Q_D(WWindow); d->view->setHeight(height);
 }
+
+#ifdef Q_OS_IOS
+
+QMargins WWindow::safeMargins() const
+{
+    Q_D(const WWindow); d->view->safeMargins();
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
