@@ -432,7 +432,7 @@ WControllerApplication::Permission WControllerApplication::checkPermission(const
              emit permissionUpdated(id, RequestedGranted);
         }
         else emit permissionUpdated(id, Denied);
-    }
+    });
 
     return Requested;
 #else
