@@ -672,7 +672,7 @@ void WViewPrivate::updateSafeMargins()
 
     QPlatformWindow * window = q->handle();
 
-    safeArea = window->safeAreaMargins();
+    safeMargins = window->safeAreaMargins();
 #endif
 }
 
