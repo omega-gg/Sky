@@ -445,7 +445,7 @@ WControllerApplication::Permission WControllerApplication::checkPermission(const
     if (result == QtAndroidPrivate::Authorized) return RequestedGranted;
     else                                        return Denied;
 #endif
-#elif defined(Q_OS_IOS) && defined(QT_NEW)
+#elif defined(Q_OS_IOS) && defined(QT_6)
     QPermission permission;
 
     if (id == "camera")
