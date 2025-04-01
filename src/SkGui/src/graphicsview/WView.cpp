@@ -1525,7 +1525,11 @@ void WViewPrivate::onGeometryChanged()
     }
     else q->checkPosition();
 #else
-    q->setGeometry(q->availableGeometry());
+    if (fullScreen)
+    {
+        q->setGeometry(q->screenGeometry());
+    }
+    else q->setGeometry(q->availableGeometry());
 #endif
 
 #ifdef Q_OS_IOS
