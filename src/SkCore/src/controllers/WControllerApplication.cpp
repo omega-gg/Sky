@@ -261,6 +261,17 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
                                                                 const QString            &) {}
 #endif
 
+#ifdef Q_OS_ANDROID
+/* static */ QJniObject WControllerApplicationPrivate::androidActivity()
+{
+#ifdef QT_5
+    return QtAndroid::androidActivity();
+#else
+    return QNativeInterface::QAndroidApplication::context();
+#endif
+}
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -562,6 +573,47 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 
 #endif
 
+/* Q_INVOKABLE static */ bool WControllerApplication::isPortrait()
+{
+#ifdef Q_OS_ANDROID
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
+
+    if (jni.isValid() == false) return false;
+
+    QJniObject contentResolver = jni.callObjectMethod
+    (
+        "getContentResolver", "()Landroid/content/ContentResolver;"
+    );
+
+    jint rotate = QJniObject::callStaticMethod<jint>
+    (
+        "android/provider/Settings$System",
+        "getInt",
+        "(Landroid/content/ContentResolver;Ljava/lang/String;)I",
+        contentResolver.object(),
+        QJniObject::fromString("accelerometer_rotation").object()
+    );
+
+    return (rotate == 0);
+#else
+    return false;
+#endif
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)
+{
+#ifdef Q_OS_ANDROID
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
+
+    if (jni.isValid() == false) return;
+
+    if (enabled) jni.callMethod<void>("setRequestedOrientation", "(I)V",  0);
+    else         jni.callMethod<void>("setRequestedOrientation", "(I)V", -1);
+#else
+    Q_UNUSED(enabled);
+#endif
+}
+
 /* Q_INVOKABLE static */
 QString WControllerApplication::extractParameter(const QString & argument)
 {
@@ -656,13 +708,11 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     if (QtAndroid::checkPermission("android.permission.VIBRATE")
         ==
         QtAndroid::PermissionResult::Denied) return;
-
-    QJniObject jni = QtAndroid::androidActivity();
 #else
     if (sk->checkPermission("vibrate") == Denied) return;
-
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
+
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return;
 
@@ -703,11 +753,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 /* Q_INVOKABLE static */ void WControllerApplication::openGallery()
 {
-#ifdef QT_5
-    QJniObject jni = QtAndroid::androidActivity();
-#else
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return;
 
@@ -722,11 +768,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
                                                             const QString & type)
 {
 #ifdef Q_OS_ANDROID
-#ifdef QT_5
-    QJniObject jni = QtAndroid::androidActivity();
-#else
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return;
 
@@ -756,11 +798,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
                                                                 const QString    & path,
                                                                 const QByteArray & data)
 {
-#ifdef QT_5
-    QJniObject jni = QtAndroid::androidActivity();
-#else
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return false;
 
@@ -852,11 +890,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 /* Q_INVOKABLE static */ void WControllerApplication::scanFile(const QString & fileName)
 {
-#ifdef QT_5
-    QJniObject jni = QtAndroid::androidActivity();
-#else
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return;
 
@@ -873,11 +907,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     QNativeInterface::QAndroidApplication::runOnAndroidMainThread([enabled]
 #endif
     {
-#ifdef QT_5
-        QJniObject jni = QtAndroid::androidActivity();
-#else
-        QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+        QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
         if (jni.isValid() == false) return;
 
@@ -887,11 +917,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 /* Q_INVOKABLE static */ void WControllerApplication::goBack()
 {
-#ifdef QT_5
-    QJniObject jni = QtAndroid::androidActivity();
-#else
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return;
 
@@ -1990,11 +2016,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::getIntentText()
 {
-#ifdef QT_5
-    QJniObject jni = QtAndroid::androidActivity();
-#else
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return QString();
 
@@ -2003,11 +2025,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 /* Q_INVOKABLE static */ void WControllerApplication::clearIntent()
 {
-#ifdef QT_5
-    QJniObject jni = QtAndroid::androidActivity();
-#else
-    QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+    QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
     if (jni.isValid() == false) return;
 
@@ -2840,11 +2858,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
     QNativeInterface::QAndroidApplication::runOnAndroidMainThread([enabled]
 #endif
     {
-#ifdef QT_5
-        QJniObject jni = QtAndroid::androidActivity();
-#else
-        QJniObject jni = QNativeInterface::QAndroidApplication::context();
-#endif
+        QJniObject jni = WControllerApplicationPrivate::androidActivity();
 
         if (jni.isValid())
         {

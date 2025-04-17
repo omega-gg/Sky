@@ -190,6 +190,10 @@ public: // Static functions
     Q_INVOKABLE static bool isUwp();
 #endif
 
+    Q_INVOKABLE static bool isPortrait();
+
+    Q_INVOKABLE static void forceLandscape(bool enabled);
+
     Q_INVOKABLE static QString extractParameter(const QString & argument);
 
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);
