@@ -79,10 +79,6 @@ public: // Static functions
                                                const QString            & message);
 #endif
 
-#ifdef Q_OS_ANDROID
-    static QJniObject androidActivity();
-#endif
-
 public: // Slots
     void onAboutToQuit();
 
