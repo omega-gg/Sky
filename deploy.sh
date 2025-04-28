@@ -311,6 +311,10 @@ else
 
             cp "$Qt"/bin/libEGL.dll    deploy
             cp "$Qt"/bin/libGLESv2.dll deploy
+        else
+            # FFmpeg
+            cp "$Qt"/bin/av*.dll deploy
+            cp "$Qt"/bin/sw*.dll deploy
         fi
 
         cp "$Qt/bin/$QtX"Core.dll            deploy
