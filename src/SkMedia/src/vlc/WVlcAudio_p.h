@@ -39,6 +39,9 @@
 #include <QTimer>
 #include <QVariant>
 #include <QMutex>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Private includes
 #include <private/Sk_p>
