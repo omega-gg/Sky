@@ -591,7 +591,7 @@ void WViewPrivate::init(QQuickItem * item)
 #endif
 
 #ifdef Q_OS_IOS
-    QObject::connect(sk, SIGNAL(safeMarginsChanged()), q, SIGNAL(onSafeMarginsChanged()));
+    QObject::connect(sk, SIGNAL(safeMarginsChanged()), q, SLOT(onSafeMarginsChanged()));
 #endif
 
     QObject::connect(sk, SIGNAL(cursorVisibleChanged()), q, SLOT(onCursorVisibleChanged()));
@@ -2772,10 +2772,6 @@ void WView::hoverLeave()
     {
         showFullScreen();
     }
-
-#ifdef Q_OS_IOS
-    QTimer::singleShot(0, this, SLOT(onApplyMargins()));
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------

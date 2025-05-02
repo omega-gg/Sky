@@ -168,7 +168,7 @@ public: // Slots
 #endif
 
 #ifdef Q_OS_IOS
-    void onApplyMargins();
+    void onSafeMarginsChanged();
 #endif
 
     void onFadeTimeout();
