@@ -190,7 +190,13 @@ public: // Static functions
     Q_INVOKABLE static bool isUwp();
 #endif
 
-    Q_INVOKABLE static bool isPortrait();
+    Q_INVOKABLE static bool hasRotateLock();
+
+    // NOTE: This is a convenience function that requests landscape orientation by taking the OS
+    //       preferences into account. For instance, there's no way to check if the orientation
+    //       lock is active on iOS, so we attempt to rotate to landscape without
+    //       disabling physical rotation.
+    Q_INVOKABLE static void requestLandscape(bool enabled);
 
     Q_INVOKABLE static void forceLandscape(bool enabled);
 

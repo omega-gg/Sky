@@ -579,7 +579,7 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 
 #endif
 
-/* Q_INVOKABLE static */ bool WControllerApplication::isPortrait()
+/* Q_INVOKABLE static */ bool WControllerApplication::hasRotateLock()
 {
 #ifdef Q_OS_ANDROID
     W_ANDROID_ACTIVITY(jni)
@@ -603,6 +603,24 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
     return (rotate == 0);
 #else
     return false;
+#endif
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::requestLandscape(bool enabled)
+{
+#ifdef Q_OS_IOS
+    forceLandscape(enabled);
+#elif defined(Q_OS_ANDROID)
+    if (hasRotateLock())
+    {
+        forceLandscape(enabled);
+    }
+    else if (enabled == false)
+    {
+        forceLandscape(false);
+    }
+#else
+    Q_UNSED(enabled);
 #endif
 }
 
