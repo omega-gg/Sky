@@ -452,10 +452,6 @@ protected: // Events
 
     /* virtual */ void showEvent(QShowEvent * event);
 
-#if defined(Q_OS_IOS) && defined(QT_NEW)
-    /* virtual */ void exposeEvent(QShowEvent * event);
-#endif
-
     /* virtual */ void moveEvent  (QMoveEvent   * event);
     /* virtual */ void resizeEvent(QResizeEvent * event);
 
@@ -744,6 +740,10 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onScreenChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onOrientationChanged(Qt::ScreenOrientation))
+#endif
+
+#ifdef Q_OS_IOS
+   Q_PRIVATE_SLOT(d_func(), void onApplyMargins())
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout())

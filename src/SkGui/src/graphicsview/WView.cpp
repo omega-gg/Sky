@@ -683,7 +683,7 @@ bool WViewPrivate::updateSafeMargins()
 
     emit q->safeMarginsChanged();
 
-    retrun true;
+    return true;
 #else
     return false;
 #endif
@@ -1601,7 +1601,24 @@ void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
 
     this->orientation = value;
 
+#ifdef Q_OS_IOS
+    QTimer::singleShot(0, q, SLOT(onApplyMargins()));
+#endif
+
     emit q->orientationChanged();
+}
+
+#endif
+
+#ifdef Q_OS_IOS
+
+void WViewPrivate::onApplyMargins()
+{
+    if (updateSafeMargins() == false || fullScreen) return;
+
+    Q_Q(WView);
+
+    q->setGeometry(q->availableGeometry());
 }
 
 #endif
@@ -2777,22 +2794,11 @@ void WView::hoverLeave()
     {
         showFullScreen();
     }
+
+#ifdef Q_OS_IOS
+    QTimer::singleShot(0, this, SLOT(onApplyMargins()));
+#endif
 }
-
-#if defined(Q_OS_IOS) && defined(QT_NEW)
-
-/* virtual */ void WView::exposeEvent(QShowEvent * event)
-{
-    Q_D(WView);
-
-    WAbstractView::exposeEvent(event);
-
-    if (d->updateSafeMargins() == false || d->fullScreen) return;
-
-    setGeometry(availableGeometry());
-}
-
-#endif // defined(Q_OS_IOS) && defined(QT_NEW)
 
 //-------------------------------------------------------------------------------------------------
 

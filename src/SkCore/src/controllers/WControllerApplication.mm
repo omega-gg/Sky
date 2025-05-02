@@ -279,7 +279,8 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
     else                                                           return 0;
 }
 
-/* Q_INVOKABLE static */ int orientationCamera(int orientation, const QString & id)
+/* Q_INVOKABLE static */
+int WControllerApplication::orientationCamera(int orientation, const QString & id)
 {
     if (@available(iOS 17.0, *))
     {
@@ -301,7 +302,7 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
     else if (orientation == 270) return 180;
     else                         return 90;
 #else
-    return 0;
+    else return 0;
 #endif
 }
 
