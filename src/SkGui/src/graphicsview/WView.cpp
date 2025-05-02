@@ -4142,6 +4142,8 @@ QRect WView::availableGeometry() const
 #ifdef QT_4
     return wControllerView->availableGeometry(this);
 #elif defined(Q_OS_IOS) && defined(QT_6)
+    Q_D(const WView);
+
     QRect rect = d->screen->availableGeometry();
 
     // FIXME iOS/Qt6: For some reason, availableGeometry does not take safeMargins into account.
