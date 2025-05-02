@@ -167,6 +167,8 @@ public: // Slots
 
 #ifdef QT_NEW
     void onScreenChanged();
+
+    void onOrientationChanged(Qt::ScreenOrientation orientation);
 #endif
 
     void onFadeTimeout();
@@ -186,6 +188,8 @@ public: // Variables
 
     QDeclarativeItem * item;
 #else
+    QScreen * screen;
+
     QQuickItem * item;
 #endif
 
@@ -207,6 +211,8 @@ public: // Variables
     int maximumHeight;
 
     QRect geometryNormal;
+
+    int orientation;
 
     bool active;
 

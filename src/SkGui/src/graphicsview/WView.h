@@ -202,6 +202,8 @@ class SK_GUI_EXPORT WView : public WAbstractView
 
     Q_PROPERTY(QRect geometryNormal READ geometryNormal NOTIFY geometryNormalChanged)
 
+    Q_PROPERTY(int orientation READ orientation NOTIFY orientationChanged)
+
     Q_PROPERTY(bool minimized  READ isMinimized  WRITE setMinimized  NOTIFY minimizedChanged)
     Q_PROPERTY(bool maximized  READ isMaximized  WRITE setMaximized  NOTIFY maximizedChanged)
     Q_PROPERTY(bool fullScreen READ isFullScreen WRITE setFullScreen NOTIFY fullScreenChanged)
@@ -538,6 +540,8 @@ signals:
 
     void geometryNormalChanged();
 
+    void orientationChanged();
+
     void minimizedChanged ();
     void maximizedChanged ();
     void fullScreenChanged();
@@ -649,6 +653,8 @@ public: // Properties
 
     QRect geometryNormal() const;
 
+    int orientation() const;
+
     bool isMinimized() const;
     void setMinimized(bool minimized);
 
@@ -732,6 +738,8 @@ private:
 
 #ifdef QT_NEW
     Q_PRIVATE_SLOT(d_func(), void onScreenChanged())
+
+    Q_PRIVATE_SLOT(d_func(), void onOrientationChanged(Qt::ScreenOrientation))
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout())

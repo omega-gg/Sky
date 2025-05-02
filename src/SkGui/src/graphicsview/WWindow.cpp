@@ -219,6 +219,8 @@ void WWindowPrivate::init()
 
     QObject::connect(view, SIGNAL(geometryNormalChanged()), q, SIGNAL(geometryNormalChanged()));
 
+    QObject::connect(view, SIGNAL(orientationChanged()), q, SIGNAL(orientationChanged()));
+
     QObject::connect(view, SIGNAL(minimizedChanged ()), q, SIGNAL(minimizedChanged ()));
     QObject::connect(view, SIGNAL(maximizedChanged ()), q, SIGNAL(maximizedChanged ()));
     QObject::connect(view, SIGNAL(fullScreenChanged()), q, SIGNAL(fullScreenChanged()));
@@ -1257,6 +1259,11 @@ void WWindow::setMaximumHeight(int height)
 QRect WWindow::geometryNormal() const
 {
     Q_D(const WWindow); return d->view->geometryNormal();
+}
+
+QRect WWindow::orientation() const
+{
+    Q_D(const WWindow); return d->view->orientation();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -579,15 +579,6 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 
 #endif
 
-#ifndef Q_OS_IOS
-
-/* Q_INVOKABLE static */ int WControllerApplication::orientation()
-{
-    return 0;
-}
-
-#endif // Q_OS_IOS
-
 /* Q_INVOKABLE static */ bool WControllerApplication::hasRotateLock()
 {
 #ifdef Q_OS_ANDROID
@@ -615,6 +606,26 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 #endif
 }
 
+#ifndef Q_OS_IOS
+
+/* Q_INVOKABLE static */ int WControllerApplication::orientation()
+{
+    return 0;
+}
+
+#endif // Q_OS_IOS
+
+/* Q_INVOKABLE static */ int WControllerApplication::orientationCamera(const QString & id)
+{
+#ifdef Q_OS_IOS
+    return 0;
+#else
+    Q_UNUSED(id);
+
+    return 0;
+#endif
+}
+
 /* Q_INVOKABLE static */ void WControllerApplication::requestLandscape(bool enabled)
 {
 #ifdef Q_OS_IOS
@@ -629,7 +640,7 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
         forceLandscape(false);
     }
 #else
-    Q_UNSED(enabled);
+    Q_UNUSED(enabled);
 #endif
 }
 

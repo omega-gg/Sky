@@ -142,6 +142,8 @@ class SK_GUI_EXPORT WWindow : public WView
 
     Q_PROPERTY(QRect geometryNormal READ geometryNormal NOTIFY geometryNormalChanged)
 
+    Q_PROPERTY(int orientation READ orientation NOTIFY orientationChanged)
+
     Q_PROPERTY(bool minimized  READ isMinimized  WRITE setMinimized  NOTIFY minimizedChanged)
     Q_PROPERTY(bool maximized  READ isMaximized  WRITE setMaximized  NOTIFY maximizedChanged)
     Q_PROPERTY(bool fullScreen READ isFullScreen WRITE setFullScreen NOTIFY fullScreenChanged)
@@ -504,6 +506,8 @@ signals:
 
     void geometryNormalChanged();
 
+    void orientationChanged();
+
     void minimizedChanged ();
     void maximizedChanged ();
     void fullScreenChanged();
@@ -678,6 +682,8 @@ public: // Properties
     void setMaximumHeight(int height);
 
     QRect geometryNormal() const;
+
+    QRect orientation() const;
 
     bool isMinimized() const;
     void setMinimized(bool minimized);

@@ -285,6 +285,8 @@ void WViewPrivate::init(QQuickItem * item)
     maximumWidth  = -1;
     maximumHeight = -1;
 
+    orientation = 0;
+
     active = false;
 
     minimized = false;
@@ -506,7 +508,7 @@ void WViewPrivate::init(QQuickItem * item)
     ratio      = 1.0;
     ratioPixel = 1.0;
 #else
-    QScreen * screen = q->screen();
+    screen = q->screen();
 
     ratio      = WControllerView::screenRatio     (screen);
     ratioPixel = WControllerView::screenRatioPixel(screen);
@@ -566,6 +568,9 @@ void WViewPrivate::init(QQuickItem * item)
 
     QObject::connect(screen, SIGNAL(availableGeometryChanged(const QRect &)),
                      q,      SLOT(onGeometryChanged()));
+
+    QObject::connect(screen, SIGNAL(orientationChanged(Qt::ScreenOrientation)),
+                     q,      SLOT(onOrientationChanged(Qt::ScreenOrientation)));
 #endif
 
     QObject::connect(q, SIGNAL(availableGeometryChanged()), q, SIGNAL(centerXChanged()));
@@ -686,7 +691,7 @@ void WViewPrivate::updateRatio()
 {
     Q_Q(WView);
 
-    qreal value = WControllerView::screenRatio(q->screen());
+    qreal value = WControllerView::screenRatio(screen);
 
     if (ratio != value)
     {
@@ -695,7 +700,7 @@ void WViewPrivate::updateRatio()
         emit q->ratioChanged();
     }
 
-    value = WControllerView::screenRatioPixel(q->screen());
+    value = WControllerView::screenRatioPixel(screen);
 
     if (ratioPixel != value)
     {
@@ -1545,13 +1550,45 @@ void WViewPrivate::onScreenChanged()
 {
     Q_Q(WView);
 
+    QScreen * screenNew = q->screen();
+
+    if (screen == screenNew) return;
+
+    QObject::disconnect(screen, 0, q, 0);
+
+    screen = screenNew;
+
     updateRatio();
 
 #ifdef Q_OS_IOS
     updateSafeMargins();
 #endif
 
+    QObject::connect(screen, SIGNAL(availableGeometryChanged(const QRect &)),
+                     q,      SLOT(onGeometryChanged()));
+
+    QObject::connect(screen, SIGNAL(orientationChanged(Qt::ScreenOrientation)),
+                     q,      SLOT(onOrientationChanged(Qt::ScreenOrientation)));
+
     emit q->availableGeometryChanged();
+}
+
+void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
+{
+    int value;
+
+    if      (orientation == Qt::LandscapeOrientation)         value =  90;
+    else if (orientation == Qt::InvertedPortraitOrientation)  value = 180;
+    else if (orientation == Qt::InvertedLandscapeOrientation) value = 270;
+    else                                                      value =   0;
+
+    if (this->orientation == value) return;
+
+    Q_Q(WView);
+
+    this->orientation = value;
+
+    q->orientationChanged();
 }
 
 #endif
@@ -3597,6 +3634,11 @@ QRect WView::geometryNormal() const
     Q_D(const WView); return d->geometryNormal;
 }
 
+int WView::orientation() const
+{
+    Q_D(const WView); return d->orientation;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WView::isMinimized() const
@@ -4072,7 +4114,7 @@ QRect WView::availableGeometry() const
 #ifdef QT_4
     return wControllerView->availableGeometry(this);
 #else
-    return screen()->availableGeometry();
+    Q_D(const WView); return d->screen->availableGeometry();
 #endif
 }
 
@@ -4081,7 +4123,7 @@ QRect WView::screenGeometry() const
 #ifdef QT_4
     return wControllerView->screenGeometry(this);
 #else
-    return screen()->geometry();
+    Q_D(const WView); return d->screen->geometry();
 #endif
 }
 
