@@ -843,6 +843,8 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
                          jniTitle.object<jstring>(), jniText.object<jstring>(),
                          jniFileName.object<jstring>(), jniType.object<jstring>());
 #else // Q_OS_IOS
+    Q_UNUSED(title); Q_UNUSED(type);
+
     if (fileName.isEmpty()) shareText(text);
     else                    shareFile(fileName);
 #endif
