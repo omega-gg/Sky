@@ -287,6 +287,50 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
     else return QString();
 }
 
+/* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)
+{
+    if (@available(iOS 16.0, *))
+    {
+        UIWindowScene * window = nil;
+
+        for (UIScene * scene in [UIApplication sharedApplication].connectedScenes)
+        {
+            if ([scene isKindOfClass:[UIWindowScene class]]
+                &&
+                scene.activationState == UISceneActivationStateForegroundActive)
+            {
+                window = (UIWindowScene *) scene;
+
+                break;
+            }
+        }
+
+        if (window == nil) return;
+
+        UIInterfaceOrientationMask orientation;
+
+        if (enabled) orientation = UIInterfaceOrientationMaskLandscape;
+        else         orientation = UIInterfaceOrientationMaskPortrait;
+
+        UIWindowSceneGeometryPreferencesIOS * preferences
+            = [[UIWindowSceneGeometryPreferencesIOS alloc]
+                initWithInterfaceOrientations: orientation];
+
+        [window requestGeometryUpdateWithPreferences:preferences errorHandler:nil];
+    }
+    else
+    {
+        UIInterfaceOrientation orientation;
+
+        if (enabled) orientation = UIInterfaceOrientationMaskLandscape;
+        else         orientation = UIInterfaceOrientationMaskPortrait;
+
+        [[UIDevice currentDevice] setValue:@(orientation) forKey:@"orientation"];
+
+        [UIViewController attemptRotationToDeviceOrientation];
+    }
+}
+
 /* Q_INVOKABLE static */ void WControllerApplication::showPlayback(const QString & title,
                                                                    const QString & author)
 {

@@ -606,6 +606,8 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 #endif
 }
 
+#ifndef Q_OS_IOS
+
 /* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)
 {
 #ifdef Q_OS_ANDROID
@@ -619,6 +621,8 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
     Q_UNUSED(enabled);
 #endif
 }
+
+#endif // Q_OS_IOS
 
 /* Q_INVOKABLE static */
 QString WControllerApplication::extractParameter(const QString & argument)
