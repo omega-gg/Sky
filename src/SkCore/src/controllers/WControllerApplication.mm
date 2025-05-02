@@ -289,7 +289,7 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
 /* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)
 {
-    if (available(iOS 16.0, *) == false) return;
+    if (@available(iOS 16.0, *) == false) return;
 
     UIWindowScene * window = nil;
 
