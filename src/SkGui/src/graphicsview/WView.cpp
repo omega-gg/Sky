@@ -1595,17 +1595,23 @@ void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
     else                                                      value =   0;
 #endif
 
-    if (this->orientation == value) return;
+    if (this->orientation == value)
+    {
+#ifdef Q_OS_IOS
+        QTimer::singleShot(0, q_func(), SLOT(onApplyMargins()));
+#endif
+        return;
+    }
 
     Q_Q(WView);
 
     this->orientation = value;
 
+    emit q->orientationChanged();
+
 #ifdef Q_OS_IOS
     QTimer::singleShot(0, q, SLOT(onApplyMargins()));
 #endif
-
-    emit q->orientationChanged();
 }
 
 #endif
