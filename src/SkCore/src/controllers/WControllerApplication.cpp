@@ -615,7 +615,8 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 
 #endif // Q_OS_IOS
 
-/* Q_INVOKABLE static */ int WControllerApplication::orientationCamera(const QString & id)
+/* Q_INVOKABLE static */
+int WControllerApplication::orientationCamera(int orientation, const QString & id)
 {
 #ifdef Q_OS_IOS
     // NOTE iOS: When the id ends with :1 it's usually the front facing camera.

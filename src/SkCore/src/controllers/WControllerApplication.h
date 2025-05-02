@@ -194,7 +194,9 @@ public: // Static functions
 
     Q_INVOKABLE static int orientation();
 
-    Q_INVOKABLE static int orientationCamera(const QString & id);
+    // NOTE: This is a convenient function designed to retrieve camera's orientation based on the
+    //       device orientation. That's currently useful for iOS.
+    Q_INVOKABLE static int orientationCamera(int orientation, const QString & id);
 
     // NOTE: This is a convenience function that requests landscape orientation by taking the OS
     //       preferences into account. For instance, there's no way to check if the orientation
