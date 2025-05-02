@@ -246,9 +246,7 @@ void WFilterBarcodePrivate::applyRotation(const QVideoFrame & frame)
 void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 {
     // NOTE: We wait for the last run to finish before starting a new one.
-    if (loading || timer.isActive()
-        ||
-        frame.isMapped() == false) return;
+    if (loading || timer.isActive()) return;
 
     applyRotation(frame);
 

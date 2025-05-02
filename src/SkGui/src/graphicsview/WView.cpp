@@ -1575,12 +1575,17 @@ void WViewPrivate::onScreenChanged()
 
 void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
 {
+#ifdef Q_OS_IOS
+    // NOTE Qt6: Values seems incorrect for inverted orientations so we call the iOS API instead.
+    int value = Sk::orientation();
+#else
     int value;
 
     if      (orientation == Qt::LandscapeOrientation)         value =  90;
     else if (orientation == Qt::InvertedPortraitOrientation)  value = 180;
     else if (orientation == Qt::InvertedLandscapeOrientation) value = 270;
     else                                                      value =   0;
+#endif
 
     if (this->orientation == value) return;
 
@@ -1588,7 +1593,7 @@ void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
 
     this->orientation = value;
 
-    q->orientationChanged();
+    emit q->orientationChanged();
 }
 
 #endif
