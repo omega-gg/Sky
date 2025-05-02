@@ -289,46 +289,34 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
 /* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)
 {
-    if (@available(iOS 16.0, *))
-    {
-        UIWindowScene * window = nil;
+    if (available(iOS 16.0, *) == false) return;
 
-        for (UIScene * scene in [UIApplication sharedApplication].connectedScenes)
+    UIWindowScene * window = nil;
+
+    for (UIScene * scene in [UIApplication sharedApplication].connectedScenes)
+    {
+        if ([scene isKindOfClass:[UIWindowScene class]]
+            &&
+            scene.activationState == UISceneActivationStateForegroundActive)
         {
-            if ([scene isKindOfClass:[UIWindowScene class]]
-                &&
-                scene.activationState == UISceneActivationStateForegroundActive)
-            {
-                window = (UIWindowScene *) scene;
+            window = (UIWindowScene *) scene;
 
-                break;
-            }
+            break;
         }
-
-        if (window == nil) return;
-
-        UIInterfaceOrientationMask orientation;
-
-        if (enabled) orientation = UIInterfaceOrientationMaskLandscape;
-        else         orientation = UIInterfaceOrientationMaskPortrait;
-
-        UIWindowSceneGeometryPreferencesIOS * preferences
-            = [[UIWindowSceneGeometryPreferencesIOS alloc]
-                initWithInterfaceOrientations: orientation];
-
-        [window requestGeometryUpdateWithPreferences:preferences errorHandler:nil];
     }
-    else
-    {
-        UIInterfaceOrientation orientation;
 
-        if (enabled) orientation = UIInterfaceOrientationMaskLandscape;
-        else         orientation = UIInterfaceOrientationMaskPortrait;
+    if (window == nil) return;
 
-        [[UIDevice currentDevice] setValue:@(orientation) forKey:@"orientation"];
+    UIInterfaceOrientationMask orientation;
 
-        [UIViewController attemptRotationToDeviceOrientation];
-    }
+    if (enabled) orientation = UIInterfaceOrientationMaskLandscape;
+    else         orientation = UIInterfaceOrientationMaskPortrait;
+
+    UIWindowSceneGeometryPreferencesIOS * preferences
+        = [[UIWindowSceneGeometryPreferencesIOS alloc]
+            initWithInterfaceOrientations: orientation];
+
+    [window requestGeometryUpdateWithPreferences:preferences errorHandler:nil];
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::showPlayback(const QString & title,
