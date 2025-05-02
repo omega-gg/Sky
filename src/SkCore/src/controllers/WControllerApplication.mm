@@ -125,6 +125,19 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 }
 
 //-------------------------------------------------------------------------------------------------
+// UIViewController
+//-------------------------------------------------------------------------------------------------
+
+@implementation UIViewController (SafeAreaNotifier)
+
+- (void) viewSafeAreaInsetsDidChange
+{
+    QMetaObject::invokeMethod(qApp, []{ emit sk->safeMarginsChanged(); }, Qt::QueuedConnection);
+}
+
+@end
+
+//-------------------------------------------------------------------------------------------------
 // WControllerApplicationImage
 //-------------------------------------------------------------------------------------------------
 

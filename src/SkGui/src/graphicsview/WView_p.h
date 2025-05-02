@@ -86,10 +86,6 @@ public: // Functions
 
     void applySize(int width, int height);
 
-#ifdef Q_OS_IOS
-    bool updateSafeMargins();
-#endif
-
 #ifdef QT_NEW
     void updateRatio();
 #endif

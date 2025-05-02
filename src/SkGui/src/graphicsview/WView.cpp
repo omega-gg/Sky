@@ -582,12 +582,16 @@ void WViewPrivate::init(QQuickItem * item)
     QObject::connect(&fadeTimer, SIGNAL(timeout()), q, SLOT(onFadeTimeout()));
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
 
+#ifndef SK_WIN_NATIVE
+    QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onBeforeClose()));
+#endif
+
 #if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     QObject::connect(sk, SIGNAL(messageChanged()), q, SLOT(onMessageChanged()));
 #endif
 
-#ifndef SK_WIN_NATIVE
-    QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onBeforeClose()));
+#ifdef Q_OS_IOS
+    QObject::connect(sk, SIGNAL(safeMarginsChanged()), q, SIGNAL(onSafeMarginsChanged()));
 #endif
 
     QObject::connect(sk, SIGNAL(cursorVisibleChanged()), q, SLOT(onCursorVisibleChanged()));
@@ -667,29 +671,6 @@ void WViewPrivate::applySize(int width, int height)
 {
     item->setSize(QSizeF(width * zoom, height * zoom));
 }
-
-#ifdef Q_OS_IOS
-
-bool WViewPrivate::updateSafeMargins()
-{
-#ifdef QT_NEW
-    Q_Q(WView);
-
-    QMargins margins = q->handle()->safeAreaMargins();
-
-    if (safeMargins == margins) return false;
-
-    safeMargins = margins;
-
-    emit q->safeMarginsChanged();
-
-    return true;
-#else
-    return false;
-#endif
-}
-
-#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1530,10 +1511,6 @@ void WViewPrivate::onGeometryChanged()
     updateRatio();
 #endif
 
-#ifdef Q_OS_IOS
-    updateSafeMargins();
-#endif
-
 #ifdef SK_DESKTOP
     // NOTE: When maximized or full screen, we reset the normal geometry.
     if (maximized || fullScreen)
@@ -1568,10 +1545,6 @@ void WViewPrivate::onScreenChanged()
 
     updateRatio();
 
-#ifdef Q_OS_IOS
-    updateSafeMargins();
-#endif
-
     QObject::connect(screen, SIGNAL(availableGeometryChanged(const QRect &)),
                      q,      SLOT(onGeometryChanged()));
 
@@ -1595,36 +1568,35 @@ void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
     else                                                      value =   0;
 #endif
 
-    if (this->orientation == value)
-    {
-#ifdef Q_OS_IOS
-        QTimer::singleShot(0, q_func(), SLOT(onApplyMargins()));
-#endif
-        return;
-    }
+    if (this->orientation == value) return;
 
     Q_Q(WView);
 
     this->orientation = value;
 
     emit q->orientationChanged();
-
-#ifdef Q_OS_IOS
-    QTimer::singleShot(0, q, SLOT(onApplyMargins()));
-#endif
 }
 
 #endif
 
 #ifdef Q_OS_IOS
 
-void WViewPrivate::onApplyMargins()
+void WViewPrivate::onSafeMarginsChanged()
 {
-    if (updateSafeMargins() == false || fullScreen) return;
-
     Q_Q(WView);
 
-    q->setGeometry(q->availableGeometry());
+    QMargins margins = q->handle()->safeAreaMargins();
+
+    if (safeMargins == margins) return;
+
+    safeMargins = margins;
+
+    if (fullScreen == false)
+    {
+        q->setGeometry(q->availableGeometry());
+    }
+
+    emit q->safeMarginsChanged();
 }
 
 #endif

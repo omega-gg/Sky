@@ -743,7 +743,7 @@ private:
 #endif
 
 #ifdef Q_OS_IOS
-   Q_PRIVATE_SLOT(d_func(), void onApplyMargins())
+   Q_PRIVATE_SLOT(d_func(), void onSafeMarginsChanged())
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout())

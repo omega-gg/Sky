@@ -577,6 +577,10 @@ signals:
 
     void defaultMarginsChanged();
 
+#ifdef Q_OS_IOS
+    void safeMarginsChanged();
+#endif
+
     void screenDimEnabledChanged  ();
     void screenSaverEnabledChanged();
 
