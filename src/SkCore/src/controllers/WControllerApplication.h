@@ -194,8 +194,8 @@ public: // Static functions
 
     // NOTE: This is a convenience function that requests landscape orientation by taking the OS
     //       preferences into account. For instance, there's no way to check if the orientation
-    //       lock is active on iOS, so we attempt to rotate to landscape without
-    //       disabling physical rotation.
+    //       lock is active on iOS, so we attempt to rotate to landscape without disabling physical
+    //       rotation.
     Q_INVOKABLE static void requestLandscape(bool enabled);
 
     Q_INVOKABLE static void forceLandscape(bool enabled);
