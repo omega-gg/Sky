@@ -289,34 +289,35 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
 /* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)
 {
-    if (@available(iOS 16.0, *) == false) return;
-
-    UIWindowScene * window = nil;
-
-    for (UIScene * scene in [UIApplication sharedApplication].connectedScenes)
+    if (@available(iOS 16.0, *))
     {
-        if ([scene isKindOfClass:[UIWindowScene class]]
-            &&
-            scene.activationState == UISceneActivationStateForegroundActive)
+        UIWindowScene * window = nil;
+
+        for (UIScene * scene in [UIApplication sharedApplication].connectedScenes)
         {
-            window = (UIWindowScene *) scene;
+            if ([scene isKindOfClass:[UIWindowScene class]]
+                &&
+                scene.activationState == UISceneActivationStateForegroundActive)
+            {
+                window = (UIWindowScene *) scene;
 
-            break;
+                break;
+            }
         }
+
+        if (window == nil) return;
+
+        UIInterfaceOrientationMask orientation;
+
+        if (enabled) orientation = UIInterfaceOrientationMaskLandscape;
+        else         orientation = UIInterfaceOrientationMaskPortrait;
+
+        UIWindowSceneGeometryPreferencesIOS * preferences
+            = [[UIWindowSceneGeometryPreferencesIOS alloc]
+                initWithInterfaceOrientations: orientation];
+
+        [window requestGeometryUpdateWithPreferences:preferences errorHandler:nil];
     }
-
-    if (window == nil) return;
-
-    UIInterfaceOrientationMask orientation;
-
-    if (enabled) orientation = UIInterfaceOrientationMaskLandscape;
-    else         orientation = UIInterfaceOrientationMaskPortrait;
-
-    UIWindowSceneGeometryPreferencesIOS * preferences
-        = [[UIWindowSceneGeometryPreferencesIOS alloc]
-            initWithInterfaceOrientations: orientation];
-
-    [window requestGeometryUpdateWithPreferences:preferences errorHandler:nil];
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::showPlayback(const QString & title,
