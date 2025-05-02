@@ -192,6 +192,8 @@ public: // Static functions
 
     Q_INVOKABLE static bool hasRotateLock();
 
+    Q_INVOKABLE static int orientation();
+
     // NOTE: This is a convenience function that requests landscape orientation by taking the OS
     //       preferences into account. For instance, there's no way to check if the orientation
     //       lock is active on iOS, so we attempt to rotate to landscape without disabling physical

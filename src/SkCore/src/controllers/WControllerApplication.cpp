@@ -579,6 +579,15 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 
 #endif
 
+#ifndef Q_OS_IOS
+
+/* Q_INVOKABLE static */ int WControllerApplication::orientation()
+{
+    return 0;
+}
+
+#endif // Q_OS_IOS
+
 /* Q_INVOKABLE static */ bool WControllerApplication::hasRotateLock()
 {
 #ifdef Q_OS_ANDROID

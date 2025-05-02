@@ -287,6 +287,16 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
     else return QString();
 }
 
+/* Q_INVOKABLE static */ int WControllerApplication::orientation()
+{
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+
+    if      (orientation == UIDeviceOrientationLandscapeLeft)      return 90;
+    else if (orientation == UIDeviceOrientationPortraitUpsideDown) return 180;
+    else if (orientation == UIDeviceOrientationLandscapeRight)     return 270;
+    else                                                           return 0;
+}
+
 /* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)
 {
     if (@available(iOS 16.0, *))
