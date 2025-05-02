@@ -632,7 +632,7 @@ int WControllerApplication::orientationCamera(int orientation, const QString & i
     else if (orientation == 270) return 180;
     else                         return 90;
 #else
-    Q_UNUSED(id);
+    Q_UNUSED(orientation); Q_UNUSED(id);
 
     return 0;
 #endif
