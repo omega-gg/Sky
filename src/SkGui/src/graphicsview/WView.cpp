@@ -670,14 +670,22 @@ void WViewPrivate::applySize(int width, int height)
 
 #ifdef Q_OS_IOS
 
-void WViewPrivate::updateSafeMargins()
+bool WViewPrivate::updateSafeMargins()
 {
 #ifdef QT_NEW
     Q_Q(WView);
 
-    QPlatformWindow * window = q->handle();
+    QMargins margins = q->handle()->safeAreaMargins();
 
-    safeMargins = window->safeAreaMargins();
+    if (safeMargins == margins) return false;
+
+    safeMargins = margins;
+
+    emit q->safeMarginsChanged();
+
+    retrun true;
+#else
+    return false;
 #endif
 }
 
@@ -1522,6 +1530,10 @@ void WViewPrivate::onGeometryChanged()
     updateRatio();
 #endif
 
+#ifdef Q_OS_IOS
+    updateSafeMargins();
+#endif
+
 #ifdef SK_DESKTOP
     // NOTE: When maximized or full screen, we reset the normal geometry.
     if (maximized || fullScreen)
@@ -1535,10 +1547,6 @@ void WViewPrivate::onGeometryChanged()
         q->setGeometry(q->screenGeometry());
     }
     else q->setGeometry(q->availableGeometry());
-#endif
-
-#ifdef Q_OS_IOS
-    updateSafeMargins();
 #endif
 
     emit q->availableGeometryChanged();
@@ -2770,6 +2778,21 @@ void WView::hoverLeave()
         showFullScreen();
     }
 }
+
+#if defined(Q_OS_IOS) && defined(QT_NEW)
+
+/* virtual */ void WView::exposeEvent(QShowEvent * event)
+{
+    Q_D(WView);
+
+    WAbstractView::exposeEvent(event);
+
+    if (d->updateSafeMargins() == false || d->fullScreen) return;
+
+    setGeometry(availableGeometry());
+}
+
+#endif // defined(Q_OS_IOS) && defined(QT_NEW)
 
 //-------------------------------------------------------------------------------------------------
 
@@ -4118,6 +4141,15 @@ QRect WView::availableGeometry() const
 {
 #ifdef QT_4
     return wControllerView->availableGeometry(this);
+#elif defined(Q_OS_IOS) && defined(QT_6)
+    QRect rect = d->screen->availableGeometry();
+
+    // FIXME iOS/Qt6: For some reason, availableGeometry does not take safeMargins into account.
+    if (rect == d->screen->geometry())
+    {
+        return rect.marginsRemoved(d->safeMargins);
+    }
+    else return rect;
 #else
     Q_D(const WView); return d->screen->availableGeometry();
 #endif

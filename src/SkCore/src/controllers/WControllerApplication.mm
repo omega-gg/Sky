@@ -264,27 +264,9 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
 /* Q_INVOKABLE static */ QString WControllerApplication::deviceVersion()
 {
-    struct utsname info;
+    NSString * version = [[UIDevice currentDevice] systemVersion];
 
-    uname(&info);
-
-    NSString * model = [NSString stringWithCString: info.machine encoding: NSUTF8StringEncoding];
-
-    QString string = QString::fromNSString(model);
-
-    if (string.startsWith("iPhone"))
-    {
-        string.remove(0, 6);
-
-        return string.replace(',', '.');
-    }
-    else if (string.startsWith("iPad"))
-    {
-        string.remove(0, 4);
-
-        return string.replace(',', '.');
-    }
-    else return QString();
+    return QString::fromNSString(version);
 }
 
 /* Q_INVOKABLE static */ int WControllerApplication::orientation()
@@ -295,6 +277,32 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
     else if (orientation == UIDeviceOrientationPortraitUpsideDown) return 180;
     else if (orientation == UIDeviceOrientationLandscapeRight)     return 270;
     else                                                           return 0;
+}
+
+/* Q_INVOKABLE static */ int orientationCamera(int orientation, const QString & id)
+{
+    if (@available(iOS 17.0, *))
+    {
+        Q_UNUSED(orientation); Q_UNUSED(id);
+
+        return 0;
+    }
+#ifdef QT_6
+    // NOTE iOS: When the id ends with :1 it's usually the front facing camera.
+    else if (id.endsWith(":1"))
+    {
+        if (orientation == 90)  return 180;
+        if (orientation == 180) return 90;
+        if (orientation == 270) return 0;
+        else                    return 270;
+    }
+    else if (orientation == 90)  return 0;
+    else if (orientation == 180) return 270;
+    else if (orientation == 270) return 180;
+    else                         return 90;
+#else
+    return 0;
+#endif
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::forceLandscape(bool enabled)

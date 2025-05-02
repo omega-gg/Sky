@@ -613,30 +613,13 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
     return 0;
 }
 
-#endif // Q_OS_IOS
-
 /* Q_INVOKABLE static */
-int WControllerApplication::orientationCamera(int orientation, const QString & id)
+int WControllerApplication::orientationCamera(int, const QString &)
 {
-#ifdef Q_OS_IOS
-    // NOTE iOS: When the id ends with :1 it's usually the front facing camera.
-    if (id.endsWith(":1"))
-    {
-        if (orientation == 90)  return 180;
-        if (orientation == 180) return 90;
-        if (orientation == 270) return 0;
-        else                    return 270;
-    }
-    else if (orientation == 90)  return 0;
-    else if (orientation == 180) return 270;
-    else if (orientation == 270) return 180;
-    else                         return 90;
-#else
-    Q_UNUSED(orientation); Q_UNUSED(id);
-
     return 0;
-#endif
 }
+
+#endif // Q_OS_IOS
 
 /* Q_INVOKABLE static */ void WControllerApplication::requestLandscape(bool enabled)
 {

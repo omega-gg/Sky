@@ -87,7 +87,7 @@ public: // Functions
     void applySize(int width, int height);
 
 #ifdef Q_OS_IOS
-    void updateSafeMargins();
+    bool updateSafeMargins();
 #endif
 
 #ifdef QT_NEW

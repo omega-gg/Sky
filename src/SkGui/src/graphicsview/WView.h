@@ -452,6 +452,10 @@ protected: // Events
 
     /* virtual */ void showEvent(QShowEvent * event);
 
+#if defined(Q_OS_IOS) && defined(QT_NEW)
+    /* virtual */ void exposeEvent(QShowEvent * event);
+#endif
+
     /* virtual */ void moveEvent  (QMoveEvent   * event);
     /* virtual */ void resizeEvent(QResizeEvent * event);
 
