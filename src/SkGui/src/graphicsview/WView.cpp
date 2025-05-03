@@ -1557,6 +1557,8 @@ void WViewPrivate::onScreenChanged()
 void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
 {
 #ifdef Q_OS_IOS
+    Q_UNUSED(orientation);
+
     // NOTE Qt6: Values seems incorrect for inverted orientations so we call the iOS API instead.
     int value = Sk::orientation();
 #else
@@ -1583,20 +1585,11 @@ void WViewPrivate::onOrientationChanged(Qt::ScreenOrientation orientation)
 
 void WViewPrivate::onSafeMarginsChanged()
 {
+    if (fullScreen) return;
+
     Q_Q(WView);
 
-    QMargins margins = sk->safeMargins();
-
-    if (safeMargins == margins) return;
-
-    safeMargins = margins;
-
-    if (fullScreen == false)
-    {
-        q->setGeometry(q->availableGeometry());
-    }
-
-    emit q->safeMarginsChanged();
+    q->setGeometry(q->availableGeometry());
 }
 
 #endif
@@ -3451,15 +3444,6 @@ void WView::setHeight(int height)
     emit heightChanged();
 }
 
-#ifdef Q_OS_IOS
-
-QMargins WView::safeMargins() const
-{
-    Q_D(const WView); return d->safeMargins;
-}
-
-#endif
-
 //-------------------------------------------------------------------------------------------------
 
 int WView::centerX() const
@@ -4129,7 +4113,7 @@ QRect WView::availableGeometry() const
     // FIXME iOS/Qt6: For some reason, availableGeometry does not take safeMargins into account.
     if (rect == d->screen->geometry())
     {
-        return rect.marginsRemoved(d->safeMargins);
+        return rect.marginsRemoved(sk->safeMargins());
     }
     else return rect;
 #else
