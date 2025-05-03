@@ -1585,7 +1585,7 @@ void WViewPrivate::onSafeMarginsChanged()
 {
     Q_Q(WView);
 
-    QMargins margins = sk->safeMargins());
+    QMargins margins = sk->safeMargins();
 
     if (safeMargins == margins) return;
 

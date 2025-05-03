@@ -28,6 +28,9 @@
 #include <QVariant>
 #include <QTime>
 #include <QStringList>
+#ifdef Q_OS_IOS
+#include <QMargins>
+#endif
 
 // Sk includes
 #include <WController>
@@ -652,7 +655,7 @@ public: // Properties
     void setDefaultMargins(int ratio);
 
 #ifdef Q_OS_IOS
-    QMargins safeMargins() const
+    QMargins safeMargins() const;
     void     setSafeMargins(QMargins margins);
 #endif
 
