@@ -132,7 +132,21 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 
 - (void) viewSafeAreaInsetsDidChange
 {
-    QMetaObject::invokeMethod(qApp, []{ emit sk->safeMarginsChanged(); }, Qt::QueuedConnection);
+    dispatch_async(dispatch_get_main_queue(),
+    ^{
+        UIWindow *window = self.view.window;
+
+        if (window == nil) return;
+
+        UIEdgeInsets insets = window.safeAreaInsets;
+
+        QMargins margins(insets.left, insets.top, insets.right, insets.bottom);
+
+        QMetaObject::invokeMethod(qApp, [margins]
+        {
+            sk->setSafeMargins(margins);
+        }, Qt::QueuedConnection);
+    });
 }
 
 @end

@@ -113,6 +113,10 @@ public: // Variables
 
     int defaultMargins;
 
+#ifdef Q_OS_IOS
+    QMargins safeMargins;
+#endif
+
     bool screenDimEnabled;
     bool screenSaverEnabled;
 

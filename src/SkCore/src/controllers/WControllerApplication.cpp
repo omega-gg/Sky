@@ -2794,6 +2794,26 @@ void WControllerApplication::setDefaultMargins(int ratio)
     emit defaultMarginsChanged();
 }
 
+#ifdef Q_OS_IOS
+
+QMargins WControllerApplication::safeMargins() const
+{
+    Q_D(const WControllerApplication); return d->safeMargins;
+}
+
+void WControllerApplication::setSafeMargins(QMargins margins)
+{
+    Q_D(WControllerApplication);
+
+    if (d->safeMargins == margins) return;
+
+    d->safeMargins = margins;
+
+    emit safeMarginsChanged();
+}
+
+#endif // Q_OS_IOS
+
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerApplication::screenDimEnabled() const

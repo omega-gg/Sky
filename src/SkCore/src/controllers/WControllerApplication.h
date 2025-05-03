@@ -116,6 +116,11 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(int defaultMargins READ defaultMargins WRITE setDefaultMargins
                NOTIFY defaultMarginsChanged)
 
+#ifdef Q_OS_IOS
+    Q_PROPERTY(QMargins safeMargins READ safeMargins WRITE setSafeMargins
+               NOTIFY safeMarginsChanged)
+#endif
+
     Q_PROPERTY(bool screenDimEnabled READ screenDimEnabled WRITE setScreenDimEnabled
                NOTIFY screenDimEnabledChanged)
 
@@ -645,6 +650,11 @@ public: // Properties
 
     int  defaultMargins() const;
     void setDefaultMargins(int ratio);
+
+#ifdef Q_OS_IOS
+    QMargins safeMargins() const
+    void     setSafeMargins(QMargins margins);
+#endif
 
     bool screenDimEnabled() const;
     void setScreenDimEnabled(bool enabled);
