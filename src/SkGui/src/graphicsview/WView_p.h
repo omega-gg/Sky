@@ -167,6 +167,10 @@ public: // Slots
     void onOrientationChanged(Qt::ScreenOrientation orientation);
 #endif
 
+#ifdef Q_OS_IOS
+    void onSafeMarginsChanged();
+#endif
+
     void onFadeTimeout();
     void onIdleTimeout();
 
