@@ -342,8 +342,8 @@ int WControllerApplication::orientationCamera(int orientation, const QString & i
         for (UIScene * scene in [UIApplication sharedApplication].connectedScenes)
         {
             if ([scene isKindOfClass:[UIWindowScene class]]
-                &&
-                scene.activationState == UISceneActivationStateForegroundActive)
+                /*&&
+                scene.activationState == UISceneActivationStateForegroundActive*/)
             {
                 window = (UIWindowScene *) scene;
 

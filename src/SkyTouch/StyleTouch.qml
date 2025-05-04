@@ -298,8 +298,7 @@ Style
 
     property int sliderStream_intervalProgress: ms1000
 
-    property int sliderStream_sizeChapter: (isTight) ? dp8
-                                                     : dp12
+    property int sliderStream_sizeChapter: dp8
 
     property real sliderStream_opacityProgressA: 0.5
     property real sliderStream_opacityProgressB: 1.0
