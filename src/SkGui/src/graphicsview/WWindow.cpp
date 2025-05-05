@@ -1261,7 +1261,7 @@ QRect WWindow::geometryNormal() const
     Q_D(const WWindow); return d->view->geometryNormal();
 }
 
-QRect WWindow::orientation() const
+int WWindow::orientation() const
 {
     Q_D(const WWindow); return d->view->orientation();
 }

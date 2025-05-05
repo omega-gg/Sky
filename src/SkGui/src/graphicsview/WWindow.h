@@ -683,7 +683,7 @@ public: // Properties
 
     QRect geometryNormal() const;
 
-    QRect orientation() const;
+    int orientation() const;
 
     bool isMinimized() const;
     void setMinimized(bool minimized);
