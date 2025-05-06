@@ -43,7 +43,7 @@ WallBookmarkTrack
                                                  ||
                                                  scannerPlayer.isClicking)
 
-    property int loaderHeight: player.height / 128
+    property int loaderHeight: Math.max(st.dp3, player.height / 128)
 
     property int logoMargin: browserBack.width / logoRatio
 
