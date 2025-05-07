@@ -27,6 +27,10 @@
 
 #ifndef SK_NO_MODELPLAYLISTWEB
 
+//=================================================================================================
+// WModelPlaylistPrivate
+//=================================================================================================
+
 class SK_GUI_EXPORT WModelPlaylistPrivate : public WPrivate
 {
 public:
@@ -43,6 +47,29 @@ public: // Variables
 
 protected:
     W_DECLARE_PUBLIC(WModelPlaylist)
+};
+
+//=================================================================================================
+// WModelPlaylistFilteredPrivate
+//=================================================================================================
+
+class SK_GUI_EXPORT WModelPlaylistFilteredPrivate : public WPrivate
+{
+public:
+    WModelPlaylistFilteredPrivate(WModelPlaylistFiltered * p);
+
+    void init();
+
+public: // Slots
+    void onRoleChanged();
+
+public: // Variables
+    WModelPlaylist * model;
+
+    Qt::SortOrder sortOrder;
+
+protected:
+    W_DECLARE_PUBLIC(WModelPlaylistFiltered)
 };
 
 #endif // SK_NO_MODELPLAYLISTWEB

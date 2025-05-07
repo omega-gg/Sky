@@ -393,26 +393,6 @@ bool WModelPlaylist::selectedAligned() const
 // WModelPlaylistFilteredPrivate
 //=================================================================================================
 
-class SK_GUI_EXPORT WModelPlaylistFilteredPrivate : public WPrivate
-{
-public:
-    WModelPlaylistFilteredPrivate(WModelPlaylistFiltered * p);
-
-    void init();
-
-public: // Variables
-    WModelPlaylist * model;
-
-    Qt::SortOrder sortOrder;
-
-protected:
-    W_DECLARE_PUBLIC(WModelPlaylistFiltered)
-};
-
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
-
 WModelPlaylistFilteredPrivate::
 WModelPlaylistFilteredPrivate(WModelPlaylistFiltered * p) : WPrivate(p) {}
 
@@ -425,6 +405,21 @@ void WModelPlaylistFilteredPrivate::init()
     sortOrder = Qt::AscendingOrder;
 
     q->setDynamicSortFilter(true);
+
+    QObject::connect(q, SIGNAL(sortRoleChanged(int)), q, SLOT(onRoleChanged()));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WModelPlaylistFilteredPrivate::onRoleChanged()
+{
+    Q_Q(WModelPlaylistFiltered);
+
+    if (q->sortRole() == 0) return;
+
+    q->sort(0, sortOrder);
 }
 
 //=================================================================================================

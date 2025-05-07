@@ -202,6 +202,8 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WModelPlaylistFiltered)
+
+    Q_PRIVATE_SLOT(d_func(), void onRoleChanged())
 };
 
 #include <private/WModelPlaylist_p>
