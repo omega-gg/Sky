@@ -689,6 +689,8 @@ elif [ $1 = "macOS" ]; then
 
     cp -r "$VLC"/plugins/*.dylib deploy/plugins
 
+    cp "$VLC"/plugins/plugins.dat deploy/plugins
+
     cp "$VLC"/lib/libvlc.5.dylib     deploy/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib deploy/libvlccore.dylib
 
@@ -713,6 +715,8 @@ elif [ $1 = "linux" ]; then
     cp -r "$VLC"/vlc/plugins/video_chroma       deploy/vlc/plugins
     cp -r "$VLC"/vlc/plugins/video_filter       deploy/vlc/plugins
     cp -r "$VLC"/vlc/plugins/video_output       deploy/vlc/plugins
+
+    cp "$VLC"/vlc/plugins/plugins.dat deploy/vlc/plugins
 
     cp -r "$VLC"/vlc/lib*.so* deploy/vlc
 

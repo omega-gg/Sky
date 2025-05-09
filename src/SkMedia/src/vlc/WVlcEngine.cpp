@@ -28,6 +28,7 @@
 #include <QCoreApplication>
 
 // Sk includes
+#include <WControllerFile>
 #include <WVlcPlayer>
 
 // FIXME MSVC: ssize_t is required by vlc headers.
@@ -59,6 +60,8 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
     instance = NULL;
 
     this->options = options;
+
+    log = false;
 
     if (thread) q->moveToThread(thread);
 
@@ -94,12 +97,21 @@ void WVlcEnginePrivate::startScan(WVlcPlayerPrivate * player, bool enabled)
 
     ssize_t count = libvlc_renderer_discoverer_list_get(instance, &services);
 
+    QStringList names;
+
     for (int i = 0; i < count; i++)
     {
         libvlc_rd_description_t * service = services[i];
 
+        QString name = service->psz_name;
+
+        // FIXME VLC 3.0.21: Sometimes the list contains duplicates.
+        if (names.contains(name)) continue;
+
+        names.append(name);
+
         libvlc_renderer_discoverer_t * discoverer
-            = libvlc_renderer_discoverer_new(instance, service->psz_name);
+            = libvlc_renderer_discoverer_new(instance, name.C_STR);
 
         libvlc_event_manager_t * manager
             = libvlc_renderer_discoverer_event_manager(discoverer);
@@ -142,6 +154,24 @@ void WVlcEnginePrivate::clearDiscoverers()
 //-------------------------------------------------------------------------------------------------
 // Private static events
 //-------------------------------------------------------------------------------------------------
+
+/* static */ void WVlcEnginePrivate::onLog(void *, int, const libvlc_log_t *, const char * fmt,
+                                                                              va_list      args)
+{
+    char message[1024];
+
+    vsnprintf(message, sizeof(message), fmt, args);
+
+    // NOTE: Calling qDebug manually on mobile because libVLC does not print anything on the
+    //       console. The file logging is invoked from the message handler.
+#if defined(Q_OS_IOS) || defined(Q_OS_ANDROID)
+    qDebug("[vlc] %s", message);
+#else
+    QString text = QString("[vlc] %1").arg(message);
+
+    wControllerFile->writeLog(text);
+#endif
+}
 
 /* static */ void WVlcEnginePrivate::onRendererAdded(const struct libvlc_event_t * event,
                                                      void                        * data)
@@ -206,6 +236,12 @@ void WVlcEnginePrivate::clearDiscoverers()
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WVlcEngine::startLog()
+{
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WVlcEnginePrivate::EventLog)));
+}
 
 /* Q_INVOKABLE */ void WVlcEngine::deleteInstance()
 {
@@ -344,6 +380,16 @@ void WVlcEnginePrivate::clearDiscoverers()
     else if (d->instance == NULL)
     {
         return QObject::event(event);
+    }
+    else if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventLog))
+    {
+        if (d->log) return true;
+
+        d->log = true;
+
+        libvlc_log_set(d->instance, WVlcEnginePrivate::onLog, NULL);
+
+        return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventClear))
     {

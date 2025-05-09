@@ -25,7 +25,9 @@
 #ifndef SK_NO_CONTROLLERMEDIA
 
 // Qt includes
+#ifdef CONTROLLERMEDIA_THREAD
 #include <QThread>
+#endif
 
 #ifndef SK_NO_PLAYER
 // VLC includes
@@ -1551,8 +1553,10 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
     // FIXME Qt4: Not sure why we needed that before but that causes a crash.
     //sk->processEvents();
 
+#ifdef CONTROLLERMEDIA_THREAD
     thread->quit();
     thread->wait();
+#endif
 
 #ifndef SK_NO_PLAYER
     delete engine;
@@ -1569,7 +1573,9 @@ void WControllerMediaPrivate::init(const QStringList &)
 void WControllerMediaPrivate::init(const QStringList & options)
 #endif
 {
+#ifdef CONTROLLERMEDIA_THREAD
     Q_Q(WControllerMedia);
+#endif
 
     loader = NULL;
 
@@ -1582,12 +1588,18 @@ void WControllerMediaPrivate::init(const QStringList & options)
 
     methodM3u = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
 
+#ifdef CONTROLLERMEDIA_THREAD
     thread = new QThread(q);
 
     thread->start();
+#endif
 
 #ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_THREAD
     engine = new WVlcEngine(options, thread);
+#else
+    engine = new WVlcEngine(options, NULL);
+#endif
 #endif
 }
 
@@ -1761,7 +1773,7 @@ void WControllerMediaPrivate::loadUrl(QIODevice               * device,
     QObject::connect(reply, SIGNAL(loaded(QIODevice *, const WControllerMediaData &)),
                      q,     SLOT  (onUrl (QIODevice *, const WControllerMediaData &)));
 
-    reply->moveToThread(thread);
+    reply->moveToThread(wControllerPlaylist->d_func()->thread);
 
     if (query.target == WBackendNetQuery::TargetM3u)
     {
@@ -2879,7 +2891,16 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 {
     Q_D(const WControllerMedia);
 
+#ifdef CONTROLLERMEDIA_THREAD
     return new WVlcPlayer(d->engine, d->thread);
+#else
+    return new WVlcPlayer(d->engine, NULL);
+#endif
+}
+
+/* Q_INVOKABLE */ void WControllerMedia::startLog()
+{
+    d_func()->engine->startLog();
 }
 
 #endif

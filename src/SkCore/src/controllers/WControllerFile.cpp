@@ -657,6 +657,16 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 #endif
 }
 
+/* Q_INVOKABLE */ void WControllerFile::writeLog(const QString & text)
+{
+    Q_D(WControllerFile);
+
+    // NOTE: The message handler must be initialized before calling this.
+    if (d->timerLog.isSingleShot() == false) return;
+
+    d->method.invoke(this, Q_ARG(const QString &, text));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WCacheFile * WControllerFile::getFile(const QString & url, QObject * parent,

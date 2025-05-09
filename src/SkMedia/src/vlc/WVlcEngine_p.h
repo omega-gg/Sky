@@ -46,6 +46,7 @@ public: // Enums
     enum EventType
     {
         EventCreate = QEvent::User,
+        EventLog,
         EventClear
     };
 
@@ -60,6 +61,9 @@ public: // Functions
     void clearDiscoverers();
 
 public: // Static events
+    static void onLog(void * data, int level, const libvlc_log_t * ctx, const char * fmt,
+                                                                        va_list      args);
+
     static void onRendererAdded  (const struct libvlc_event_t * event, void * data);
     static void onRendererDeleted(const struct libvlc_event_t * event, void * data);
 
@@ -75,6 +79,8 @@ public: // Variables
     QList<WBackendOutput> outputs;
 
     QList<WVlcPlayerPrivate *> players;
+
+    bool log;
 
 protected:
     W_DECLARE_PUBLIC(WVlcEngine)

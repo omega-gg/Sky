@@ -515,6 +515,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onUrlFolder  (QIODevice *, const WControllerPlaylistData &))
     Q_PRIVATE_SLOT(d_func(), void onUrlItem    (QIODevice *, const WControllerPlaylistItem &))
 
+    friend class WControllerMedia;
+    friend class WControllerMediaPrivate;
     friend class WLibraryItem;
     friend class WLibraryItemPrivate;
     friend class WLibraryFolder;

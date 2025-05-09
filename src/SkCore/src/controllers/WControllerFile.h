@@ -129,6 +129,9 @@ protected: // Initialize
 public: // Interface
     Q_INVOKABLE void initMessageHandler();
 
+    // NOTE: initMessageHandler must be called prior to this function.
+    Q_INVOKABLE void writeLog(const QString & text);
+
     Q_INVOKABLE WCacheFile * getFile(const QString & url,
                                      QObject       * parent = NULL, int maxHost = -1);
 

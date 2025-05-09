@@ -45,6 +45,8 @@ public:
                         QThread * thread = NULL, QObject * parent = NULL);
 
 public: // Interface
+    Q_INVOKABLE void startLog();
+
     Q_INVOKABLE void deleteInstance();
 
 public: // Static functions

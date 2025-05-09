@@ -218,7 +218,9 @@ public: // Slots
     void onUrl(QIODevice * device, const WControllerMediaData & data);
 
 public: // Variables
+#ifdef CONTROLLERMEDIA_THREAD
     QThread * thread;
+#endif
 
 #ifndef SK_NO_PLAYER
     WVlcEngine * engine;

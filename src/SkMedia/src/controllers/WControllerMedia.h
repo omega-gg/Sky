@@ -34,6 +34,12 @@
 #include <WYamlReader>
 #include <WSubtitle>
 
+// Defines
+// NOTE: VLC seems to be prefer being run on the main thread, in particular for bonjour chromecast
+//       discovery. So we make it run on the main thread everywhere. We can still uncomment this to
+//       enable threading for testing.
+//#define CONTROLLERMEDIA_THREAD
+
 #ifndef SK_NO_CONTROLLERMEDIA
 
 // Forward declarations
@@ -288,6 +294,8 @@ public: // Initialize
 public: // Interface
 #ifndef SK_NO_PLAYER
     Q_INVOKABLE WVlcPlayer * createVlcPlayer() const;
+
+    Q_INVOKABLE void startLog();
 #endif
 
     Q_INVOKABLE
