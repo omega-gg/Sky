@@ -57,6 +57,8 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 {
     Q_Q(WVlcEngine);
 
+    this->thread = thread;
+
     instance = NULL;
 
     this->options = options;

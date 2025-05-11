@@ -171,6 +171,7 @@ public: // Slots
     void onOutputCleared();
 
 public: // Variables
+    QThread    * thread;
     WVlcEngine * engine;
 
     libvlc_media_player_t * player;

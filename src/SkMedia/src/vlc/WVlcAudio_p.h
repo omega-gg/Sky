@@ -110,8 +110,8 @@ public: // Slots
     void onWait(bool enabled);
 
 public: // Variables
-    WVlcEngine * engine;
     QThread    * thread;
+    WVlcEngine * engine;
 
     libvlc_media_player_t * player;
 

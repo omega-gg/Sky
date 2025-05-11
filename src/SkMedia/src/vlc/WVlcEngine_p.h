@@ -68,6 +68,8 @@ public: // Static events
     static void onRendererDeleted(const struct libvlc_event_t * event, void * data);
 
 public: // Variables
+    QThread * thread;
+
     libvlc_instance_t * instance;
 
     QStringList options;

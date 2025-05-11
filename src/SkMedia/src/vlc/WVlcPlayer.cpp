@@ -99,6 +99,7 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 {
     Q_Q(WVlcPlayer);
 
+    this->thread = thread;
     this->engine = engine;
 
     player = NULL;

@@ -51,8 +51,8 @@ void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
 {
     Q_Q(WVlcAudio);
 
-    this->engine = engine;
     this->thread = thread;
+    this->engine = engine;
 
     player = NULL;
 
