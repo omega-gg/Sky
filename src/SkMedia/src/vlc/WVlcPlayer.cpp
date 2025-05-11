@@ -224,7 +224,7 @@ void WVlcPlayerPrivate::stop()
 #else
     currentTime = 0;
 
-    libvlc_media_player_pause(player);
+    libvlc_media_player_set_pause(player, 1);
 
     libvlc_media_player_set_time(player, 0, false);
 #endif

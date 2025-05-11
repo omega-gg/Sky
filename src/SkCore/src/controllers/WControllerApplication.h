@@ -55,6 +55,7 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 #ifndef SK_CONSOLE
     Q_ENUMS(Mode)
 #endif
+    Q_ENUMS(Permission)
     Q_ENUMS(Playback)
 
     //---------------------------------------------------------------------------------------------
