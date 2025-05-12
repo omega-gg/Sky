@@ -114,6 +114,8 @@ public: // Variable
     WList<WBackendOutput> outputs;
 #endif
 
+    WBackendAdjust adjust;
+
     QString subtitle;
 
     QString context;

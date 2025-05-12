@@ -163,6 +163,52 @@ void WAbstractBackendPrivate::currentOutputChanged()
 // WAbstractBackend
 //=================================================================================================
 
+WBackendAdjust::WBackendAdjust()
+{
+    enable = false;
+
+    contrast   = 1.0f;
+    brightness = 1.0f;
+    hue        = 0.0f;
+    saturation = 1.0f;
+    gamma      = 1.0f;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WBackendAdjust::WBackendAdjust(const WBackendAdjust & other)
+{
+    *this = other;
+}
+
+bool WBackendAdjust::operator==(const WBackendAdjust & other) const
+{
+    return (enable == other.enable && contrast   == other.contrast   &&
+                                      brightness == other.brightness &&
+                                      hue        == other.hue        &&
+                                      saturation == other.saturation &&
+                                      gamma      == other.gamma);
+}
+
+WBackendAdjust & WBackendAdjust::operator=(const WBackendAdjust & other)
+{
+    enable = other.enable;
+
+    contrast   = other.contrast;
+    brightness = other.brightness;
+    hue        = other.hue;
+    saturation = other.saturation;
+    gamma      = other.gamma;
+
+    return *this;
+}
+
+//=================================================================================================
+// WAbstractBackend
+//=================================================================================================
+
 /* explicit */ WAbstractBackend::WAbstractBackend(QObject * parent)
     : QObject(parent), WPrivatable(new WAbstractBackendPrivate(this))
 {
@@ -191,7 +237,24 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 
 #endif
 
-//-------------------------------------------------------------------------------------------------
+/* Q_INVOKABLE */ void WAbstractBackend::applyAdjust(bool enable, float contrast,
+                                                                  float brightness,
+                                                                  float hue,
+                                                                  float saturation,
+                                                                  float gamma)
+{
+    WBackendAdjust adjust;
+
+    adjust.enable = enable;
+
+    adjust.contrast   = contrast;
+    adjust.brightness = brightness;
+    adjust.hue        = hue;
+    adjust.saturation = saturation;
+    adjust.gamma      = gamma;
+
+    setAdjust(adjust);
+}
 
 /* Q_INVOKABLE */ const QSizeF & WAbstractBackend::getSize() const
 {
@@ -1344,6 +1407,11 @@ void WAbstractBackend::endOutputRemove() const
     qWarning("WAbstractBackend::backendSetCurrentOutput: Not supported.");
 }
 
+/* virtual */ void WAbstractBackend::backendSetAdjust(const WBackendAdjust &)
+{
+    qWarning("WAbstractBackend::backendSetAdjust: Not supported.");
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendSetSize(const QSizeF &)
@@ -1830,6 +1898,28 @@ int WAbstractBackend::countOutputs() const
     Q_D(const WAbstractBackend); return d->outputs.count();
 }
 
+WBackendAdjust WAbstractBackend::adjust() const
+{
+    Q_D(const WAbstractBackend); return d->adjust;
+}
+
+void WAbstractBackend::setAdjust(const WBackendAdjust & adjust)
+{
+    Q_D(WAbstractBackend);
+
+    WBackendAdjust data = adjust;
+
+    if (d->filter) d->filter->filterAdjust(&data);
+
+    if (d->adjust == data) return;
+
+    d->adjust = data;
+
+    backendSetAdjust(data);
+
+    emit adjustChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 QString WAbstractBackend::subtitle() const
@@ -2004,6 +2094,8 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 /* virtual */ void WBackendFilter::filterScanOutput(bool *) {}
 
 /* virtual */ void WBackendFilter::filterCurrentOutput(int *) {}
+
+/* virtual */ void WBackendFilter::filterAdjust(WBackendAdjust *) {}
 
 /* virtual */ void WBackendFilter::filterContext(QString *, QString *) {}
 

@@ -149,6 +149,8 @@ protected: // Functions
 
     void backendSetCurrentOutput(const WBackendOutput * output);
 
+    void backendSetAdjust(const WBackendAdjust & adjust);
+
     void backendSetSize(const QSizeF & size);
 
 #ifndef SK_NO_PLAYER

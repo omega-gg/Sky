@@ -51,32 +51,6 @@ class WVlcAudio;
 #endif
 
 //-------------------------------------------------------------------------------------------------
-// WVlcPlayerAdjust
-//-------------------------------------------------------------------------------------------------
-
-class SK_MEDIA_EXPORT WVlcPlayerAdjust
-{
-public:
-    WVlcPlayerAdjust();
-
-public: // Operators
-    WVlcPlayerAdjust(const WVlcPlayerAdjust & other);
-
-    bool operator==(const WVlcPlayerAdjust & other) const;
-
-    WVlcPlayerAdjust & operator=(const WVlcPlayerAdjust & other);
-
-public: // Variables
-    bool enable;
-
-    float contrast;
-    float brightness;
-    float hue;
-    float saturation;
-    float gamma;
-};
-
-//-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivate
 //-------------------------------------------------------------------------------------------------
 
@@ -141,7 +115,7 @@ public: // Functions
 
     void setOutput(int index);
 
-    void setAdjust(const WVlcPlayerAdjust & adjust);
+    void setAdjust(const WBackendAdjust & adjust);
 
     void deletePlayer();
 
@@ -229,8 +203,8 @@ public: // Variables
 
     int networkCache;
 
-    WVlcPlayerAdjust adjust;
-    bool             adjustReady;
+    WBackendAdjust adjust;
+    bool           adjustReady;
 
     QString proxyHost;
     QString proxyPassword;
@@ -324,14 +298,14 @@ public: // Variables
 class WVlcPlayerEventAdjust : public QEvent
 {
 public:
-    WVlcPlayerEventAdjust(const WVlcPlayerAdjust & adjust)
+    WVlcPlayerEventAdjust(const WBackendAdjust & adjust)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventAdjust))
     {
         this->adjust = adjust;
     }
 
 public: // Variables
-    WVlcPlayerAdjust adjust;
+    WBackendAdjust adjust;
 };
 
 #endif // SK_NO_VLCPLAYER

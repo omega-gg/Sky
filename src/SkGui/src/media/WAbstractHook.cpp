@@ -429,6 +429,11 @@ void WAbstractHook::backendSetCurrentOutput(const WBackendOutput * output)
     Q_D(WAbstractHook); d->backend->backendSetCurrentOutput(output);
 }
 
+void WAbstractHook::backendSetAdjust(const WBackendAdjust & adjust)
+{
+    Q_D(WAbstractHook); d->backend->backendSetAdjust(adjust);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WAbstractHook::backendSetSize(const QSizeF & size)

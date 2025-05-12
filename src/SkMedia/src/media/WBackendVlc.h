@@ -80,6 +80,8 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetCurrentOutput(const WBackendOutput * output);
 
+    /* virtual */ void backendSetAdjust(const WBackendAdjust & adjust);
+
     /* virtual */ void backendSetSize(const QSizeF & size);
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false

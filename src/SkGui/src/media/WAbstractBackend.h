@@ -64,31 +64,6 @@ struct WBackendTexture;
 Q_MOC_INCLUDE("WPlayer")
 #endif
 
-#if defined(QT_NEW) && defined(SK_NO_QML) == false
-
-//-------------------------------------------------------------------------------------------------
-// WBackendNode
-//-------------------------------------------------------------------------------------------------
-
-class SK_GUI_EXPORT WBackendNode : public QSGGeometryNode
-{
-public:
-    WBackendNode();
-
-public: // Interface
-    void setRect(const QRectF & rect);
-
-public: // Abstract interface
-    virtual void setTextures(WBackendTexture * textures) = 0;
-
-private: // Variables
-    QSGGeometry _geometry;
-
-    QRectF _source;
-};
-
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // WBackendInterface
 //-------------------------------------------------------------------------------------------------
@@ -137,6 +112,57 @@ private:
     friend class WAbstractBackend;
     friend class WAbstractBackendPrivate;
 };
+
+//-------------------------------------------------------------------------------------------------
+// WBackendAdjust
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendAdjust
+{
+public:
+    WBackendAdjust();
+
+public: // Operators
+    WBackendAdjust(const WBackendAdjust & other);
+
+    bool operator==(const WBackendAdjust & other) const;
+
+    WBackendAdjust & operator=(const WBackendAdjust & other);
+
+public: // Variables
+    bool enable;
+
+    float contrast;
+    float brightness;
+    float hue;
+    float saturation;
+    float gamma;
+};
+
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
+
+//-------------------------------------------------------------------------------------------------
+// WBackendNode
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendNode : public QSGGeometryNode
+{
+public:
+    WBackendNode();
+
+public: // Interface
+    void setRect(const QRectF & rect);
+
+public: // Abstract interface
+    virtual void setTextures(WBackendTexture * textures) = 0;
+
+private: // Variables
+    QSGGeometry _geometry;
+
+    QRectF _source;
+};
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // WAbstractBackend
@@ -225,6 +251,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(OutputType outputType READ outputType NOTIFY currentOutputChanged)
 
     Q_PROPERTY(int countOutputs READ countOutputs NOTIFY outputsChanged)
+
+    Q_PROPERTY(WBackendAdjust adjust READ adjust WRITE setAdjust NOTIFY adjustChanged)
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
@@ -324,6 +352,13 @@ public: // Interface
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
     Q_INVOKABLE WBackendNode * createNode() const;
 #endif
+
+    // NOTE: This is a convenience function for the setAdjust function.
+    Q_INVOKABLE void applyAdjust(bool enable, float contrast   = 1.0f,
+                                              float brightness = 1.0f,
+                                              float hue        = 0.0f,
+                                              float saturation = 1.0f,
+                                              float gamma      = 1.0f);
 
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);
@@ -509,6 +544,8 @@ protected: // Virtual functions
 
     virtual void backendSetCurrentOutput(const WBackendOutput * output); // {}
 
+    virtual void backendSetAdjust(const WBackendAdjust & adjust); // {}
+
     virtual void backendSetSize(const QSizeF & size); // {}
 
 #ifndef SK_NO_PLAYER
@@ -585,6 +622,8 @@ signals:
     void currentOutputChanged();
 
     void outputsChanged();
+
+    void adjustChanged();
 
     void subtitleChanged();
 
@@ -675,6 +714,9 @@ public: // Properties
     OutputType outputType() const;
 
     int countOutputs() const;
+
+    WBackendAdjust adjust() const;
+    void           setAdjust(const WBackendAdjust & adjust);
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
@@ -798,6 +840,8 @@ public:
     virtual void filterScanOutput(bool * enabled); // {}
 
     virtual void filterCurrentOutput(int * index); // {}
+
+    virtual void filterAdjust(WBackendAdjust * adjust); // {}
 
     virtual void filterContext(QString * context, QString * contextId); // {}
 

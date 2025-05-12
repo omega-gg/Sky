@@ -1548,6 +1548,15 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     backend->setCurrentOutput(indexOutput(output));
 }
 
+/* virtual */ void WBackendManager::backendSetAdjust(const WBackendAdjust & adjust)
+{
+    Q_D(WBackendManager);
+
+    WAbstractBackend * backend = d->items.first().backend;
+
+    backend->setAdjust(adjust);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WBackendManager::backendSetSize(const QSizeF & size)

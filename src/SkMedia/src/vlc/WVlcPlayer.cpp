@@ -44,52 +44,6 @@
 static const int PLAYER_RETRY_GAP = 1000; // 1 second
 
 //=================================================================================================
-// WVlcPlayerAdjust
-//=================================================================================================
-
-WVlcPlayerAdjust::WVlcPlayerAdjust()
-{
-    enable = false;
-
-    contrast   = 1.0f;
-    brightness = 1.0f;
-    hue        = 0.0f;
-    saturation = 1.0f;
-    gamma      = 1.0f;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Operators
-//-------------------------------------------------------------------------------------------------
-
-WVlcPlayerAdjust::WVlcPlayerAdjust(const WVlcPlayerAdjust & other)
-{
-    *this = other;
-}
-
-bool WVlcPlayerAdjust::operator==(const WVlcPlayerAdjust & other) const
-{
-    return (enable == other.enable && contrast   == other.contrast   &&
-                                      brightness == other.brightness &&
-                                      hue        == other.hue        &&
-                                      saturation == other.saturation &&
-                                      gamma      == other.gamma);
-}
-
-WVlcPlayerAdjust & WVlcPlayerAdjust::operator=(const WVlcPlayerAdjust & other)
-{
-    enable = other.enable;
-
-    contrast   = other.contrast;
-    brightness = other.brightness;
-    hue        = other.hue;
-    saturation = other.saturation;
-    gamma      = other.gamma;
-
-    return *this;
-}
-
-//=================================================================================================
 // WVlcPlayerPrivate
 //=================================================================================================
 
@@ -572,7 +526,7 @@ void WVlcPlayerPrivate::setOutput(int index)
     }
 }
 
-void WVlcPlayerPrivate::setAdjust(const WVlcPlayerAdjust & adjust)
+void WVlcPlayerPrivate::setAdjust(const WBackendAdjust & adjust)
 {
     if (this->adjust == adjust) return;
 
@@ -1246,23 +1200,9 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                                  index));
 }
 
-/* Q_INVOKABLE */ void WVlcPlayer::setAdjust(bool enable, float contrast,
-                                                          float brightness,
-                                                          float hue,
-                                                          float saturation,
-                                                          float gamma)
+/* Q_INVOKABLE */ void WVlcPlayer::setAdjust(const WBackendAdjust & adjust)
 {
     Q_D(WVlcPlayer);
-
-    WVlcPlayerAdjust adjust;
-
-    adjust.enable = enable;
-
-    adjust.contrast   = contrast;
-    adjust.brightness = brightness;
-    adjust.hue        = hue;
-    adjust.saturation = saturation;
-    adjust.gamma      = gamma;
 
     if (d->thread == NULL)
     {
