@@ -126,6 +126,7 @@ public: // Operators
     WBackendAdjust(const WBackendAdjust & other);
 
     bool operator==(const WBackendAdjust & other) const;
+    bool operator!=(const WBackendAdjust & other) const;
 
     WBackendAdjust & operator=(const WBackendAdjust & other);
 
@@ -352,13 +353,6 @@ public: // Interface
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
     Q_INVOKABLE WBackendNode * createNode() const;
 #endif
-
-    // NOTE: This is a convenience function for the setAdjust function.
-    Q_INVOKABLE void applyAdjust(bool enable, float contrast   = 1.0f,
-                                              float brightness = 1.0f,
-                                              float hue        = 0.0f,
-                                              float saturation = 1.0f,
-                                              float gamma      = 1.0f);
 
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);

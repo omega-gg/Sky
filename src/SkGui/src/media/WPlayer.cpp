@@ -1602,6 +1602,10 @@ void WPlayer::updateFrame()
 
     backend->setCurrentOutput(d->currentOutput);
 
+    backend->setAdjust(d->adjust);
+
+    backend->setSubtitle(d->subtitle);
+
     if (d->source.isEmpty() == false)
     {
          d->clearPlaylistAndTabs();
@@ -1650,6 +1654,8 @@ void WPlayer::updateFrame()
     connect(backend, SIGNAL(currentOutputChanged()), this, SIGNAL(currentOutputChanged()));
 
     connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
+
+    connect(backend, SIGNAL(adjustChanged()), this, SIGNAL(adjustChanged()));
 
     connect(backend, SIGNAL(subtitleChanged()), this, SIGNAL(subtitleChanged()));
 
@@ -2669,6 +2675,33 @@ int WPlayer::countOutputs() const
         return d->backend->countOutputs();
     }
     else return 0;
+}
+
+WBackendAdjust WPlayer::adjust() const
+{
+    Q_D(const WPlayer);
+
+    if (d->backend)
+    {
+        return d->backend->adjust();
+    }
+    else return d->adjust;
+}
+
+void WPlayer::setAdjust(const WBackendAdjust & adjust)
+{
+    Q_D(WPlayer);
+
+    if (d->backend)
+    {
+        d->backend->setAdjust(adjust);
+    }
+    else if (d->adjust != adjust)
+    {
+        d->adjust = adjust;
+
+        emit adjustChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

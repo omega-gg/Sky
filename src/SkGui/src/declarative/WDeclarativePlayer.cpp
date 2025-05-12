@@ -126,6 +126,8 @@ void WDeclarativePlayerPrivate::init()
 
     QObject::connect(player, SIGNAL(outputsChanged()), q, SIGNAL(outputsChanged()));
 
+    QObject::connect(player, SIGNAL(adjustChanged()), q, SIGNAL(adjustChanged()));
+
     QObject::connect(player, SIGNAL(subtitleChanged()), q, SIGNAL(subtitleChanged()));
 
     QObject::connect(player, SIGNAL(contextChanged()), q, SIGNAL(contextChanged()));
@@ -333,6 +335,25 @@ void WDeclarativePlayer::updateFrame()
     qreal y = (height() - sizeHeight) / 2;
 
     return QRectF(x, y, sizeWidth, sizeHeight);
+}
+
+/* Q_INVOKABLE */ void WDeclarativePlayer::applyAdjust(bool enable, float contrast,
+                                                                    float brightness,
+                                                                    float hue,
+                                                                    float saturation,
+                                                                    float gamma)
+{
+    WBackendAdjust adjust;
+
+    adjust.enable = enable;
+
+    adjust.contrast   = contrast;
+    adjust.brightness = brightness;
+    adjust.hue        = hue;
+    adjust.saturation = saturation;
+    adjust.gamma      = gamma;
+
+    setAdjust(adjust);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1086,6 +1107,20 @@ int WDeclarativePlayer::countOutputs() const
     Q_D(const WDeclarativePlayer);
 
     return d->player->countOutputs();
+}
+
+WBackendAdjust WDeclarativePlayer::adjust() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    return d->player->adjust();
+}
+
+void WDeclarativePlayer::setAdjust(const WBackendAdjust & adjust)
+{
+    Q_D(WDeclarativePlayer);
+
+    d->player->setAdjust(adjust);
 }
 
 //-------------------------------------------------------------------------------------------------

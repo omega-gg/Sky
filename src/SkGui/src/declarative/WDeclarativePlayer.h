@@ -144,6 +144,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(int countOutputs READ countOutputs NOTIFY outputsChanged)
 
+    Q_PROPERTY(WBackendAdjust adjust READ adjust WRITE setAdjust NOTIFY adjustChanged)
+
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
     Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
@@ -244,6 +246,13 @@ public: // Interface
 
     // NOTE: This functions returns the video frame geometry mapped to the player dimensions.
     Q_INVOKABLE QRectF getGeometry() const;
+
+    // NOTE: This is a convenience function for setAdjust.
+    Q_INVOKABLE void applyAdjust(bool enable, float contrast   = 1.0f,
+                                              float brightness = 1.0f,
+                                              float hue        = 0.0f,
+                                              float saturation = 1.0f,
+                                              float gamma      = 1.0f);
 
     Q_INVOKABLE void updateHighlightedTab();
 
@@ -354,6 +363,8 @@ signals:
     void currentOutputChanged();
 
     void outputsChanged();
+
+    void adjustChanged();
 
     void subtitleChanged();
 
@@ -475,6 +486,9 @@ public: // Properties
     WAbstractBackend::OutputType outputType() const;
 
     int countOutputs() const;
+
+    WBackendAdjust adjust() const;
+    void           setAdjust(const WBackendAdjust & adjust);
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);

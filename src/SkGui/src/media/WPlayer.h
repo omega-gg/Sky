@@ -141,6 +141,8 @@ class SK_GUI_EXPORT WPlayer : public QObject, public WPlaylistWatcher, public WP
 
     Q_PROPERTY(int countOutputs READ countOutputs NOTIFY outputsChanged)
 
+    Q_PROPERTY(WBackendAdjust adjust READ adjust WRITE setAdjust NOTIFY adjustChanged)
+
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
     Q_PROPERTY(QString context   READ context   NOTIFY contextChanged)
@@ -333,6 +335,8 @@ signals:
 
     void outputsChanged();
 
+    void adjustChanged();
+
     void subtitleChanged();
 
     void contextChanged();
@@ -456,6 +460,9 @@ public: // Properties
     WAbstractBackend::OutputType outputType() const;
 
     int countOutputs() const;
+
+    WBackendAdjust adjust() const;
+    void           setAdjust(const WBackendAdjust & adjust);
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);

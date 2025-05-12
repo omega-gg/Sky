@@ -190,6 +190,8 @@ public: // Variables
 
     int currentOutput;
 
+    WBackendAdjust adjust;
+
     QString subtitle;
 
     int pauseTimeout;

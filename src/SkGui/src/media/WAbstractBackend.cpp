@@ -192,6 +192,11 @@ bool WBackendAdjust::operator==(const WBackendAdjust & other) const
                                       gamma      == other.gamma);
 }
 
+bool WBackendAdjust::operator!=(const WBackendAdjust & other) const
+{
+    return (operator==(other) == false);
+}
+
 WBackendAdjust & WBackendAdjust::operator=(const WBackendAdjust & other)
 {
     enable = other.enable;
@@ -236,25 +241,6 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 }
 
 #endif
-
-/* Q_INVOKABLE */ void WAbstractBackend::applyAdjust(bool enable, float contrast,
-                                                                  float brightness,
-                                                                  float hue,
-                                                                  float saturation,
-                                                                  float gamma)
-{
-    WBackendAdjust adjust;
-
-    adjust.enable = enable;
-
-    adjust.contrast   = contrast;
-    adjust.brightness = brightness;
-    adjust.hue        = hue;
-    adjust.saturation = saturation;
-    adjust.gamma      = gamma;
-
-    setAdjust(adjust);
-}
 
 /* Q_INVOKABLE */ const QSizeF & WAbstractBackend::getSize() const
 {
