@@ -304,27 +304,27 @@ void WVlcPlayerPrivate::setSource(const QString & source, const QString & audio,
                         Q_Q(WVlcPlayer);
 
                         // NOTE: We create this instance on the VLC threads.
-                        playerAudio = new WVlcAudio(d->engine);
+                        playerAudio = new WVlcAudio(engine);
 
-                        playerAudio->setSpeed(libvlc_media_player_get_rate(d->player));
+                        playerAudio->setSpeed(libvlc_media_player_get_rate(player));
 
-                        playerAudio->setVolume(libvlc_audio_get_volume(d->player));
+                        playerAudio->setVolume(libvlc_audio_get_volume(player));
 
                         mutex.lock();
 
-                        playerAudio->setProxy(d->proxyHost, d->proxyPassword);
+                        playerAudio->setProxy(proxyHost, proxyPassword);
 
                         playerAudio->setOptions(options);
 
-                        playerAudio->setNetworkCache(d->networkCache);
+                        playerAudio->setNetworkCache(networkCache);
 
                         mutex.unlock();
 
-                        connect(playerAudio, SIGNAL(triggerPlay ()), q, SLOT(onPlay ()));
-                        connect(playerAudio, SIGNAL(triggerPause()), q, SLOT(onPause()));
+                        QObject::connect(playerAudio, SIGNAL(triggerPlay ()), q, SLOT(onPlay ()));
+                        QObject::connect(playerAudio, SIGNAL(triggerPause()), q, SLOT(onPause()));
                     }
 
-                    playerAudio->setSource(audio, eventSource->loop);
+                    playerAudio->setSource(audio, loop);
                 }
                 else
                 {
