@@ -112,6 +112,17 @@ public: // Functions
 
     QString encodeUrl(const QString & url) const;
 
+    void create();
+
+    void setBackend(WAbstractBackend      * backend,
+                    libvlc_video_format_cb  setup,
+                    libvlc_video_cleanup_cb cleanup,
+                    libvlc_video_lock_cb    lock,
+                    libvlc_video_unlock_cb  unlock,
+                    libvlc_video_display_cb display);
+
+    void setSource(const QString & source, const QString & audio, int loop);
+
     void play(int time);
 
     void pause();
@@ -123,7 +134,16 @@ public: // Functions
 
     void setVolume(int volume);
 
+    void setVideo(int id);
+    void setAudio(int id);
+
     void setScanOutput(bool enabled);
+
+    void setOutput(int index);
+
+    void setAdjust(const WVlcPlayerAdjust & adjust);
+
+    void deletePlayer();
 
 #if LIBVLC_VERSION_MAJOR > 3
     void applyOpen();
@@ -177,7 +197,7 @@ public: // Variables
     libvlc_media_player_t * player;
 
 #ifdef VLCPLAYER_AUDIO
-    WVlcAudio * audio;
+    WVlcAudio * playerAudio;
 #endif
 
     WAbstractBackend * backend;
@@ -281,17 +301,17 @@ public: // Variables
 class WVlcPlayerEventSource : public QEvent
 {
 public:
-    WVlcPlayerEventSource(const QString & media, const QString & audio, int loop)
+    WVlcPlayerEventSource(const QString & source, const QString & audio, int loop)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSource))
     {
-        this->media = media;
-        this->audio = audio;
+        this->source = source;
+        this->audio  = audio;
 
         this->loop = loop;
     }
 
 public: // Variables
-    QString media;
+    QString source;
     QString audio;
 
     bool loop;

@@ -105,7 +105,7 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
     player = NULL;
 
 #ifdef VLCPLAYER_AUDIO
-    audio = NULL;
+    playerAudio = NULL;
 #endif
 
     backend = NULL;
@@ -165,6 +165,236 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
     return result.replace(" ", "%20");
 }
 
+void WVlcPlayerPrivate::create()
+{
+    player = libvlc_media_player_new(engine->d_func()->instance);
+
+    // FIXME: Applying the player default volume.
+    //libvlc_audio_set_volume(player, 100);
+
+    libvlc_event_manager_t * manager = libvlc_media_player_event_manager(player);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    libvlc_event_attach(manager, libvlc_MediaPlayerMediaChanged, onChanged, this);
+    libvlc_event_attach(manager, libvlc_MediaPlayerOpening,      onOpening, this);
+#endif
+
+    libvlc_event_attach(manager, libvlc_MediaPlayerPlaying, onPlaying, this);
+    libvlc_event_attach(manager, libvlc_MediaPlayerPaused,  onPaused,  this);
+    libvlc_event_attach(manager, libvlc_MediaPlayerStopped, onStopped, this);
+
+    libvlc_event_attach(manager, libvlc_MediaPlayerBuffering, onBuffering, this);
+
+    libvlc_event_attach(manager, libvlc_MediaPlayerLengthChanged, onLength, this);
+    libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged,   onTime,   this);
+
+#if LIBVLC_VERSION_MAJOR < 4
+    libvlc_event_attach(manager, libvlc_MediaPlayerEndReached, onEndReached, this);
+#endif
+
+    libvlc_event_attach(manager, libvlc_MediaPlayerEncounteredError, onEncounteredError, this);
+}
+
+void WVlcPlayerPrivate::setBackend(WAbstractBackend      * backend,
+                                   libvlc_video_format_cb  setup,
+                                   libvlc_video_cleanup_cb cleanup,
+                                   libvlc_video_lock_cb    lock,
+                                   libvlc_video_unlock_cb  unlock,
+                                   libvlc_video_display_cb display)
+{
+    if (this->backend)
+    {
+        qWarning("WVlcPlayer::event: Player already has a backend.");
+
+        return;
+    }
+
+    Q_ASSERT(backend);
+
+    this->backend = backend;
+
+    libvlc_video_set_format_callbacks(player, setup, cleanup);
+
+    libvlc_video_set_callbacks(player, lock, unlock, display, backend);
+}
+
+void WVlcPlayerPrivate::setSource(const QString & source, const QString & audio, int loop)
+{
+    WAbstractBackend::Output output;
+
+    QString cache;
+
+    QString proxy;
+    QString proxyPassword;
+
+    QStringList options;
+
+    mutex.lock();
+
+    output = this->output;
+
+    // NOTE: I'm not sure we need this anymore.
+    if (networkCache != -1)
+    {
+        cache = "network-caching=" + QString::number(networkCache);
+    }
+
+    if (proxyHost.isEmpty() == false)
+    {
+        proxy         = "http-proxy="     + proxyHost;
+        proxyPassword = "http-proxy-pwd=" + proxyPassword;
+    }
+
+    options = this->options;
+
+    mutex.unlock();
+
+    libvlc_media_t * media;
+
+    if (output == WAbstractBackend::OutputAudio)
+    {
+#ifdef VLCPLAYER_AUDIO
+        if (hasAudio)
+        {
+            hasAudio = false;
+
+            playerAudio->stop();
+        }
+#endif
+
+        if (audio.isEmpty())
+        {
+             media = createMedia(source);
+        }
+        else media = createMedia(audio);
+
+        // FIXME VLC 3.0.18: This option seems to fail the second time we call it.
+        libvlc_media_add_option(media, "no-video");
+    }
+    else
+    {
+        media = createMedia(source);
+
+        if (output == WAbstractBackend::OutputVideo)
+        {
+#ifdef VLCPLAYER_AUDIO
+            if (hasAudio)
+            {
+                hasAudio = false;
+
+                playerAudio->stop();
+            }
+#endif
+
+            libvlc_media_add_option(media, "no-audio");
+        }
+        else
+        {
+            if (audio.isEmpty() == false)
+            {
+#ifdef VLCPLAYER_AUDIO
+                // NOTE VLC: When using an external renderer we have to stick with input-slave
+                //           because it does not support multiple players.
+                if (hasOutput == false)
+                {
+                    hasAudio = true;
+
+                    if (playerAudio == NULL)
+                    {
+                        Q_Q(WVlcPlayer);
+
+                        // NOTE: We create this instance on the VLC threads.
+                        playerAudio = new WVlcAudio(d->engine);
+
+                        playerAudio->setSpeed(libvlc_media_player_get_rate(d->player));
+
+                        playerAudio->setVolume(libvlc_audio_get_volume(d->player));
+
+                        mutex.lock();
+
+                        playerAudio->setProxy(d->proxyHost, d->proxyPassword);
+
+                        playerAudio->setOptions(options);
+
+                        playerAudio->setNetworkCache(d->networkCache);
+
+                        mutex.unlock();
+
+                        connect(playerAudio, SIGNAL(triggerPlay ()), q, SLOT(onPlay ()));
+                        connect(playerAudio, SIGNAL(triggerPause()), q, SLOT(onPause()));
+                    }
+
+                    playerAudio->setSource(audio, eventSource->loop);
+                }
+                else
+                {
+                    if (hasAudio)
+                    {
+                        hasAudio = false;
+
+                        playerAudio->stop();
+                    }
+#endif
+
+                    QString input = "input-slave=" + encodeUrl(audio);
+
+                    libvlc_media_add_option(media, input.C_UTF);
+
+                    // FIXME VLC 3.0.18: This seems to fix the missing audio bytes at the end of
+                    //                   the video.
+                    libvlc_media_add_option(media, "demux=avformat");
+#ifdef VLCPLAYER_AUDIO
+                }
+#endif
+            }
+#ifdef VLCPLAYER_AUDIO
+            else if (hasAudio)
+            {
+                hasAudio = false;
+
+                playerAudio->stop();
+            }
+#endif
+        }
+
+        if (quality.isEmpty() == false)
+        {
+            libvlc_media_add_option(media, QString("preferred-resolution=" + quality).C_STR);
+        }
+    }
+
+    if (loop)
+    {
+        // NOTE: We use the maximum value given we can't set an infinite value.
+        libvlc_media_add_option(media, "input-repeat=65535");
+    }
+
+    if (cache.isNull() == false)
+    {
+        libvlc_media_add_option(media, cache.C_STR);
+    }
+
+    if (proxy.isNull() == false)
+    {
+        libvlc_media_add_option(media, proxy        .C_STR);
+        libvlc_media_add_option(media, proxyPassword.C_STR);
+    }
+
+    foreach (const QString & option, options)
+    {
+        libvlc_media_add_option(media, option.C_STR);
+    }
+
+#if LIBVLC_VERSION_MAJOR > 3
+    opening = true;
+#endif
+    playing = false;
+
+    retry = 0;
+
+    libvlc_media_player_set_media(player, media);
+}
+
 void WVlcPlayerPrivate::play(int time)
 {
 #if LIBVLC_VERSION_MAJOR > 3
@@ -195,7 +425,7 @@ void WVlcPlayerPrivate::play(int time)
     libvlc_media_player_set_time(player, time);
 
 #ifdef VLCPLAYER_AUDIO
-    if (hasAudio) audio->pause();
+    if (hasAudio) playerAudio->pause();
 #endif
 #endif
 }
@@ -209,7 +439,7 @@ void WVlcPlayerPrivate::pause()
     libvlc_media_player_set_pause(player, 1);
 
 #ifdef VLCPLAYER_AUDIO
-    if (hasAudio) audio->pause();
+    if (hasAudio) playerAudio->pause();
 #endif
 }
 
@@ -231,7 +461,7 @@ void WVlcPlayerPrivate::stop()
 #endif
 
 #ifdef VLCPLAYER_AUDIO
-    if (hasAudio) audio->stop();
+    if (hasAudio) playerAudio->stop();
 #endif
 }
 
@@ -246,7 +476,7 @@ void WVlcPlayerPrivate::seek(int time)
 #endif
 
 #ifdef VLCPLAYER_AUDIO
-    if (hasAudio) audio->pause();
+    if (hasAudio) playerAudio->pause();
 #endif
 }
 
@@ -255,7 +485,7 @@ void WVlcPlayerPrivate::setSpeed(float speed)
     libvlc_media_player_set_rate(player, speed);
 
 #ifdef VLCPLAYER_AUDIO
-    if (hasAudio) audio->setSpeed(speed);
+    if (hasAudio) playerAudio->setSpeed(speed);
 #endif
 }
 
@@ -264,7 +494,33 @@ void WVlcPlayerPrivate::setVolume(int volume)
     libvlc_audio_set_volume(player, volume);
 
 #ifdef VLCPLAYER_AUDIO
-    if (hasAudio) audio->setVolume(volume);
+    if (hasAudio) playerAudio->setVolume(volume);
+#endif
+}
+
+void WVlcPlayerPrivate::setVideo(int id)
+{
+#if LIBVLC_VERSION_MAJOR < 4
+    libvlc_video_set_track(player, id);
+#else
+    libvlc_media_track_t * track = getTrack(id, libvlc_track_video);
+
+    if (track == NULL) return true;
+
+    libvlc_media_player_select_track(player, track);
+#endif
+}
+
+void WVlcPlayerPrivate::setAudio(int id)
+{
+#if LIBVLC_VERSION_MAJOR < 4
+    libvlc_audio_set_track(player, id);
+#else
+    libvlc_media_track_t * track = getTrack(id, libvlc_track_audio);
+
+    if (track == NULL) return true;
+
+    libvlc_media_player_select_track(player, track);
 #endif
 }
 
@@ -289,6 +545,65 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
     // NOTE: Since we are no longer receiving renderers events we clear them completely.
     else QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
                                                          (WVlcPlayer::EventOutputClear)));
+}
+
+void WVlcPlayerPrivate::setOutput(int index)
+{
+    const QList<libvlc_renderer_item_t *> & renderers = engine->d_func()->renderers;
+
+    if (index < 0 || index >= renderers.count())
+    {
+        hasOutput = false;
+
+        libvlc_media_player_set_renderer(player, NULL);
+    }
+    else
+    {
+        hasOutput = true;
+
+        libvlc_media_player_set_renderer(player, renderers.at(index));
+    }
+}
+
+void WVlcPlayerPrivate::setAdjust(const WVlcPlayerAdjust & adjust)
+{
+    if (this->adjust == adjust) return;
+
+    this->adjust = adjust;
+
+    // NOTE VLC: Adjustments only works when the player is genuinely playing (onTime event).
+    adjustReady = true;
+}
+
+void WVlcPlayerPrivate::deletePlayer()
+{
+    stop();
+
+    libvlc_media_player_release(player);
+
+#ifdef VLCPLAYER_AUDIO
+    if (playerAudio)
+    {
+        hasAudio = false;
+
+        playerAudio->deletePlayer();
+
+        delete playerAudio;
+
+        playerAudio = NULL;
+    }
+#endif
+
+    player = NULL;
+
+    setScanOutput(false);
+
+    if (backend)
+    {
+        QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
+                                                           (WVlcPlayer::EventDelete)),
+                                    Qt::HighEventPriority * 100);
+    }
 }
 
 #if LIBVLC_VERSION_MAJOR > 3
@@ -540,9 +855,9 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     if (d->hasAudio)
     {
         // NOTE: We avoid sending EventPaused when we're waiting for the audio.
-        if (d->audio->isWaiting()) return;
+        if (d->playerAudio->isWaiting()) return;
 
-        d->audio->pause();
+        d->playerAudio->pause();
     }
 #endif
 
@@ -568,7 +883,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 #endif
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->audio->stop();
+    if (d->hasAudio) d->playerAudio->stop();
 #endif
 
     if (d->backend == NULL) return;
@@ -584,7 +899,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->audio->applyBuffering();
+    if (d->hasAudio) d->playerAudio->applyBuffering();
 #endif
 
     if (d->backend == NULL) return;
@@ -635,7 +950,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     {
         int time = event->u.media_player_time_changed.new_time;
 
-        if (d->playing) d->audio->play(time);
+        if (d->playing) d->playerAudio->play(time);
 
         if (d->backend == NULL) return;
 
@@ -748,10 +1063,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & media,
+/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & source,
                                              const QString & audio, int loop)
 {
-    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(media, audio, loop));
+    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(source, audio, loop));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -816,11 +1131,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                                  index));
 }
 
-/* Q_INVOKABLE */ void WVlcPlayer::adjust(bool enable, float contrast,
-                                                       float brightness,
-                                                       float hue,
-                                                       float saturation,
-                                                       float gamma)
+/* Q_INVOKABLE */ void WVlcPlayer::setAdjust(bool enable, float contrast,
+                                                          float brightness,
+                                                          float hue,
+                                                          float saturation,
+                                                          float gamma)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerEventAdjust(enable, contrast, brightness, hue,
                                                                 saturation, gamma));
@@ -838,7 +1153,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     d->proxyPassword = password;
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->audio->setProxy(host, password);
+    if (d->hasAudio) d->playerAudio->setProxy(host, password);
 #endif
 
     d->mutex.unlock();
@@ -854,7 +1169,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     d->proxyPassword = QString();
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->audio->clearProxy();
+    if (d->hasAudio) d->playerAudio->clearProxy();
 #endif
 
     d->mutex.unlock();
@@ -881,32 +1196,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
     if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventCreate))
     {
-        d->player = libvlc_media_player_new(d->engine->d_func()->instance);
-
-        // FIXME: Applying the player default volume.
-        //libvlc_audio_set_volume(d->player, 100);
-
-        libvlc_event_manager_t * manager = libvlc_media_player_event_manager(d->player);
-
-#if LIBVLC_VERSION_MAJOR > 3
-        libvlc_event_attach(manager, libvlc_MediaPlayerMediaChanged, d->onChanged, d);
-        libvlc_event_attach(manager, libvlc_MediaPlayerOpening,      d->onOpening, d);
-#endif
-
-        libvlc_event_attach(manager, libvlc_MediaPlayerPlaying, d->onPlaying, d);
-        libvlc_event_attach(manager, libvlc_MediaPlayerPaused,  d->onPaused,  d);
-        libvlc_event_attach(manager, libvlc_MediaPlayerStopped, d->onStopped, d);
-
-        libvlc_event_attach(manager, libvlc_MediaPlayerBuffering, d->onBuffering, d);
-
-        libvlc_event_attach(manager, libvlc_MediaPlayerLengthChanged, d->onLength, d);
-        libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged,   d->onTime,   d);
-
-#if LIBVLC_VERSION_MAJOR < 4
-        libvlc_event_attach(manager, libvlc_MediaPlayerEndReached, d->onEndReached, d);
-#endif
-
-        libvlc_event_attach(manager, libvlc_MediaPlayerEncounteredError, d->onEncounteredError, d);
+        d->create();
 
         return true;
     }
@@ -918,21 +1208,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerEventBackend * eventBackend = static_cast<WVlcPlayerEventBackend *> (event);
 
-        if (d->backend)
-        {
-            qWarning("WVlcPlayer::event: Player already has a backend.");
-
-            return true;
-        }
-
-        Q_ASSERT(eventBackend->backend);
-
-        d->backend = eventBackend->backend;
-
-        libvlc_video_set_format_callbacks(d->player, eventBackend->setup, eventBackend->cleanup);
-
-        libvlc_video_set_callbacks(d->player, eventBackend->lock, eventBackend->unlock,
-                                   eventBackend->display, eventBackend->backend);
+        d->setBackend(eventBackend->backend, eventBackend->setup,
+                                             eventBackend->cleanup,
+                                             eventBackend->lock,
+                                             eventBackend->unlock,
+                                             eventBackend->display);
 
         return true;
     }
@@ -940,182 +1220,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerEventSource * eventSource = static_cast<WVlcPlayerEventSource *> (event);
 
-        WAbstractBackend::Output output;
-
-        QString cache;
-
-        QString proxy;
-        QString proxyPassword;
-
-        QStringList options;
-
-        d->mutex.lock();
-
-        output = d->output;
-
-        // NOTE: I'm not sure we need this anymore.
-        if (d->networkCache != -1)
-        {
-            cache = "network-caching=" + QString::number(d->networkCache);
-        }
-
-        if (d->proxyHost.isEmpty() == false)
-        {
-            proxy         = "http-proxy="     + d->proxyHost;
-            proxyPassword = "http-proxy-pwd=" + d->proxyPassword;
-        }
-
-        options = d->options;
-
-        d->mutex.unlock();
-
-        libvlc_media_t * media;
-
-        if (output == WAbstractBackend::OutputAudio)
-        {
-#ifdef VLCPLAYER_AUDIO
-            if (d->hasAudio)
-            {
-                d->hasAudio = false;
-
-                d->audio->stop();
-            }
-#endif
-
-            const QString & audio = eventSource->audio;
-
-            if (audio.isEmpty())
-            {
-                 media = d->createMedia(eventSource->media);
-            }
-            else media = d->createMedia(audio);
-
-            // FIXME VLC 3.0.18: This option seems to fail the second time we call it.
-            libvlc_media_add_option(media, "no-video");
-        }
-        else
-        {
-            media = d->createMedia(eventSource->media);
-
-            if (output == WAbstractBackend::OutputVideo)
-            {
-#ifdef VLCPLAYER_AUDIO
-                if (d->hasAudio)
-                {
-                    d->hasAudio = false;
-
-                    d->audio->stop();
-                }
-#endif
-
-                libvlc_media_add_option(media, "no-audio");
-            }
-            else
-            {
-                const QString & audio = eventSource->audio;
-
-                if (audio.isEmpty() == false)
-                {
-#ifdef VLCPLAYER_AUDIO
-                    // NOTE VLC: When using an external renderer we have to stick with input-slave
-                    //           because it does not support multiple players.
-                    if (d->hasOutput == false)
-                    {
-                        d->hasAudio = true;
-
-                        if (d->audio == NULL)
-                        {
-                            // NOTE: We create this instance on the VLC threads.
-                            d->audio = new WVlcAudio(d->engine);
-
-                            d->audio->setSpeed(libvlc_media_player_get_rate(d->player));
-
-                            d->audio->setVolume(libvlc_audio_get_volume(d->player));
-
-                            d->mutex.lock();
-
-                            d->audio->setProxy(d->proxyHost, d->proxyPassword);
-
-                            d->audio->setOptions(options);
-
-                            d->audio->setNetworkCache(d->networkCache);
-
-                            d->mutex.unlock();
-
-                            connect(d->audio, SIGNAL(triggerPlay ()), this, SLOT(onPlay ()));
-                            connect(d->audio, SIGNAL(triggerPause()), this, SLOT(onPause()));
-                        }
-
-                        d->audio->setSource(audio, eventSource->loop);
-                    }
-                    else
-                    {
-                        if (d->hasAudio)
-                        {
-                            d->hasAudio = false;
-
-                            d->audio->stop();
-                        }
-#endif
-
-                        QString input = "input-slave=" + d->encodeUrl(audio);
-
-                        libvlc_media_add_option(media, input.C_UTF);
-
-                        // FIXME VLC 3.0.18: This seems to fix the missing audio bytes at the end of
-                        //                   the video.
-                        libvlc_media_add_option(media, "demux=avformat");
-#ifdef VLCPLAYER_AUDIO
-                    }
-#endif
-                }
-#ifdef VLCPLAYER_AUDIO
-                else if (d->hasAudio)
-                {
-                    d->hasAudio = false;
-
-                    d->audio->stop();
-                }
-#endif
-            }
-
-            if (d->quality.isEmpty() == false)
-            {
-                libvlc_media_add_option(media,
-                                        QString("preferred-resolution=" + d->quality).C_STR);
-            }
-        }
-
-        if (eventSource->loop)
-        {
-            // NOTE: We use the maximum value given we can't set an infinite value.
-            libvlc_media_add_option(media, "input-repeat=65535");
-        }
-
-        if (cache.isNull() == false)
-        {
-            libvlc_media_add_option(media, cache.C_STR);
-        }
-
-        if (proxy.isNull() == false)
-        {
-            libvlc_media_add_option(media, proxy        .C_STR);
-            libvlc_media_add_option(media, proxyPassword.C_STR);
-        }
-
-        foreach (const QString & option, options)
-        {
-            libvlc_media_add_option(media, option.C_STR);
-        }
-
-#if LIBVLC_VERSION_MAJOR > 3
-        d->opening = true;
-#endif
-        d->playing = false;
-
-        d->retry = 0;
-
-        libvlc_media_player_set_media(d->player, media);
+        d->setSource(eventSource->source, eventSource->audio, eventSource->loop);
 
         return true;
     }
@@ -1167,15 +1272,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-#if LIBVLC_VERSION_MAJOR < 4
-        libvlc_video_set_track(d->player, eventPlayer->value.toInt());
-#else
-        libvlc_media_track_t * track = d->getTrack(eventPlayer->value.toInt(), libvlc_track_video);
-
-        if (track == NULL) return true;
-
-        libvlc_media_player_select_track(d->player, track);
-#endif
+        d->setVideo(eventPlayer->value.toInt());
 
         return true;
     }
@@ -1183,15 +1280,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-#if LIBVLC_VERSION_MAJOR < 4
-        libvlc_audio_set_track(d->player, eventPlayer->value.toInt());
-#else
-        libvlc_media_track_t * track = d->getTrack(eventPlayer->value.toInt(), libvlc_track_audio);
-
-        if (track == NULL) return true;
-
-        libvlc_media_player_select_track(d->player, track);
-#endif
+        d->setAudio(eventPlayer->value.toInt());
 
         return true;
     }
@@ -1199,9 +1288,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-        bool scan = eventPlayer->value.toBool();
-
-        d->setScanOutput(scan);
+        d->setScanOutput(eventPlayer->value.toBool());
 
         return true;
     }
@@ -1209,22 +1296,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-        int index = eventPlayer->value.toInt();
-
-        const QList<libvlc_renderer_item_t *> & renderers = d->engine->d_func()->renderers;
-
-        if (index < 0 || index >= renderers.count())
-        {
-            d->hasOutput = false;
-
-            libvlc_media_player_set_renderer(d->player, NULL);
-        }
-        else
-        {
-            d->hasOutput = true;
-
-            libvlc_media_player_set_renderer(d->player, renderers.at(index));
-        }
+        d->setOutput(eventPlayer->value.toInt());
 
         return true;
     }
@@ -1232,46 +1304,13 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerEventAdjust * eventAdjust = static_cast<WVlcPlayerEventAdjust *> (event);
 
-        const WVlcPlayerAdjust & adjust = eventAdjust->adjust;
-
-        if (d->adjust == adjust) return true;
-
-        d->adjust = adjust;
-
-        // NOTE VLC: Adjustments only works when the player is genuinely playing (onTime event).
-        d->adjustReady = true;
+        d->setAdjust(eventAdjust->adjust);
 
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventDelete))
     {
-        d->stop();
-
-        libvlc_media_player_release(d->player);
-
-#ifdef VLCPLAYER_AUDIO
-        if (d->audio)
-        {
-            d->hasAudio = false;
-
-            d->audio->deletePlayer();
-
-            delete d->audio;
-
-            d->audio = NULL;
-        }
-#endif
-
-        d->player = NULL;
-
-        d->setScanOutput(false);
-
-        if (d->backend)
-        {
-            QCoreApplication::postEvent(d->backend, new QEvent(static_cast<QEvent::Type>
-                                                               (WVlcPlayer::EventDelete)),
-                                        Qt::HighEventPriority * 100);
-        }
+        d->deletePlayer();
 
         return true;
     }
@@ -1302,7 +1341,7 @@ void WVlcPlayer::setOptions(const QStringList & options)
     d->options = options;
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->audio->setOptions(options);
+    if (d->hasAudio) d->playerAudio->setOptions(options);
 #endif
 
     locker.unlock();
@@ -1382,7 +1421,7 @@ void WVlcPlayer::setNetworkCache(int msec)
     d->networkCache = msec;
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->audio->setNetworkCache(msec);
+    if (d->hasAudio) d->playerAudio->setNetworkCache(msec);
 #endif
 
     locker.unlock();

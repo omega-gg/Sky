@@ -94,7 +94,7 @@ public: // Interface
                                 libvlc_video_unlock_cb  unlock  = NULL,
                                 libvlc_video_display_cb display = NULL);
 
-    Q_INVOKABLE void setSource(const QString & media,
+    Q_INVOKABLE void setSource(const QString & source,
                                const QString & audio = QString(), int loop = false);
 
     Q_INVOKABLE void play(int at = 0);
@@ -115,11 +115,11 @@ public: // Interface
 
     Q_INVOKABLE void setOutput(int index);
 
-    Q_INVOKABLE void adjust(bool enable, float contrast   = 1.0f,
-                                         float brightness = 1.0f,
-                                         float hue        = 0.0f,
-                                         float saturation = 1.0f,
-                                         float gamma      = 1.0f);
+    Q_INVOKABLE void setAdjust(bool enable, float contrast   = 1.0f,
+                                            float brightness = 1.0f,
+                                            float hue        = 0.0f,
+                                            float saturation = 1.0f,
+                                            float gamma      = 1.0f);
 
     Q_INVOKABLE void setProxy(const QString & host, const QString & password = QString());
 

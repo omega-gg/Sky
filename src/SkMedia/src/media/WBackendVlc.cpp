@@ -1543,9 +1543,9 @@ void WBackendVlcPrivate::setHdr(bool enabled)
     if (hdr)
     {
         // NOTE VLC: We boost the colors to avoid the washed out effect.
-        player->adjust(true, 1.6f, 1.2f, 0.0f, 2.4f, 0.8f);
+        player->setAdjust(true, 1.6f, 1.2f, 0.0f, 2.4f, 0.8f);
     }
-    else player->adjust(false);
+    else player->setAdjust(false);
 }
 
 //-------------------------------------------------------------------------------------------------
