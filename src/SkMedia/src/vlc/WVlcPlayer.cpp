@@ -218,7 +218,7 @@ void WVlcPlayerPrivate::setBackend(WAbstractBackend      * backend,
     libvlc_video_set_callbacks(player, lock, unlock, display, backend);
 }
 
-void WVlcPlayerPrivate::setSource(const QString & source, const QString & audio, int loop)
+void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, int loop)
 {
     WAbstractBackend::Output output;
 
@@ -264,7 +264,7 @@ void WVlcPlayerPrivate::setSource(const QString & source, const QString & audio,
 
         if (audio.isEmpty())
         {
-             media = createMedia(source);
+             media = createMedia(url);
         }
         else media = createMedia(audio);
 
@@ -273,7 +273,7 @@ void WVlcPlayerPrivate::setSource(const QString & source, const QString & audio,
     }
     else
     {
-        media = createMedia(source);
+        media = createMedia(url);
 
         if (output == WAbstractBackend::OutputVideo)
         {
@@ -1063,10 +1063,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & source,
+/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & url,
                                              const QString & audio, int loop)
 {
-    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(source, audio, loop));
+    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(url, audio, loop));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1220,7 +1220,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerEventSource * eventSource = static_cast<WVlcPlayerEventSource *> (event);
 
-        d->setSource(eventSource->source, eventSource->audio, eventSource->loop);
+        d->setSource(eventSource->url, eventSource->audio, eventSource->loop);
 
         return true;
     }

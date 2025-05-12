@@ -121,7 +121,7 @@ public: // Functions
                     libvlc_video_unlock_cb  unlock,
                     libvlc_video_display_cb display);
 
-    void setSource(const QString & source, const QString & audio, int loop);
+    void setSource(const QString & url, const QString & audio, int loop);
 
     void play(int time);
 
@@ -301,17 +301,17 @@ public: // Variables
 class WVlcPlayerEventSource : public QEvent
 {
 public:
-    WVlcPlayerEventSource(const QString & source, const QString & audio, int loop)
+    WVlcPlayerEventSource(const QString & url, const QString & audio, int loop)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSource))
     {
-        this->source = source;
-        this->audio  = audio;
+        this->url   = url;
+        this->audio = audio;
 
         this->loop = loop;
     }
 
 public: // Variables
-    QString source;
+    QString url;
     QString audio;
 
     bool loop;

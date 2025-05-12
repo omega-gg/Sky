@@ -65,7 +65,14 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 
     log = false;
 
-    if (thread) q->moveToThread(thread);
+    if (thread == NULL)
+    {
+        create();
+
+        return;
+    }
+
+    q->moveToThread(thread);
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
                                               (WVlcEnginePrivate::EventCreate)),
@@ -342,12 +349,30 @@ void WVlcEnginePrivate::clearDiscoverers()
 
 /* Q_INVOKABLE */ void WVlcEngine::startLog()
 {
+    Q_D(WVlcEngine);
+
+    if (d->thread == NULL)
+    {
+        d->startLog();
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
                                                  (WVlcEnginePrivate::EventLog)));
 }
 
 /* Q_INVOKABLE */ void WVlcEngine::deleteInstance()
 {
+    Q_D(WVlcEngine);
+
+    if (d->thread == NULL)
+    {
+        d->deleteInstance();
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
                                                  (WVlcEnginePrivate::EventClear)),
                                 Qt::HighEventPriority * 100);
