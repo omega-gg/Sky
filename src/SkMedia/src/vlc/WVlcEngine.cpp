@@ -76,6 +76,107 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WVlcEnginePrivate::create()
+{
+#ifdef Q_OS_MACOS
+    qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
+#endif
+
+    if (options.isEmpty())
+    {
+        const char * const args[] =
+        {
+            "--intf=dummy",             /* No interface     */
+#ifdef Q_OS_WIN
+#if LIBVLC_VERSION_MAJOR < 4
+            "--dummy-quiet",            /* No command-line  */
+#endif
+#elif defined(Q_OS_MACOS)
+            "--vout=macosx",
+#endif
+            "--ignore-config",          /* No configuration */
+            "--no-spu",                 /* No sub-pictures  */
+            "--no-osd",                 /* No video overlay */
+            "--no-stats",               /* No statistics    */
+            "--no-media-library",       /* No Media Library */
+            "--text-renderer=none",     /* No FreeType      */
+            // NOTE VLC 3.0.20: This is required for the preferred-resolution to be applied.
+            "--adaptive-logic=highest"  /* High resolution  */
+            // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
+            //"--http-reconnect",         /* Auto reconnect   */
+            // NOTE: This is useful for the mkv default language.
+            //"--audio-language=en",      /* Audio english    */
+            //"--input-fast-seek",        /* Fast seek        */
+            //"--avcodec-fast",           /* Speed tricks     */
+            //"--avcodec-dr",
+            //"--avcodec-hurry-up",
+            //"--avcodec-hw=any",
+            //"--avcodec-error-resilience=1",
+            //"--avcodec-workaround-bugs=1",
+            //"--avcodec-skip-frame=0",
+            //"--avcodec-skip-idct=0",
+            //"--avcodec-vismv=0",
+            //"--avcodec-lowres=0",
+            //"--avcodec-skiploopfilter=0",
+            //"--network-caching=200",
+            //"--cr-average=10000",
+            //"--clock-synchro=0",
+            //"--verbose=2"
+        };
+
+        instance = libvlc_new(sizeof(args) / sizeof(*args), args);
+    }
+    else
+    {
+        int argc = options.length();
+
+        char ** args = new char * [argc];
+
+        int index = 0;
+
+        foreach (const QString & string, options)
+        {
+            args[index] = new char [string.length()];
+
+            strcpy(args[index], string.C_STR);
+
+            index++;
+        }
+
+        instance = libvlc_new(argc, args);
+    }
+
+#ifdef Q_OS_LINUX
+    if (instance == NULL)
+    {
+        qFatal("WVlcEnginePrivate::create: Cannot create VLC instance. Is VLC installed ?");
+    }
+#endif
+
+    if (libvlc_errmsg())
+    {
+        qWarning("WVlcEnginePrivate::create: LibVLC error: %s", libvlc_errmsg());
+    }
+}
+
+void WVlcEnginePrivate::startLog()
+{
+    if (log) return;
+
+    log = true;
+
+    libvlc_log_set(instance, onLog, NULL);
+}
+
+void WVlcEnginePrivate::deleteInstance()
+{
+    clearDiscoverers();
+
+    libvlc_release(instance);
+
+    instance = NULL;
+}
+
 void WVlcEnginePrivate::startScan(WVlcPlayerPrivate * player, bool enabled)
 {
     if (players.isEmpty())
@@ -297,85 +398,7 @@ void WVlcEnginePrivate::clearDiscoverers()
 
     if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventCreate))
     {
-#ifdef Q_OS_MACOS
-        qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
-#endif
-
-        if (d->options.isEmpty())
-        {
-            const char * const args[] =
-            {
-                "--intf=dummy",             /* No interface     */
-#ifdef Q_OS_WIN
-    #if LIBVLC_VERSION_MAJOR < 4
-                "--dummy-quiet",            /* No command-line  */
-    #endif
-#elif defined(Q_OS_MACOS)
-                "--vout=macosx",
-#endif
-                "--ignore-config",          /* No configuration */
-                "--no-spu",                 /* No sub-pictures  */
-                "--no-osd",                 /* No video overlay */
-                "--no-stats",               /* No statistics    */
-                "--no-media-library",       /* No Media Library */
-                "--text-renderer=none",     /* No FreeType      */
-                // NOTE VLC 3.0.20: This is required for the preferred-resolution to be applied.
-                "--adaptive-logic=highest"  /* High resolution  */
-                // FIXME VLC 3.0.18: Sometimes the end of the video is reached too soon.
-                //"--http-reconnect",         /* Auto reconnect   */
-                // NOTE: This is useful for the mkv default language.
-                //"--audio-language=en",      /* Audio english    */
-                //"--input-fast-seek",        /* Fast seek        */
-                //"--avcodec-fast",           /* Speed tricks     */
-                //"--avcodec-dr",
-                //"--avcodec-hurry-up",
-                //"--avcodec-hw=any",
-                //"--avcodec-error-resilience=1",
-                //"--avcodec-workaround-bugs=1",
-                //"--avcodec-skip-frame=0",
-                //"--avcodec-skip-idct=0",
-                //"--avcodec-vismv=0",
-                //"--avcodec-lowres=0",
-                //"--avcodec-skiploopfilter=0",
-                //"--network-caching=200",
-                //"--cr-average=10000",
-                //"--clock-synchro=0",
-                //"--verbose=2"
-            };
-
-            d->instance = libvlc_new(sizeof(args) / sizeof(*args), args);
-        }
-        else
-        {
-            int argc = d->options.length();
-
-            char ** args = new char * [argc];
-
-            int index = 0;
-
-            foreach (const QString & string, d->options)
-            {
-                args[index] = new char [string.length()];
-
-                strcpy(args[index], string.C_STR);
-
-                index++;
-            }
-
-            d->instance = libvlc_new(argc, args);
-        }
-
-#ifdef Q_OS_LINUX
-        if (d->instance == NULL)
-        {
-            qFatal("WVlcEngine::event: Cannot create VLC instance. Is VLC installed ?");
-        }
-#endif
-
-        if (libvlc_errmsg())
-        {
-            qWarning("WVlcEngine::event: LibVLC error: %s", libvlc_errmsg());
-        }
+        d->create();
 
         return true;
     }
@@ -385,21 +408,13 @@ void WVlcEnginePrivate::clearDiscoverers()
     }
     else if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventLog))
     {
-        if (d->log) return true;
-
-        d->log = true;
-
-        libvlc_log_set(d->instance, WVlcEnginePrivate::onLog, NULL);
+        d->startLog();
 
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventClear))
     {
-        d->clearDiscoverers();
-
-        libvlc_release(d->instance);
-
-        d->instance = NULL;
+        d->deleteInstance();
 
         return true;
     }

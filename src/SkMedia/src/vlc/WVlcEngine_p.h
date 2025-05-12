@@ -56,6 +56,12 @@ public:
     void init(const QStringList & options, QThread * thread);
 
 public: // Functions
+    void create();
+
+    void startLog();
+
+    void deleteInstance();
+
     void startScan(WVlcPlayerPrivate * player, bool enabled);
 
     void clearDiscoverers();
