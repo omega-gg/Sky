@@ -138,7 +138,14 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     adjustReady = false;
 
-    if (thread) q->moveToThread(thread);
+    if (thread == NULL)
+    {
+        create();
+
+        return;
+    }
+
+    q->moveToThread(thread);
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
                                               (WVlcPlayerPrivate::EventCreate)),
@@ -1057,6 +1064,15 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                               libvlc_video_unlock_cb  unlock,
                                               libvlc_video_display_cb display)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setBackend(backend, setup, cleanup, lock, unlock, display);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerEventBackend(backend, setup, cleanup, lock,
                                                                  unlock, display));
 }
@@ -1066,6 +1082,15 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 /* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & url,
                                              const QString & audio, int loop)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setSource(url, audio, loop);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerEventSource(url, audio, loop));
 }
 
@@ -1073,60 +1098,150 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 /* Q_INVOKABLE */ void WVlcPlayer::play(int at)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->play(at);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this,
                                 new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventPlay, at));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::pause()
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->pause();
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
                                                  (WVlcPlayerPrivate::EventPause)));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::stop()
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->stop();
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
                                                  (WVlcPlayerPrivate::EventStop)));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::seek(int msec)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->seek(msec);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSeek,
                                                                  msec));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::setSpeed(qreal speed)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setSpeed(speed);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSpeed,
                                                                  speed));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::setVolume(int percent)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setVolume(percent);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventVolume,
                                                                  percent));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::setVideo(int id)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setVideo(id);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventVideo,
                                                                  id));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::setAudio(int id)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setAudio(id);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventAudio,
                                                                  id));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::setScanOutput(bool enabled)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setScanOutput(enabled);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventScan,
                                                                  enabled));
 }
 
 /* Q_INVOKABLE */ void WVlcPlayer::setOutput(int index)
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->setOutput(index);
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventOutput,
                                                                  index));
 }
@@ -1137,8 +1252,26 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                           float saturation,
                                                           float gamma)
 {
-    QCoreApplication::postEvent(this, new WVlcPlayerEventAdjust(enable, contrast, brightness, hue,
-                                                                saturation, gamma));
+    Q_D(WVlcPlayer);
+
+    WVlcPlayerAdjust adjust;
+
+    adjust.enable = enable;
+
+    adjust.contrast   = contrast;
+    adjust.brightness = brightness;
+    adjust.hue        = hue;
+    adjust.saturation = saturation;
+    adjust.gamma      = gamma;
+
+    if (d->thread == NULL)
+    {
+        d->setAdjust(adjust);
+
+        return;
+    }
+
+    QCoreApplication::postEvent(this, new WVlcPlayerEventAdjust(adjust));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1179,6 +1312,15 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 /* Q_INVOKABLE */ void WVlcPlayer::deletePlayer()
 {
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->deletePlayer();
+
+        return;
+    }
+
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
                                                  (WVlcPlayerPrivate::EventDelete)),
                                 Qt::HighEventPriority * 100);

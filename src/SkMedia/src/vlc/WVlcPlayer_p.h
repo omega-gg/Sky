@@ -324,20 +324,10 @@ public: // Variables
 class WVlcPlayerEventAdjust : public QEvent
 {
 public:
-    WVlcPlayerEventAdjust(bool enable, float contrast,
-                                       float brightness,
-                                       float hue,
-                                       float saturation,
-                                       float gamma)
+    WVlcPlayerEventAdjust(const WVlcPlayerAdjust & adjust)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventAdjust))
     {
-        adjust.enable = enable;
-
-        adjust.contrast   = contrast;
-        adjust.brightness = brightness;
-        adjust.hue        = hue;
-        adjust.saturation = saturation;
-        adjust.gamma      = gamma;
+        this->adjust = adjust;
     }
 
 public: // Variables
