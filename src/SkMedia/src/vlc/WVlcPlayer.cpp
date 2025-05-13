@@ -742,9 +742,10 @@ bool WVlcPlayerPrivate::checkTime(int at)
 
     retry++;
 
-    q->stop();
+    QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
+                                              (WVlcPlayerPrivate::EventStop)));
 
-    q->play(at);
+    QCoreApplication::postEvent(q, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventPlay, at));
 
     return true;
 }
