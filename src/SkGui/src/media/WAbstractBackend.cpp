@@ -201,7 +201,7 @@ QStringList WBackendAdjust::toList()
 {
     WBackendAdjust adjust;
 
-    if (list.count() == 6) return adjust;
+    if (list.count() != 6) return adjust;
 
     adjust.enable = list.at(0).toInt();
 

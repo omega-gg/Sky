@@ -392,7 +392,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 
     if (type == ADJUST)
     {
-        if (parameters.count() == 5) return;
+        if (parameters.count() == 6) return;
     }
     else if (type == SOURCE)
     {

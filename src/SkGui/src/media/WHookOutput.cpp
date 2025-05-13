@@ -328,7 +328,7 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(speedChanged     ()), q, SLOT(onSpeedChanged   ()));
         QObject::connect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));
         QObject::connect(backend, SIGNAL(trackAudioChanged()), q, SLOT(onAudioChanged   ()));
-        QObject::connect(backend, SIGNAL(adjustChanged    ()), q, SLOT(onAdjstChanged   ()));
+        QObject::connect(backend, SIGNAL(adjustChanged    ()), q, SLOT(onAdjustChanged  ()));
         QObject::connect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
 
         //-----------------------------------------------------------------------------------------
