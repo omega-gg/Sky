@@ -251,6 +251,11 @@ void WHookOutputPrivate::onAudioChanged()
     client.sendMessage(WBroadcastMessage::AUDIO, QString::number(backend->trackAudio()));
 }
 
+void WHookOutputPrivate::onAdjustChanged()
+{
+    client.sendMessage(WBroadcastMessage::ADJUST, backend->adjust().toList());
+}
+
 void WHookOutputPrivate::onSubtitleChanged()
 {
     client.sendMessage(WBroadcastMessage::SUBTITLE, backend->subtitle());
@@ -323,6 +328,7 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(speedChanged     ()), q, SLOT(onSpeedChanged   ()));
         QObject::connect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));
         QObject::connect(backend, SIGNAL(trackAudioChanged()), q, SLOT(onAudioChanged   ()));
+        QObject::connect(backend, SIGNAL(adjustChanged    ()), q, SLOT(onAdjstChanged   ()));
         QObject::connect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
 
         //-----------------------------------------------------------------------------------------
@@ -338,6 +344,7 @@ void WHookOutputPrivate::onConnectedChanged()
         onSpeedChanged   ();
         onVideoChanged   ();
         onAudioChanged   ();
+        onAdjustChanged  ();
         onSubtitleChanged();
     }
     else
@@ -352,6 +359,7 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(speedChanged     ()), q, SLOT(onSpeedChanged   ()));
         QObject::disconnect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));
         QObject::disconnect(backend, SIGNAL(trackAudioChanged()), q, SLOT(onAudioChanged   ()));
+        QObject::disconnect(backend, SIGNAL(adjustChanged    ()), q, SLOT(onAdjustChanged  ()));
         QObject::disconnect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
 
         // NOTE: When we lose the connection we stop the playback and select the default output.

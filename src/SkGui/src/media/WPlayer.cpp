@@ -964,6 +964,12 @@ void WPlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         q->setTrackAudio(message.parameters.first().toInt());
     }
+    else if (type == WBroadcastMessage::ADJUST)
+    {
+        Q_Q(WPlayer);
+
+        q->setAdjust(WBackendAdjust::fromList(message.parameters));
+    }
     else if (type == WBroadcastMessage::SUBTITLE)
     {
         Q_Q(WPlayer);

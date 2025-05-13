@@ -134,6 +134,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onSpeedChanged   ())
     Q_PRIVATE_SLOT(d_func(), void onVideoChanged   ())
     Q_PRIVATE_SLOT(d_func(), void onAudioChanged   ())
+    Q_PRIVATE_SLOT(d_func(), void onAdjustChanged  ())
     Q_PRIVATE_SLOT(d_func(), void onSubtitleChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onCurrentOutputChanged())

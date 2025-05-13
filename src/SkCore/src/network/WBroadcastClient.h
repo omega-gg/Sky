@@ -86,6 +86,7 @@ public: // Enums
         SPEED,
         VIDEO,
         AUDIO,
+        ADJUST,
         SUBTITLE,
         VOLUME,
         SCREEN,

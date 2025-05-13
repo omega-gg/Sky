@@ -390,7 +390,11 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     //---------------------------------------------------------------------------------------------
     // NOTE: Checking parameters according to the expected API.
 
-    if (type == SOURCE)
+    if (type == ADJUST)
+    {
+        if (parameters.count() == 5) return;
+    }
+    else if (type == SOURCE)
     {
         if (parameters.count() == 3) return;
     }
@@ -449,6 +453,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (string == "SPEED")      return SPEED;
     else if (string == "VIDEO")      return VIDEO;
     else if (string == "AUDIO")      return AUDIO;
+    else if (string == "ADJUST")     return ADJUST;
     else if (string == "SUBTITLE")   return SUBTITLE;
     else if (string == "VOLUME")     return VOLUME;
     else if (string == "SCREEN")     return SCREEN;
@@ -475,6 +480,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (type == SPEED)      return "SPEED";
     else if (type == VIDEO)      return "VIDEO";
     else if (type == AUDIO)      return "AUDIO";
+    else if (type == ADJUST)     return "ADJUST";
     else if (type == SUBTITLE)   return "SUBTITLE";
     else if (type == VOLUME)     return "VOLUME";
     else if (type == SCREEN)     return "SCREEN";

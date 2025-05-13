@@ -92,6 +92,7 @@ public: // Slots
     void onSpeedChanged   ();
     void onVideoChanged   ();
     void onAudioChanged   ();
+    void onAdjustChanged  ();
     void onSubtitleChanged();
 
     void onCurrentOutputChanged();

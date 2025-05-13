@@ -175,6 +175,46 @@ WBackendAdjust::WBackendAdjust()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
+
+QStringList WBackendAdjust::toList()
+{
+    QStringList list;
+
+    list.append(QString::number(enable));
+
+    list.append(QString::number(contrast));
+    list.append(QString::number(brightness));
+    list.append(QString::number(hue));
+    list.append(QString::number(saturation));
+    list.append(QString::number(gamma));
+
+    return list;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ WBackendAdjust WBackendAdjust::fromList(const QStringList & list)
+{
+    WBackendAdjust adjust;
+
+    if (list.count() == 6) return adjust;
+
+    adjust.enable = list.at(0).toInt();
+
+    adjust.contrast   = list.at(1).toFloat();
+    adjust.brightness = list.at(2).toFloat();
+    adjust.hue        = list.at(3).toFloat();
+    adjust.saturation = list.at(4).toFloat();
+    adjust.gamma      = list.at(5).toFloat();
+
+    return adjust;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Operators
 //-------------------------------------------------------------------------------------------------
 

@@ -122,6 +122,12 @@ class SK_GUI_EXPORT WBackendAdjust
 public:
     WBackendAdjust();
 
+public: // Functions
+    QStringList toList();
+
+public: // Static functions
+    static WBackendAdjust fromList(const QStringList & list);
+
 public: // Operators
     WBackendAdjust(const WBackendAdjust & other);
 
