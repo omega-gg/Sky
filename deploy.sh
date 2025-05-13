@@ -14,7 +14,8 @@ Qt5_version="5.15.2"
 Qt6_version="6.8.3"
 
 SSL_versionA="1.0.2u"
-SSL_versionB="3.4.1"
+SSL_versionB="1.1.1w"
+SSL_versionC="3.4.1"
 
 VLC3_version="3.0.21"
 VLC4_version="4.0.0"
@@ -178,11 +179,20 @@ else
     fi
 fi
 
-if [ $os = "windows" -a $qt = "qt4" ]; then
+if [ $os = "windows" ]; then
 
-    SSL="$external/OpenSSL/$SSL_versionA"
+    if [ $qt = "qt4" ]; then
+
+        SSL="$external/OpenSSL/$SSL_versionA"
+
+    elif [ $qt = "qt5" ]; then
+
+        SSL="$external/OpenSSL/$SSL_versionB"
+    else
+        SSL="$external/OpenSSL/$SSL_versionC"
+    fi
 else
-    SSL="$external/OpenSSL/$SSL_versionB"
+    SSL="$external/OpenSSL/$SSL_versionC"
 fi
 
 if [ $vlc = "vlc3" ]; then
