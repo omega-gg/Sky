@@ -83,6 +83,8 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
+    Component.onCompleted: pUpdatePosition()
+
     onClicked: pToggleChecked()
 
     onWidthChanged: pUpdatePosition()
