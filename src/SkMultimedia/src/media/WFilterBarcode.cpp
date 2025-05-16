@@ -345,18 +345,19 @@ void WFilterBarcodePrivate::onLoaded(const QString & text)
 /* Q_INVOKABLE static */ QRect WFilterBarcode::mapRectToSource(const QRect & source,
                                                                const QRect & content,
                                                                const QRect & target,
-                                                               int           orientation)
+                                                               int           orientationSource,
+                                                               int           orientationContent)
 {
     QRect rect;
 
-    if (orientation % 180)
+    if (orientationSource % 180)
     {
          rect = QRect(source.x(), source.y(), source.height(), source.width());
     }
     else rect = QRect(source.x(), source.y(), source.width(), source.height());
 
-    return QRect(mapPointToSource(rect, content, target.topLeft    (), orientation),
-                 mapPointToSource(rect, content, target.bottomRight(), orientation))
+    return QRect(mapPointToSource(rect, content, target.topLeft    (), orientationContent),
+                 mapPointToSource(rect, content, target.bottomRight(), orientationContent))
            .normalized();
 }
 
