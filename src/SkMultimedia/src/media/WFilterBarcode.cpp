@@ -160,7 +160,7 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
 
         // NOTE ZXing Pre-2.0: We need to mirror the image before scanning it.
         p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
-                            p->target, 0, true);
+                            p->target, p->orientation, true);
 
         timer->start();
 
@@ -196,9 +196,9 @@ void WFilterBarcodePrivate::init()
 {
 #ifdef QT_6
     videoSink = NULL;
+#endif
 
     orientation = 0;
-#endif
 
     interval = FILTERBARCODE_INTERVAL;
 
@@ -404,11 +404,6 @@ void WFilterBarcode::setVideoSink(QVideoSink * videoSink)
     emit videoSinkChanged();
 }
 
-int WFilterBarcode::orientation() const
-{
-    Q_D(const WFilterBarcode); return d->orientation;
-}
-
 #endif
 
 QRect WFilterBarcode::target() const
@@ -425,6 +420,22 @@ void WFilterBarcode::setTarget(const QRect & target)
     d->target = target;
 
     emit targetChanged();
+}
+
+int WFilterBarcode::orientation() const
+{
+    Q_D(const WFilterBarcode); return d->orientation;
+}
+
+void WFilterBarcode::setOrientation(int orientation)
+{
+    Q_D(WFilterBarcode);
+
+    if (d->orientation == orientation) return;
+
+    d->orientation = orientation;
+
+    emit orientationChanged();
 }
 
 bool WFilterBarcode::interval() const

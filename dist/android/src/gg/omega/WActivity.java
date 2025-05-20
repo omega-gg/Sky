@@ -188,6 +188,16 @@ public class WActivity extends QtActivity
         message = null;
     }
 
+    public int getOrientation()
+    {
+        int orientation = getWindowManager().getDefaultDisplay().getRotation();
+
+        if      (orientation == 1) return  90;
+        else if (orientation == 2) return 180;
+        else if (orientation == 3) return 270;
+        else                       return   0;
+    }
+
     //---------------------------------------------------------------------------------------------
     // QtActivity reimplementation
     //---------------------------------------------------------------------------------------------

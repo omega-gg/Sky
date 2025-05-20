@@ -610,7 +610,15 @@ void WControllerApplication::applyUrlHandler(const QString & scheme, bool enable
 
 /* Q_INVOKABLE static */ int WControllerApplication::orientation()
 {
+#ifdef Q_OS_ANDROID
+    W_ANDROID_ACTIVITY(jni)
+
+    if (jni.isValid() == false) return 0;
+
+    return jni.callMethod<jint>("getOrientation");
+#else
     return 0;
+#endif
 }
 
 /* Q_INVOKABLE static */

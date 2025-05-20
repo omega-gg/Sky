@@ -70,11 +70,11 @@ public: // Variables
 
 #ifdef QT_6
     QVideoSink * videoSink;
-
-    int orientation;
 #endif
 
     QRect target;
+
+    int orientation;
 
     int interval;
 

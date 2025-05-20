@@ -48,11 +48,11 @@ class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QObject, public WPrivatable
 
 #ifdef QT_6
     Q_PROPERTY(QVideoSink * videoSink READ videoSink WRITE setVideoSink NOTIFY videoSinkChanged)
-
-    Q_PROPERTY(int orientation READ orientation NOTIFY orientationChanged)
 #endif
 
     Q_PROPERTY(QRect target READ target WRITE setTarget NOTIFY targetChanged)
+
+    Q_PROPERTY(int orientation READ orientation NOTIFY orientationChanged)
 
     Q_PROPERTY(bool interval READ interval WRITE setInterval NOTIFY intervalChanged)
 
@@ -80,11 +80,11 @@ signals:
 
 #ifdef QT_6
     void videoSinkChanged();
-
-    void orientationChanged();
 #endif
 
     void targetChanged();
+
+    void orientationChanged();
 
     void intervalChanged();
 
@@ -92,12 +92,13 @@ public: // Properties
 #ifdef QT_6
     QVideoSink * videoSink() const;
     void         setVideoSink(QVideoSink * videoSink);
-
-    int orientation() const;
 #endif
 
     QRect target() const;
     void  setTarget(const QRect & target);
+
+    int  orientation() const;
+    void setOrientation(int orientation);
 
     bool interval() const;
     void setInterval(bool interval);
