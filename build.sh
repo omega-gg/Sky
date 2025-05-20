@@ -322,7 +322,7 @@ elif [ $1 = "macOS" ]; then
 
 elif [ $1 = "iOS" ]; then
 
-    spec=macx-ios-clang
+    spec="macx-ios-clang"
 
 elif [ $1 = "linux" ]; then
 
