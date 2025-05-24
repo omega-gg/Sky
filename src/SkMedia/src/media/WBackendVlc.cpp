@@ -1895,13 +1895,12 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 {
     Q_D(WBackendVlc);
 
+    // NOTE VLC: We don't want the volume to lower too quickly for human ears.
     if (volume)
     {
-        if (volume < 1.0)
-        {
-             d->player->setVolume(qRound(volume * 80) + 20);
-        }
-        else d->player->setVolume(qRound(volume * 100));
+        volume = qPow(volume, 0.6);
+
+        d->player->setVolume(qRound(volume * 100));
     }
     else d->player->setVolume(0);
 
