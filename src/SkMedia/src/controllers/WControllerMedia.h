@@ -277,10 +277,6 @@ class SK_MEDIA_EXPORT WControllerMedia : public WController
 {
     Q_OBJECT
 
-#ifndef SK_NO_PLAYER
-    Q_PROPERTY(WVlcEngine * engine READ engine CONSTANT)
-#endif
-
     Q_PROPERTY(WAbstractLoader * loader READ loader WRITE setLoader NOTIFY loaderChanged)
 
 #ifndef SK_NO_PLAYER
@@ -295,7 +291,7 @@ public: // Initialize
 
 public: // Interface
 #ifndef SK_NO_PLAYER
-    Q_INVOKABLE WVlcPlayer * createVlcPlayer() const;
+    Q_INVOKABLE WVlcPlayer * createVlcPlayer();
 
     Q_INVOKABLE void startLog();
 #endif
@@ -321,10 +317,6 @@ signals:
     void loaderChanged();
 
 public: // Properties
-#ifndef SK_NO_PLAYER
-    WVlcEngine * engine() const;
-#endif
-
     WAbstractLoader * loader() const;
     void              setLoader(WAbstractLoader * loader);
 

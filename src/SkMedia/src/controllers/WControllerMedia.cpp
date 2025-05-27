@@ -1526,9 +1526,79 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
 /* virtual */ WControllerMediaPrivate::~WControllerMediaPrivate()
 {
 #ifndef SK_NO_PLAYER
-    engine->deleteInstance();
+    if (engine)
+    {
+        engine->deleteInstance();
+
+        clearData();
+
+        delete engine;
+    }
+    else clearData();
+#else
+    clearData();
 #endif
 
+    W_CLEAR_CONTROLLER(WControllerMedia);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef SK_NO_PLAYER
+void WControllerMediaPrivate::init(const QStringList &)
+#else
+void WControllerMediaPrivate::init(const QStringList & options)
+#endif
+{
+#ifdef CONTROLLERMEDIA_THREAD
+    Q_Q(WControllerMedia);
+#endif
+
+#ifndef SK_NO_PLAYER
+    engine = NULL;
+
+    this->options = options;
+#endif
+
+    loader = NULL;
+
+    qRegisterMetaType<WControllerMediaData>("WControllerMediaData");
+
+    const QMetaObject * meta = WControllerMediaReply().metaObject();
+
+    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString,"
+                                                  "int,int,int,int,int)"));
+
+    methodM3u = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
+
+#ifdef CONTROLLERMEDIA_THREAD
+    thread = new QThread(q);
+
+    thread->start();
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+#ifndef SK_NO_PLAYER
+
+void WControllerMediaPrivate::createEngine()
+{
+    if (engine) return;
+
+#ifdef CONTROLLERMEDIA_THREAD
+    engine = new WVlcEngine(options, thread);
+#else
+    engine = new WVlcEngine(options, NULL);
+#endif
+}
+
+#endif
+
+void WControllerMediaPrivate::clearData()
+{
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
 
     while (i.hasNext())
@@ -1557,55 +1627,7 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
     thread->quit();
     thread->wait();
 #endif
-
-#ifndef SK_NO_PLAYER
-    delete engine;
-#endif
-
-    W_CLEAR_CONTROLLER(WControllerMedia);
 }
-
-//-------------------------------------------------------------------------------------------------
-
-#ifdef SK_NO_PLAYER
-void WControllerMediaPrivate::init(const QStringList &)
-#else
-void WControllerMediaPrivate::init(const QStringList & options)
-#endif
-{
-#ifdef CONTROLLERMEDIA_THREAD
-    Q_Q(WControllerMedia);
-#endif
-
-    loader = NULL;
-
-    qRegisterMetaType<WControllerMediaData>("WControllerMediaData");
-
-    const QMetaObject * meta = WControllerMediaReply().metaObject();
-
-    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString,"
-                                                  "int,int,int,int,int)"));
-
-    methodM3u = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
-
-#ifdef CONTROLLERMEDIA_THREAD
-    thread = new QThread(q);
-
-    thread->start();
-#endif
-
-#ifndef SK_NO_PLAYER
-#ifdef CONTROLLERMEDIA_THREAD
-    engine = new WVlcEngine(options, thread);
-#else
-    engine = new WVlcEngine(options, NULL);
-#endif
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
 
 void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 {
@@ -2887,9 +2909,11 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 #ifndef SK_NO_PLAYER
 
-/* Q_INVOKABLE */ WVlcPlayer * WControllerMedia::createVlcPlayer() const
+/* Q_INVOKABLE */ WVlcPlayer * WControllerMedia::createVlcPlayer()
 {
-    Q_D(const WControllerMedia);
+    Q_D(WControllerMedia);
+
+    d->createEngine();
 
 #ifdef CONTROLLERMEDIA_THREAD
     return new WVlcPlayer(d->engine, d->thread);
@@ -2900,7 +2924,11 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 /* Q_INVOKABLE */ void WControllerMedia::startLog()
 {
-    d_func()->engine->startLog();
+    Q_D(WControllerMedia);
+
+    d->createEngine();
+
+    d->engine->startLog();
 }
 
 #endif
@@ -3126,15 +3154,6 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
-
-#ifndef SK_NO_PLAYER
-
-WVlcEngine * WControllerMedia::engine() const
-{
-    Q_D(const WControllerMedia); return d->engine;
-}
-
-#endif
 
 WAbstractLoader * WControllerMedia::loader() const
 {

@@ -170,6 +170,12 @@ public:
     void init(const QStringList & options);
 
 public: // Functions
+#ifndef SK_NO_PLAYER
+    void createEngine();
+#endif
+
+    void clearData();
+
     void loadSources(WMediaReply * reply);
 
     void loadUrl(QIODevice * device, const WBackendNetQuery  & query,
@@ -224,6 +230,8 @@ public: // Variables
 
 #ifndef SK_NO_PLAYER
     WVlcEngine * engine;
+
+    QStringList options;
 #endif
 
     WAbstractLoader * loader;
