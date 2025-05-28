@@ -13,16 +13,16 @@ api="https://api.freepik.com/v1/ai/image-upscaler"
 
 run()
 {
-    echo $(curl --request POST --url "$api" --ssl-no-revoke \
-                --header "Content-Type: application/json"   \
-                --header "x-freepik-api-key: $FREEPIK_KEY"  \
-                --data @data.txt)
+    curl --request POST --url "$api" --ssl-no-revoke \
+         --header "Content-Type: application/json"   \
+         --header "x-freepik-api-key: $FREEPIK_KEY"  \
+         --data @data.txt
 }
 
 get()
 {
-    echo $(curl --request GET --url "$api/$1" --ssl-no-revoke \
-                --header "x-freepik-api-key: $FREEPIK_KEY")
+    curl --request GET --url "$api/$1" --ssl-no-revoke \
+         --header "x-freepik-api-key: $FREEPIK_KEY"
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ else
     creativity="0"
 fi
 
-echo "{ \"image\": \"$(base64 $1)\", \"scale_factor\": \"$3\", \"optimized_for\": \"$4\", \"creativity\": \"$creativity\" }" >> data.txt
+echo "{ \"image\": \"$(base64 $1)\", \"scale_factor\": \"$3\", \"optimized_for\": \"$4\", \"creativity\": \"$creativity\" }" > data.txt
 
 data=$(run)
 
@@ -74,7 +74,7 @@ do
 
     status=$(echo "$data" | grep -o '"status":"[^"]*' | grep -o '[^"]*$')
 
-    if [ $status != "COMPLETED" ]; then
+    if [ "$status" != "COMPLETED" ]; then
 
         continue
     fi
