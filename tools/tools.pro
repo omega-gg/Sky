@@ -7,6 +7,7 @@ SUBDIRS = includeGenerator \
 
 include(ffmpeg/ffmpeg.pri)
 include(youtube-dl/youtube-dl.pri)
+include(Runway/Runway.pri)
 include(Magnific/Magnific.pri)
 include(LivePortrait/LivePortrait.pri)
 
