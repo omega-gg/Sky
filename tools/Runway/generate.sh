@@ -60,14 +60,14 @@ if [ $# = 3 ]; then
 
     references='"referenceImages": [
         { "tag": "ref1", "uri": "'"$(getData "$3")"'" }
-    ],'
+    ]'
 
 elif [ $# = 4 ]; then
 
     references='"referenceImages": [
         { "tag": "ref1", "uri": "'"$(getData "$3")"'" },
         { "tag": "ref2", "uri": "'"$(getData "$4")"'" }
-    ],'
+    ]'
 
 elif [ $# = 5 ]; then
 
@@ -75,10 +75,10 @@ elif [ $# = 5 ]; then
         { "tag": "ref1", "uri": "'"$(getData "$3")"'" },
         { "tag": "ref2", "uri": "'"$(getData "$4")"'" },
         { "tag": "ref3", "uri": "'"$(getData "$5")"'" }
-    ],'
+    ]'
 fi
 
-echo "{ \"model\": \"gen4_image\", \"promptText\": \"$1\", $references \"ratio\": \"1920:1080\" }" > data.txt
+echo "{ \"model\": \"gen4_image\", \"promptText\": \"$1\", \"ratio\": \"1920:1080\", $references }" > data.txt
 
 data=$(run)
 
@@ -98,7 +98,7 @@ do
 
     status=$(echo "$data" | grep -o '"status":"[^"]*' | grep -o '[^"]*$')
 
-    if [ "$status" != "COMPLETED" ]; then
+    if [ "$status" != "SUCCEEDED" ]; then
 
         continue
     fi
