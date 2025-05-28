@@ -35,10 +35,10 @@
 #include <WSubtitle>
 
 // Defines
-// NOTE iOS: VLC seems to be prefer being run on the main thread, in particular for bonjour
+// NOTE mac: VLC seems to be prefer being run on the main thread, in particular for bonjour
 //           chromecast discovery. We can still uncomment this to enable threading for testing.
 // NOTE VLC: libvlc_new seems to freeze the UI when it's started from the main thread.
-#ifndef Q_OS_IOS
+#ifndef Q_OS_MAC
 #define CONTROLLERMEDIA_THREAD
 #endif
 
