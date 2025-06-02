@@ -28,9 +28,9 @@ if [ $# != 3 -a $# != 4 ] \
    || \
    [ $3 != "prob-4" -a $3 != "iris-3" -a $3 != "rhea-1" ] \
    || \
-   [ $# = 4 -a "$4" != "letterbox" -a "$4" != "crop" ]; then
+   [ $# = 4 -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ]; then
 
-    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [letterbox | crop]"
+    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [letterbox | crop | wide]"
 
     exit 1
 fi
@@ -51,20 +51,28 @@ export TVAI_MODEL_DATA_DIR="$model"
 # Run
 #--------------------------------------------------------------------------------------------------
 
-filter="tvai_up=model=$3:scale=0:w=3840:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=3840:h=2160:flags=lanczos:threads=0"
+if [ "$4" = "wide" ]; then
 
-if [ "$4" = "letterbox" ]; then
+    filter="tvai_up=model=$3:scale=0:w=5040:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=5040:h=2160:flags=lanczos:threads=0:force_original_aspect_ratio=increase,crop=5040:2160"
 
-    filter="$filter:force_original_aspect_ratio=decrease,pad=3840:2160:-1:-1:color=black"
+    metadata="videoai=Enhanced using $3; mode: auto; revert compression at 0; recover details at 0; sharpen at 0; reduce noise at 0; dehalo at 0; anti-alias/deblur at 0; focus fix Off; and recover original detail at 20. Changed resolution to 5040x2160"
+else
 
-elif [ "$4" = "crop" ]; then
+    filter="tvai_up=model=$3:scale=0:w=3840:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=3840:h=2160:flags=lanczos:threads=0"
 
-    filter="$filter:force_original_aspect_ratio=increase,crop=3840:2160"
+    metadata="videoai=Enhanced using $3; mode: auto; revert compression at 0; recover details at 0; sharpen at 0; reduce noise at 0; dehalo at 0; anti-alias/deblur at 0; focus fix Off; and recover original detail at 20. Changed resolution to 3840x2160"
+
+    if [ "$4" = "letterbox" ]; then
+
+        filter="$filter:force_original_aspect_ratio=decrease,pad=3840:2160:-1:-1:color=black"
+
+    elif [ "$4" = "crop" ]; then
+
+        filter="$filter:force_original_aspect_ratio=increase,crop=3840:2160"
+    fi
 fi
 
 movflags="frag_keyframe+empty_moov+delay_moov+use_metadata_tags+write_colr"
-
-metadata="videoai=Enhanced using $3; mode: auto; revert compression at 0; recover details at 0; sharpen at 0; reduce noise at 0; dehalo at 0; anti-alias/deblur at 0; focus fix Off; and recover original detail at 20. Changed resolution to 3840x2160"
 
 duration=$(getDuration "$1")
 
@@ -72,12 +80,12 @@ duration=$(getDuration "$1")
 #              This does not seem to happen with the UI.
 # NOTE: This line comes from Topaz Video AI (right click > FFmpeg command).
 "$ffmpeg" -y "-hide_banner" "-nostdin" "-nostats" "-i" "$1" \
-"-sws_flags" "spline+accurate_rnd+full_chroma_int" \
-"-filter_complex" "$filter" "-c:v" "h264_nvenc" "-profile:v" "high" "-pix_fmt" "yuv420p" \
-"-g" "30" "-preset" "p7" "-tune" "hq" "-rc" "constqp" "-qp" "18" "-rc-lookahead" "20" \
-"-spatial_aq" "1" "-aq-strength" "15" "-b:v" "0" "-an" "-map_metadata" "0" \
-"-map_metadata:s:v" "0:s:v" "-movflags" "$movflags" "-bf" "0" "-metadata" "$metadata" \
-"-t" "$duration" "temp.mp4"
+"-sws_flags" "spline+accurate_rnd+full_chroma_int" "-filter_complex" "$filter" \
+"-c:v" "hevc_nvenc" "-profile:v" "main" "-pix_fmt" "yuv420p" "-b_ref_mode" "disabled" \
+"-tag:v" "hvc1" "-g" "30" "-preset" "p7" "-tune" "hq" "-rc" "constqp" "-qp" "17" \
+"-rc-lookahead" "20" "-spatial_aq" "1" "-aq-strength" "15" "-b:v" "0" "-an" "-map_metadata" "0" \
+"-map_metadata:s:v" "0:s:v" "-fps_mode:v" "passthrough" "-movflags" "$movflags" "-bf" "0" \
+"-metadata" "$metadata" "-t" "$duration" "temp.mp4"
 
 #--------------------------------------------------------------------------------------------------
 # FIXME Topaz: Sometimes the output duration differs from the source. This does not seem to happen
