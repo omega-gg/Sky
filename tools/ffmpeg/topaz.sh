@@ -17,20 +17,20 @@ model="C:\ProgramData\Topaz Labs LLC\Topaz Video AI\models"
 
 getDuration()
 {
-    echo $("$ffprobe" -i "$1" -show_entries format=duration -v quiet -of csv="p=0")
+    "$ffprobe" -i "$1" -show_entries format=duration -v quiet -of csv="p=0"
 }
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 3 -a $# != 4 ] \
+if [ $# -lt 3 -o $# -gt 6 ] \
    || \
    [ $3 != "prob-4" -a $3 != "iris-3" -a $3 != "rhea-1" ] \
    || \
-   [ $# = 4 -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ]; then
+   [ $# -gt 3 -a "$4" != "default" -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ]; then
 
-    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [letterbox | crop | wide]"
+    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [default | letterbox | crop] [width = 3840] [height = 2160]"
 
     exit 1
 fi
@@ -38,6 +38,20 @@ fi
 #--------------------------------------------------------------------------------------------------
 # Configuration
 #--------------------------------------------------------------------------------------------------
+
+if [ $# -lt 5 ]; then
+
+    width="3840"
+    height="2160"
+
+elif [ $# = 5 ]; then
+
+    width="$5"
+    height="2160"
+else
+    width="$5"
+    height="$6"
+fi
 
 ffmpeg="$topaz/ffmpeg"
 
@@ -51,28 +65,20 @@ export TVAI_MODEL_DATA_DIR="$model"
 # Run
 #--------------------------------------------------------------------------------------------------
 
-if [ "$4" = "wide" ]; then
+filter="tvai_up=model=$3:scale=0:w=$width:h=$height:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=$width:h=$height:flags=lanczos:threads=0"
 
-    filter="tvai_up=model=$3:scale=0:w=5040:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=5040:h=2160:flags=lanczos:threads=0:force_original_aspect_ratio=increase,crop=5040:2160"
+if [ "$4" = "letterbox" ]; then
 
-    metadata="videoai=Enhanced using $3; mode: auto; revert compression at 0; recover details at 0; sharpen at 0; reduce noise at 0; dehalo at 0; anti-alias/deblur at 0; focus fix Off; and recover original detail at 20. Changed resolution to 5040x2160"
-else
+    filter="$filter:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black"
 
-    filter="tvai_up=model=$3:scale=0:w=3840:h=2160:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=3840:h=2160:flags=lanczos:threads=0"
+elif [ "$4" = "crop" ]; then
 
-    metadata="videoai=Enhanced using $3; mode: auto; revert compression at 0; recover details at 0; sharpen at 0; reduce noise at 0; dehalo at 0; anti-alias/deblur at 0; focus fix Off; and recover original detail at 20. Changed resolution to 3840x2160"
-
-    if [ "$4" = "letterbox" ]; then
-
-        filter="$filter:force_original_aspect_ratio=decrease,pad=3840:2160:-1:-1:color=black"
-
-    elif [ "$4" = "crop" ]; then
-
-        filter="$filter:force_original_aspect_ratio=increase,crop=3840:2160"
-    fi
+    filter="$filter:force_original_aspect_ratio=increase,crop=$width:$height"
 fi
 
 movflags="frag_keyframe+empty_moov+delay_moov+use_metadata_tags+write_colr"
+
+metadata="videoai=Enhanced using $3; mode: auto; revert compression at 0; recover details at 0; sharpen at 0; reduce noise at 0; dehalo at 0; anti-alias/deblur at 0; focus fix Off; and recover original detail at 20. Changed resolution to ${width}x${height}"
 
 duration=$(getDuration "$1")
 
