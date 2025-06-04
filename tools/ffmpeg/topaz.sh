@@ -11,6 +11,9 @@ topaz="C:\Program Files\Topaz Labs LLC\Topaz Video AI"
 
 model="C:\ProgramData\Topaz Labs LLC\Topaz Video AI\models"
 
+width="3840"
+height="2160"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -30,7 +33,7 @@ if [ $# -lt 3 -o $# -gt 6 ] \
    || \
    [ $# -gt 3 -a "$4" != "default" -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ]; then
 
-    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [default | letterbox | crop] [width = 3840] [height = 2160]"
+    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [default | letterbox | crop] [width = $width] [height = $height]"
 
     exit 1
 fi
@@ -39,16 +42,12 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 5 ]; then
-
-    width="3840"
-    height="2160"
-
-elif [ $# = 5 ]; then
+if [ $# = 5 ]; then
 
     width="$5"
-    height="2160"
-else
+
+elif [ $# = 6 ]; then
+
     width="$5"
     height="$6"
 fi
