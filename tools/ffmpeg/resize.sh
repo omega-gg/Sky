@@ -24,7 +24,7 @@ getDuration()
 
 if [ $# != 3 ]; then
 
-    echo "Usage: extend <video> <reference video> <output>"
+    echo "Usage: resize <video> <reference video> <output>"
 
     exit 1
 fi
@@ -38,15 +38,22 @@ durationB=$(getDuration "$2")
 
 duration=$(awk "BEGIN { print $durationB - $durationA }")
 
-check=$(awk "BEGIN { print ($duration <= 0) }")
+check=$(awk "BEGIN { print ($duration == 0) }")
 
 if [ "$check" = 1 ]; then
 
-    echo "No extension needed, input is longer or equal."
+    echo "No resize needed, input has the same length."
 
     cp "$1" "$3"
 
     exit 0
 fi
 
-"$ffmpeg" -y -i "$1" -vf "tpad=stop_mode=clone:stop_duration=$duration" -codec:v libx264 -crf 15 -preset slow -c:a copy "$3"
+check=$(awk "BEGIN { print ($duration < 0) }")
+
+if [ "$check" = 1 ]; then
+
+    "$ffmpeg" -y -i "$1" -t "$durationB" -codec:v libx264 -crf 15 -preset slow -c:a copy "$3"
+else
+    "$ffmpeg" -y -i "$1" -vf "tpad=stop_mode=clone:stop_duration=$duration" -codec:v libx264 -crf 15 -preset slow -c:a copy "$3"
+fi
