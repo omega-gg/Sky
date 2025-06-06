@@ -84,25 +84,53 @@ signals:
 
     if (content.startsWith("<?xml"))
     {
-        content = Sk::sliceIn(content, "<transcript>", "</transcript>");
+        content = Sk::sliceIn(content, "<body>", "</body>");
 
-        QStringList array = Sk::split(content, "</text>");
-
-        foreach (const QString & string, array)
+        if (content.isEmpty())
         {
-            WBackendSubtitleData dataSubtitle;
+            // NOTE: This format seems to be deprecated but we keep it for now.
 
-            start = WControllerNetwork::extractAttribute(string, "start").toFloat() * 1000;
-            end   = WControllerNetwork::extractAttribute(string, "dur")  .toFloat() * 1000;
+            content = Sk::sliceIn(content, "<transcript>", "</transcript>");
 
-            dataSubtitle.start = start;
-            dataSubtitle.end   = start + end;
+            QStringList array = Sk::split(content, "</text>");
 
-            int index = string.indexOf('>') + 1;
+            foreach (const QString & string, array)
+            {
+                WBackendSubtitleData dataSubtitle;
 
-            dataSubtitle.text = WControllerNetwork::htmlToUtf8(string.mid(index));
+                start = WControllerNetwork::extractAttribute(string, "start").toFloat() * 1000;
+                end   = WControllerNetwork::extractAttribute(string, "dur")  .toFloat() * 1000;
 
-            list.append(dataSubtitle);
+                dataSubtitle.start = start;
+                dataSubtitle.end   = start + end;
+
+                int index = string.indexOf('>') + 1;
+
+                dataSubtitle.text = WControllerNetwork::htmlToUtf8(string.mid(index));
+
+                list.append(dataSubtitle);
+            }
+        }
+        else
+        {
+            QStringList array = Sk::split(content, "</p>");
+
+            foreach (const QString & string, array)
+            {
+                WBackendSubtitleData dataSubtitle;
+
+                start = WControllerNetwork::extractAttribute(string, "t").toFloat();
+                end   = WControllerNetwork::extractAttribute(string, "d").toFloat();
+
+                dataSubtitle.start = start;
+                dataSubtitle.end   = start + end;
+
+                int index = string.indexOf('>') + 1;
+
+                dataSubtitle.text = WControllerNetwork::htmlToUtf8(string.mid(index));
+
+                list.append(dataSubtitle);
+            }
         }
 
         emit loaded(list);
