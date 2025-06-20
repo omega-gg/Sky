@@ -14,6 +14,8 @@ model="C:\ProgramData\Topaz Labs LLC\Topaz Video AI\models"
 width="3840"
 height="2160"
 
+interpolation="chr-2"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -71,7 +73,11 @@ filter="tvai_up=model=$3:scale=0:w=$width:h=$height:preblur=0:noise=0:details=0:
 
 if [ $# = 7 ]; then
 
-    filter="tvai_fi=model=chf-3:slowmo=1:rdt=0.01:fps=$7:device=0:vram=1:instances=1,$filter"
+    filter="tvai_fi=model=$interpolation:slowmo=1:rdt=0.01:fps=$7:device=0:vram=1:instances=1,$filter"
+
+    fps="-r $7 -fps_mode cfr"
+else
+    fps=""
 fi
 
 if [ "$4" = "letterbox" ]; then
@@ -97,7 +103,7 @@ duration=$(getDuration "$1")
 "-c:v" "hevc_nvenc" "-profile:v" "main" "-pix_fmt" "yuv420p" "-b_ref_mode" "disabled" \
 "-tag:v" "hvc1" "-g" "30" "-preset" "p7" "-tune" "hq" "-rc" "constqp" "-qp" "17" \
 "-rc-lookahead" "20" "-spatial_aq" "1" "-aq-strength" "15" "-b:v" "0" "-an" "-map_metadata" "0" \
-"-map_metadata:s:v" "0:s:v" "-fps_mode:v" "passthrough" "-movflags" "$movflags" "-bf" "0" \
+"-map_metadata:s:v" "0:s:v" $fps "-movflags" "$movflags" "-bf" "0" \
 "-metadata" "$metadata" "-t" "$duration" "temp.mp4"
 
 #--------------------------------------------------------------------------------------------------
