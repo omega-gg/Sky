@@ -49,7 +49,7 @@ if [ $# = 5 ]; then
 
     width="$5"
 
-elif [ $# = 6 ]; then
+elif [ $# -gt 5 ]; then
 
     width="$5"
     height="$6"
