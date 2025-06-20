@@ -38,7 +38,7 @@ durationB=$(getDuration "$2")
 
 if [ $# = 4 -o $# = 5 ]; then
 
-    duration=$(awk "BEGIN { print $durationB - $durationA + "$4" }")
+    duration=$(awk "BEGIN { print $durationB - $durationA + $4 }")
 
     if [ "$4" = "0" ]; then
 
@@ -70,6 +70,8 @@ if [ "$check" = 1 ]; then
     if [ $# = 5 ]; then
 
         duration=$(awk "BEGIN { print $durationB - $5 }")
+    else
+        duration="$durationB"
     fi
 
     "$ffmpeg" -y -i "$1" $skip -t "$duration" -codec:v libx264 -crf 15 -preset slow -c:a copy "$3"

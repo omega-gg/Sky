@@ -27,13 +27,16 @@ getDuration()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 6 ] \
+if [ $# -lt 3 -o $# -gt 7 ] \
    || \
    [ $3 != "prob-4" -a $3 != "iris-3" -a $3 != "rhea-1" ] \
    || \
    [ $# -gt 3 -a "$4" != "default" -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ]; then
 
-    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1> [default | letterbox | crop] [width = $width] [height = $height]"
+    echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1>"
+    echo "             [default | letterbox | crop]"
+    echo "             [width = $width] [height = $height]"
+    echo "             [fps = default]"
 
     exit 1
 fi
@@ -65,6 +68,11 @@ export TVAI_MODEL_DATA_DIR="$model"
 #--------------------------------------------------------------------------------------------------
 
 filter="tvai_up=model=$3:scale=0:w=$width:h=$height:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=$width:h=$height:flags=lanczos:threads=0"
+
+if [ $# = 7 ]; then
+
+    filter="tvai_fi=model=chf-3:slowmo=1:rdt=0.01:fps=$7:device=0:vram=1:instances=1,$filter"
+fi
 
 if [ "$4" = "letterbox" ]; then
 
