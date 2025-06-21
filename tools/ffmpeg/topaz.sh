@@ -75,9 +75,9 @@ if [ $# = 7 ]; then
 
     filter="tvai_fi=model=$interpolation:slowmo=1:rdt=0.01:fps=$7:device=0:vram=1:instances=1,$filter"
 
-    fps="-r $7 -fps_mode cfr"
+    fps="-fps_mode cfr -r $7"
 else
-    fps=""
+    fps="-fps_mode passthrough"
 fi
 
 if [ "$4" = "letterbox" ]; then
