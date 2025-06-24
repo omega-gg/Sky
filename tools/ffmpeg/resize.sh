@@ -52,18 +52,7 @@ else
     skip=""
 fi
 
-check=$(awk "BEGIN { print ($duration == 0) }")
-
-if [ "$check" = 1 ]; then
-
-    echo "No resize needed, input has the same length."
-
-    cp "$1" "$3"
-
-    exit 0
-fi
-
-check=$(awk "BEGIN { print ($duration < 0) }")
+check=$(awk "BEGIN { print ($duration <= 0) }")
 
 if [ "$check" = 1 ]; then
 
