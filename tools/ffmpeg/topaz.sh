@@ -20,6 +20,16 @@ interpolation="chr-2"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
+getWidth()
+{
+    "$ffprobe" -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$1"
+}
+
+getHeight()
+{
+    "$ffprobe" -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$1"
+}
+
 getDuration()
 {
     "$ffprobe" -i "$1" -show_entries format=duration -v quiet -of csv="p=0"
@@ -29,16 +39,18 @@ getDuration()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 7 ] \
+if [ $# -lt 3 -o $# -gt 8 ] \
    || \
    [ $3 != "prob-4" -a $3 != "iris-3" -a $3 != "rhea-1" ] \
    || \
-   [ $# -gt 3 -a "$4" != "default" -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ]; then
+   [ $# -gt 3 -a "$4" != "default" -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ] \
+   || \
+   [ $# = 8 -a "$8" != "lossless" ]; then
 
     echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1>"
     echo "             [default | letterbox | crop]"
     echo "             [width = $width] [height = $height]"
-    echo "             [fps = default]"
+    echo "             [fps = default] [lossless]"
 
     exit 1
 fi
@@ -69,9 +81,25 @@ export TVAI_MODEL_DATA_DIR="$model"
 # Run
 #--------------------------------------------------------------------------------------------------
 
-filter="tvai_up=model=$3:scale=0:w=$width:h=$height:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=$width:h=$height:flags=lanczos:threads=0"
+input_width=$(getWidth "$1")
 
-if [ $# = 7 ]; then
+input_height=$(getHeight "$1")
+
+if [ "$input_width" != "$width" ] || [ "$input_height" != "$height" ]; then
+
+    filter="tvai_up=model=$3:scale=0:w=$width:h=$height:preblur=0:noise=0:details=0:halo=0:blur=0:compression=0:estimate=8:blend=0.2:device=0:vram=1:instances=1,scale=w=$width:h=$height:flags=lanczos:threads=0"
+
+    if [ "$4" = "letterbox" ]; then
+
+        filter="$filter:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black"
+
+    elif [ "$4" = "crop" ]; then
+
+        filter="$filter:force_original_aspect_ratio=increase,crop=$width:$height"
+    fi
+fi
+
+if [ $# -gt 6 ]; then
 
     filter="tvai_fi=model=$interpolation:slowmo=1:rdt=0.01:fps=$7:device=0:vram=1:instances=1,$filter"
 
@@ -80,14 +108,7 @@ else
     fps="-fps_mode:v passthrough"
 fi
 
-if [ "$4" = "letterbox" ]; then
-
-    filter="$filter:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black"
-
-elif [ "$4" = "crop" ]; then
-
-    filter="$filter:force_original_aspect_ratio=increase,crop=$width:$height"
-fi
+echo "Filter [$filter]"
 
 movflags="frag_keyframe+empty_moov+delay_moov+use_metadata_tags+write_colr"
 
@@ -97,14 +118,30 @@ metadata="videoai=Enhanced using $3; mode: auto; revert compression at 0; recove
 #              fps interpolation but not always. This does not seem to happen with the UI.
 #
 # NOTE: This line comes from Topaz Video AI (right click > FFmpeg command).
-"$ffmpeg" -y "-hide_banner" "-nostdin" "-nostats" "-i" "$1" \
-"-sws_flags" "spline+accurate_rnd+full_chroma_int" "-filter_complex" "$filter" \
-"-level" "3" "-c:v" "ffv1" "-pix_fmt" "yuv444p" "-slices" "4" "-slicecrc" "1" "-g" "1" "-an" \
-"-map_metadata" "0" "-map_metadata:s:v" "0:s:v" $fps "-map" "0:s?" "-c:s" "copy"  \
-"-movflags" "$movflags" "-bf" "0" "-metadata" "$metadata" "temp.mkv"
 
-# NOTE: This line makes sure that we have the proper duration and encoding.
-sh resize.sh "temp.mkv" "$1" "temp.mp4"
+if [ -n "$filter" ]; then
+
+    "$ffmpeg" -y "-hide_banner" "-nostdin" "-nostats" "-i" "$1" \
+    "-sws_flags" "spline+accurate_rnd+full_chroma_int" -filter_complex "$filter" "-level" "3" \
+    "-c:v" "ffv1" "-pix_fmt" "yuv444p" "-slices" "4" "-slicecrc" "1" "-g" "1" "-an" \
+    "-map_metadata" "0" "-map_metadata:s:v" "0:s:v" $fps "-map" "0:s?" "-c:s" "copy"  \
+    "-movflags" "$movflags" "-bf" "0" "-metadata" "$metadata" "temp.mkv"
+else
+    "$ffmpeg" -y "-hide_banner" "-nostdin" "-nostats" "-i" "$1" \
+    "-sws_flags" "spline+accurate_rnd+full_chroma_int" "-level" "3" \
+    "-c:v" "ffv1" "-pix_fmt" "yuv444p" "-slices" "4" "-slicecrc" "1" "-g" "1" "-an" \
+    "-map_metadata" "0" "-map_metadata:s:v" "0:s:v" $fps "-map" "0:s?" "-c:s" "copy"  \
+    "-movflags" "$movflags" "-bf" "0" "-metadata" "$metadata" "temp.mkv"
+fi
+
+# NOTE: This part makes sure that we have the proper duration and encoding.
+
+if [ "$8" = "lossless" ]; then
+
+    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "$8"
+else
+    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0
+fi
 
 #--------------------------------------------------------------------------------------------------
 

@@ -22,9 +22,11 @@ getDuration()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 5 ]; then
+if [ $# -lt 3 -o $# -gt 6 ] \
+   || \
+   [ $# = 6 -a "$6" != "lossless" ]; then
 
-    echo "Usage: resize <video> <reference video> <output> [skip=0] [chop=0]"
+    echo "Usage: resize <video> <reference video> <output> [skip=0] [chop=0] [lossless]"
 
     exit 1
 fi
@@ -36,7 +38,7 @@ fi
 durationA=$(getDuration "$1")
 durationB=$(getDuration "$2")
 
-if [ $# = 4 -o $# = 5 ]; then
+if [ $# -gt 3 ]; then
 
     duration=$(awk "BEGIN { print $durationB - $durationA + $4 }")
 
@@ -52,6 +54,13 @@ else
     skip=""
 fi
 
+if [ "$6" = "lossless" ]; then
+
+    codec="-codec:v libx264rgb -preset veryslow -qp 0"
+else
+    codec="-codec:v libx264 -crf 15 -preset slow"
+fi
+
 check=$(awk "BEGIN { print ($duration <= 0) }")
 
 if [ "$check" = 1 ]; then
@@ -63,12 +72,12 @@ if [ "$check" = 1 ]; then
         duration="$durationB"
     fi
 
-    "$ffmpeg" -y -i "$1" $skip -t "$duration" -codec:v libx264 -crf 15 -preset slow -c:a copy "$3"
+    "$ffmpeg" -y -i "$1" $skip -t "$duration" $codec -c:a copy "$3"
 else
     if [ $# = 5 ]; then
 
         duration=$(awk "BEGIN { print $duration - $5 }")
     fi
 
-    "$ffmpeg" -y -i "$1" $skip -vf "tpad=stop_mode=clone:stop_duration=$duration" -codec:v libx264 -crf 15 -preset slow -c:a copy "$3"
+    "$ffmpeg" -y -i "$1" $skip -vf "tpad=stop_mode=clone:stop_duration=$duration" $codec -c:a copy "$3"
 fi
