@@ -35,6 +35,12 @@ getDuration()
     "$ffprobe" -i "$1" -show_entries format=duration -v quiet -of csv="p=0"
 }
 
+getFps()
+{
+    "$ffprobe" -v 0 -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 "$1" \
+    | awk -F/ '{ printf "%.3f", $1 / $2 }'
+}
+
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
@@ -97,13 +103,28 @@ if [ "$input_width" != "$width" ] || [ "$input_height" != "$height" ]; then
 
         filter="$filter:force_original_aspect_ratio=increase,crop=$width:$height"
     fi
+else
+    echo "Video size is already ${width}x${height}, no upscaling will be applied."
 fi
 
 if [ $# -gt 6 ]; then
 
-    filter="tvai_fi=model=$interpolation:slowmo=1:rdt=0.01:fps=$7:device=0:vram=1:instances=1,$filter"
+    input_fps=$(getFps "$1")
 
-    fps="-fps_mode:v cfr"
+    target_fps=$(printf "%.3f" "$7")
+
+    if [ "$input_fps" = "$target_fps" ]; then
+
+        echo "Video framerate is already $7, no interpolation will be applied."
+
+        fps="-fps_mode:v passthrough"
+    else
+        echo "Input framerate: $input_fps, target: $7"
+
+        filter="tvai_fi=model=$interpolation:slowmo=1:rdt=0.01:fps=$7:device=0:vram=1:instances=1,$filter"
+
+        fps="-fps_mode:v cfr"
+    fi
 else
     fps="-fps_mode:v passthrough"
 fi
