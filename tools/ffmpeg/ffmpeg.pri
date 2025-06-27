@@ -4,5 +4,6 @@ OTHER_FILES += ffmpeg/concat.sh \
                ffmpeg/loop.sh \
                ffmpeg/resize.sh \
                ffmpeg/volume.sh \
+               ffmpeg/tempo.sh \
                ffmpeg/topaz.sh \
                ffmpeg/README.md \

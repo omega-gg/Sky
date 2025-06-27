@@ -11,9 +11,9 @@ ffmpeg="$PWD/bin/ffmpeg"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 3 ]; then
+if [ $# != 3 -a $# != 4 ]; then
 
-    echo "Usage: volume <input> <output> <volume>"
+    echo "Usage: tempo <input> <output> <tempo> [volume]"
 
     exit 1
 fi
@@ -22,4 +22,11 @@ fi
 # Run
 #--------------------------------------------------------------------------------------------------
 
-"$ffmpeg" -y -i "$1" -filter:a "volume=$3dB" "$2"
+if [ $# = 4 ]; then
+
+    filter="rubberband=tempo=$3,volume=$4dB"
+else
+    filter="rubberband=tempo=$3"
+fi
+
+"$ffmpeg" -y -i "$1" -filter:a "$filter" "$2"
