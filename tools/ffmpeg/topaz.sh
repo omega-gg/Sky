@@ -54,7 +54,7 @@ if [ $# -lt 3 -o $# -gt 8 ] \
    [ $# = 8 -a "$8" != "lossless" ]; then
 
     echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1>"
-    echo "             [default | letterbox | crop]"
+    echo "             [default | letterbox | crop | wide]"
     echo "             [width = $width] [height = $height]"
     echo "             [fps = default] [lossless]"
 
