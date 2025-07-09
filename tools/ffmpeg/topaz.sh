@@ -155,11 +155,20 @@ else
     "-movflags" "$movflags" "-bf" "0" "-metadata" "$metadata" "temp.mkv"
 fi
 
+if [ "$4" = "wide" ]; then
+
+    mv temp.mkv temp2.mkv
+
+    sh wide.sh "temp2.mkv" "temp.mkv" "lossless"
+
+    rm temp2.mkv
+fi
+
 # NOTE: This part makes sure that we have the proper duration and encoding.
 
 if [ "$8" = "lossless" ]; then
 
-    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "$8"
+    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "lossless"
 else
     sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0
 fi
