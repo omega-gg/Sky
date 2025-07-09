@@ -1,2 +1,2 @@
-OTHER_FILES += Runway/generate.sh \
+OTHER_FILES += Runway/reference.sh \
                Runway/README.md \

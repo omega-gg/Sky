@@ -7,6 +7,8 @@ set -e
 
 api="https://api.freepik.com/v1/ai/image-upscaler"
 
+freepik_key="$FREEPIK_KEY"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -15,14 +17,14 @@ run()
 {
     curl --request POST --url "$api" --ssl-no-revoke \
          --header "Content-Type: application/json"   \
-         --header "x-freepik-api-key: $FREEPIK_KEY"  \
+         --header "x-freepik-api-key: $freepik_key"  \
          --data @data.txt
 }
 
 get()
 {
     curl --request GET --url "$api/$1" --ssl-no-revoke \
-         --header "x-freepik-api-key: $FREEPIK_KEY"
+         --header "x-freepik-api-key: $freepik_key"
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -36,7 +38,7 @@ if [ $# != 4 -a $# != 5 ]; then
     exit 1
 fi
 
-if [ -z "$FREEPIK_KEY" ]; then
+if [ -z "$freepik_key" ]; then
 
     echo "upscale: FREEPIK_KEY is missing in the environment."
 

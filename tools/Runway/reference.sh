@@ -9,6 +9,8 @@ api="https://api.dev.runwayml.com/v1/text_to_image"
 
 api_status="https://api.dev.runwayml.com/v1/text_to_image"
 
+runway_key="$RUNWAY_KEY"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -17,7 +19,7 @@ run()
 {
     curl --request POST --url "$api"                  \
          --header "Content-Type: application/json"    \
-         --header "Authorization: Bearer $RUNWAY_KEY" \
+         --header "Authorization: Bearer $runway_key" \
          --header "X-Runway-Version: 2024-11-06"      \
          --data @data.txt
 }
@@ -25,7 +27,7 @@ run()
 get()
 {
     curl --request GET --url "https://api.dev.runwayml.com/v1/tasks/$1" \
-         --header "Authorization: Bearer $RUNWAY_KEY"                   \
+         --header "Authorization: Bearer $runway_key"                   \
          --header "X-Runway-Version: 2024-11-06"
 }
 
@@ -45,7 +47,7 @@ if [ $# -lt 2 -o $# -gt 5 ]; then
     exit 1
 fi
 
-if [ -z "$RUNWAY_KEY" ]; then
+if [ -z "$runway_key" ]; then
 
     echo "upscale: RUNWAY_KEY is missing in the environment."
 
