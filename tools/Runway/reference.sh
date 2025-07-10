@@ -12,6 +12,20 @@ api_status="https://api.dev.runwayml.com/v1/text_to_image"
 runway_key="$RUNWAY_KEY"
 
 #--------------------------------------------------------------------------------------------------
+# Amazon S3
+
+# NOTE: This script depends on:
+#       AWS_ACCESS_KEY_ID
+#       AWS_SECRET_ACCESS_KEY
+#       AWS_DEFAULT_REGION
+
+s3="s3://omega.gg"
+
+s3_path="upload"
+
+s3_url="https://s3-eu-west-1.amazonaws.com/omega.gg/$s3_path"
+
+#--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
 
@@ -33,7 +47,18 @@ get()
 
 getData()
 {
-    echo "data:image/jpg;base64,$(base64 -w 0 "$1")"
+    if [ -n "$AWS_ACCESS_KEY_ID" ]; then
+
+        local filename=$(basename -- "$1")
+
+        aws s3 cp --quiet --acl public-read "$1" "$s3/$s3_path/$filename"
+
+        echo "$s3_url/$filename"
+    else
+        local mime=$(file --brief --mime-type "$1")
+
+        echo "data:$mime;base64,$(base64 -w 0 "$1")"
+    fi
 }
 
 #--------------------------------------------------------------------------------------------------
