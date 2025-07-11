@@ -33,7 +33,7 @@
 #include <QPainter>
 #endif
 #ifdef QT_4
-#include <QtGlobal>
+#include <qmath.h>
 #elif defined(QT_5)
 #include <QtMath>
 #endif
