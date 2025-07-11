@@ -32,7 +32,9 @@
 #if defined(QT_6) || defined(SK_NO_QML)
 #include <QPainter>
 #endif
-#ifdef QT_OLD
+#ifdef QT_4
+#include <QtGlobal>
+#elif defined(QT_5)
 #include <QtMath>
 #endif
 
