@@ -732,7 +732,8 @@ bool WVlcPlayerPrivate::checkTime(int at)
     // FIXME VLC 3.0.21: Sometimes the seeking fails, so we try try again. The position has to be
     //                   valid otherwise it might have been set to zero already in the onTime
     //                   callback after reaching the end.
-    if (at == 0
+    //                   We don't do it when playing on a remote output because of latency.
+    if (hasOutput || at == 0
         ||
         (libvlc_media_player_get_length(player) - at < PLAYER_RETRY_GAP || retry >= 3)) return false;
 
