@@ -1,4 +1,4 @@
-Magnific AI tools
+Freepik AI tools
 ---
 
 ## Configuration

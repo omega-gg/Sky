@@ -9,6 +9,7 @@ include(ffmpeg/ffmpeg.pri)
 include(youtube-dl/youtube-dl.pri)
 include(Runway/Runway.pri)
 include(Freepik/Freepik.pri)
+include(fal/fal.pri)
 include(LivePortrait/LivePortrait.pri)
 
 # NOTE Qt5: We need an updated androiddeployqt with the latests changes.
