@@ -70,7 +70,7 @@ removeData()
 
 if [ $# -lt 3 -o $# -gt 4 ] || [ $# = 4 -a "$4" != "max" ]; then
 
-    echo "Usage: kontext <prompt> <image output> <input_image> [max]"
+    echo "Usage: kontext <input_image> <image output> <prompt> [max]"
 
     exit 1
 fi
@@ -99,9 +99,9 @@ fi
 
 cat > data.txt <<EOF
 {
-    "image_url": "$(getData "$3")",
+    "image_url": "$(getData "$1")",
     "output_format": "png",
-    "prompt": "$1"
+    "prompt": "$3"
 }
 EOF
 
@@ -119,4 +119,4 @@ curl -L -o "$2" "$url"
 # Clean
 #--------------------------------------------------------------------------------------------------
 
-removeData "$3"
+removeData "$1"
