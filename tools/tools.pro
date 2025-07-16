@@ -8,7 +8,7 @@ SUBDIRS = includeGenerator \
 include(ffmpeg/ffmpeg.pri)
 include(youtube-dl/youtube-dl.pri)
 include(Runway/Runway.pri)
-include(Magnific/Magnific.pri)
+include(Freepik/Freepik.pri)
 include(LivePortrait/LivePortrait.pri)
 
 # NOTE Qt5: We need an updated androiddeployqt with the latests changes.
