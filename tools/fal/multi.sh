@@ -4,10 +4,9 @@ set -e
 #--------------------------------------------------------------------------------------------------
 # Settings
 #--------------------------------------------------------------------------------------------------
-# https://fal.ai/models/fal-ai/flux-pro/kontext/api
+# https://fal.ai/models/fal-ai/flux-pro/kontext/max/multi/api
 
-api_pro="https://fal.run/fal-ai/flux-pro/kontext"
-api_max="https://fal.run/fal-ai/flux-pro/kontext/max"
+api="https://fal.run/fal-ai/flux-pro/kontext/max/multi"
 
 fal_key="$FAL_KEY"
 
@@ -69,9 +68,9 @@ removeData()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 4 ] || [ $# = 4 -a "$4" != "max" ]; then
+if [ $# -lt 3 -o $# -gt 4 ]; then
 
-    echo "Usage: kontext <image input> <image output> <prompt> [max]"
+    echo "Usage: kontext <image output> <prompt> <image 1> [image 2]"
 
     exit 1
 fi
@@ -84,25 +83,28 @@ if [ -z "$fal_key" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
-# Configuration
-#--------------------------------------------------------------------------------------------------
-
-if [ $# = 4 ]; then
-
-    api="$api_max"
-else
-    api="$api_pro"
-fi
-
-#--------------------------------------------------------------------------------------------------
 # Run
 #--------------------------------------------------------------------------------------------------
 
+if [ $# = 3 ]; then
+
+    images='[
+        "'"$(getData "$3")"'"
+    ]'
+
+elif [ $# = 4 ]; then
+
+    images='[
+        "'"$(getData "$3")"'",
+        "'"$(getData "$4")"'"
+    ]'
+fi
+
 cat > data.txt <<EOF
 {
-    "image_url": "$(getData "$1")",
+    "image_urls": $images,
     "output_format": "png",
-    "prompt": "$3"
+    "prompt": "$2"
 }
 EOF
 
@@ -116,10 +118,18 @@ rm data.txt
 
 url=$(echo "$data" | grep -o '"url":"[^"]*' | grep -o '[^"]*$')
 
-curl -L -o "$2" "$url"
+curl -L -o "$1" "$url"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
 #--------------------------------------------------------------------------------------------------
 
-removeData "$1"
+if [ $# = 3 ]; then
+
+    removeData "$3"
+
+elif [ $# = 4 ]; then
+
+    removeData "$3"
+    removeData "$4"
+fi
