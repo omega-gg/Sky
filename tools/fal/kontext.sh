@@ -4,6 +4,7 @@ set -e
 #--------------------------------------------------------------------------------------------------
 # Settings
 #--------------------------------------------------------------------------------------------------
+# https://fal.ai/models/fal-ai/flux-pro/kontext/api
 
 api_pro="https://fal.run/fal-ai/flux-pro/kontext"
 api_max="https://fal.run/fal-ai/flux-pro/kontext/max"
@@ -104,6 +105,8 @@ cat > data.txt <<EOF
     "prompt": "$3"
 }
 EOF
+
+cat data.txt
 
 data=$(run)
 

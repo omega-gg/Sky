@@ -4,6 +4,7 @@ set -e
 #--------------------------------------------------------------------------------------------------
 # Settings
 #--------------------------------------------------------------------------------------------------
+# https://docs.dev.runwayml.com/api/#tag/Start-generating/paths/~1v1~1text_to_image/post
 
 api="https://api.dev.runwayml.com/v1/text_to_image"
 
@@ -79,7 +80,7 @@ removeData()
 
 if [ $# -lt 2 -o $# -gt 5 ]; then
 
-    echo "Usage: generate <prompt> <image output> [image 1] [image 2] [image 3]"
+    echo "Usage: generate <image output> <prompt> [image 1] [image 2] [image 3]"
 
     exit 1
 fi
@@ -117,7 +118,9 @@ elif [ $# = 5 ]; then
     ]'
 fi
 
-echo "{ \"model\": \"gen4_image\", \"promptText\": \"$1\", \"ratio\": \"1920:1080\", $references }" > data.txt
+echo "{ \"model\": \"gen4_image\", \"promptText\": \"$2\", \"ratio\": \"1920:1080\", $references }" > data.txt
+
+cat data.txt
 
 data=$(run)
 
@@ -147,7 +150,7 @@ do
     break
 done
 
-curl -L -o "$2" "$url"
+curl -L -o "$1" "$url"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
