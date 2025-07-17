@@ -1,4 +1,4 @@
-Freepik AI tools
+Freepik generative tools
 ---
 
 ## Configuration

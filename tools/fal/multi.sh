@@ -70,14 +70,14 @@ removeData()
 
 if [ $# -lt 3 -o $# -gt 4 ]; then
 
-    echo "Usage: kontext <image output> <prompt> <image 1> [image 2]"
+    echo "Usage: multi <image output> <prompt> <image 1> [image 2]"
 
     exit 1
 fi
 
 if [ -z "$fal_key" ]; then
 
-    echo "kontext: FAL_KEY is missing in the environment."
+    echo "multi: FAL_KEY is missing in the environment."
 
     exit 1
 fi

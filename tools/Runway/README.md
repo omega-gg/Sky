@@ -1,4 +1,4 @@
-Runway AI tools
+Runway generative tools
 ---
 
 ## Configuration

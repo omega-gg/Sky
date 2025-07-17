@@ -1,4 +1,4 @@
-fal AI tools
+fal generative tools
 ---
 
 ## Configuration

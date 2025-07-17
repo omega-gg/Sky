@@ -68,7 +68,7 @@ id=$(echo "$data" | grep -o '"task_id":"[^"]*' | grep -o '[^"]*$')
 
 while :
 do
-    sleep 30
+    sleep 10
 
     data=$(get "$id")
 
