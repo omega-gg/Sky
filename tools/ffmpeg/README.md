@@ -8,6 +8,7 @@ Place your FFmpeg binaries into the bin folder.
 ## Tools
 
 - [concat.sh](concat.sh): Concatenate two videos into one.
+- [concatZoom.sh](concatZoom.sh): Zoom on a still image and append it to the video.
 - [cut.sh](cut.sh): Cut the video a the provided timestamps.
 - [reverse.sh](reverse.sh): Reverse the video.
 - [loop.sh](loop.sh): Generate a looped version of the video.
