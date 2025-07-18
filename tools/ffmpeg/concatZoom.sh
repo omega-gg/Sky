@@ -9,7 +9,7 @@ ffmpeg="$PWD/bin/ffmpeg"
 
 ffprobe="$PWD/bin/ffprobe"
 
-width="5160"
+width="3840"
 height="2160"
 
 #--------------------------------------------------------------------------------------------------
@@ -52,6 +52,13 @@ fi
 
 fps=$(getFps "$2")
 
+if [ "$4" = "lossless" ]; then
+
+    codec="-codec:v libx264 -preset veryslow -qp 0"
+else
+    codec="-codec:v libx264 -crf 15 -preset slow"
+fi
+
 #--------------------------------------------------------------------------------------------------
 # Run
 #--------------------------------------------------------------------------------------------------
@@ -62,6 +69,8 @@ frames=$(awk "BEGIN { print int($fps * 1) }")
 
 zoom=$(awk "BEGIN { print (1.333 - 1) / $frames }")
 
+echo "concatZoom: Generating input image frames."
+
 mkdir -p frames
 
 for i in $(seq 0 $((frames - 1))); do
@@ -69,8 +78,7 @@ for i in $(seq 0 $((frames - 1))); do
     scale=$(awk "BEGIN { print 1 + ($i * $zoom) }")
 
     "$ffmpeg" -y -loop 1 -t 1 -i "$1" -vf "\
-             scale=if(gt(a\,${ratio})\,${width}\,-1):if(gt(a\,${ratio})\,-1\,${height}) \
-             :flags=lanczos, \
+             scale=if(gt(a\,${ratio})\,${width}\,-1):if(gt(a\,${ratio})\,-1\,${height}):flags=lanczos, \
              pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2, \
              scale=iw*${scale}:ih*${scale}:flags=lanczos, \
              crop=${width}:${height}:(in_w-${width})/2:(in_h-${height})/2" \
@@ -82,21 +90,35 @@ done
 
 rm -rf frames
 
-echo "file 'temp.mp4'" >  videos.txt
-echo "file '$2'"       >> videos.txt
+ratio_input=$(awk "BEGIN { printf \"%.6f\", $(getWidth "$2") / $(getHeight "$2") }")
 
-codec="-codec:v libx264 -crf 15 -preset slow"
+ratio_target=$(awk "BEGIN { printf \"%.6f\", 16 / 9 }")
 
-# FIXME: Stretch the input video here if needed and encode it to lossless
+echo "file 'temp.mp4'" > videos.txt
 
-if [ "$4" = "lossless" ]; then
+is_equal=$(awk "BEGIN { diff = ($ratio_input - $ratio_target);\
+print (diff < 0.01 && diff > -0.01) ? 1 : 0 }")
 
-    codec="-codec:v libx264 -preset veryslow -qp 0"
+if [ "$is_equal" -eq 1 ]; then
+
+    echo "file '$2'" >> videos.txt
+
+    "$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -c:a copy "$3"
 else
-    codec="-codec:v libx264 -crf 15 -preset slow"
-fi
+    # NOTE: When the input ratio is wrong, we stretch the video to 16:9.
 
-"$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -c:a copy "$3"
+    echo "concatZoom: Stretching the input to 16:9."
+
+    "$ffmpeg" -y -i "$2" -vf "scale=${width}:${height}:flags=lanczos,setdar=16/9" \
+              -codec:v libx264 -preset veryslow -qp 0 \
+              -c:a copy temp2.mp4
+
+    echo "file 'temp2.mp4'" >> videos.txt
+
+    "$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -c:a copy "$3"
+
+    rm temp2.mp4
+fi
 
 #--------------------------------------------------------------------------------------------------
 # Clean
