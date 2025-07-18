@@ -16,6 +16,49 @@ height="2160"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
+append()
+{
+    echo "file '$(getPath "$1")'" >> videos.txt
+}
+
+getOs()
+{
+    case `uname` in
+    MINGW*)  os="windows";;
+    Darwin*) os="macOS";;
+    Linux*)  os="linux";;
+    *)       os="other";;
+    esac
+
+    type=`uname -m`
+
+    if [ $type = "x86_64" ]; then
+
+        if [ $os = "windows" ]; then
+
+            echo win64
+        else
+            echo $os
+        fi
+
+    elif [ $os = "windows" ]; then
+
+        echo win32
+    else
+        echo $os
+    fi
+}
+
+getPath()
+{
+    if [ $os = "windows" ]; then
+
+        cygpath -w "$1"
+    else
+        echo "$1"
+    fi
+}
+
 getFps()
 {
     "$ffprobe" -v 0 -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 "$1" \
@@ -40,6 +83,15 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+host=$(getOs)
+
+if [ $host = "win32" -o $host = "win64" ]; then
+
+    os="windows"
+else
+    os="default"
+fi
+
 fps=$(getFps "$2")
 
 if [ "$4" = "lossless" ]; then
@@ -59,7 +111,7 @@ frames=$(awk "BEGIN { print int($fps * 1) }")
 
 zoom=$(awk "BEGIN { print (1.333 - 1) / $frames }")
 
-echo "concatZoom: Generating input image frames."
+echo "concatZoom: Generating input image frames..."
 
 mkdir -p frames
 
@@ -68,11 +120,11 @@ for i in $(seq 0 $((frames - 1))); do
     scale=$(awk "BEGIN { print 1 + ($i * $zoom) }")
 
     "$ffmpeg" -y -loop 1 -t 1 -i "$1" -vf "\
-             scale=if(gt(a\,${ratio})\,${width}\,-1):if(gt(a\,${ratio})\,-1\,${height}):flags=lanczos, \
-             pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2, \
-             scale=iw*${scale}:ih*${scale}:flags=lanczos, \
-             crop=${width}:${height}:(in_w-${width})/2:(in_h-${height})/2" \
-            -frames:v 1 "frames/frame$(printf "%04d" "$i").png"
+              scale=if(gt(a\,${ratio})\,${width}\,-1):if(gt(a\,${ratio})\,-1\,${height}):flags=lanczos, \
+              pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2, \
+              scale=iw*${scale}:ih*${scale}:flags=lanczos, \
+              crop=${width}:${height}:(in_w-${width})/2:(in_h-${height})/2" \
+              -frames:v 1 "frames/frame$(printf "%04d" "$i").png"
 done
 
 "$ffmpeg" -y -framerate "$fps" -i frames/frame%04d.png \
@@ -80,8 +132,8 @@ done
 
 rm -rf frames
 
-echo "file 'temp.mp4'" >  videos.txt
-echo "file '$2'"       >> videos.txt
+append "temp.mp4"
+append "$2"
 
 "$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -c:a copy "$3"
 

@@ -7,7 +7,7 @@ set -e
 
 root="$PWD"
 
-ffmpeg="$PWD/bin/ffmpeg"
+ffmpeg="$PWD/../ffmpeg"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
@@ -26,22 +26,38 @@ fi
 # Run
 #--------------------------------------------------------------------------------------------------
 
+echo "----------"
+echo "GENERATING"
+echo "----------"
+
 cd "$ffmpeg"
 
-sh concatZoom.sh "$1" "$2" "$PWD/reframe.mp4"
+sh concatZoom.sh "$1" "$2" "$root/reframe.mp4"
 
 cd -
+
+echo "---------"
+echo "REFRAMING"
+echo "---------"
 
 sh reframe.sh reframe.mp4 temp.mp4 21:9
 
 rm reframe.mp4
 
+echo "--------"
+echo "RESIZING"
+echo "--------"
+
+cd "$ffmpeg"
+
 if [ "$4" = "lossless" ]; then
 
-    sh resize.sh temp.mp4 "$2" "$3" 1 0 lossless
+    sh resize.sh "$root/temp.mp4" "$2" "$3" 1 0 lossless
 else
-    sh resize.sh temp.mp4 "$2" "$3" 1
+    sh resize.sh "$root/temp.mp4" "$2" "$3" 1
 fi
+
+cd -
 
 #--------------------------------------------------------------------------------------------------
 # Clean
