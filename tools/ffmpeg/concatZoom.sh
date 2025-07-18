@@ -9,7 +9,8 @@ ffmpeg="$PWD/bin/ffmpeg"
 
 ffprobe="$PWD/bin/ffprobe"
 
-duration="60"
+width="5160"
+height="2160"
 
 #--------------------------------------------------------------------------------------------------
 # Functions
@@ -35,9 +36,12 @@ getFps()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 3 ]; then
+if [ $# -lt 3 -o $# -gt 4 ] || [ $# = 4 -a "$4" != "lossless" ]; then
 
-    echo "Usage: concatZoom <image> <video> <output>"
+    echo "Usage: concatZoom <image> <video> <output> [lossless]"
+    echo ""
+    echo "This command output is usefull to generate a wide background and turn 16:9 into 21:9 \
+with a generative tool like Luma."
 
     exit 1
 fi
@@ -46,47 +50,58 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-width=$(getWidth "$2")
-
-height=$(getHeight "$2")
-
 fps=$(getFps "$2")
 
 #--------------------------------------------------------------------------------------------------
 # Run
 #--------------------------------------------------------------------------------------------------
 
-"$ffmpeg" -y -loop 1 -i "$1" -t 1 -vf "\
-    scale='if(gt(a,21/9),$width,-1)':'if(gt(a,21/9),-1,$height)', \
-    pad=$width:$height:(ow-iw)/2:(oh-ih)/2, \
-    fps=$fps" \
-    -c:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p "temp.mp4"
+ratio=$(awk "BEGIN { printf \"%.6f\", $width / $height }")
 
 frames=$(awk "BEGIN { print int($fps * 1) }")
 
 zoom=$(awk "BEGIN { print (1.333 - 1) / $frames }")
 
-"$ffmpeg" -y -i "temp.mp4" -vf "\
-    zoompan=z='1+$zoom*on':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':\
-    s=${width}x${height}:fps=$fps" \
-    -frames:v "$frames" \
-    -c:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p "temp2.mp4"
+mkdir -p frames
 
-rm temp.mp4
+for i in $(seq 0 $((frames - 1))); do
 
-echo "file 'temp2.mp4'" >  videos.txt
-echo "file '$2'"        >> videos.txt
+    scale=$(awk "BEGIN { print 1 + ($i * $zoom) }")
+
+    "$ffmpeg" -y -loop 1 -t 1 -i "$1" -vf "\
+             scale=if(gt(a\,${ratio})\,${width}\,-1):if(gt(a\,${ratio})\,-1\,${height}) \
+             :flags=lanczos, \
+             pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2, \
+             scale=iw*${scale}:ih*${scale}:flags=lanczos, \
+             crop=${width}:${height}:(in_w-${width})/2:(in_h-${height})/2" \
+            -frames:v 1 "frames/frame$(printf "%04d" "$i").png"
+done
+
+"$ffmpeg" -y -framerate "$fps" -i frames/frame%04d.png \
+          -c:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p "temp.mp4"
+
+rm -rf frames
+
+echo "file 'temp.mp4'" >  videos.txt
+echo "file '$2'"       >> videos.txt
 
 codec="-codec:v libx264 -crf 15 -preset slow"
 
-"$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -c:a copy "$3"
+# FIXME: Stretch the input video here if needed and encode it to lossless
 
-#"$ffmpeg" -y -f concat -safe 0 -i videos.txt -c copy "$3"
+if [ "$4" = "lossless" ]; then
+
+    codec="-codec:v libx264 -preset veryslow -qp 0"
+else
+    codec="-codec:v libx264 -crf 15 -preset slow"
+fi
+
+"$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -c:a copy "$3"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
 #--------------------------------------------------------------------------------------------------
 
-rm temp2.mp4
+rm temp.mp4
 
 rm videos.txt

@@ -1,4 +1,5 @@
 OTHER_FILES += ffmpeg/concat.sh \
+               ffmpeg/concatZoom.sh \
                ffmpeg/cut.sh \
                ffmpeg/reverse.sh \
                ffmpeg/loop.sh \
