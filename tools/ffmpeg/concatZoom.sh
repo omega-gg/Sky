@@ -12,6 +12,9 @@ ffprobe="$PWD/bin/ffprobe"
 width="3840"
 height="2160"
 
+# NOTE: Turn this to yuv420p for broader player compatibility.
+yuv="yuv444p"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -135,7 +138,7 @@ rm -rf frames
 append "temp.mp4"
 append "$2"
 
-"$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -c:a copy "$3"
+"$ffmpeg" -y -f concat -safe 0 -i videos.txt $codec -pix_fmt $yuv -c:a copy "$3"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
