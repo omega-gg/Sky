@@ -16,16 +16,22 @@ height="2160"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
+# NOTE: Apparently lanczos and bicubic scaling are glitching LivePortrait.
+
 upscale()
 {
-    "$ffmpeg" -y -i "$1" -vf "scale=${width}:${height}:flags=lanczos" \
+    "$ffmpeg" -y -i "$1" -vf "scale=${width}:${height}:flags=bilinear,fps=$fps" \
+              -fps_mode:v cfr \
               -c:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p \
               -c:a copy "$2"
 }
 
+# NOTE: Bicubic seems to yield better results in particular on character faces.
+
 downscale()
 {
-    "$ffmpeg" -y -i "$1" -vf "scale=${input_width}:${input_height}:flags=lanczos" \
+    "$ffmpeg" -y -i "$1" -vf "scale=${input_width}:${input_height}:flags=bicubic,fps=$fps" \
+              -fps_mode:v cfr \
               $codec -c:a copy "$2"
 }
 
@@ -37,6 +43,12 @@ getWidth()
 getHeight()
 {
     "$ffprobe" -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$1"
+}
+
+getFps()
+{
+    "$ffprobe" -v 0 -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 "$1" \
+    | awk -F/ '{ printf "%.3f", $1 / $2 }'
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -76,6 +88,8 @@ input_width=$(getWidth "$input.mp4")
 
 input_height=$(getHeight "$input.mp4")
 
+fps=$(getFps "$input.mp4")
+
 ratio_input=$(awk "BEGIN { printf \"%.6f\", $input_width / $input_height }")
 
 ratio_target=$(awk "BEGIN { printf \"%.6f\", $width / $height }")
@@ -106,6 +120,8 @@ else
     sh run.sh "$PWD/temp.mp4" "$PWD/temp-sync.mp4"
 fi
 
+rm "temp-sync.mp4"
+
 name="output/temp--temp-sync"
 
 mv "$name".mp4        "temp.mp4"
@@ -117,7 +133,7 @@ echo "-----------"
 
 if [ "$7" = "lossless" ]; then
 
-    codec="-codec:v libx264 -preset veryslow -qp 0"
+    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p"
 else
     codec="-codec:v libx264 -crf 15 -preset slow"
 fi
