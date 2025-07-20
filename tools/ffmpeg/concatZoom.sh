@@ -12,8 +12,7 @@ ffprobe="$PWD/bin/ffprobe"
 width="3840"
 height="2160"
 
-# NOTE: Turn this to yuv420p for broader player compatibility.
-yuv="yuv444p"
+yuv="yuv420p"
 
 #--------------------------------------------------------------------------------------------------
 # Functions
@@ -99,7 +98,7 @@ fps=$(getFps "$2")
 
 if [ "$4" = "lossless" ]; then
 
-    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p"
+    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
     codec="-codec:v libx264 -crf 15 -preset slow"
 fi
@@ -131,7 +130,7 @@ for i in $(seq 0 $((frames - 1))); do
 done
 
 "$ffmpeg" -y -framerate "$fps" -i frames/frame%04d.png \
-          -c:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p "temp.mp4"
+          -c:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv "temp.mp4"
 
 rm -rf frames
 

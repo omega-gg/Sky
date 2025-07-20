@@ -7,6 +7,8 @@ set -e
 
 ffmpeg="$PWD/bin/ffmpeg"
 
+yuv="yuv420p"
+
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
@@ -26,7 +28,7 @@ fi
 
 if [ "$6" = "lossless" ]; then
 
-    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p"
+    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
     codec="-codec:v libx264 -crf 15 -preset slow"
 fi

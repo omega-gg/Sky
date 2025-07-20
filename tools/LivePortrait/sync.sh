@@ -12,25 +12,25 @@ ffprobe="$PWD/../ffmpeg/bin/ffprobe"
 width="3840"
 height="2160"
 
+yuv="yuv420p"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
 
-# NOTE: Apparently lanczos and bicubic scaling are glitching LivePortrait.
+# NOTE: Spline seems to be the best choice for LivePortrait.
 
 upscale()
 {
-    "$ffmpeg" -y -i "$1" -vf "scale=${width}:${height}:flags=bilinear,fps=$fps" \
+    "$ffmpeg" -y -i "$1" -vf "scale=${width}:${height}:flags=spline,fps=$fps" \
               -fps_mode:v cfr \
-              -c:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p \
+              -c:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv \
               -c:a copy "$2"
 }
 
-# NOTE: Bicubic seems to yield better results in particular on character faces.
-
 downscale()
 {
-    "$ffmpeg" -y -i "$1" -vf "scale=${input_width}:${input_height}:flags=bicubic,fps=$fps" \
+    "$ffmpeg" -y -i "$1" -vf "scale=${input_width}:${input_height}:flags=spline,fps=$fps" \
               -fps_mode:v cfr \
               $codec -c:a copy "$2"
 }
@@ -133,7 +133,7 @@ echo "-----------"
 
 if [ "$7" = "lossless" ]; then
 
-    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p"
+    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
     codec="-codec:v libx264 -crf 15 -preset slow"
 fi

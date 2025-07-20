@@ -16,6 +16,8 @@ height="2160"
 
 interpolation="chr-2"
 
+yuv="yuv420p"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -144,13 +146,13 @@ if [ -n "$filter" ]; then
 
     "$ffmpeg" -y "-hide_banner" "-nostdin" "-i" "$1" \
     "-sws_flags" "spline+accurate_rnd+full_chroma_int" -filter_complex "$filter" "-level" "3" \
-    "-c:v" "ffv1" "-pix_fmt" "yuv444p" "-slices" "4" "-slicecrc" "1" "-g" "1" "-an" \
+    "-c:v" "ffv1" "-pix_fmt" "$yuv" "-slices" "4" "-slicecrc" "1" "-g" "1" "-an" \
     "-map_metadata" "0" "-map_metadata:s:v" "0:s:v" $fps "-map" "0:s?" "-c:s" "copy"  \
     "-movflags" "$movflags" "-bf" "0" "-metadata" "$metadata" "temp.mkv"
 else
     "$ffmpeg" -y "-hide_banner" "-nostdin" "-i" "$1" \
     "-sws_flags" "spline+accurate_rnd+full_chroma_int" "-level" "3" \
-    "-c:v" "ffv1" "-pix_fmt" "yuv444p" "-slices" "4" "-slicecrc" "1" "-g" "1" "-an" \
+    "-c:v" "ffv1" "-pix_fmt" "$yuv" "-slices" "4" "-slicecrc" "1" "-g" "1" "-an" \
     "-map_metadata" "0" "-map_metadata:s:v" "0:s:v" $fps "-map" "0:s?" "-c:s" "copy"  \
     "-movflags" "$movflags" "-bf" "0" "-metadata" "$metadata" "temp.mkv"
 fi

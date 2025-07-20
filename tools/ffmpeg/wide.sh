@@ -14,6 +14,8 @@ height="2160"
 
 base="3840"
 
+yuv="yuv420p"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -55,7 +57,7 @@ scale=$(awk "BEGIN { print $size + ($width - $input_width) / 2 }")
 
 if [ "$3" = "lossless" ]; then
 
-    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt yuv444p"
+    codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
     codec="-codec:v libx264 -crf 15 -preset slow"
 fi
