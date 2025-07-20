@@ -105,6 +105,27 @@ fi
 # Run
 #--------------------------------------------------------------------------------------------------
 
+if [ $# = 3 -o $# = 4 ]; then
+
+    # NOTE: When the user does not provide a size we generate and return right away.
+
+    if [ $# = 3 ]; then
+
+        sh run.sh "$input.mp4" "$input-sync.mp4"
+
+    elif [ $# = 4 ]; then
+
+        sh run.sh "$input.mp4" "$input-sync.mp4" "$4"
+    fi
+
+    name="output/$1--$1-sync"
+
+    mv "$name".mp4        "$3/$1.mp4"
+    mv "$name"_concat.mp4 "$3/$1-sync.mp4"
+
+    exit 0
+fi
+
 echo "---------"
 echo "UPSCALING"
 echo "---------"
@@ -113,7 +134,7 @@ upscale "$input.mp4" "temp.mp4"
 
 cp "$input-sync.mp4" "temp-sync.mp4"
 
-if [ $# = 4 ]; then
+if [ $# -gt 3 ]; then
 
     sh run.sh "$PWD/temp.mp4" "$PWD/temp-sync.mp4" "$4"
 else
