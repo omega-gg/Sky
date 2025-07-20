@@ -118,10 +118,10 @@ if [ $# = 3 -o $# = 4 ]; then
         sh run.sh "$input.mp4" "$input-sync.mp4" "$4"
     fi
 
-    name="output/$1--$1-sync"
+    name="output/$2--$2-sync"
 
-    mv "$name".mp4        "$3/$1.mp4"
-    mv "$name"_concat.mp4 "$3/$1-sync.mp4"
+    mv "$name".mp4        "$3/$2.mp4"
+    mv "$name"_concat.mp4 "$3/$2-sync.mp4"
 
     exit 0
 fi
