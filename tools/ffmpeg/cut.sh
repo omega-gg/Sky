@@ -13,11 +13,10 @@ yuv="yuv420p"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 4 -o $# -gt 6 ] \
-   || \
-   [ $# = 5 -a "$5" != "precise" ] || [ $# = 6 -a "$6" != "lossless" ]; then
+if [ $# -lt 4 -o $# -gt 6 ] || [ $# = 5 -a "$5" != "precise" ]; then
 
-    echo "Usage: cut <video> <timeA> <timeB> <output> [precise] [lossless]"
+    echo "Usage: cut <video> <timeA> <timeB> <output> [precise]"
+    echo "           [codec | lossless]"
 
     exit 1
 fi
@@ -26,11 +25,15 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ "$6" = "lossless" ]; then
+if [ $# -lt 6 ]; then
+
+    codec="-codec:v libx264 -crf 15 -preset slow"
+
+elif [ "$6" = "lossless" ]; then
 
     codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
-    codec="-codec:v libx264 -crf 15 -preset slow"
+    codec="$6"
 fi
 
 #--------------------------------------------------------------------------------------------------

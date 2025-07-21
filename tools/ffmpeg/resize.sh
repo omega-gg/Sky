@@ -24,11 +24,10 @@ getDuration()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 6 ] \
-   || \
-   [ $# = 6 -a "$6" != "lossless" ]; then
+if [ $# -lt 3 -o $# -gt 6 ]; then
 
-    echo "Usage: resize <video> <reference video> <output> [skip=0] [chop=0] [lossless]"
+    echo "Usage: resize <video> <reference video> <output> [skip=0] [chop=0]"
+    echo "              [codec | lossless]"
 
     exit 1
 fi
@@ -56,11 +55,15 @@ else
     skip=""
 fi
 
-if [ "$6" = "lossless" ]; then
+if [ $# -lt 6 ]; then
+
+    codec="-codec:v libx264 -crf 15 -preset slow"
+
+elif [ "$6" = "lossless" ]; then
 
     codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
-    codec="-codec:v libx264 -crf 15 -preset slow"
+    codec="$6"
 fi
 
 check=$(awk "BEGIN { print ($duration <= 0) }")

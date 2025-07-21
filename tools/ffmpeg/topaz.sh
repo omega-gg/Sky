@@ -51,14 +51,15 @@ if [ $# -lt 3 -o $# -gt 8 ] \
    || \
    [ $3 != "prob-4" -a $3 != "iris-3" -a $3 != "rhea-1" ] \
    || \
-   [ $# -gt 3 -a "$4" != "default" -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ] \
-   || \
-   [ $# = 8 -a "$8" != "lossless" ]; then
+   [ $# -gt 3 \
+     -a \
+     "$4" != "default" -a "$4" != "letterbox" -a "$4" != "crop" -a "$4" != "wide" ]; then
 
     echo "Usage: topaz <input> <output> <prob-4 | iris-3 | rhea-1>"
     echo "             [default | letterbox | crop | wide]"
     echo "             [width = $width] [height = $height]"
-    echo "             [fps = default] [lossless]"
+    echo "             [fps = default]"
+    echo "             [codec | lossless]"
 
     exit 1
 fi
@@ -168,11 +169,19 @@ fi
 
 # NOTE: This part makes sure that we have the proper duration and encoding.
 
-if [ "$8" = "lossless" ]; then
+if [ $# -lt 8 ]; then
 
-    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "lossless"
+    codec="-codec:v libx265 -crf 12 -preset slow"
+
+    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "$codec"
+
+elif [ "$8" = "lossless" ]; then
+
+    codec="-codec:v libx265 -preset veryslow -x265-params lossless=1 $yuv"
+
+    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "$codec"
 else
-    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0
+    sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "$8"
 fi
 
 #--------------------------------------------------------------------------------------------------

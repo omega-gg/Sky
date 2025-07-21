@@ -55,11 +55,10 @@ getFps()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 7 ] \
-   || \
-   [ $# = 7 -a "$7" != "lossless" ]; then
+if [ $# -lt 3 -o $# -gt 7 ]; then
 
-    echo "Usage: sync <input path> <input name> <output path> [crop_x] [width] [height] [lossless]"
+    echo "Usage: sync <input path> <input name> <output path> [crop_x] [width] [height]"
+    echo "            [codec | lossless]"
     echo ""
     echo "This command upscales the input videos, runs the synchronization, downscales the output \
 video at the original size and moves everything in output folder. This maximizes the rendering \
@@ -152,11 +151,15 @@ echo "-----------"
 echo "DOWNSCALING"
 echo "-----------"
 
-if [ "$7" = "lossless" ]; then
+if [ $# -lt 7 ]; then
+
+    codec="-codec:v libx264 -crf 15 -preset slow"
+
+elif [ "$7" = "lossless" ]; then
 
     codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
-    codec="-codec:v libx264 -crf 15 -preset slow"
+    codec="$7"
 fi
 
 downscale "temp.mp4" "$3/$2.mp4"

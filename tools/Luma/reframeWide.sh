@@ -13,9 +13,10 @@ ffmpeg="$PWD/../ffmpeg"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 4 ] || [ $# = 4 -a "$4" != "lossless" ]; then
+if [ $# -lt 3 -o $# -gt 4 ]; then
 
-    echo "Usage: reframeWide <image> <video> <output> [lossless]"
+    echo "Usage: reframeWide <image> <video> <output>"
+    echo "                   [codec | lossless]"
     echo ""
     echo "This command output is usefull to turn 16:9 into 21:9 with Luma reframe."
 
@@ -50,11 +51,11 @@ echo "--------"
 
 cd "$ffmpeg"
 
-if [ "$4" = "lossless" ]; then
+if [ $# -lt 4 ]; then
 
-    sh resize.sh "$root/temp.mp4" "$2" "$3" 1 0 lossless
-else
     sh resize.sh "$root/temp.mp4" "$2" "$3" 1
+else
+    sh resize.sh "$root/temp.mp4" "$2" "$3" 1 0 "$4"
 fi
 
 cd -

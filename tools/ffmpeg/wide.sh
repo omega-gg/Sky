@@ -34,9 +34,9 @@ getHeight()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 2 -o $# -gt 3 ] || [ $# = 3 -a "$3" != "lossless" ]; then
+if [ $# -lt 2 -o $# -gt 3 ]; then
 
-    echo "Usage: wide <video> <output> [lossless]"
+    echo "Usage: wide <video> <output> [codec | lossless]"
 
     exit 1
 fi
@@ -55,11 +55,15 @@ right=$(awk "BEGIN { print $input_width - $size }")
 
 scale=$(awk "BEGIN { print $size + ($width - $input_width) / 2 }")
 
-if [ "$3" = "lossless" ]; then
+if [ $# -lt 3 ]; then
+
+    codec="-codec:v libx264 -crf 15 -preset slow"
+
+elif [ "$3" = "lossless" ]; then
 
     codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
-    codec="-codec:v libx264 -crf 15 -preset slow"
+    codec="$3"
 fi
 
 "$ffmpeg" -y -i "$1" -filter_complex "\

@@ -71,9 +71,10 @@ getFps()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# -lt 3 -o $# -gt 4 ] || [ $# = 4 -a "$4" != "lossless" ]; then
+if [ $# -lt 3 -o $# -gt 4 ]; then
 
-    echo "Usage: concatZoom <image> <video> <output> [lossless]"
+    echo "Usage: concatZoom <image> <video> <output>"
+    echo "                  [codec | lossless]"
     echo ""
     echo "This command output is usefull to generate a wide background and turn 16:9 into 21:9 \
 with a generative tool like Luma."
@@ -96,11 +97,15 @@ fi
 
 fps=$(getFps "$2")
 
-if [ "$4" = "lossless" ]; then
+if [ $# -lt 4 ]; then
+
+    codec="-codec:v libx264 -crf 15 -preset slow"
+
+elif [ "$4" = "lossless" ]; then
 
     codec="-codec:v libx264 -preset veryslow -qp 0 -pix_fmt $yuv"
 else
-    codec="-codec:v libx264 -crf 15 -preset slow"
+    codec="$4"
 fi
 
 #--------------------------------------------------------------------------------------------------
