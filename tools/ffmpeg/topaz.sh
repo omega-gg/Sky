@@ -177,7 +177,7 @@ if [ $# -lt 8 ]; then
 
 elif [ "$8" = "lossless" ]; then
 
-    codec="-codec:v libx265 -preset veryslow -x265-params lossless=1 $yuv"
+    codec="-codec:v libx265 -preset veryslow -x265-params lossless=1 -pix_fmt $yuv"
 
     sh resize.sh "temp.mkv" "$1" "temp.mp4" 0 0 "$codec"
 else
