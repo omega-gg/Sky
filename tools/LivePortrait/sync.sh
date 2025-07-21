@@ -61,9 +61,9 @@ if [ $# -lt 3 -o $# -gt 7 ]; then
     echo "Usage: sync <input path> <input name> <output path> [crop_x] [width] [height]"
     echo "            [codec | lossless]"
     echo ""
-    echo "This command upscales the input videos, runs the synchronization, downscales the output \
-video at the original size and moves everything in output folder. This maximizes the rendering \
-quality."
+    echo "When providing a size, this command upscales the input videos, runs the \
+synchronization, downscales the output video at the original size and moves everything in the \
+output folder. This maximizes the rendering quality."
 
     exit 1
 fi
