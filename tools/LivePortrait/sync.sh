@@ -18,7 +18,8 @@ yuv="yuv420p"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
-# NOTE: Spline seems to be the best choice for LivePortrait.
+# NOTE: Spline seems to be the best choice for LivePortrait. For some reason converting to yuv444p
+#       is messing up lipsync, so we stick to yuv420p.
 
 upscale()
 {
