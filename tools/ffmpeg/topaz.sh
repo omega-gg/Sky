@@ -162,7 +162,7 @@ if [ "$4" = "wide" ]; then
 
     mv temp.mkv temp2.mkv
 
-    sh wide.sh "temp2.mkv" "temp.mkv" "lossless"
+    sh wide.sh "temp2.mkv" "temp.mkv" lossless
 
     rm temp2.mkv
 fi
