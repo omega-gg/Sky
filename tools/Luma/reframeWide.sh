@@ -33,7 +33,11 @@ echo "----------"
 
 cd "$ffmpeg"
 
-sh concatZoom.sh "$1" "$2" "$root/reframe.mp4"
+# NOTE: We don't use a generic name to avoid caching issues with Amazon S3 hosting.
+filename=$(basename -- "$2")
+
+# NOTE: Luma does not support lossless video input for now.
+sh concatZoom.sh "$1" "$2" "$root/$filename"
 
 cd -
 
@@ -41,9 +45,9 @@ echo "---------"
 echo "REFRAMING"
 echo "---------"
 
-sh reframe.sh reframe.mp4 temp.mp4 21:9
+sh reframe.sh "$filename" temp.mp4 21:9
 
-rm reframe.mp4
+rm "$filename"
 
 echo "--------"
 echo "RESIZING"
