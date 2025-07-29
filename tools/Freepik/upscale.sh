@@ -56,7 +56,14 @@ else
     creativity="0"
 fi
 
-echo "{ \"image\": \"$(base64 $1)\", \"scale_factor\": \"$3\", \"optimized_for\": \"$4\", \"creativity\": \"$creativity\" }" > data.txt
+cat > data.txt <<EOF
+{
+    "image": "$(base64 $1)",
+    "scale_factor": "$3",
+    "optimized_for": "$4",
+    "creativity": "$creativity"
+}
+EOF
 
 data=$(run)
 

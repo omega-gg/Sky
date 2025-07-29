@@ -4,9 +4,9 @@ set -e
 #--------------------------------------------------------------------------------------------------
 # Settings
 #--------------------------------------------------------------------------------------------------
-# https://docs.lumalabs.ai/reference/reframevideo
+# https://docs.lumalabs.ai/reference/creategeneration
 
-api="https://api.lumalabs.ai/dream-machine/v1/generations/video/reframe"
+api="https://api.lumalabs.ai/dream-machine/v1/generations/video"
 
 api_get="https://api.lumalabs.ai/dream-machine/v1/generations"
 
@@ -66,9 +66,9 @@ removeData()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 3 ]; then
+if [ $# -lt 3 -o $# -gt 5 ]; then
 
-    echo "Usage: reframe <video input> <video output> <ratio>"
+    echo "Usage: startEnd <frame start> <frame end> <output> [ratio] [resolution]"
 
     exit 1
 fi
@@ -88,17 +88,42 @@ if [ -z "$AWS_ACCESS_KEY_ID" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
+# Configuration
+#--------------------------------------------------------------------------------------------------
+
+if [ $# = 4 ]; then
+
+    ratio="$4"
+else
+    ratio="16:9"
+fi
+
+if [ $# = 5 ]; then
+
+    resolution="$5"
+else
+    resolution="1080p"
+fi
+
+#--------------------------------------------------------------------------------------------------
 # Run
 #--------------------------------------------------------------------------------------------------
 
 cat > data.txt <<EOF
 {
-    "generation_type": "reframe_video",
-    "model": "$model",
-    "media": {
-        "url": "$(getData "$1")"
+    "model": "ray-2",
+    "keyframes": {
+            "frame0": {
+            "type": "image",
+            "url": "$(getData "$1")"
+        },
+            "frame1": {
+            "type": "image",
+            "url": "$(getData "$2")"
+        }
     },
-    "aspect_ratio": "$3"
+    "aspect_ratio": "$ratio",
+    "resolution": "$resolution"
 }
 EOF
 
@@ -132,10 +157,11 @@ do
     break
 done
 
-curl -L -o "$2" "$url"
+curl -L -o "$3" "$url"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
 #--------------------------------------------------------------------------------------------------
 
 removeData "$1"
+removeData "$2"
