@@ -4,10 +4,27 @@ set -e
 #--------------------------------------------------------------------------------------------------
 # Settings
 #--------------------------------------------------------------------------------------------------
+# https://docs.freepik.com/api-reference/image-upscaler/post-image-upscaler
 
 api="https://api.freepik.com/v1/ai/image-upscaler"
 
 freepik_key="$FREEPIK_KEY"
+
+scale_factor="2x"
+
+optimized_for="standard"
+# Available options:
+# standard,
+# soft_portraits,
+# hard_portraits,
+# art_n_illustration,
+# videogame_assets,
+# nature_n_landscapes,
+# films_n_photography,
+# 3d_renders,
+# science_fiction_n_horror
+
+creativity="0"
 
 #--------------------------------------------------------------------------------------------------
 # Functions
@@ -31,9 +48,10 @@ get()
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 4 -a $# != 5 ]; then
+if [ $# -lt 2 -o $# -gt 5 ]; then
 
-    echo "Usage: upscale <image input> <image output> <scale_factor> <optimized_for> [creativity]"
+    echo "Usage: upscale <image input> <image output>"
+    echo "               [scale_factor = 2x] [optimized_for = standard] [creativity = 0]"
 
     exit 1
 fi
@@ -49,18 +67,26 @@ fi
 # Run
 #--------------------------------------------------------------------------------------------------
 
-if [ $# = 5 ]; then
+if [ $# -gt 2 ]; then
+
+    scale_factor="$3"
+fi
+
+if [ $# -gt 3 ]; then
+
+    optimized_for="$4"
+fi
+
+if [ $# -gt 4 ]; then
 
     creativity="$5"
-else
-    creativity="0"
 fi
 
 cat > data.txt <<EOF
 {
-    "image": "$(base64 $1)",
-    "scale_factor": "$3",
-    "optimized_for": "$4",
+    "image": "$(base64 "$1")",
+    "scale_factor": "$scale_factor",
+    "optimized_for": "$optimized_for",
     "creativity": "$creativity"
 }
 EOF
