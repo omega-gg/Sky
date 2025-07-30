@@ -68,7 +68,9 @@ removeData()
 
 if [ $# -lt 3 -o $# -gt 5 ]; then
 
-    echo "Usage: startEnd <frame start> <frame end> <output> [ratio] [resolution]"
+    echo "Usage: startEnd <frame start> <frame end> <output>"
+    echo "                [ratio = 16:9]"
+    echo "                [resolution = 1080p]"
 
     exit 1
 fi
