@@ -52,6 +52,16 @@ if [ $# -lt 2 -o $# -gt 5 ]; then
 
     echo "Usage: upscale <image input> <image output>"
     echo "               [scale_factor = 2x] [optimized_for = standard] [creativity = 0]"
+    echo ""
+    echo "optimized_for: standard"
+    echo "               soft_portraits"
+    echo "               hard_portraits"
+    echo "               art_n_illustration"
+    echo "               videogame_assets"
+    echo "               nature_n_landscapes"
+    echo "               films_n_photography"
+    echo "               3d_renders"
+    echo "               science_fiction_n_horror"
 
     exit 1
 fi
