@@ -21,7 +21,7 @@ isEmpty(TOOLS) {
     # NOTE iOS: Torrents are not available.
     !ios: SUBDIRS += src/SkTorrent
 
-    !ios:!android:SUBDIRS += src/construct
+    !ios:!android:SUBDIRS += src/sky
 
     !ios:!android:SUBDIRS += tools
 

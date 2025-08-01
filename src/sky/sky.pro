@@ -1,6 +1,6 @@
 SK = $$_PRO_FILE_PWD_/../..
 
-TARGET = construct
+TARGET = sky
 
 DESTDIR = $$SK/bin
 
