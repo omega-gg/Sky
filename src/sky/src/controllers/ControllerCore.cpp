@@ -24,45 +24,88 @@
 
 // Qt includes
 #ifdef QT_4
+#include <QCoreApplication>
 #include <QDeclarativeEngine>
 #else
 #include <QQmlEngine>
 #endif
+//#include <QNetworkDiskCache>
+#ifdef SK_DESKTOP
+#include <QFileDialog>
+#else
 #include <QDir>
+#if defined(Q_OS_ANDROID) && defined(QT_5) && QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    #include <QtAndroid>
+#endif
+#endif
 
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerDeclarative>
+#include <WControllerView>
 #include <WControllerFile>
 #include <WControllerNetwork>
-#include <WControllerView>
+#include <WControllerDownload>
 #include <WControllerPlaylist>
 #include <WControllerMedia>
+#include <WControllerTorrent>
 #include <WView>
 #include <WViewResizer>
 #include <WViewDrag>
 #include <WWindow>
+#include <WCache>
 #include <WActionCue>
 #include <WInputCue>
+#include <WLoaderNetwork>
+#include <WLoaderVbml>
+#include <WLoaderBarcode>
+//#include <WLoaderWeb>
+#include <WLoaderTorrent>
+#include <WLoaderSuggest>
+#include <WLoaderRecent>
+#include <WLoaderTracks>
+#include <WHookOutputBarcode>
+#include <WHookTorrent>
+#include <WLibraryFolderRelated>
+#include <WAbstractTabs>
+#include <WAbstractTab>
+#include <WTabsTrack>
+#include <WTabTrack>
+#include <WVlcEngine>
+#include <WBackendVlc>
+#include <WBackendSubtitle>
 #include <WBackendIndex>
 #include <WBackendTorrent>
-#include <WBackendVlc>
-#include <WAbstractHook>
+#include <WBackendUniversal>
+#ifndef QT_4
+#include <WFilterBarcode>
+#endif
+#include <WModelRange>
+#include <WModelList>
+#include <WModelOutput>
+#include <WModelLibraryFolder>
+#include <WModelPlaylist>
+#include <WModelCompletionGoogle>
+#include <WModelContextual>
+#include <WModelTabs>
 #include <WImageFilterColor>
-#include <WImageFilterMask>
 #include <WDeclarativeApplication>
 #include <WDeclarativeMouseArea>
 #include <WDeclarativeMouseWatcher>
+#include <WDeclarativeListView>
+#include <WDeclarativeContextualPage>
 #include <WDeclarativeAnimated>
 #include <WDeclarativeBorders>
 #include <WDeclarativeImage>
 #include <WDeclarativeImageSvg>
 #include <WDeclarativeBorderImage>
 #include <WDeclarativeTextSvg>
-#include <WDeclarativePlayer>
+#include <WDeclarativeAmbient>
 #include <WDeclarativeBarcode>
-#include <WDeclarativeNoise>
-#include <WVlcEngine>
+#include <WDeclarativeScanner>
+#ifdef SK_DESKTOP
+#include <WDeclarativeScannerHover>
+#endif
 #include <WBarcodeWriter>
 
 W_INIT_CONTROLLER(ControllerCore)
@@ -104,6 +147,12 @@ ControllerCore::ControllerCore() : WController()
     //---------------------------------------------------------------------------------------------
     // QML
     //---------------------------------------------------------------------------------------------
+    // Qt
+
+    qmlRegisterUncreatableType<QAbstractItemModel>("Sky", 1,0, "QAbstractItemModel",
+                                                   "QAbstractItemModel is abstract");
+
+    //---------------------------------------------------------------------------------------------
     // Global
 
     qmlRegisterUncreatableType<WControllerApplication>("Sky", 1,0, "Sk", "Sk is not creatable");
@@ -115,6 +164,12 @@ ControllerCore::ControllerCore() : WController()
 
     //---------------------------------------------------------------------------------------------
     // Kernel
+
+    qmlRegisterUncreatableType<WAbstractTabs>("Sky", 1,0, "AbstractTabs",
+                                              "AbstractTabs is abstract");
+
+    qmlRegisterUncreatableType<WAbstractTab>("Sky", 1,0, "AbstractTab",
+                                             "AbstractTab is abstract");
 
     qmlRegisterType<WActionCue>("Sky", 1,0, "ActionCue");
     qmlRegisterType<WInputCue> ("Sky", 1,0, "InputCue");
@@ -135,7 +190,9 @@ ControllerCore::ControllerCore() : WController()
     qmlRegisterUncreatableType<WImageFilter>("Sky", 1,0, "ImageFilter", "ImageFilter is abstract");
 
     qmlRegisterType<WImageFilterColor>("Sky", 1,0, "ImageFilterColor");
-    qmlRegisterType<WImageFilterMask> ("Sky", 1,0, "ImageFilterMask");
+
+    qmlRegisterType<WDeclarativeGradient>    ("Sky", 1,0, "ScaleGradient");
+    qmlRegisterType<WDeclarativeGradientStop>("Sky", 1,0, "ScaleGradientStop");
 
     //---------------------------------------------------------------------------------------------
     // Declarative
@@ -143,9 +200,14 @@ ControllerCore::ControllerCore() : WController()
     qmlRegisterType<WDeclarativeMouseArea>   ("Sky", 1,0, "MouseArea");
     qmlRegisterType<WDeclarativeMouseWatcher>("Sky", 1,0, "MouseWatcher");
 
-    qmlRegisterType<WDeclarativeBorders>("Sky", 1,0, "Borders");
+    qmlRegisterType<WDeclarativeListHorizontal>("Sky", 1,0, "ListHorizontal");
+    qmlRegisterType<WDeclarativeListVertical>  ("Sky", 1,0, "ListVertical");
+
+    qmlRegisterType<WDeclarativeContextualPage>("Sky", 1,0, "ContextualPage");
 
     qmlRegisterType<WDeclarativeAnimated>("Sky", 1,0, "Animated");
+
+    qmlRegisterType<WDeclarativeBorders>("Sky", 1,0, "Borders");
 
     qmlRegisterType<WDeclarativeGradient>    ("Sky", 1,0, "ScaleGradient");
     qmlRegisterType<WDeclarativeGradientStop>("Sky", 1,0, "ScaleGradientStop");
@@ -171,9 +233,37 @@ ControllerCore::ControllerCore() : WController()
     qmlRegisterType<WDeclarativeTextSvgScale>("Sky", 1,0, "TextSvgScale");
 #endif
 
-    qmlRegisterType<WDeclarativePlayer>("Sky", 1,0, "Player");
+    qmlRegisterType<WDeclarativePlayer> ("Sky", 1,0, "Player");
+    qmlRegisterType<WDeclarativeAmbient>("Sky", 1,0, "Ambient");
+
+    qmlRegisterType<WDeclarativeScanner>("Sky", 1,0, "Scanner");
+
+#ifdef SK_DESKTOP
+    qmlRegisterType<WDeclarativeScannerHover>("Sky", 1,0, "ScannerHover");
+#endif
 
     qmlRegisterType<WDeclarativeBarcode>("Sky", 1,0, "Barcode");
+
+    //---------------------------------------------------------------------------------------------
+    // Models
+
+    qmlRegisterType<WModelRange>("Sky", 1,0, "ModelRange");
+
+    qmlRegisterType<WModelList>("Sky", 1,0, "ModelList");
+
+    qmlRegisterType<WModelOutput>("Sky", 1,0, "ModelOutput");
+
+    qmlRegisterType<WModelLibraryFolder>        ("Sky", 1,0, "ModelLibraryFolder");
+    qmlRegisterType<WModelLibraryFolderFiltered>("Sky", 1,0, "ModelLibraryFolderFiltered");
+
+    qmlRegisterType<WModelPlaylist>        ("Sky", 1,0, "ModelPlaylist");
+    qmlRegisterType<WModelPlaylistFiltered>("Sky", 1,0, "ModelPlaylistFiltered");
+
+    qmlRegisterType<WModelCompletionGoogle>("Sky", 1,0, "ModelCompletionGoogle");
+
+    qmlRegisterType<WModelContextual>("Sky", 1,0, "ModelContextual");
+
+    qmlRegisterType<WModelTabs>("Sky", 1,0, "ModelTabs");
 
     //---------------------------------------------------------------------------------------------
     // Multimedia
@@ -186,7 +276,30 @@ ControllerCore::ControllerCore() : WController()
     qmlRegisterUncreatableType<WAbstractHook>("Sky", 1,0, "AbstractHook",
                                               "AbstractHook is abstract");
 
-    qmlRegisterType<WBackendVlc>("Sky", 1,0, "BackendVlc");
+    qmlRegisterUncreatableType<WHookOutput>("Sky", 1,0, "HookOutput",
+                                            "HookOutput is not creatable");
+
+    qmlRegisterUncreatableType<WLocalObject>("Sky", 1,0, "LocalObject", "LocalObject is abstract");
+
+    qmlRegisterUncreatableType<WLibraryItem>("Sky", 1,0, "LibraryItem", "LibraryItem is abstract");
+
+    qmlRegisterType<WLibraryFolder>       ("Sky", 1,0, "LibraryFolder");
+    qmlRegisterType<WLibraryFolderRelated>("Sky", 1,0, "LibraryFolderRelated");
+
+    qmlRegisterType<WPlaylist>("Sky", 1,0, "Playlist");
+
+    qmlRegisterType<WTabsTrack>("Sky", 1,0, "BaseTabsTrack");
+    qmlRegisterType<WTabTrack> ("Sky", 1,0, "TabTrack");
+
+    qmlRegisterUncreatableType<WBackendIndex>("Sky", 1,0, "BackendIndex",
+                                              "BackendIndex is not creatable");
+
+    qmlRegisterType<WBackendVlc>     ("Sky", 1,0, "BackendVlc");
+    qmlRegisterType<WBackendSubtitle>("Sky", 1,0, "BackendSubtitle");
+
+#ifndef QT_4
+    qmlRegisterType<WFilterBarcode>("Sky", 1,0, "FilterBarcode");
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Events

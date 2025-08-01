@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS = construct \
-          includeGenerator \
+SUBDIRS = includeGenerator \
           deployer \
           projectGenerator \
           imageConverter \

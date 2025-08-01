@@ -53,8 +53,6 @@ int main(int argc, char * argv[])
 
 #ifndef SK_DEPLOY
     sk->setQrc(false);
-
-    Sk::setCurrentPath("../tools/construct/content");
 #endif
 
     sk->startScript();

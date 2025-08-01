@@ -361,4 +361,4 @@ $SkyPresentation/PulseColor.qml \
 $SkyPresentation/PulseGradient.qml \
 $SkyPresentation/PulseSvg.qml"
 
-"$Sky"/deploy/deployer . "$imports" construct.qrc "$defines" $files
+"$Sky"/deploy/deployer $path "$imports" qrc/sky.qrc "$defines" $files

@@ -85,6 +85,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkBarcode \
                $$SK/include/SkBackend \
                $$SK/include/SkMedia \
+               $$SK/include/SkMultimedia \
                $$SK/include/SkTorrent \
                $$SK/include \
                src/controllers
@@ -109,21 +110,23 @@ unix:!macx:!ios:!android:greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 CONFIG(debug, debug|release) {
-
     LIBS += -L$$SK/lib -lSkCoreD \
             -L$$SK/lib -lSkGuiD \
-            -L$$SK/lib -lSkMediaD \
             -L$$SK/lib -lSkBarcodeD \
-            -L$$SK/lib -lSkTorrentD \
             -L$$SK/lib -lSkBackendD \
+            -L$$SK/lib -lSkMediaD \
+            -L$$SK/lib -lSkMultimediaD \
+            -L$$SK/lib -lSkTorrentD
 } else {
     LIBS += -L$$SK/lib -lSkCore \
             -L$$SK/lib -lSkGui \
-            -L$$SK/lib -lSkMedia \
             -L$$SK/lib -lSkBarcode \
-            -L$$SK/lib -lSkTorrent \
             -L$$SK/lib -lSkBackend \
+            -L$$SK/lib -lSkMedia \
+            -L$$SK/lib -lSkMultimedia \
+            -L$$SK/lib -lSkTorrent
 }
+
 #win32:contains(QT_MAJOR_VERSION, 5) {
 #    LIBS += -lopengl32
 #}
@@ -160,14 +163,17 @@ CONFIG(debug, debug|release) {
     QMAKE_POST_LINK += install_name_tool -change libSkGuiD.dylib \
                        @executable_path/libSkGuiD.dylib $${DESTDIR}/$${TARGET};
 
-    QMAKE_POST_LINK += install_name_tool -change libSkMediaD.dylib \
-                       @executable_path/libSkMediaD.dylib $${DESTDIR}/$${TARGET};
-
     QMAKE_POST_LINK += install_name_tool -change libSkBarcodeD.dylib \
                        @executable_path/libSkBarcodeD.dylib $${DESTDIR}/$${TARGET};
 
     QMAKE_POST_LINK += install_name_tool -change libSkBackendD.dylib \
                        @executable_path/libSkTorrentD.dylib $${DESTDIR}/$${TARGET};
+
+    QMAKE_POST_LINK += install_name_tool -change libSkMediaD.dylib \
+                       @executable_path/libSkMediaD.dylib $${DESTDIR}/$${TARGET};
+
+    QMAKE_POST_LINK += install_name_tool -change libSkMultimediaD.dylib \
+                       @executable_path/libSkMultimediaD.dylib $${DESTDIR}/$${TARGET};
 
     QMAKE_POST_LINK += install_name_tool -change libSkTorrentD.dylib \
                        @executable_path/libSkTorrentD.dylib $${DESTDIR}/$${TARGET};
@@ -178,14 +184,17 @@ CONFIG(debug, debug|release) {
     QMAKE_POST_LINK += install_name_tool -change libSkGui.dylib \
                        @executable_path/libSkGui.dylib $${DESTDIR}/$${TARGET};
 
-    QMAKE_POST_LINK += install_name_tool -change libSkMedia.dylib \
-                       @executable_path/libSkMedia.dylib $${DESTDIR}/$${TARGET};
-
     QMAKE_POST_LINK += install_name_tool -change libSkBarcode.dylib \
                        @executable_path/libSkBarcode.dylib $${DESTDIR}/$${TARGET};
 
     QMAKE_POST_LINK += install_name_tool -change libSkBackend.dylib \
-                       @executable_path/libSkBackend.dylib $${DESTDIR}/$${TARGET};
+                       @executable_path/libSkTorrent.dylib $${DESTDIR}/$${TARGET};
+
+    QMAKE_POST_LINK += install_name_tool -change libSkMedia.dylib \
+                       @executable_path/libSkMedia.dylib $${DESTDIR}/$${TARGET};
+
+    QMAKE_POST_LINK += install_name_tool -change libSkMultimedia.dylib \
+                       @executable_path/libSkMultimedia.dylib $${DESTDIR}/$${TARGET};
 
     QMAKE_POST_LINK += install_name_tool -change libSkTorrent.dylib \
                        @executable_path/libSkTorrent.dylib $${DESTDIR}/$${TARGET};
