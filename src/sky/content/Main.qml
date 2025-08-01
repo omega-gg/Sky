@@ -39,8 +39,6 @@ Application
 
         vsync: true
 
-        color: "black"
-
         st: StyleComponents { id: st }
 
         //-----------------------------------------------------------------------------------------
