@@ -54,7 +54,7 @@ if [ "$2" = "deploy" ]; then
 
     path="qrc"
 else
-    path="."
+    path="$bin"
 fi
 
 cd ../dist
