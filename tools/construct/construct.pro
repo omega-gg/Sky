@@ -66,7 +66,9 @@ CONFIG(debug, debug|release) {
             -L$$SK/lib -lSkBackend \
 }
 
-OTHER_FILES += qml/Main.qml \
+OTHER_FILES += environment.sh \
+               content/generate.sh \
+               qml/Main.qml \
 
 macx {
 CONFIG(debug, debug|release) {
