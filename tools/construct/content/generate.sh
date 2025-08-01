@@ -5,7 +5,7 @@ set -e
 # Settings
 #--------------------------------------------------------------------------------------------------
 
-Sky="../../../Sky"
+Sky="../../.."
 
 SkyBase="$Sky/src/SkyBase"
 
@@ -112,48 +112,20 @@ else
     defines="$defines MOBILE ANDROID"
 fi
 
-"$Sky"/deploy/deployer . "$imports" construct.qrc "$defines" \
+files="\
 "$SkyBase"/Style.qml \
 "$SkyBase"/WindowSky.qml \
 "$SkyBase"/RectangleBorders.qml \
-"$SkyBase"/RectangleShadow.qml \
 "$SkyBase"/ImageBarcode.qml \
 "$SkyBase"/ImageTag.qml \
 "$SkyBase"/TextBase.qml \
 "$SkyBase"/BaseButton.qml \
 "$SkyBase"/BaseLineEdit.qml \
-"$SkyBase"/AnimatedSlide.qml \
-"$SkyBase"/AnimatedSlideImage.qml \
 "$SkyComponents"/StyleComponents.qml \
 "$SkyComponents"/LineVertical.qml \
 "$SkyComponents"/BorderVertical.qml \
 "$SkyComponents"/BorderImageScaleBack.qml \
 "$SkyComponents"/BorderImageShadow.qml \
-"$SkyComponents"/LineEditBox.qml \
-"$SkyPresentation"/StylePresentation.qml \
-"$SkyPresentation"/TimerTempo.qml \
-"$SkyPresentation"/AnimatedTime.qml \
-"$SkyPresentation"/BaseLogo.qml \
-"$SkyPresentation"/ButtonBox.qml \
-"$SkyPresentation"/Slides.qml \
-"$SkyPresentation"/SlidePages.qml \
-"$SkyPresentation"/SlideLayer.qml \
-"$SkyPresentation"/SlideColumn.qml \
-"$SkyPresentation"/SlideRectangle.qml \
-"$SkyPresentation"/SlideBackground.qml \
-"$SkyPresentation"/SlideColor.qml \
-"$SkyPresentation"/SlideGradientHorizontal.qml \
-"$SkyPresentation"/SlideGradientVertical.qml \
-"$SkyPresentation"/SlideBack.qml \
-"$SkyPresentation"/SlideFrame.qml \
-"$SkyPresentation"/SlideImage.qml \
-"$SkyPresentation"/SlideCover.qml \
-"$SkyPresentation"/SlideText.qml \
-"$SkyPresentation"/SlideTextLeft.qml \
-"$SkyPresentation"/SlideParagraph.qml \
-"$SkyPresentation"/SlideParagraphLeft.qml \
-"$SkyPresentation"/SlidePlayer.qml \
-"$SkyPresentation"/Pulse.qml \
-"$SkyPresentation"/PulseColor.qml \
-"$SkyPresentation"/PulseGradient.qml \
-"$SkyPresentation"/PulseSvg.qml \
+"$SkyComponents"/LineEditBox.qml"
+
+"$Sky"/deploy/deployer . "$imports" construct.qrc "$defines" $files
