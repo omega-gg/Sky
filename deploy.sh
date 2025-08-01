@@ -873,6 +873,7 @@ echo "COPYING tools"
 
 if [ $os = "windows" ]; then
 
+    cp bin/construct.exe        deploy
     cp bin/includeGenerator.exe deploy
     cp bin/deployer.exe         deploy
     cp bin/projectGenerator.exe deploy
@@ -887,6 +888,7 @@ elif [ $os = "mobile" ]; then
 
     cp -r "$external"/Sky/* deploy
 else
+    cp bin/construct        deploy
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
     cp bin/projectGenerator deploy
