@@ -33,6 +33,8 @@ replace()
     apply $expression build.sh
     apply $expression deploy.sh
 
+    apply $expression src/sky/content/generate.sh
+
     apply $expression dist/shaders/generate.sh
 }
 

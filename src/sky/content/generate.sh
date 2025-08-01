@@ -14,6 +14,12 @@ SkyComponents="$Sky/src/SkyComponents"
 SkyPresentation="$Sky/src/SkyPresentation"
 
 #--------------------------------------------------------------------------------------------------
+
+content="../content"
+
+bin="../bin"
+
+#--------------------------------------------------------------------------------------------------
 # environment
 
 qt="qt6"
@@ -26,9 +32,9 @@ if [ $# != 1 -a $# != 2 ] \
    || \
    [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
    || \
-   [ $# = 2 -a "$2" != "all" -a "$2" != "clean" ]; then
+   [ $# = 2 -a "$2" != "all" -a "$2" != "deploy" -a "$2" != "clean" ]; then
 
-    echo "Usage: generate <win32 | win64 | macOS | linux | android> [all | clean]"
+    echo "Usage: generate <win32 | win64 | macOS | linux | android> [all | deploy | clean]"
 
     exit 1
 fi
@@ -44,6 +50,15 @@ else
     os="default"
 fi
 
+if [ "$2" = "deploy" ]; then
+
+    path="qrc"
+else
+    path="."
+fi
+
+cd ../dist
+
 #--------------------------------------------------------------------------------------------------
 # Clean
 #--------------------------------------------------------------------------------------------------
@@ -52,7 +67,11 @@ if [ "$2" = "clean" ]; then
 
     echo "CLEANING"
 
-    rm -f *.qml
+    rm -f $bin/*.qml
+
+    rm -rf qrc
+    mkdir  qrc
+    touch  qrc/.gitignore
 
     exit 0
 fi
@@ -63,7 +82,47 @@ fi
 
 echo "COPYING QML"
 
-cp ../qml/*.qml .
+cp $content/*.qml $path
+
+#--------------------------------------------------------------------------------------------------
+# Content
+#--------------------------------------------------------------------------------------------------
+
+if [ "$2" = "all" -o "$2" = "deploy" ]; then
+
+    if [ $qt = "qt6" ]; then
+
+        echo "COPYING shaders"
+
+        cp -r "$Sky"/deploy/shaders $path
+    fi
+fi
+
+#--------------------------------------------------------------------------------------------------
+# Icon
+#--------------------------------------------------------------------------------------------------
+
+if [ $1 = "macOS" ]; then
+
+    echo "GENERATING icon"
+
+    mkdir icon.iconset
+
+    cp pictures/icon/16.png  icon.iconset/icon_16x16.png
+    cp pictures/icon/24.png  icon.iconset/icon_24x24.png
+    cp pictures/icon/32.png  icon.iconset/icon_32x32.png
+    cp pictures/icon/48.png  icon.iconset/icon_48x48.png
+    cp pictures/icon/64.png  icon.iconset/icon_64x64.png
+    cp pictures/icon/128.png icon.iconset/icon_128x128.png
+    cp pictures/icon/256.png icon.iconset/icon_256x256.png
+    cp pictures/icon/512.png icon.iconset/icon_512x512.png
+
+    iconutil -c icns icon.iconset
+
+    rm -rf icon.iconset
+fi
+
+echo ""
 
 #--------------------------------------------------------------------------------------------------
 # Deployer
@@ -112,20 +171,194 @@ else
     defines="$defines MOBILE ANDROID"
 fi
 
+defines="$defines BarWindow pictures_tag icons_slide icons_scale icons_add icons_external icons_playback"
+
 files="\
-"$SkyBase"/Style.qml \
-"$SkyBase"/WindowSky.qml \
-"$SkyBase"/RectangleBorders.qml \
-"$SkyBase"/ImageBarcode.qml \
-"$SkyBase"/ImageTag.qml \
-"$SkyBase"/TextBase.qml \
-"$SkyBase"/BaseButton.qml \
-"$SkyBase"/BaseLineEdit.qml \
-"$SkyComponents"/StyleComponents.qml \
-"$SkyComponents"/LineVertical.qml \
-"$SkyComponents"/BorderVertical.qml \
-"$SkyComponents"/BorderImageScaleBack.qml \
-"$SkyComponents"/BorderImageShadow.qml \
-"$SkyComponents"/LineEditBox.qml"
+$SkyBase/Style.qml \
+$SkyBase/WindowSky.qml \
+$SkyBase/ItemSlide.qml \
+$SkyBase/ItemWipe.qml \
+$SkyBase/ItemScan.qml \
+$SkyBase/LoaderSlide.qml \
+$SkyBase/LoaderWipe.qml \
+$SkyBase/AreaPanel.qml \
+$SkyBase/AreaContextual.qml \
+$SkyBase/RectangleBorders.qml \
+$SkyBase/RectangleBordersDrop.qml \
+$SkyBase/RectangleShadow.qml \
+$SkyBase/RectangleShadowClick.qml \
+$SkyBase/RectangleTag.qml \
+$SkyBase/ImageBarcode.qml \
+$SkyBase/ImageTag.qml \
+$SkyBase/TextBase.qml \
+$SkyBase/TextClick.qml \
+$SkyBase/TextLink.qml \
+$SkyBase/TextSubtitle.qml \
+$SkyBase/BasePanel.qml \
+$SkyBase/BasePanelContextual.qml \
+$SkyBase/BaseButton.qml \
+$SkyBase/BaseLineEdit.qml \
+$SkyBase/BaseTextEdit.qml \
+$SkyBase/BaseConsole.qml \
+$SkyBase/ColumnAuto.qml \
+$SkyBase/BaseSlider.qml \
+$SkyBase/BasePlayerBrowser.qml \
+$SkyBase/AnimatedSlide.qml \
+$SkyBase/AnimatedSlideImage.qml \
+$SkyBase/AnimatedLoader.qml \
+$SkyBase/CodeInput.qml \
+$SkyComponents/StyleComponents.qml \
+$SkyComponents/ViewPlaylist.qml \
+$SkyComponents/PageWipe.qml \
+$SkyComponents/LineHorizontal.qml \
+$SkyComponents/LineHorizontalDrop.qml \
+$SkyComponents/LineVertical.qml \
+$SkyComponents/BorderHorizontal.qml \
+$SkyComponents/BorderVertical.qml \
+$SkyComponents/BorderButton.qml \
+$SkyComponents/WindowScale.qml \
+$SkyComponents/RectangleLogo.qml \
+$SkyComponents/RectangleLive.qml \
+$SkyComponents/Icon.qml \
+$SkyComponents/IconOverlay.qml \
+$SkyComponents/IconLoading.qml \
+$SkyComponents/TextRich.qml \
+$SkyComponents/TextDate.qml \
+$SkyComponents/TextListDefault.qml \
+$SkyComponents/Panel.qml \
+$SkyComponents/PanelContextual.qml \
+$SkyComponents/PanelContextualLoader.qml \
+$SkyComponents/PanelImage.qml \
+$SkyComponents/BaseToolTip.qml \
+$SkyComponents/ToolTip.qml \
+$SkyComponents/BarTitle.qml \
+$SkyComponents/BarTitleSmall.qml \
+$SkyComponents/BarTitleText.qml \
+$SkyComponents/BarSetting.qml \
+$SkyComponents/BarSettingReset.qml \
+$SkyComponents/BarProgress.qml \
+$SkyComponents/BaseButtonPush.qml \
+$SkyComponents/BaseButtonPiano.qml \
+$SkyComponents/ButtonPush.qml \
+$SkyComponents/ButtonPushIcon.qml \
+$SkyComponents/ButtonPushFull.qml \
+$SkyComponents/ButtonPushLeft.qml \
+$SkyComponents/ButtonPushLeftIcon.qml \
+$SkyComponents/ButtonPushLeftFull.qml \
+$SkyComponents/ButtonPushCenter.qml \
+$SkyComponents/ButtonPushCenterIcon.qml \
+$SkyComponents/ButtonPushRight.qml \
+$SkyComponents/ButtonPushRightIcon.qml \
+$SkyComponents/ButtonPushOverlay.qml \
+$SkyComponents/ButtonExtra.qml \
+$SkyComponents/ButtonWide.qml \
+$SkyComponents/ButtonWideFull.qml \
+$SkyComponents/ButtonWideExtra.qml \
+$SkyComponents/ButtonPiano.qml \
+$SkyComponents/ButtonPianoIcon.qml \
+$SkyComponents/ButtonPianoFull.qml \
+$SkyComponents/ButtonPianoAction.qml \
+$SkyComponents/ButtonPianoWindow.qml \
+$SkyComponents/ButtonPianoReset.qml \
+$SkyComponents/ButtonRound.qml \
+$SkyComponents/ButtonCheck.qml \
+$SkyComponents/ButtonCheckLabel.qml \
+$SkyComponents/ButtonImage.qml \
+$SkyComponents/ButtonImageBorders.qml \
+$SkyComponents/ButtonMask.qml \
+$SkyComponents/ButtonStream.qml \
+$SkyComponents/ButtonsCheck.qml \
+$SkyComponents/ButtonsItem.qml \
+$SkyComponents/BaseLabelRound.qml \
+$SkyComponents/LabelRound.qml \
+$SkyComponents/LabelRoundAnimated.qml \
+$SkyComponents/LabelRoundInfo.qml \
+$SkyComponents/LabelLoading.qml \
+$SkyComponents/LabelLoadingText.qml \
+$SkyComponents/LabelLoadingButton.qml \
+$SkyComponents/LabelStream.qml \
+$SkyComponents/LabelWide.qml \
+$SkyComponents/Popup.qml \
+$SkyComponents/CheckBox.qml \
+$SkyComponents/LineEdit.qml \
+$SkyComponents/LineEditLabel.qml \
+$SkyComponents/LineEditValue.qml \
+$SkyComponents/LineEditBox.qml \
+$SkyComponents/LineEditBoxClear.qml \
+$SkyComponents/ParagraphEdit.qml \
+$SkyComponents/Console.qml \
+$SkyComponents/ColumnScroll.qml \
+$SkyComponents/BaseList.qml \
+$SkyComponents/List.qml \
+$SkyComponents/ListCompletion.qml \
+$SkyComponents/ListContextual.qml \
+$SkyComponents/BaseGrid.qml \
+$SkyComponents/GridPlaylist.qml \
+$SkyComponents/ScrollArea.qml \
+$SkyComponents/ScrollBar.qml \
+$SkyComponents/ScrollList.qml \
+$SkyComponents/ScrollListDefault.qml \
+$SkyComponents/ScrollCompletion.qml \
+$SkyComponents/ScrollerVertical.qml \
+$SkyComponents/ScrollerList.qml \
+$SkyComponents/Slider.qml \
+$SkyComponents/SliderVolume.qml \
+$SkyComponents/SliderStream.qml \
+$SkyComponents/SliderWide.qml \
+$SkyComponents/BaseTabs.qml \
+$SkyComponents/TabsBrowser.qml \
+$SkyComponents/TabsTrack.qml \
+$SkyComponents/TabsPlayer.qml \
+$SkyComponents/BaseWall.qml \
+$SkyComponents/Wall.qml \
+$SkyComponents/WallBookmarkTrack.qml \
+$SkyComponents/WallVideo.qml \
+$SkyComponents/PlayerBrowser.qml \
+$SkyComponents/ItemList.qml \
+$SkyComponents/ItemGrid.qml \
+$SkyComponents/ItemTab.qml \
+$SkyComponents/ItemWall.qml \
+$SkyComponents/ComponentList.qml \
+$SkyComponents/ComponentListFull.qml \
+$SkyComponents/ComponentContextual.qml \
+$SkyComponents/ComponentCompletion.qml \
+$SkyComponents/ComponentGrid.qml \
+$SkyComponents/ComponentGridTrack.qml \
+$SkyComponents/ComponentTab.qml \
+$SkyComponents/ComponentTabBrowser.qml \
+$SkyComponents/ComponentTabTrack.qml \
+$SkyComponents/ComponentWall.qml \
+$SkyComponents/ComponentWallBookmarkTrack.qml \
+$SkyComponents/ContextualCategory.qml \
+$SkyComponents/ContextualItem.qml \
+$SkyComponents/ContextualItemCover.qml \
+$SkyComponents/ContextualItemConfirm.qml \
+$SkyPresentation/StylePresentation.qml \
+$SkyPresentation/TimerTempo.qml \
+$SkyPresentation/AnimatedTime.qml \
+$SkyPresentation/BaseLogo.qml \
+$SkyPresentation/ButtonBox.qml \
+$SkyPresentation/Slides.qml \
+$SkyPresentation/SlidePages.qml \
+$SkyPresentation/SlideLayer.qml \
+$SkyPresentation/SlideColumn.qml \
+$SkyPresentation/SlideRectangle.qml \
+$SkyPresentation/SlideBackground.qml \
+$SkyPresentation/SlideColor.qml \
+$SkyPresentation/SlideGradientHorizontal.qml \
+$SkyPresentation/SlideGradientVertical.qml \
+$SkyPresentation/SlideBack.qml \
+$SkyPresentation/SlideFrame.qml \
+$SkyPresentation/SlideImage.qml \
+$SkyPresentation/SlideCover.qml \
+$SkyPresentation/SlideText.qml \
+$SkyPresentation/SlideTextLeft.qml \
+$SkyPresentation/SlideParagraph.qml \
+$SkyPresentation/SlideParagraphLeft.qml \
+$SkyPresentation/SlidePlayer.qml \
+$SkyPresentation/Pulse.qml \
+$SkyPresentation/PulseColor.qml \
+$SkyPresentation/PulseGradient.qml \
+$SkyPresentation/PulseSvg.qml"
 
 "$Sky"/deploy/deployer . "$imports" construct.qrc "$defines" $files
