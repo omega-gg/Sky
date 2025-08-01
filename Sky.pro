@@ -22,6 +22,8 @@ isEmpty(TOOLS) {
     !ios: SUBDIRS += src/SkTorrent
 
     !ios:!android:SUBDIRS += tools
+
+    SUBDIRS += script
 } else {
     !ios:!android:SUBDIRS = tools
 }
