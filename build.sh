@@ -53,6 +53,22 @@ qt="qt6"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
+make()
+{
+    if [ $compiler = "mingw" ]; then
+
+        mingw32-make $make_arguments
+
+    elif [ $compiler = "msvc" ]; then
+
+        jom
+
+    elif [ $1 != "android" ]; then
+
+        make $make_arguments
+    fi
+}
+
 makeAndroid()
 {
     if [ ! -d "${1}" ]; then
@@ -348,6 +364,29 @@ fi
 $qmake --version
 echo ""
 
+#--------------------------------------------------------------------------------------------------
+# tools
+
+$qmake -r -spec $spec "$config" TOOLS=true ..
+
+make $1
+
+echo ""
+echo "DEPLOYING tools"
+echo "---------------"
+
+sh deploy.sh $1 tools
+
+echo "---------------"
+
+if [ "$2" = "tools" ]; then
+
+    exit 0
+fi
+
+#--------------------------------------------------------------------------------------------------
+# sky
+
 cd src/sky/content
 
 if [ "$2" = "deploy" ]; then
@@ -361,16 +400,14 @@ echo ""
 
 cd -
 
+#--------------------------------------------------------------------------------------------------
+
 if [ "$2" = "deploy" ]; then
 
     config="$config deploy"
 fi
 
-if [ "$2" = "tools" ]; then
-
-    $qmake -r -spec $spec "$config" TOOLS=true ..
-
-elif [ $1 = "iOS" ]; then
+if [ $1 = "iOS" ]; then
 
     if [ $qt = "qt5" ]; then
 
@@ -393,18 +430,7 @@ fi
 
 echo ""
 
-if [ $compiler = "mingw" ]; then
-
-    mingw32-make $make_arguments
-
-elif [ $compiler = "msvc" ]; then
-
-    jom
-
-elif [ $1 != "android" ]; then
-
-    make $make_arguments
-fi
+make $1
 
 cd ..
 
@@ -423,14 +449,4 @@ if [ "$2" = "deploy" ]; then
     sh deploy.sh $1
 
     echo "-------------"
-
-elif [ "$2" = "tools" ]; then
-
-    echo ""
-    echo "DEPLOYING tools"
-    echo "---------------"
-
-    sh deploy.sh $1 tools
-
-    echo "---------------"
 fi
