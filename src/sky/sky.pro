@@ -69,7 +69,7 @@ contains(QT_MAJOR_VERSION, 4) {
 deploy|ios|android {
     DEFINES += SK_DEPLOY
 
-    RESOURCES = dist/qrc/HelloSky.qrc
+    RESOURCES = dist/qrc/sky.qrc
 }
 
 !win32-msvc*:!ios:!android:QMAKE_CXXFLAGS += -msse

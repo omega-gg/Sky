@@ -373,7 +373,7 @@ if [ $1 = "iOS" ]; then
            $target.xcodeproj/project.xcworkspace/xcshareddata
     fi
 
-if [ $1 = "android" ]; then
+elif [ $1 = "android" ]; then
 
     makeAndroid armeabi-v7a "$Qt"/android_armv7/bin/target_qt.conf
     makeAndroid arm64-v8a   "$Qt"/android_arm64_v8a/bin/target_qt.conf
