@@ -348,7 +348,23 @@ fi
 $qmake --version
 echo ""
 
-cd build
+cd src/sky/content
+
+if [ "$2" = "deploy" ]; then
+
+    sh generate.sh $1 deploy
+else
+    sh generate.sh $1
+fi
+
+echo ""
+
+cd -
+
+if [ "$2" = "deploy" ]; then
+
+    config="$config deploy"
+fi
 
 if [ "$2" = "tools" ]; then
 
