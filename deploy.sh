@@ -7,8 +7,6 @@ set -e
 
 external="../3rdparty"
 
-backend="../backend"
-
 deploy="deploy"
 
 #--------------------------------------------------------------------------------------------------
@@ -943,19 +941,4 @@ if [ $qt = "qt6" ]; then
     mkdir -p $deploy/shaders
 
     cp dist/shaders/qsb/*.qsb $deploy/shaders
-fi
-
-#--------------------------------------------------------------------------------------------------
-# backend
-#--------------------------------------------------------------------------------------------------
-
-if [ $os != "mobile" ]; then
-
-    echo "COPYING backend"
-
-    mkdir -p $deploy/backend/cover
-
-    cp "$backend"/cover/* $deploy/backend/cover
-
-    cp "$backend"/*.vbml $deploy/backend
 fi
