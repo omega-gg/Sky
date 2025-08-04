@@ -5,7 +5,7 @@ set -e
 # Settings
 #--------------------------------------------------------------------------------------------------
 
-source="https://github.com/omega-gg/3rdparty"
+source="https://github.com/omega-gg"
 
 #--------------------------------------------------------------------------------------------------
 # environment
@@ -40,7 +40,7 @@ cd ..
 
 if [ ! -d "3rdparty" ]; then
 
-    git clone $source
+    git clone $source/3rdparty
 fi
 
 if [ ! -d "backend" ]; then
