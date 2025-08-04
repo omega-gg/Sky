@@ -227,6 +227,9 @@ macx:ICON = dist/icon.icns
 RC_FILE = dist/sky.rc
 
 OTHER_FILES += environment.sh \
+               configure.sh \
+               build.sh \
+               deploy.sh \
                content/generate.sh \
                qml/Main.qml \
                dist/sky.rc \

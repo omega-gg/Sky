@@ -88,7 +88,7 @@ if [ "$2" = "all" ]; then
 
     cd $Sky/lib
 
-    cp *Sk* $content
+    cp *Sk* $bin
 
     cd -
 
