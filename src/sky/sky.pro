@@ -45,6 +45,9 @@ DEFINES += QUAZIP_BUILD \
            SK_MULTIMEDIA_LIBRARY SK_TORRENT_LIBRARY \
            SK_CHARSET SK_BACKEND_LOCAL #SK_BACKEND_LOG
 
+# NOTE iOS: It seems we have an issue with 'takeItemShot'.
+ios:DEFINES += SK_NO_TORRENT SK_NO_ITEM_SHOT
+
 win32-msvc* {
     # libtorrent: This fixes the winsock2 and std::min errors.
     DEFINES += WIN32_LEAN_AND_MEAN NOMINMAX
@@ -118,16 +121,20 @@ CONFIG(debug, debug|release) {
             -L$$SK/lib -lSkBarcodeD \
             -L$$SK/lib -lSkBackendD \
             -L$$SK/lib -lSkMediaD \
-            -L$$SK/lib -lSkMultimediaD \
-            -L$$SK/lib -lSkTorrentD
+            -L$$SK/lib -lSkMultimediaD
 } else {
     LIBS += -L$$SK/lib -lSkCore \
             -L$$SK/lib -lSkGui \
             -L$$SK/lib -lSkBarcode \
             -L$$SK/lib -lSkBackend \
             -L$$SK/lib -lSkMedia \
-            -L$$SK/lib -lSkMultimedia \
-            -L$$SK/lib -lSkTorrent
+            -L$$SK/lib -lSkMultimedia
+}
+
+!ios:CONFIG(debug, debug|release) {
+    LIBS += -L$$SK/lib -lSkTorrentD
+} else {
+    LIBS += -L$$SK/lib -lSkTorrent
 }
 
 #win32:contains(QT_MAJOR_VERSION, 5) {
@@ -149,6 +156,16 @@ win32-msvc*:LIBS += shell32.lib User32.lib
 unix:!ios:!android:LIBS += -L$$SK/lib -lvlc \
                            -L$$SK/lib -ltorrent-rasterbar \
                            -L$$SK/lib -lboost_system
+
+# NOTE Qt6: These must be linked *before* libVLC, otherwise Qt Multimedia picks VLC's older ffmpeg
+#           instead of this one.
+ios:greaterThan(QT_MAJOR_VERSION, 5) {
+    LIBS += -framework libavcodec \
+            -framework libavformat \
+            -framework libavutil \
+            -framework libswresample \
+            -framework libswscale
+}
 
 vlc4 {
     ios:LIBS += -framework VLCKit
@@ -261,7 +278,7 @@ OTHER_FILES += environment.sh \
 
 ios {
     # NOTE iOS: This is required for VLCKit.
-    Q_ENABLE_BITCODE.name = ENABLE_BITCODE
+    Q_ENABLE_BITCODE.name  = ENABLE_BITCODE
     Q_ENABLE_BITCODE.value = NO
 
     QMAKE_MAC_XCODE_SETTINGS += Q_ENABLE_BITCODE
@@ -273,17 +290,25 @@ ios {
     # NOTE iOS: We need to specify this in Info.plist.
     launch.files=$$_PRO_FILE_PWD_/dist/iOS/Launch.storyboard
 
+    greaterThan(QT_MAJOR_VERSION, 5) {
+        framework.files = $$SK/lib/libavcodec.framework \
+                          $$SK/lib/libavformat.framework \
+                          $$SK/lib/libavutil.framework \
+                          $$SK/lib/libswresample.framework \
+                          $$SK/lib/libswscale.framework
+    }
+
     vlc4 {
-        framework.files = $$SK/lib/VLCKit.framework
+        framework.files += $$SK/lib/VLCKit.framework
     } else {
-        framework.files = $$SK/lib/MobileVLCKit.framework
+        framework.files += $$SK/lib/MobileVLCKit.framework
     }
 
     framework.path = Frameworks
 
-    videos.files = $$_PRO_FILE_PWD_/content/videos
+    backend.files = $$_PRO_FILE_PWD_/dist/iOS/backend
 
-    QMAKE_BUNDLE_DATA += icons launch framework videos
+    QMAKE_BUNDLE_DATA += icons launch framework backend
 
 } android {
     ANDROID_PACKAGE_SOURCE_DIR = $$ANDROID_PACKAGE
