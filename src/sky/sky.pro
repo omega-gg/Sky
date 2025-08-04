@@ -2,7 +2,7 @@ SK = $$_PRO_FILE_PWD_/../..
 
 TARGET = sky
 
-DESTDIR = $$_PRO_FILE_PWD_/bin
+!android:DESTDIR = $$_PRO_FILE_PWD_/bin
 
 contains(QT_MAJOR_VERSION, 4) {
     QT += opengl declarative network script xml xmlpatterns svg
@@ -66,13 +66,16 @@ contains(QT_MAJOR_VERSION, 4) {
     win32:DEFINES += SK_WIN_NATIVE
 }
 
-deploy|android {
+deploy|ios|android {
     DEFINES += SK_DEPLOY
 
-    RESOURCES = dist/qrc/sky.qrc
+    RESOURCES = dist/qrc/HelloSky.qrc
 }
 
 !win32-msvc*:!ios:!android:QMAKE_CXXFLAGS += -msse
+
+# NOTE: This is required to load frameworks in the lib folder.
+ios:QMAKE_LFLAGS += -F$$SK/lib
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
@@ -147,9 +150,18 @@ unix:!ios:!android:LIBS += -L$$SK/lib -lvlc \
                            -L$$SK/lib -ltorrent-rasterbar \
                            -L$$SK/lib -lboost_system
 
-android:LIBS += -L$$SK/lib/$$ABI -lvlc \
-                -L$$SK/lib/$$ABI -ltorrent-rasterbar \
-                -L$$SK/lib/$$ABI -ltry_signal
+vlc4 {
+    ios:LIBS += -framework VLCKit
+} else {
+    ios:LIBS += -framework MobileVLCKit
+}
+
+# NOTE iOS: MediaPlayer is required for MP* classes.
+ios:LIBS += -framework MediaPlayer
+
+android:LIBS += -L$$ANDROID_LIB -lvlc \
+                -L$$ANDROID_LIB -ltorrent-rasterbar \
+                -L$$ANDROID_LIB -ltry_signal
 
 unix:!macx:!ios:!android:contains(QT_MAJOR_VERSION, 4) {
     LIBS += -lX11
@@ -233,3 +245,50 @@ OTHER_FILES += environment.sh \
                content/generate.sh \
                qml/Main.qml \
                dist/sky.rc \
+               dist/script/start.sh \
+               dist/iOS/Info.plist \
+               dist/iOS/LaunchScreen.storyboard \
+               dist/iOS/Images.xcassets/Contents.json \
+               dist/iOS/Images.xcassets/AppIcon.appiconset/Contents.json \
+               dist/android/res/values/theme.xml \
+               dist/android/res/drawable/splash.xml \
+               dist/android/qt5/AndroidManifest.xml \
+               dist/android/qt5/build.gradle \
+               dist/android/qt5/gradle/wrapper/gradle-wrapper.properties \
+               dist/android/qt6/AndroidManifest.xml \
+               dist/android/qt6/build.gradle \
+               dist/android/qt6/gradle/wrapper/gradle-wrapper.properties \
+
+ios {
+    # NOTE iOS: This is required for VLCKit.
+    Q_ENABLE_BITCODE.name = ENABLE_BITCODE
+    Q_ENABLE_BITCODE.value = NO
+
+    QMAKE_MAC_XCODE_SETTINGS += Q_ENABLE_BITCODE
+
+    QMAKE_INFO_PLIST = $$_PRO_FILE_PWD_/dist/iOS/Info.plist
+
+    icons.files=$$_PRO_FILE_PWD_/dist/iOS/Images.xcassets
+
+    # NOTE iOS: We need to specify this in Info.plist.
+    launch.files=$$_PRO_FILE_PWD_/dist/iOS/Launch.storyboard
+
+    vlc4 {
+        framework.files = $$SK/lib/VLCKit.framework
+    } else {
+        framework.files = $$SK/lib/MobileVLCKit.framework
+    }
+
+    framework.path = Frameworks
+
+    videos.files = $$_PRO_FILE_PWD_/content/videos
+
+    QMAKE_BUNDLE_DATA += icons launch framework videos
+
+} android {
+    ANDROID_PACKAGE_SOURCE_DIR = $$ANDROID_PACKAGE
+
+    DISTFILES += $$ANDROID_PACKAGE/AndroidManifest.xml \
+                 $$ANDROID_PACKAGE/build.gradle \
+                 $$ANDROID_PACKAGE/gradle/wrapper/gradle-wrapper.properties
+}
