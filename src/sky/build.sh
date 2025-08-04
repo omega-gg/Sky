@@ -9,6 +9,8 @@ target="sky"
 
 external="$PWD/../../../3rdparty"
 
+Sky="$PWD/../.."
+
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
@@ -39,6 +41,8 @@ WindowsKit_version="10"
 #--------------------------------------------------------------------------------------------------
 # Android
 
+JDK_version="11.0.2"
+
 SDK_version="34"
 SDK_version_minimum="24"
 
@@ -50,6 +54,8 @@ compiler_win="mingw"
 qt="qt6"
 
 vlc="vlc3"
+
+mobile="simulator"
 
 #--------------------------------------------------------------------------------------------------
 # Functions
@@ -82,6 +88,23 @@ makeAndroid()
 
     cd ..
 }
+
+deployAndroid()
+{
+    cd $1
+
+    cat android-$target-deployment-settings.json
+
+    "$androiddeployqt" --release --aab \
+                       --input android-$target-deployment-settings.json \
+                       --output android-build \
+                       --android-platform android-$SDK_version \
+                       --jdk $JAVA_HOME
+
+    cd -
+}
+
+#--------------------------------------------------------------------------------------------------
 
 getOs()
 {
@@ -138,9 +161,9 @@ fi
 
 if [ "$2" = "all" ]; then
 
-    cd ../..
-
     sh 3rdparty.sh $1 all
+
+    cd "$Sky"
 
     sh configure.sh $1
 
@@ -254,19 +277,19 @@ if [ "$2" = "clean" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
-# Build MotionBox
+# Build MotionMonkey
 #--------------------------------------------------------------------------------------------------
 
 echo "BUILDING $target"
-echo "------------"
+echo "---------------------"
 
 export QT_SELECT="$qt"
 
 if [ $qt = "qt4" ]; then
 
-    config="CONFIG+=release $vlc"
+    config="CONFIG += release $vlc"
 else
-    config="CONFIG+=release qtquickcompiler $vlc"
+    config="CONFIG += release qtquickcompiler $vlc"
 fi
 
 if [ $compiler = "mingw" ]; then
@@ -325,6 +348,9 @@ elif [ $1 = "android" ]; then
 
     spec=android-clang
 
+    export JAVA_HOME="$external/JDK/$JDK_version"
+
+    export ANDROID_SDK_ROOT="$external/SDK/$SDK_version"
     export ANDROID_NDK_ROOT="$external/NDK/default"
 
     export ANDROID_NDK_PLATFORM="android-$SDK_version_minimum"
@@ -401,6 +427,7 @@ elif [ $1 = "iOS" ]; then
 
     # FIXME iOS: For some reason, we have to call this several times to build and deploy properly.
     if [ $qt = "qt5" ]; then
+
         make $make_arguments
         make $make_arguments
     else
@@ -411,14 +438,32 @@ elif [ $1 = "iOS" ]; then
 
     make $make_arguments
 
-elif [ $1 != "android" ]; then
+elif [ $1 = "android" ]; then
 
+    #----------------------------------------------------------------------------------------------
+    # FIXME android/Qt: We have to call androiddeployqt to generate a release apk.
+
+    if [ $qt = "qt5" ]; then
+
+        # NOTE android/Qt5: We use a custom androiddeployqt that supports the latest NDK.
+        androiddeployqt="$Sky/deploy/androiddeployqt"
+    else
+        androiddeployqt="$QtBin/androiddeployqt"
+    fi
+
+    deployAndroid armeabi-v7a
+    deployAndroid arm64-v8a
+    deployAndroid x86
+    deployAndroid x86_64
+
+    #----------------------------------------------------------------------------------------------
+else
     make $make_arguments
 fi
 
 cd ..
 
-echo "------------"
+echo "---------------------"
 
 #--------------------------------------------------------------------------------------------------
 # Deploying sky
@@ -428,9 +473,9 @@ if [ "$2" = "deploy" ]; then
 
     echo ""
     echo "DEPLOYING $target"
-    echo "-------------"
+    echo "----------------------"
 
     sh deploy.sh $1
 
-    echo "-------------"
+    echo "----------------------"
 fi

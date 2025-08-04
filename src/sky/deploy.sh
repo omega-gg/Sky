@@ -756,3 +756,18 @@ if [ $os != "mobile" ]; then
 
     cp "$backend"/*.vbml $deploy/backend
 fi
+
+#--------------------------------------------------------------------------------------------------
+# deploy
+#--------------------------------------------------------------------------------------------------
+
+echo "COPYING to deploy"
+
+path="$Sky/deploy"
+
+if [ $1 = "macOS" ]; then
+
+    cp -r $deploy/$target.app $path
+else
+    cp -r $deploy/$target* $path
+fi
