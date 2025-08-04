@@ -53,7 +53,7 @@ qt="qt6"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
-make()
+build()
 {
     if [ $compiler = "mingw" ]; then
 
@@ -371,7 +371,7 @@ cd build
 
 $qmake -r -spec $spec "$config" TOOLS=true ..
 
-make $1
+build $1
 
 echo ""
 echo "DEPLOYING tools"
@@ -432,7 +432,7 @@ fi
 
 echo ""
 
-make $1
+build $1
 
 cd ..
 
