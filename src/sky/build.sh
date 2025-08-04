@@ -122,11 +122,12 @@ getPath()
 
 if [ $# != 1 -a $# != 2 ] \
    || \
-   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "iOS" -a $1 != "linux" -a \
+     $1 != "android" ] \
    || \
    [ $# = 2 -a "$2" != "all" -a "$2" != "deploy" -a "$2" != "clean" ]; then
 
-    echo "Usage: build <win32 | win64 | macOS | linux | android> [all | deploy | clean]"
+    echo "Usage: build <win32 | win64 | macOS | iOS | linux | android> [all | deploy | clean]"
 
     exit 1
 fi
@@ -218,9 +219,18 @@ else
     Qt="$external/Qt/$Qt6_version"
 fi
 
-if [ $1 = "android" -a $qt = "qt6" ]; then
+if [ $qt = "qt6" ]; then
 
-    QtBin="$Qt/gcc_64/bin"
+    if [ $1 = "iOS" ]; then
+
+        QtBin="$Qt/macos/bin"
+
+    elif [ $1 = "android" ]; then
+
+        QtBin="$Qt/gcc_64/bin"
+    else
+        QtBin="$Qt/bin"
+    fi
 else
     QtBin="$Qt/bin"
 fi
@@ -293,6 +303,15 @@ elif [ $1 = "macOS" ]; then
 
     export PATH="$Qt/bin:$PATH"
 
+elif [ $1 = "iOS" ]; then
+
+    spec="macx-ios-clang"
+
+    if [ $mobile = "device" ]; then
+
+        config="$config iphoneos device"
+    fi
+
 elif [ $1 = "linux" ]; then
 
     if [ -d "/usr/lib/x86_64-linux-gnu" ]; then
@@ -335,6 +354,25 @@ if [ "$2" = "deploy" ]; then
     config="$config deploy"
 fi
 
+if [ $1 = "iOS" ]; then
+
+    if [ $qt = "qt5" ]; then
+
+        qtconf=""
+    else
+        qtconf="-qtconf $Qt/ios/bin/target_qt.conf"
+    fi
+
+    $qmake -r -spec $spec "$config" $qtconf ..
+
+    if [ $qt = "qt5" ]; then
+
+        # NOTE iOS: Replacing WorkspaceSettings with a proper one. Otherwise the legacy build
+        #           system stops the compilation.
+        cp "$Sky"/dist/iOS/WorkspaceSettings.xcsettings \
+           $target.xcodeproj/project.xcworkspace/xcshareddata
+    fi
+
 if [ $1 = "android" ]; then
 
     makeAndroid armeabi-v7a "$Qt"/android_armv7/bin/target_qt.conf
@@ -356,6 +394,22 @@ if [ $compiler = "mingw" ]; then
 elif [ $compiler = "msvc" ]; then
 
     jom
+
+elif [ $1 = "iOS" ]; then
+
+    set +e
+
+    # FIXME iOS: For some reason, we have to call this several times to build and deploy properly.
+    if [ $qt = "qt5" ]; then
+        make $make_arguments
+        make $make_arguments
+    else
+        make $make_arguments
+    fi
+
+    set -e
+
+    make $make_arguments
 
 elif [ $1 != "android" ]; then
 
