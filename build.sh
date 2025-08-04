@@ -373,6 +373,8 @@ $qmake -r -spec $spec "$config" TOOLS=true ..
 
 build $1
 
+cd ..
+
 echo ""
 echo "DEPLOYING tools"
 echo "---------------"
@@ -389,7 +391,7 @@ fi
 #--------------------------------------------------------------------------------------------------
 # sky
 
-cd ../src/sky/content
+cd src/sky/content
 
 if [ "$2" = "deploy" ]; then
 
