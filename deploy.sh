@@ -823,47 +823,23 @@ if [ "$2" != "tools" ]; then
 
     if [ $os = "windows" ]; then
 
-        cp lib/*SkCore.*    $deploy
-        cp lib/*SkGui.*     $deploy
-        cp lib/*SkMedia.*   $deploy
-        #cp lib/*SkWeb.*     $deploy
-        cp lib/*SkTorrent.* $deploy
-        cp lib/*SkBackend.* $deploy
+        cp lib/*Sk*.dll $deploy
 
     elif [ $1 = "macOS" ]; then
 
-        cp lib/libSkCore.dylib    $deploy
-        cp lib/libSkGui.dylib     $deploy
-        cp lib/libSkMedia.dylib   $deploy
-        #cp lib/libSkWeb.dylib     $deploy
-        cp lib/libSkTorrent.dylib $deploy
-        cp lib/libSkBackend.dylib $deploy
+        cp lib/libSk*.dylib $deploy
 
     elif [ $1 = "iOS" ]; then
 
-        cp lib/libSkCore.a    $deploy
-        cp lib/libSkGui.a     $deploy
-        cp lib/libSkMedia.a   $deploy
-        #cp lib/libSkWeb.a     $deploy
-        cp lib/libSkBackend.a $deploy
+        cp lib/libSk*.a $deploy
 
     elif [ $1 = "linux" ]; then
 
-        cp lib/libSkCore.so    $deploy
-        cp lib/libSkGui.so     $deploy
-        cp lib/libSkMedia.so   $deploy
-        #cp lib/libSkWeb.so     $deploy
-        cp lib/libSkTorrent.so $deploy
-        cp lib/libSkBackend.so $deploy
+        cp lib/libSk*.so $deploy
 
     elif [ $1 = "android" ]; then
 
-        cp lib/libSkCore_*.so    $deploy
-        cp lib/libSkGui_*.so     $deploy
-        cp lib/libSkMedia_*.so   $deploy
-        #cp lib/libSkWeb_*.so     $deploy
-        cp lib/libSkTorrent_*.so $deploy
-        cp lib/libSkBackend_*.so $deploy
+        cp lib/libSk*_*.so $deploy
     fi
 fi
 
