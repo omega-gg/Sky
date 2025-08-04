@@ -116,10 +116,10 @@ W_INIT_CONTROLLER(ControllerCore)
 #ifndef SK_DEPLOY
 #ifdef Q_OS_MACOS
 static const QString PATH_STORAGE = "/../../../storage";
-static const QString PATH_BACKEND = "../../../../../backend";
+static const QString PATH_BACKEND = "../../../../../../../backend";
 #else
 static const QString PATH_STORAGE = "/storage";
-static const QString PATH_BACKEND = "../../backend";
+static const QString PATH_BACKEND = "../../../../backend";
 #endif
 #endif
 
@@ -379,7 +379,7 @@ ControllerCore::ControllerCore() : WController()
             return;
         }
 
-        WControllerFileReply * reply = copyBackends();
+        WControllerFileReply * reply = copyBackends(path);
 
         connect(reply, SIGNAL(complete(bool)), this, SLOT(onLoaded()));
     }
@@ -392,6 +392,24 @@ ControllerCore::ControllerCore() : WController()
     wControllerDeclarative->setContextProperty("controllerNetwork",  wControllerNetwork);
     wControllerDeclarative->setContextProperty("controllerPlaylist", wControllerPlaylist);
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void ControllerCore::updateBackends() const
+{
+    if (_index == NULL) return;
+
+    _index->update();
+}
+
+/* Q_INVOKABLE */ void ControllerCore::resetBackends() const
+{
+    WControllerFileReply * reply = copyBackends(_path + "/backend/");
+
+    connect(reply, SIGNAL(complete(bool)), this, SLOT(onReload()));
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void ControllerCore::clearComponentCache() const
 {
@@ -445,18 +463,16 @@ void ControllerCore::createIndex()
 
 //-------------------------------------------------------------------------------------------------
 
-WControllerFileReply * ControllerCore::copyBackends() const
+WControllerFileReply * ControllerCore::copyBackends(const QString & path) const
 {
 #ifdef SK_DEPLOY
 #ifdef Q_OS_ANDROID
-    return WControllerPlaylist::copyBackends("assets:/backend", _path + "/backend/");
+    return WControllerPlaylist::copyBackends("assets:/backend", path);
 #else
-    return WControllerPlaylist::copyBackends(WControllerFile::applicationPath("backend"),
-                                             _path + "/backend/");
+    return WControllerPlaylist::copyBackends(WControllerFile::applicationPath("backend"), path);
 #endif
 #else
-    return WControllerPlaylist::copyBackends(WControllerFile::applicationPath(PATH_BACKEND),
-                                             _path + "/backend/");
+    return WControllerPlaylist::copyBackends(WControllerFile::applicationPath(PATH_BACKEND), path);
 #endif
 }
 
@@ -475,10 +491,21 @@ void ControllerCore::onIndexLoaded()
 
 #if defined(SK_BACKEND_LOCAL) && defined(SK_DEPLOY) == false
     // NOTE: This makes sure that we have the latest local vbml loaded.
-    WControllerFileReply * reply = copyBackends();
-
-    connect(reply, SIGNAL(complete(bool)), _index, SLOT(reload()));
+    resetBackends();
 #else
     _index->update();
 #endif
+}
+
+void ControllerCore::onReload()
+{
+    if (_index == NULL) return;
+
+    _index->clearCache();
+
+    _index->reload();
+
+    _index->reloadBackends();
+
+    WBackendUniversal::clearCache();
 }

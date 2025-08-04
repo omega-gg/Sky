@@ -52,6 +52,9 @@ public: // Interface
 
     Q_INVOKABLE void load();
 
+    Q_INVOKABLE void updateBackends() const;
+    Q_INVOKABLE void resetBackends () const;
+
     Q_INVOKABLE void clearComponentCache() const;
 
 public: // Static functions
@@ -65,12 +68,13 @@ public: // Static functions
 private: // Functions
     void createIndex();
 
-    WControllerFileReply * copyBackends() const;
+    WControllerFileReply * copyBackends(const QString & path) const;
 
 private slots:
-    void onLoaded();
-
+    void onLoaded     ();
     void onIndexLoaded();
+
+    void onReload();
 
 public: // Properties
 #ifdef SK_DESKTOP
