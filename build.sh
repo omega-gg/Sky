@@ -429,8 +429,17 @@ echo "------------"
 
 cd src/sky
 
-sh configure $1
-
-sh build $1 deploy
+sh configure.sh $1
 
 echo "------------"
+
+if [ "$2" = "deploy" ]; then
+
+    echo ""
+    echo "DEPLOYING sky"
+    echo "-------------"
+
+    sh build.sh $1 deploy
+
+    echo "-------------"
+fi
