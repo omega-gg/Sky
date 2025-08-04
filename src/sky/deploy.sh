@@ -767,7 +767,7 @@ path="$Sky/deploy"
 
 if [ $1 = "macOS" ]; then
 
-    cp -r $deploy/$target.app $path
+    cp -r deploy/$target.app $path
 else
-    cp -r $deploy/$target* $path
+    cp -r deploy/$target* $path
 fi
