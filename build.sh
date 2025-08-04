@@ -354,7 +354,7 @@ if [ "$2" = "tools" ]; then
 
     $qmake -r -spec $spec "$config" TOOLS=true ..
 
-if [ $1 = "iOS" ]; then
+elif [ $1 = "iOS" ]; then
 
     if [ $qt = "qt5" ]; then
 
