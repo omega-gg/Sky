@@ -431,15 +431,11 @@ cd src/sky
 
 sh configure.sh $1
 
-echo "------------"
-
 if [ "$2" = "deploy" ]; then
 
-    echo ""
-    echo "DEPLOYING sky"
-    echo "-------------"
-
     sh build.sh $1 deploy
-
-    echo "-------------"
+else
+    sh build.sh $1
 fi
+
+echo "------------"
