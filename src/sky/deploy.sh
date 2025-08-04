@@ -7,7 +7,7 @@ set -e
 
 target="sky"
 
-Sky="../../.."
+Sky="$PWD/../.."
 
 backend="../backend"
 
