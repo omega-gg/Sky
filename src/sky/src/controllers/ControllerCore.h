@@ -42,6 +42,10 @@ class ControllerCore : public WController
 {
     Q_OBJECT
 
+#ifdef SK_DESKTOP
+    Q_PROPERTY(QString argument READ argument CONSTANT)
+#endif
+
 private:
     ControllerCore();
 

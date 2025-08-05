@@ -39,7 +39,13 @@ Application
 
         vsync: true
 
-        st: StyleComponents { id: st }
+        st: StyleComponents
+        {
+            id: st
+
+            // NOTE: We apply the night color right away to avoid the flickering before onFadeIn.
+            window_color: "#323232"
+        }
 
         //-----------------------------------------------------------------------------------------
         // Events
@@ -49,7 +55,9 @@ Application
         {
             st.applyNight();
 
-            load("Loader.qml");
+            core.load();
+
+            load();
         }
 
         viewport.onActiveFocusChanged:
@@ -86,7 +94,7 @@ Application
             {
                 event.accepted = true;
 
-                load("Loader.qml");
+                load();
             }
         }
 
@@ -94,11 +102,15 @@ Application
         // Functions
         //-----------------------------------------------------------------------------------------
 
-        function load(source)
+        function load()
         {
-            core.load();
+            var argument = core.argument;
 
-            loader.source = source;
+            if (argument == "")
+            {
+                 loader.source = "Gui.qml";
+            }
+            else loader.source = argument;
 
             loader.item.forceActiveFocus();
         }

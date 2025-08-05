@@ -513,3 +513,16 @@ void ControllerCore::onReload()
 
     WBackendUniversal::clearCache();
 }
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+#ifdef SK_DESKTOP
+
+QString ControllerCore::argument() const
+{
+    return _argument;
+}
+
+#endif

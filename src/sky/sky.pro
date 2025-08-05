@@ -258,7 +258,8 @@ OTHER_FILES += configure.sh \
                deploy.sh \
                README.md \
                content/generate.sh \
-               qml/Main.qml \
+               content/Main.qml \
+               content/Gui.qml \
                dist/sky.rc \
                dist/script/start.sh \
                dist/iOS/Info.plist \
