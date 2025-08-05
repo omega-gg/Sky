@@ -255,10 +255,10 @@ macx:ICON = dist/icon.icns
 
 RC_FILE = dist/sky.rc
 
-OTHER_FILES += environment.sh \
-               configure.sh \
+OTHER_FILES += configure.sh \
                build.sh \
                deploy.sh \
+               README.md \
                content/generate.sh \
                qml/Main.qml \
                dist/sky.rc \
