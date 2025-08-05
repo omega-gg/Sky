@@ -424,7 +424,11 @@ ControllerCore::ControllerCore() : WController()
 {
     Q_ASSERT(player);
 
+#ifdef SK_NO_TORRENT
+    WBackendManager * backend = new WBackendManager;
+#else
     WBackendTorrent * backend = new WBackendTorrent;
+#endif
 
     player->setBackend(backend);
 }
