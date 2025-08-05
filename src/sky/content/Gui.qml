@@ -54,4 +54,18 @@ Item
 
         font.pixelSize: st.dp20
     }
+
+    TextBase
+    {
+        anchors.left: parent.left
+        anchors.top : parent.top
+
+        anchors.margins: st.dp8
+
+        text: qsTr("Press tab for UI")
+
+        color: st.text3_color
+
+        font.pixelSize: st.dp16
+    }
 }
