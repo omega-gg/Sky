@@ -44,7 +44,7 @@ Application
             id: st
 
             // NOTE: We apply the night color right away to avoid the flickering before onFadeIn.
-            window_color: "#323232"
+            window_color: "#404040"
         }
 
         //-----------------------------------------------------------------------------------------
