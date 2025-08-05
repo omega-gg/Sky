@@ -122,6 +122,8 @@ CONFIG(debug, debug|release) {
             -L$$SK/lib -lSkBackendD \
             -L$$SK/lib -lSkMediaD \
             -L$$SK/lib -lSkMultimediaD
+
+    !ios:LIBS += -L$$SK/lib -lSkTorrentD
 } else {
     LIBS += -L$$SK/lib -lSkCore \
             -L$$SK/lib -lSkGui \
@@ -129,12 +131,8 @@ CONFIG(debug, debug|release) {
             -L$$SK/lib -lSkBackend \
             -L$$SK/lib -lSkMedia \
             -L$$SK/lib -lSkMultimedia
-}
 
-!ios:CONFIG(debug, debug|release) {
-    LIBS += -L$$SK/lib -lSkTorrentD
-} else {
-    LIBS += -L$$SK/lib -lSkTorrent
+    !ios:LIBS += -L$$SK/lib -lSkTorrent
 }
 
 #win32:contains(QT_MAJOR_VERSION, 5) {
