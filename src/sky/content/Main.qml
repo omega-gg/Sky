@@ -26,6 +26,28 @@ import Sky     1.0
 Application
 {
     //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function load()
+    {
+        var argument = core.argument;
+
+        if (argument == "")
+        {
+             loader.source = "Gui.qml";
+        }
+        else loader.source = argument;
+
+        loader.item.forceActiveFocus();
+    }
+
+    function toggleMaximized()
+    {
+        window.maximized = !(window.maximized);
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
@@ -70,13 +92,7 @@ Application
 
         /* QML_EVENT */ onKeyPressed: function(event)
         {
-            if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter)
-            {
-                event.accepted = true;
-
-                fullScreen = !(fullScreen);
-            }
-            else if (event.key == Qt.Key_Escape)
+            if (event.key == Qt.Key_Escape)
             {
                 event.accepted = true;
 
@@ -90,29 +106,12 @@ Application
 
                 window.writeShot(core.pathShots);
             }
-            else if (event.key == Qt.Key_F1)
+            else if (event.key == Qt.Key_F11)
             {
                 event.accepted = true;
 
-                load();
+                fullScreen = !(fullScreen);
             }
-        }
-
-        //-----------------------------------------------------------------------------------------
-        // Functions
-        //-----------------------------------------------------------------------------------------
-
-        function load()
-        {
-            var argument = core.argument;
-
-            if (argument == "")
-            {
-                 loader.source = "Gui.qml";
-            }
-            else loader.source = argument;
-
-            loader.item.forceActiveFocus();
         }
 
         //-----------------------------------------------------------------------------------------
@@ -126,6 +125,8 @@ Application
             anchors.fill: parent
 
             visible: (window.fullScreen == false)
+
+            onDoubleClicked: toggleMaximized()
         }
 
         Loader

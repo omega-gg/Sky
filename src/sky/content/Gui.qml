@@ -62,7 +62,7 @@ Item
 
         anchors.margins: st.dp8
 
-        text: qsTr("Press tab for UI")
+        text: qsTr("Press F1 for UI")
 
         color: st.text3_color
 
