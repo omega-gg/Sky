@@ -1135,7 +1135,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // Icons
 
-//#icons_window:BarWindow
+//#icons_window:ButtonsWindow
     property url icon_iconify : "icons/window-minimize.svg"
     property url icon_maximize: "icons/window-maximize.svg"
     property url icon_minimize: "icons/window-restore.svg"
@@ -1145,7 +1145,7 @@ Style
     property url icon12x12_minimize: icon_minimize
 //#END
 
-//#icons_close:BarWindow:ButtonsItem:LabelLoadingButton:LineEditBoxClear:TabsBrowser
+//#icons_close:ButtonsWindow:ButtonsItem:LabelLoadingButton:LineEditBoxClear:TabsBrowser
     property url icon_close: "icons/times.svg"
 
     property url icon12x12_close: icon_close

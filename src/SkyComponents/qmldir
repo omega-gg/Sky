@@ -90,8 +90,9 @@ ButtonMask 1.0 ButtonMask.qml
 
 ButtonStream 1.0 ButtonStream.qml
 
-ButtonsCheck 1.0 ButtonsCheck.qml
-ButtonsItem  1.0 ButtonsItem.qml
+ButtonsWindow 1.0 ButtonsWindow.qml
+ButtonsCheck  1.0 ButtonsCheck.qml
+ButtonsItem   1.0 ButtonsItem.qml
 
 BaseLabelRound     1.0 BaseLabelRound.qml
 LabelRound         1.0 LabelRound.qml

@@ -50,9 +50,11 @@ ViewDrag
 
     property alias buttonApplication: buttonApplication
 
-    property alias buttonIconify : buttonIconify
-    property alias buttonMaximize: buttonMaximize
-    property alias buttonClose   : buttonClose
+    property alias buttonsWindow: buttonsWindow
+
+    property alias buttonIconify : buttonsWindow.buttonIconify
+    property alias buttonMaximize: buttonsWindow.buttonMaximize
+    property alias buttonClose   : buttonsWindow.buttonClose
 
     property alias border    : border
     property alias borderLine: borderLine
@@ -77,26 +79,26 @@ ViewDrag
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-    // Private
+    // Event
 
-    function pIconify()
+    function onIconify()
     {
         window.minimized = true;
     }
 
-    function pMaximize()
+    function onMaximize()
     {
         window.maximized = !(window.maximized);
     }
 
-    function pClose()
+    function onClose()
     {
         window.close();
     }
 
     //---------------------------------------------------------------------------------------------
 
-    function pDoubleClicked(mouse)
+    function onDoubleClicked(mouse)
     {
         pMaximize();
     }
@@ -109,10 +111,9 @@ ViewDrag
 
     /* QML_EVENT */ onDoubleClicked: function(mouse)
     {
-        if (window.hoverCount() == 0)
-        {
-            pDoubleClicked(mouse);
-        }
+        if (window.hoverCount()) return;
+
+        onDoubleClicked(mouse);
     }
 
     Rectangle
@@ -158,7 +159,7 @@ ViewDrag
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        maximumWidth: buttonIconify.x - st.dp32
+        maximumWidth: buttonsWindow.x - st.dp32
 
         spacing: st.dp6
 
@@ -177,65 +178,30 @@ ViewDrag
         onPressed: buttonPressed()
     }
 
-    ButtonPianoWindow
+    ButtonsWindow
     {
-        id: buttonIconify
+        id: buttonsWindow
 
-        anchors.right : (buttonMaximize.visible) ? buttonMaximize.left
-                                                 : buttonClose   .left
+        anchors.right: parent.right
 
-        anchors.top   : buttonClose.top
-        anchors.bottom: buttonClose.bottom
+        buttonIconify .borderBottom: 0
+        buttonMaximize.borderBottom: 0
+        buttonClose   .borderBottom: 0
 
-        borderLeft: borderSize
+        function onIconify()
+        {
+            barWindow.onIconify();
+        }
 
-        icon          : st.icon12x12_iconify
-        iconSourceSize: st.size12x12
+        function onMaximize()
+        {
+            barWindow.onMaximize();
+        }
 
-        onClicked: pIconify()
-    }
-
-    ButtonPianoWindow
-    {
-        id: buttonMaximize
-
-        anchors.right : buttonClose.left
-        anchors.top   : buttonClose.top
-        anchors.bottom: buttonClose.bottom
-
-        highlighted: window.maximized
-
-        icon: (window.maximized) ? st.icon12x12_minimize
-                                 : st.icon12x12_maximize
-
-        iconSourceSize: st.size16x16
-
-        onClicked: pMaximize()
-    }
-
-    ButtonPianoWindow
-    {
-        id: buttonClose
-
-        anchors.right : parent.right
-        anchors.top   : parent.top
-        anchors.bottom: border.top
-
-        borderRight: 0
-
-        icon          : st.icon12x12_close
-        iconSourceSize: st.size12x12
-
-        colorHoverA: st.button_colorConfirmHoverA
-        colorHoverB: st.button_colorConfirmHoverB
-
-        colorPressA: st.button_colorConfirmPressA
-        colorPressB: st.button_colorConfirmPressB
-
-        filterIcon: (isHovered || isPressed) ? st.button_filterIconB
-                                             : st.button_filterIconA
-
-        onClicked: pClose()
+        function onClose()
+        {
+            barWindow.onClose();
+        }
     }
 
     BorderHorizontal

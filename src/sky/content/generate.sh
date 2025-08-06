@@ -196,7 +196,7 @@ else
     defines="$defines MOBILE ANDROID"
 fi
 
-defines="$defines BarWindow pictures_tag icons_slide icons_scale icons_add icons_external icons_playback"
+defines="$defines pictures_tag icons_slide icons_scale icons_add icons_external icons_playback"
 
 files="\
 $SkyBase/Style.qml \
@@ -308,6 +308,7 @@ $SkyComponents/ButtonImage.qml \
 $SkyComponents/ButtonImageBorders.qml \
 $SkyComponents/ButtonMask.qml \
 $SkyComponents/ButtonStream.qml \
+$SkyComponents/ButtonsWindow.qml \
 $SkyComponents/ButtonsCheck.qml \
 $SkyComponents/ButtonsItem.qml \
 $SkyComponents/BaseLabelRound.qml \

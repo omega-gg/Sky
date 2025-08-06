@@ -25,6 +25,44 @@ import Sky     1.0
 
 Item
 {
+    id: gui
+
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool ui: false
+
+    //---------------------------------------------------------------------------------------------
+    // Connections
+    //---------------------------------------------------------------------------------------------
+
+    Connections
+    {
+        target: window
+
+        /* QML_CONNECTION */ function onKeyPressed (event) { gui.onKeyPressed (event) }
+        /* QML_CONNECTION */ function onKeyReleased(event) { gui.onKeyReleased(event) }
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Keys
+
+    function onKeyPressed(event)
+    {
+        if (event.key == Qt.Key_F1)
+        {
+            ui = !ui;
+        }
+    }
+
+    function onKeyReleased(event)
+    {
+        if (event.isAutoRepeat) return;
+    }
+
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
@@ -62,10 +100,47 @@ Item
 
         anchors.margins: st.dp8
 
+        visible: (opacity != 0.0)
+
+        opacity: (ui == false)
+
         text: qsTr("Press F1 for UI")
 
         color: st.text3_color
 
         font.pixelSize: st.dp16
+
+        Behavior on opacity
+        {
+            PropertyAnimation
+            {
+                duration: st.duration_fast
+
+                easing.type: st.easing
+            }
+        }
+    }
+
+    Item
+    {
+        anchors.fill: parent
+
+        visible: (opacity != 0.0)
+        opacity: (ui)
+
+        Behavior on opacity
+        {
+            PropertyAnimation
+            {
+                duration: st.duration_fast
+
+                easing.type: st.easing
+            }
+        }
+
+        ButtonsWindow
+        {
+            anchors.right: parent.right
+        }
     }
 }
