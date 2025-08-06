@@ -113,6 +113,9 @@ W_INIT_CONTROLLER(ControllerCore)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+// NOTE: Also check DataLocal_patch, version_windows.
+static const QString CORE_VERSION = "3.0.0-2";
+
 #ifndef SK_DEPLOY
 #ifdef Q_OS_MACOS
 static const QString PATH_STORAGE = "/../../../storage";
@@ -133,6 +136,18 @@ ControllerCore::ControllerCore() : WController()
 
     //---------------------------------------------------------------------------------------------
     // Settings
+
+    sk->setName("Sky runtime");
+
+    sk->setVersion(CORE_VERSION);
+
+#ifdef Q_OS_LINUX
+#ifdef SK_DEPLOY
+    sk->setIcon(":/icons/icon.svg");
+#else
+    sk->setIcon("icons/icon.svg");
+#endif
+#endif
 
 #ifdef SK_DEPLOY
     _path = QDir::fromNativeSeparators(WControllerFile::pathWritable());
