@@ -417,32 +417,4 @@ elif [ "$2" = "tools" ]; then
     sh deploy.sh $1 tools
 
     echo "---------------"
-
-    exit 0
 fi
-
-#--------------------------------------------------------------------------------------------------
-# Building sky
-#--------------------------------------------------------------------------------------------------
-
-if [ $os = "mobile" ]; then
-
-    exit 0
-fi
-
-echo ""
-echo "BUILDING sky"
-echo "------------"
-
-cd src/sky
-
-sh configure.sh $1
-
-if [ "$2" = "deploy" ]; then
-
-    sh build.sh $1 deploy
-else
-    sh build.sh $1
-fi
-
-echo "------------"
