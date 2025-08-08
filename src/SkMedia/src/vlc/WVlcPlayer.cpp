@@ -301,8 +301,8 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
 
                     libvlc_media_add_option(media, input.C_UTF);
 
-                    // FIXME VLC 3.0.18: This seems to fix the missing audio bytes at the end of
-                    //                   the video.
+                    // FIXME VLC 3.0.18: The FFmpeg demuxer seems to fix the missing audio bytes at
+                    //                   the end of the video.
                     libvlc_media_add_option(media, "demux=avformat");
 #ifdef VLCPLAYER_AUDIO
                 }
