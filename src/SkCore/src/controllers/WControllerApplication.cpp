@@ -1266,78 +1266,59 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     return QProcess::splitCommand(command);
 #else
-    enum class Quote { None, Single, Double };
+    // NOTE: This fallback implementation tries to emulate QProcess::splitCommand.
 
-    QStringList args;
+    QStringList arguments;
 
-    QString current;
+    QString string;
 
-    Quote quote = Quote::None;
+    int count = 0;
 
-    bool escape = false;
+    bool quote = false;
 
     for (int i = 0; i < command.length(); i++)
     {
-        QChar character = command.at(i);
+        const QChar character = command.at(i);
 
-        if (escape)
+        if (character == '"')
         {
-            current.append(character);
+            count++;
 
-            escape = false;
-
-            continue;
-        }
-
-        if (character == '\\' && quote != Quote::Single)
-        {
-            escape = true;
-
-            continue;
-        }
-
-        if (character == '"' && quote != Quote::Single)
-        {
-            if (quote == Quote::Double) quote = Quote::None;
-            else                        quote = Quote::Double;
-
-            continue;
-        }
-
-        if (character == '\'' && quote != Quote::Double)
-        {
-            if (quote == Quote::Single) quote = Quote::None;
-            else                        quote = Quote::Single;
-
-            continue;
-        }
-
-        if (character.isSpace() && quote == Quote::None)
-        {
-            if (current.isEmpty() == false)
+            if (count == 3)
             {
-                args.append(current);
+                count = 0;
 
-                current.clear();
+                string += character;
             }
 
             continue;
         }
 
-        current.append(character);
+        if (count)
+        {
+            if (count == 1) quote = !quote;
+
+            count = 0;
+        }
+
+        if (quote == false && character.isSpace())
+        {
+            if (string.isEmpty() == false)
+            {
+                arguments.append(string);
+
+                string.clear();
+            }
+        }
+        else string.append(character);
     }
 
-    // NOTE: If the command ends with a backslash treat it literally.
-    if (escape) current.append('\\');
-
-    if (current.isEmpty() == false)
+    if (string.isEmpty() == false)
     {
-        args.append(current);
-
-        current.clear();
+        arguments.append(string);
     }
 
-    return args;
+    return arguments;
 #endif
 }
 
