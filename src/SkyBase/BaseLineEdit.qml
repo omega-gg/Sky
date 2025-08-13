@@ -216,7 +216,13 @@ MouseArea
         anchors.topMargin   : padding
         anchors.bottomMargin: padding
 //#ELSE
-        verticalAlignment: TextInput.AlignVCenter
+        //verticalAlignment: TextInput.AlignVCenter
+
+        // FIXME Qt6: This hack replaces TextInput.AlignVCenter to prevent the text from being
+        //            blurry. This is probably related to floating point texture placement. We set
+        //            both margins to get even spacing.
+        anchors.topMargin   : baseLineEdit.padding
+        anchors.bottomMargin: baseLineEdit.padding
 
         clip: true
 
@@ -321,6 +327,6 @@ MouseArea
 
         color: st.baseLineEdit_colorDefault
 
-        font.pixelSize: textInput.font.pixelSize
+        font: textInput.font
     }
 }
