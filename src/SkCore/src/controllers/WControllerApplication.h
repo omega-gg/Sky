@@ -336,6 +336,8 @@ public: // Static functions
     Q_INVOKABLE static QStringList split(const QString & string, const QString & separator);
     Q_INVOKABLE static QStringList split(const QString & string, const QChar   & separator);
 
+    Q_INVOKABLE static QStringList splitCommand(const QString & command);
+
     Q_INVOKABLE static QStringList splitArguments(const QString & arguments);
 
     //---------------------------------------------------------------------------------------------

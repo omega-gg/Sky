@@ -1261,6 +1261,86 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     return split(string, QString(separator));
 }
 
+/* Q_INVOKABLE static */ QStringList WControllerApplication::splitCommand(const QString & command)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    return QProcess::splitCommand(command);
+#else
+    enum class Quote { None, Single, Double };
+
+    QStringList args;
+
+    QString current;
+
+    Quote quote = Quote::None;
+
+    bool escape = false;
+
+    for (int i = 0; i < command.length(); i++)
+    {
+        QChar character = command.at(i);
+
+        if (escape)
+        {
+            current.append(character);
+
+            escape = false;
+
+            continue;
+        }
+
+        if (character == '\\' && quote != Quote::Single)
+        {
+            escape = true;
+
+            continue;
+        }
+
+        if (character == '"' && quote != Quote::Single)
+        {
+            if (quote == Quote::Double) quote = Quote::None;
+            else                        quote = Quote::Double;
+
+            continue;
+        }
+
+        if (character == '\'' && quote != Quote::Double)
+        {
+            if (quote == Quote::Single) quote = Quote::None;
+            else                        quote = Quote::Single;
+
+            continue;
+        }
+
+        if (character.isSpace() && quote == Quote::None)
+        {
+            if (current.isEmpty() == false)
+            {
+                args.append(current);
+
+                current.clear();
+            }
+
+            continue;
+        }
+
+        current.append(character);
+    }
+
+    // NOTE: If the command ends with a backslash treat it literally.
+    if (escape) current.append('\\');
+
+    if (current.isEmpty() == false)
+    {
+        args.append(current);
+
+        current.clear();
+    }
+
+    return args;
+#endif
+}
+
 /* Q_INVOKABLE static */
 QStringList WControllerApplication::splitArguments(const QString & arguments)
 {
