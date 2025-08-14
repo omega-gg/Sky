@@ -143,14 +143,23 @@ void WVlcEnginePrivate::create()
 
         foreach (const QString & string, options)
         {
-            args[index] = new char [string.length()];
+            QByteArray utf8 = string.toUtf8();
 
-            strcpy(args[index], string.C_STR);
+            args[index] = new char[utf8.size() + 1];
+
+            strcpy(args[index], utf8.constData());
 
             index++;
         }
 
         instance = libvlc_new(argc, args);
+
+        for (int i = 0; i < argc; i++)
+        {
+            delete [] args[i];
+        }
+
+        delete [] args;
     }
 
 #ifdef Q_OS_LINUX
