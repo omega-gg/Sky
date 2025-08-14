@@ -99,7 +99,7 @@ class SK_CORE_EXPORT WControllerFile : public WController
 
     Q_ENUMS(Permission)
 
-    Q_PROPERTY(QString log READ log NOTIFY logChanged)
+    Q_PROPERTY(QString log READ log WRITE setLog NOTIFY logChanged)
 
     Q_PROPERTY(QtMsgType verbosity READ verbosity WRITE setVerbosity NOTIFY verbosityChanged)
 
@@ -312,7 +312,7 @@ public: // Static functions
     static QFileInfoList recursiveEntryInfoList(const QString & path);
 
 signals:
-    void logChanged(const QString & message);
+    void logChanged();
 
     void verbosityChanged();
 
@@ -322,6 +322,7 @@ signals:
 
 public: // Properties
     QString log() const;
+    void    setLog(const QString & log);
 
     QtMsgType verbosity() const;
     void      setVerbosity(QtMsgType verbosity);

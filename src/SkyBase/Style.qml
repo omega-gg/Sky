@@ -408,7 +408,12 @@ Item
     //---------------------------------------------------------------------------------------------
     // BaseConsole
 
+    // NOTE: TextEdit performances should be better on Qt6.
+//#QT_OLD
     property int baseConsole_maximumLength: 4000
+//#ELSE
+    property int baseConsole_maximumLength: 10000
+//#END
 
     property string baseConsole_fontFamily: "consolas"
 

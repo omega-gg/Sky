@@ -71,6 +71,11 @@ ScrollArea
         itemConsole.append(string);
     }
 
+    function clear()
+    {
+        itemConsole.clear();
+    }
+
     //---------------------------------------------------------------------------------------------
     // Private
 
