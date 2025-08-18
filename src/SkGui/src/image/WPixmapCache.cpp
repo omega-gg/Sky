@@ -31,6 +31,7 @@
 
 // Sk includes
 #include <WControllerFile>
+#include <WControllerNetwork>
 #include <WAbstractThreadAction>
 #include <WCache>
 
@@ -389,6 +390,8 @@ public: // Static functions
     static WPixmapCacheData * loadImage(const QString & path, const QSize & size,
                                                               const QSize & area);
 
+    static QPixmap getPixmap(WPixmapCacheStore * store, const QString & path);
+
 public: // Variables
     WPixmapCacheData * data;
 
@@ -674,7 +677,7 @@ void WPixmapCachePrivate::readCache(const QString & path, const QSize & size,
                                                           QObject     * receiver,
                                                           const char  * method)
 {
-    if (path.startsWith("image:///"))
+    if (path.startsWith("image://"))
     {
         data = loadImage(path, size, area);
     }
@@ -703,7 +706,7 @@ void WPixmapCachePrivate::readFile(const QString & path, const QSize & size,
                                                          QObject     * receiver,
                                                          const char  * method)
 {
-    if (path.startsWith("image:///"))
+    if (path.startsWith("image://"))
     {
         data = loadImage(path, size, area);
     }
@@ -772,8 +775,6 @@ void WPixmapCachePrivate::addToCache()
     store->pixmaps.insert(key, data);
 }
 
-//-------------------------------------------------------------------------------------------------
-
 void WPixmapCachePrivate::removeData(QObject * receiver)
 {
     if (data == NULL) return;
@@ -841,11 +842,7 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
                                                                const QSize   & size,
                                                                const QSize   & area)
 {
-    QString source = path;
-
-    source.remove(0, 9);
-
-    QPixmap pixmap = pixmapStore()->hash.value(source);
+    QPixmap pixmap = getPixmap(pixmapStore(), path);
 
     if (pixmap.isNull())
     {
@@ -869,6 +866,32 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
     data->reply  = NULL;
 
     return data;
+}
+
+/* static */ QPixmap WPixmapCachePrivate::getPixmap(WPixmapCacheStore * store,
+                                                    const QString     & path)
+{
+    QString source = path;
+
+    source.remove(0, 8);
+
+    if (source.startsWith("data:image/"))
+    {
+        source = WControllerNetwork::decodeUrl(source.toUtf8());
+
+        int index = source.indexOf(',');
+
+        if (index == -1) return QPixmap();
+
+        source = source.mid(index + 1);
+
+        QByteArray bytes = QByteArray::fromBase64(source.toUtf8());
+
+        QImage image = QImage::fromData(bytes);
+
+        return QPixmap::fromImage(image);
+    }
+    else return store->hash.value(source);
 }
 
 //=================================================================================================
@@ -1038,7 +1061,7 @@ void WPixmapCache::clear(QObject * receiver)
 
 /* static */ bool WPixmapCache::imageIsLocal(const QString & path)
 {
-    if (path.isEmpty() || path.startsWith("image:///"))
+    if (path.isEmpty() || path.startsWith("image://"))
     {
          return false;
     }
@@ -1052,13 +1075,9 @@ void WPixmapCache::clear(QObject * receiver)
 {
     WPixmapCacheStore * store = pixmapStore();
 
-    if (path.startsWith("image:///"))
+    if (path.startsWith("image://"))
     {
-        QString source = path;
-
-        source.remove(0, 9);
-
-        QPixmap pixmap = store->hash.value(source);
+        QPixmap pixmap = WPixmapCachePrivate::getPixmap(store, path);
 
         if (pixmap.isNull())
         {

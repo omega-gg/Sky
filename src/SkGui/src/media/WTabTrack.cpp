@@ -665,7 +665,7 @@ void WTabTrackPrivate::removeBookmark(int index)
 
     QString videoShot = bookmark->videoShot();
 
-    if (videoShot.isEmpty() == false && videoShot.startsWith("image:///") == false)
+    if (videoShot.isEmpty() == false && videoShot.startsWith("image://") == false)
     {
         videoShot.remove("file:///");
 
@@ -963,7 +963,7 @@ void WTabTrackPrivate::saveState()
 
         WPixmapCache::registerPixmap(fileName, pixmap);
 
-        setVideoShot(currentBookmark, "image:///" + fileName);
+        setVideoShot(currentBookmark, "image://" + fileName);
     }
     else emit q->currentBookmarkUpdated();
 
@@ -1502,7 +1502,7 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 
         QString videoShot = p->videoShot;
 
-        videoShot.replace("image:///", "file:///");
+        videoShot.replace("image://", "file:///");
 
         data.videoShot   = videoShot;
         data.currentTime = p->currentTime;

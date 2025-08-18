@@ -126,6 +126,13 @@ void WDeclarativeImageBasePrivate::loadUrl()
         file->deleteLater();
     }
 
+    if (url.startsWith("image://"))
+    {
+        q->applyUrl(url, asynchronous);
+
+        return;
+    }
+
     QString source = WControllerFile::resolvedUrl(q, url);
 
     file = wControllerFile->getHttp(source, q);
