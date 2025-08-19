@@ -48,6 +48,9 @@ public: // Interface
 
     Q_INVOKABLE void removePath(const QString & path);
 
+    Q_INVOKABLE void clearFiles  ();
+    Q_INVOKABLE void clearFolders();
+
     Q_INVOKABLE void clearPaths();
 
     Q_INVOKABLE bool contains(const QString & path) const;

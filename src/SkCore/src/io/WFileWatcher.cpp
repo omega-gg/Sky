@@ -738,12 +738,24 @@ void WFileWatcherPrivate::resetCheck()
     d->removePath(absolutePath);
 }
 
-/* Q_INVOKABLE */ void WFileWatcher::clearPaths()
+/* Q_INVOKABLE */ void WFileWatcher::clearFiles()
 {
     Q_D(WFileWatcher);
 
-    d->fileWatchs  .clear();
+    d->fileWatchs.clear();
+}
+
+/* Q_INVOKABLE */ void WFileWatcher::clearFolders()
+{
+    Q_D(WFileWatcher);
+
     d->folderWatchs.clear();
+}
+
+/* Q_INVOKABLE */ void WFileWatcher::clearPaths()
+{
+    clearFiles  ();
+    clearFolders();
 }
 
 //-------------------------------------------------------------------------------------------------
