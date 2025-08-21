@@ -109,6 +109,9 @@ class SK_CORE_EXPORT WControllerFile : public WController
 
     Q_PROPERTY(WCache * cache READ cache WRITE setCache NOTIFY cacheChanged)
 
+    Q_PROPERTY(int watcherInterval READ watcherInterval WRITE setWatcherInterval
+               NOTIFY watcherIntervalChanged)
+
 public: // Enums
     enum Permission
     {
@@ -320,6 +323,8 @@ signals:
 
     void cacheChanged();
 
+    void watcherIntervalChanged();
+
 public: // Properties
     QString log() const;
     void    setLog(const QString & log);
@@ -334,6 +339,9 @@ public: // Properties
 
     WCache * cache() const;
     void     setCache(WCache * cache);
+
+    int  watcherInterval() const;
+    void setWatcherInterval(int interval);
 
 private:
     W_DECLARE_PRIVATE   (WControllerFile)

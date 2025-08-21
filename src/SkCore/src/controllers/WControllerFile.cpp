@@ -70,6 +70,8 @@ W_INIT_CONTROLLER(WControllerFile)
 static const int CONTROLLERFILE_LOG_INTERVAL =  1000; // 1 seconds
 static const int CONTROLLERFILE_LOG_MAX      = 10000;
 
+static const int CONTROLLERFILE_WATCHER_INTERVAL = 1000; // 1 seconds
+
 static const QString CONTROLLERFILE_IMAGE = "^(bmp|png|jpg|jpeg|svg|tga)$";
 
 static const QString CONTROLLERFILE_FILTER = "Images (*.bmp *.png *.jpg *.jpeg *.svg *.tga);;"
@@ -421,7 +423,11 @@ void WControllerFilePrivate::registerFileWatcher(WFileWatcher * watcher)
 
         QObject::connect(&timerWatcher, SIGNAL(timeout()), q, SLOT(onCheckWatchers()));
 
-        timerWatcher.start(1000);
+        if (timerWatcher.interval())
+        {
+             timerWatcher.start();
+        }
+        else timerWatcher.start(CONTROLLERFILE_WATCHER_INTERVAL);
     }
 }
 
@@ -1558,8 +1564,6 @@ void WControllerFile::setPathStorage(const QString & path)
     emit pathStorageChanged();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 WCache * WControllerFile::cache() const
 {
     Q_D(const WControllerFile); return d->cache;
@@ -1578,6 +1582,30 @@ void WControllerFile::setCache(WCache * cache)
     if (cache) cache->setParent(this);
 
     emit cacheChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WControllerFile::watcherInterval() const
+{
+    Q_D(const WControllerFile); return d->timerWatcher.interval();
+}
+
+void WControllerFile::setWatcherInterval(int interval)
+{
+    Q_D(WControllerFile);
+
+    if (d->timerWatcher.interval() == interval) return;
+
+    if (d->timerWatcher.isActive())
+    {
+        d->timerWatcher.stop();
+
+        d->timerWatcher.start(interval);
+    }
+    else d->timerWatcher.setInterval(interval);
+
+    emit watcherIntervalChanged();
 }
 
 #endif // SK_NO_CONTROLLERFILE

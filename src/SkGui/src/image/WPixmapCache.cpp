@@ -45,8 +45,10 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+#ifdef QT_OLD
 static const int PIXMAPCACHE_WIDTH  = 1920;
 static const int PIXMAPCACHE_HEIGHT = 1200;
+#endif
 
 static const int PIXMAPCACHE_MAX = 1048576 * 10; // 10 megabytes
 
@@ -1257,6 +1259,7 @@ void WPixmapCache::clear(QObject * receiver)
         return sizeA.scaled(width, height, Qt::KeepAspectRatioByExpanding);
 #endif
     }
+#ifdef QT_OLD
     //---------------------------------------------------------------------------------------------
     // FIXME Qt: The graphics view struggles with large images.
     //---------------------------------------------------------------------------------------------
@@ -1284,6 +1287,7 @@ void WPixmapCache::clear(QObject * receiver)
         return sizeA.scaled(sizeA.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
 #endif
     }
+#endif // QT_OLD
     //---------------------------------------------------------------------------------------------
     else return QSize();
 }
