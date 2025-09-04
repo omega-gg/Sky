@@ -53,7 +53,11 @@ Item
 
     function onMaximize()
     {
-        window.maximized = !(window.maximized);
+        if (window.fullScreen)
+        {
+            window.fullScreen = false;
+        }
+        else window.maximized = !(window.maximized);
     }
 
     function onClose()
