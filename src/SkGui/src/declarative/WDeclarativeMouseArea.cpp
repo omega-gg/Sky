@@ -758,6 +758,13 @@ void WDeclarativeMouseArea::setCursor(Qt::CursorShape shape)
 
     d->clearHover();
 
+    // NOTE: When the item is hovered we update the cursor right away. That's also useful when the
+    //       item is pressed, because we don't call updateHover during a mouse press.
+    if (d->hoverActive)
+    {
+        d->view->d_func()->updateCursor();
+    }
+
     emit cursorChanged();
 }
 

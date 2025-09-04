@@ -105,6 +105,8 @@ public: // Functions
     void updateDrag();
     void clearDrag ();
 
+    void updateCursor();
+
     void setActive(bool active);
 
     void setEntered (bool entered);

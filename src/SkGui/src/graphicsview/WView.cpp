@@ -779,8 +779,6 @@ void WViewPrivate::updateHoverable()
     else hoverable = false;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 void WViewPrivate::updateMouse()
 {
     if (dragged || resizing) return;
@@ -937,6 +935,43 @@ void WViewPrivate::clearDrag()
 
         areaDrop = NULL;
     }
+}
+
+void WViewPrivate::updateCursor()
+{
+    Q_Q(WView);
+
+#ifdef QT_4
+    QList<QGraphicsItem *> itemsCursor = q->items(mousePos);
+#else
+    QList<QQuickItem *> itemsCursor;
+
+    getItems(&itemsCursor, q->contentItem(), mousePos);
+#endif
+
+    this->itemsCursor = itemsCursor;
+
+    QList<WDeclarativeMouseArea *> areas = getMouseAreas(itemsCursor);
+
+    WDeclarativeMouseArea * area = areas.takeFirst();
+
+    Qt::CursorShape cursor = area->d_func()->cursor;
+
+    while (cursor == Qt::BlankCursor)
+    {
+        if (areas.isEmpty())
+        {
+            setCursor(Qt::ArrowCursor);
+
+            return;
+        }
+
+        area = areas.takeFirst();
+
+        cursor = area->d_func()->cursor;
+    }
+
+    setCursor(cursor);
 }
 
 //-------------------------------------------------------------------------------------------------

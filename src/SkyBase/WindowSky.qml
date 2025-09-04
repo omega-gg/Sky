@@ -143,32 +143,54 @@ BaseWindow
 
     function resize(width, height, animate)
     {
-        pAnimate = animate;
+        if (animate == undefined)
+        {
+            window.width  = width;
+            window.height = height;
+        }
+        else
+        {
+            pAnimate = animate;
 
-        window.width  = width;
-        window.height = height;
+            window.width  = width;
+            window.height = height;
 
-        pAnimate = false;
+            pAnimate = false;
+        }
+    }
+
+    function resizeContent(width, height, animate)
+    {
+        resize(width  + borderSizeWidth,
+               height + borderSizeHeight, animate);
     }
 
     //---------------------------------------------------------------------------------------------
 
     function resizeWidth(width, animate)
     {
-        pAnimate = animate;
+        if (animate != undefined)
+        {
+            pAnimate = animate;
 
-        window.width = width;
+            window.width = width;
 
-        pAnimate = false;
+            pAnimate = false;
+        }
+        else window.width = width;
     }
 
     function resizeHeight(height, animate)
     {
-        pAnimate = animate;
+        if (animate != undefined)
+        {
+            pAnimate = animate;
 
-        window.height = height;
+            window.height = height;
 
-        pAnimate = false;
+            pAnimate = false;
+        }
+        else window.height = height;
     }
 
     //---------------------------------------------------------------------------------------------
