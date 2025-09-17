@@ -608,7 +608,7 @@ int WFileWatcherPrivate::getFolderIndex(const QString & path) const
 
 QString WFileWatcherPrivate::getAbsoluteFilePath(const QString & path) const
 {
-    QFileInfo info(path);
+    QFileInfo info(WControllerFile::filePath(path));
 
     if (info.exists())
     {
