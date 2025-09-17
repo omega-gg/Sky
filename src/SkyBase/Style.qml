@@ -636,7 +636,11 @@ Item
         {
             return 0;
         }
+//#QT_4
         else return y + height;
+//#ELSE
+        else return y + height + column.bottomPadding;
+//#END
     }
 
     //---------------------------------------------------------------------------------------------
