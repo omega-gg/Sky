@@ -308,7 +308,7 @@ Style
     property int buttonExtra_width: dp256
 //#END
 
-//#BaseButtonPiano
+//#BaseButtonPiano:ButtonCheckText
     //---------------------------------------------------------------------------------------------
     // ButtonPiano
 
@@ -505,7 +505,7 @@ Style
     property int labelRoundIcon_height: labelRound_height
 //#END
 
-//#LabelRoundInfo
+//#LabelRoundInfo:ButtonCheckText
     //---------------------------------------------------------------------------------------------
     // LabelRoundInfo
 

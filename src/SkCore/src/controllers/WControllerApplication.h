@@ -239,6 +239,12 @@ public: // Static functions
 
     Q_INVOKABLE static void shutdown();
 
+#if defined(SK_DESKTOP) && defined(SK_CONSOLE) == false
+    Q_INVOKABLE static bool typeIsAssociated(const QString & type);
+
+    Q_INVOKABLE static bool associateType(const QString & type, bool associate = true);
+#endif
+
 #ifdef SK_MOBILE
     // NOTE iOS: This function is defined in WControllerApplication.mm
     Q_INVOKABLE static void openGallery();

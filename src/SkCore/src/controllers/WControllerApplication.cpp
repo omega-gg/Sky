@@ -796,6 +796,140 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 #endif
 }
 
+#if defined(SK_DESKTOP) && defined(SK_CONSOLE) == false
+
+/* Q_INVOKABLE static */ bool WControllerApplication::typeIsAssociated(const QString & type)
+{
+#ifdef Q_OS_WIN
+    QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
+
+    QString fileName = QCoreApplication::applicationFilePath();
+
+    QString value = WControllerFile::fileBaseName(fileName);
+
+    if (settings.value("." + type + "/Default") != value) return false;
+
+    value = Sk::quote(QDir::toNativeSeparators(fileName)) + " \"%1\"";
+
+    if (settings.value(type + "/shell/open/command/Default") != value) return false;
+
+    return true;
+#elif defined(Q_OS_MACOS)
+    const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
+
+    if (bundle == NULL) return false;
+
+    Q_D(const WControllerPlaylist);
+
+    const CFStringRef scheme = CFSTR(type);
+
+    if (d->compareBundle(bundle, LSCopyDefaultHandlerForURLScheme(scheme)) == false) return false;
+
+    bool result = false;
+
+    const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+                                                                 scheme, NULL);
+
+    if (id)
+    {
+        result = d->compareBundle(bundle,
+                                  LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer));
+
+        CFRelease(id);
+    }
+
+    return result;
+#else
+    return false;
+#endif
+}
+
+/* Q_INVOKABLE static */
+bool WControllerApplication::associateType(const QString & type, bool associate)
+{
+    if (typeIsAssociated(type) == associate) return false;
+
+#ifdef Q_OS_WIN
+    QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
+
+    QString fileName = QCoreApplication::applicationFilePath();
+
+    QString name = WControllerFile::fileBaseName(fileName);
+
+    QString path = Sk::quote(QDir::toNativeSeparators(fileName));
+
+    QString value = path + " \"%1\"";
+
+    QString prefix = '.' + type;
+
+    if (associate)
+    {
+        settings.setValue(prefix + "/Default",         name);
+        settings.setValue(prefix + "/OpenWithProgids", name);
+
+        settings.setValue(type + "/Default", "URL:" + type.toUpper() + " link");
+
+        settings.setValue(type + "/URL Protocol", QString());
+
+        settings.setValue(type + "/DefaultIcon/Default", path);
+
+        settings.setValue(type + "/shell/Default", "open");
+
+        settings.setValue(type + "/shell/open/command/Default", value);
+    }
+    else
+    {
+        settings.setValue(prefix + "/Default", QString());
+
+        settings.remove(type);
+    }
+
+    return true;
+#elif defined(Q_OS_MACOS)
+    const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
+
+    if (bundle == NULL) return false;
+
+    const CFStringRef scheme = CFSTR(type);
+
+    const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+                                                                 scheme, NULL);
+
+    if (associate)
+    {
+        LSSetDefaultHandlerForURLScheme(scheme, bundle);
+
+        if (id)
+        {
+            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, bundle);
+
+            CFRelease(id);
+        }
+    }
+    else
+    {
+        const CFStringRef empty = CFSTR("");
+
+        LSSetDefaultHandlerForURLScheme(scheme, empty);
+
+        if (id)
+        {
+            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, empty);
+
+            CFRelease(id);
+        }
+    }
+
+    return true;
+#else
+    Q_UNUSED(type); Q_UNUSED(associate);
+
+    return false;
+#endif
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 #ifdef SK_MOBILE

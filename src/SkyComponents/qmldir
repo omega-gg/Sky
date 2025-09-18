@@ -80,8 +80,9 @@ ButtonPianoAction    1.0 ButtonPianoAction.qml
 ButtonPianoWindow    1.0 ButtonPianoWindow.qml
 ButtonPianoReset     1.0 ButtonPianoReset.qml
 
-ButtonCheck          1.0 ButtonCheck.qml
-ButtonCheckLabel     1.0 ButtonCheckLabel.qml
+ButtonCheck      1.0 ButtonCheck.qml
+ButtonCheckText  1.0 ButtonCheckText.qml
+ButtonCheckLabel 1.0 ButtonCheckLabel.qml
 
 ButtonImage          1.0 ButtonImage.qml
 ButtonImageBorders   1.0 ButtonImageBorders.qml

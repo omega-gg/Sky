@@ -7016,127 +7016,14 @@ QString WControllerPlaylist::pathStorageTabs() const
 
 bool WControllerPlaylist::associateVbml() const
 {
-#ifdef Q_OS_WIN
-    QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
-
-    QString fileName = QCoreApplication::applicationFilePath();
-
-    QString value = WControllerFile::fileBaseName(fileName);
-
-    if (settings.value(".vbml/Default") != value) return false;
-
-    value = Sk::quote(QDir::toNativeSeparators(fileName)) + " \"%1\"";
-
-    if (settings.value("vbml/shell/open/command/Default") != value) return false;
-
-    return true;
-#elif defined(Q_OS_MACOS)
-    const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
-
-    if (bundle == NULL) return false;
-
-    Q_D(const WControllerPlaylist);
-
-    const CFStringRef scheme = CFSTR("vbml");
-
-    if (d->compareBundle(bundle, LSCopyDefaultHandlerForURLScheme(scheme)) == false) return false;
-
-    bool result = false;
-
-    const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
-                                                                 scheme, NULL);
-
-    if (id)
-    {
-        result = d->compareBundle(bundle,
-                                  LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer));
-
-        CFRelease(id);
-    }
-
-    return result;
-#else
-    return false;
-#endif
+    return Sk::typeIsAssociated("vbml");
 }
 
 void WControllerPlaylist::setAssociateVbml(bool associate)
 {
-    if (associateVbml() == associate) return;
+    if (Sk::associateType("vbml", associate) == false) return;
 
-#ifdef Q_OS_WIN
-    QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
-
-    QString fileName = QCoreApplication::applicationFilePath();
-
-    QString name = WControllerFile::fileBaseName(fileName);
-
-    QString path = Sk::quote(QDir::toNativeSeparators(fileName));
-
-    QString value = path + " \"%1\"";
-
-    if (associate)
-    {
-        settings.setValue(".vbml/Default",         name);
-        settings.setValue(".vbml/OpenWithProgids", name);
-
-        settings.setValue("vbml/Default", "URL:VBML link");
-
-        settings.setValue("vbml/URL Protocol", QString());
-
-        settings.setValue("vbml/DefaultIcon/Default", path);
-
-        settings.setValue("vbml/shell/Default", "open");
-
-        settings.setValue("vbml/shell/open/command/Default", value);
-
-        emit associateVbmlChanged();
-    }
-    else
-    {
-        settings.setValue(".vbml/Default", QString());
-
-        settings.remove("vbml");
-
-        emit associateVbmlChanged();
-    }
-#elif defined(Q_OS_MACOS)
-    const CFStringRef bundle = CFBundleGetIdentifier(CFBundleGetMainBundle());
-
-    if (bundle == NULL) return;
-
-    const CFStringRef scheme = CFSTR("vbml");
-
-    const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
-                                                                 scheme, NULL);
-
-    if (associate)
-    {
-        LSSetDefaultHandlerForURLScheme(scheme, bundle);
-
-        if (id)
-        {
-            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, bundle);
-
-            CFRelease(id);
-        }
-    }
-    else
-    {
-        const CFStringRef empty = CFSTR("");
-
-        LSSetDefaultHandlerForURLScheme(scheme, empty);
-
-        if (id)
-        {
-            LSSetDefaultRoleHandlerForContentType(id, kLSRolesViewer, empty);
-
-            CFRelease(id);
-        }
-    }
-#else
-    Q_UNUSED(associate);
-#endif
+    emit associateVbmlChanged();
 }
 
 #endif
