@@ -45,11 +45,6 @@
 #include <WYamlReader>
 #include <WUnzipper>
 
-// macOS includes
-#ifdef Q_OS_MACOS
-#include <CoreServices/CoreServices.h>
-#endif
-
 // Private includes
 #include <private/WPlaylist_p>
 #include <private/WBackendLoader_p>

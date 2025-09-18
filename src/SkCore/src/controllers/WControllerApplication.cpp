@@ -835,24 +835,45 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     if (bundle == NULL) return false;
 
-    const CFStringRef scheme = CFSTR(type);
+    const CFStringRef scheme = CFStringCreateWithCString(kCFAllocatorDefault,
+                                                         type.toUtf8().constData(),
+                                                         kCFStringEncodingUTF8);
 
-    if (WControllerApplicationPrivate
-            ::compareBundle(bundle,
-                            LSCopyDefaultHandlerForURLScheme(scheme)) == false) return false;
+    CFStringRef handler = LSCopyDefaultHandlerForURLScheme(scheme);
+
+    if (handler == NULL)
+    {
+        CFRelease(scheme);
+
+        return false;
+    }
+
+    if (WControllerApplicationPrivate::compareBundle(bundle, handler) == false)
+    {
+        CFRelease(handler);
+        CFRelease(scheme);
+
+        return false;
+    }
+
+    CFRelease(handler);
 
     const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
                                                                  scheme, NULL);
+
+    CFRelease(scheme);
 
     bool result;
 
     if (id)
     {
-        result = WControllerApplicationPrivate
-                    ::compareBundle(bundle,
-                                    LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer));
+        CFStringRef handler = LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer);
+
+        result = WControllerApplicationPrivate::compareBundle(bundle, handler);
 
         CFRelease(id);
+
+        if (handler) CFRelease(handler);
     }
     else result = false;
 
@@ -908,7 +929,9 @@ bool WControllerApplication::associateType(const QString & type, bool associate)
 
     if (bundle == NULL) return false;
 
-    const CFStringRef scheme = CFSTR(type);
+    const CFStringRef scheme = CFStringCreateWithCString(kCFAllocatorDefault,
+                                                         type.toUtf8().constData(),
+                                                         kCFStringEncodingUTF8);
 
     const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
                                                                  scheme, NULL);
@@ -937,6 +960,8 @@ bool WControllerApplication::associateType(const QString & type, bool associate)
             CFRelease(id);
         }
     }
+
+    CFRelease(scheme);
 
     return true;
 #else
