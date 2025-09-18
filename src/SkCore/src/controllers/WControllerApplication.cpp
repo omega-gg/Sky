@@ -278,6 +278,22 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
                                                                 const QString            &) {}
 #endif
 
+#if defined(SK_CONSOLE) == false && defined(Q_OS_MACOS)
+
+/* static */ bool WControllerApplicationPrivate::compareBundle(const CFStringRef bundle,
+                                                               const CFStringRef handler)
+{
+    if (handler == NULL) return false;
+
+    bool result = (CFStringCompare(bundle, handler, 0) == kCFCompareEqualTo);
+
+    CFRelease(handler);
+
+    return result;
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -819,24 +835,26 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     if (bundle == NULL) return false;
 
-    Q_D(const WControllerPlaylist);
-
     const CFStringRef scheme = CFSTR(type);
 
-    if (d->compareBundle(bundle, LSCopyDefaultHandlerForURLScheme(scheme)) == false) return false;
-
-    bool result = false;
+    if (WControllerApplicationPrivate
+            ::compareBundle(bundle,
+                            LSCopyDefaultHandlerForURLScheme(scheme)) == false) return false;
 
     const CFStringRef id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
                                                                  scheme, NULL);
 
+    bool result;
+
     if (id)
     {
-        result = d->compareBundle(bundle,
-                                  LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer));
+        result = WControllerApplicationPrivate
+                    ::compareBundle(bundle,
+                                    LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer));
 
         CFRelease(id);
     }
+    else result = false;
 
     return result;
 #else

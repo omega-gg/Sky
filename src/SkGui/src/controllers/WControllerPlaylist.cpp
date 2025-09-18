@@ -2706,24 +2706,6 @@ void WControllerPlaylistPrivate::registerItemId(WLibraryItem * item)
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(SK_CONSOLE) == false && defined(Q_OS_MACOS)
-
-bool WControllerPlaylistPrivate::compareBundle(const CFStringRef bundle,
-                                               const CFStringRef handler) const
-{
-    if (handler == NULL) return false;
-
-    bool result = (CFStringCompare(bundle, handler, 0) == kCFCompareEqualTo);
-
-    CFRelease(handler);
-
-    return result;
-}
-
-#endif
-
-//-------------------------------------------------------------------------------------------------
-
 WLibraryFolder * WControllerPlaylistPrivate::getFolderRoot(int id) const
 {
     foreach (WLibraryFolder * folder, folders)

@@ -79,6 +79,10 @@ public: // Static functions
                                                const QString            & message);
 #endif
 
+#if defined(SK_CONSOLE) == false && defined(Q_OS_MACOS)
+    static bool compareBundle(const CFStringRef bundle, const CFStringRef handler);
+#endif
+
 public: // Slots
     void onAboutToQuit();
 
