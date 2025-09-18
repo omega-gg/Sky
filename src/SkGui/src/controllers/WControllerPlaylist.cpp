@@ -30,12 +30,6 @@
 #ifdef QT_NEW
 #include <QUrlQuery>
 #endif
-#ifdef SK_DESKTOP
-#ifdef Q_OS_WIN
-    #include <QCoreApplication>
-    #include <QSettings>
-#endif
-#endif // SK_DESKTOP
 
 // Sk includes
 #include <WControllerApplication>
