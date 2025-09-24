@@ -184,6 +184,11 @@ Item
     // Functions
     //---------------------------------------------------------------------------------------------
 
+    function isClicked()
+    {
+        return slider.isClicked();
+    }
+
     function moveTo(pos)
     {
         slider.moveTo(pos);
