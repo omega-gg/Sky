@@ -857,7 +857,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::onBuffering(const struct libvlc_event_t *, void * data)
+/* static */ void WVlcPlayerPrivate::onBuffering(const struct libvlc_event_t * event, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -867,8 +867,10 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 
     if (d->backend == NULL) return;
 
-    QCoreApplication::postEvent(d->backend, new QEvent(static_cast<QEvent::Type>
-                                                       (WVlcPlayer::EventBuffering)));
+    float progress = event->u.media_player_buffering.new_cache;
+
+    QCoreApplication::postEvent(d->backend,
+                                new WVlcPlayerEvent(WVlcPlayer::EventBuffering, progress));
 }
 
 //-------------------------------------------------------------------------------------------------

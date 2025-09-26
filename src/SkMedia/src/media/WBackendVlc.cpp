@@ -2547,8 +2547,21 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         Q_D(WBackendVlc);
 
+        WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
+
+        int progress = eventPlayer->value.toInt();
+
         // NOTE: When playing a hub, we want to avoid buffering while restarting the video.
-        if (d->stateLoad == StateLoadDefault && d->loop == false)
+        if (d->loop) return true;
+
+        if (progress == 100)
+        {
+            if (d->stateLoad == StateLoadBuffering)
+            {
+                setStateLoad(StateLoadDefault);
+            }
+        }
+        else if (d->stateLoad == StateLoadDefault)
         {
             setStateLoad(StateLoadBuffering);
         }

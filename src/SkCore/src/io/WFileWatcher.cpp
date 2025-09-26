@@ -634,10 +634,6 @@ bool WFileWatcherPrivate::checkChange(int & fileCount)
             if (watch.exists() == false)
             {
                 emit q->filesDeleted(watch.absolutePath(), QStringList(watch.name()));
-
-                fileWatchs.removeAt(i);
-
-                i--;
             }
             else if (watch.isModified())
             {
@@ -656,10 +652,6 @@ bool WFileWatcherPrivate::checkChange(int & fileCount)
             if (watch.exists() == false)
             {
                 emit q->foldersDeleted(watch.absolutePath(), QStringList(watch.name()));
-
-                folderWatchs.removeAt(i);
-
-                i--;
             }
             else if (watch.isModified())
             {
