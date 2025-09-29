@@ -5970,33 +5970,7 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
                                                          const QString & newPath)
 {
-    QStringList fileNames;
-    QStringList newNames;
-
-    QFileInfoList list = QDir(path).entryInfoList(QDir::Files);
-
-    foreach (QFileInfo info, list)
-    {
-        if (info.suffix().toLower() != "vbml") continue;
-
-        fileNames.append(info.filePath());
-
-        newNames.append(newPath + info.fileName());
-    }
-
-    if (QFile::exists(newPath))
-    {
-         wControllerFile->startDeleteFolderContent(newPath);
-    }
-    else wControllerFile->startCreateFolder(newPath);
-
-#ifdef Q_OS_UNIX
-    // NOTE Unix: We need to make sure we can write on these files.
-    return wControllerFile->startCopyFiles(fileNames, newNames, WControllerFile::ReadOwner |
-                                                                WControllerFile::WriteOwner);
-#else
-    return wControllerFile->startCopyFiles(fileNames, newNames);
-#endif
+    return WControllerFile::copyFiles(path, newPath, "vbml");
 }
 
 //-------------------------------------------------------------------------------------------------

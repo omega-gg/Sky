@@ -219,6 +219,12 @@ public: // Interface
     WControllerFileReply * startCreatePaths(const QStringList & paths);
 
 public: // Static functions
+    // NOTE: Copies files from path to newPath with the lowercase 'extension'. We create the path
+    //       if it does not exist.
+    Q_INVOKABLE static WControllerFileReply * copyFiles(const QString & path,
+                                                        const QString & newPath,
+                                                        const QString & extension);
+
     Q_INVOKABLE static QString absolute(const QUrl    & url);
     Q_INVOKABLE static QString absolute(const QString & string);
 

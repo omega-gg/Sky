@@ -1010,6 +1010,41 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */
+WControllerFileReply * WControllerFile::copyFiles(const QString & path, const QString & newPath,
+                                                  const QString & extension)
+{
+    QStringList fileNames;
+    QStringList newNames;
+
+    QFileInfoList list = QDir(path).entryInfoList(QDir::Files);
+
+    QString destination = newPath + '/';
+
+    foreach (QFileInfo info, list)
+    {
+        if (info.suffix().toLower() != extension) continue;
+
+        fileNames.append(info.filePath());
+
+        newNames.append(destination + info.fileName());
+    }
+
+    if (QFile::exists(newPath))
+    {
+         wControllerFile->startDeleteFolderContent(newPath);
+    }
+    else wControllerFile->startCreateFolder(newPath);
+
+#ifdef Q_OS_UNIX
+    // NOTE Unix: We need to make sure we can write on these files.
+    return wControllerFile->startCopyFiles(fileNames, newNames, WControllerFile::ReadOwner |
+                                                                WControllerFile::WriteOwner);
+#else
+    return wControllerFile->startCopyFiles(fileNames, newNames);
+#endif
+}
+
 /* Q_INVOKABLE static */ QString WControllerFile::absolute(const QUrl & url)
 {
     return absolute(url.toString());
