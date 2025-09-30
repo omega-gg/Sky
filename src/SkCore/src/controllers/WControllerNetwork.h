@@ -96,9 +96,10 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Static functions
-    Q_INVOKABLE static bool textIsUri(const QString & text);
-    Q_INVOKABLE static bool textIsUrl(const QString & text);
-    Q_INVOKABLE static bool textIsIp (const QString & text);
+    Q_INVOKABLE static bool textIsUri (const QString & text);
+    Q_INVOKABLE static bool textIsUrl (const QString & text);
+    Q_INVOKABLE static bool textIsIp  (const QString & text);
+    Q_INVOKABLE static bool textIsData(const QString & text);
 
     //---------------------------------------------------------------------------------------------
 
@@ -116,6 +117,13 @@ public: // Static functions
 
     Q_INVOKABLE static QString generateUrl(const QString & string,
                                            const QString & baseUrl = QString());
+
+    // NOTE: When mime is empty we call mimeFromFile.
+    Q_INVOKABLE static QString generateUrlData(const QString & fileName,
+                                               const QString & mime = QString());
+
+    // NOTE: Supports jpg, jpeg, png and defaults to application/octet-stream
+    Q_INVOKABLE static QString mimeFromFile(const QString & fileName);
 
     // NOTE: Adds 'https' when the url has no scheme.
     Q_INVOKABLE static QString generateScheme(const QString & string);

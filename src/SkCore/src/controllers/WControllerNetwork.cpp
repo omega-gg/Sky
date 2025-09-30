@@ -32,6 +32,7 @@
 
 // Sk incudes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WRegExp>
 
 W_INIT_CONTROLLER(WControllerNetwork)
@@ -957,6 +958,11 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     return true;
 }
 
+/* Q_INVOKABLE static */ bool WControllerNetwork::textIsData(const QString & text)
+{
+    return text.startsWith("data:", Qt::CaseInsensitive);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsApp(const QString & string)
@@ -1083,6 +1089,33 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
          return resolveUrl(string, baseUrl);
     }
     else return resolveUrl(string, baseUrl + '/');
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::generateUrlData(const QString & fileName,
+                                                                     const QString & mime)
+{
+    QByteArray data = WControllerFile::readAll(fileName);
+
+    if (data.isEmpty()) return QString();
+
+    QString type;
+
+    if (mime.isEmpty())
+    {
+        type = mimeFromFile(fileName);
+    }
+    else type = mime;
+
+    return "data:" + type + ";base64," + data.toBase64();
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::mimeFromFile(const QString & fileName)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(fileName);
+
+    if (extension == "jpg" || extension == "jpeg") return "image/jpeg";
+    if (extension == "png")                        return "image/png";
+    else                                           return "application/octet-stream";
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::generateScheme(const QString & string)
