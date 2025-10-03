@@ -245,6 +245,23 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ Qt::AspectRatioMode WDeclarativeImage::ratioFromFill(FillMode fillMode)
+{
+    if (fillMode == WDeclarativeImage::PreserveAspectFit)
+    {
+        return Qt::KeepAspectRatio;
+    }
+    else if (fillMode == WDeclarativeImage::PreserveAspectCrop)
+    {
+        return Qt::KeepAspectRatioByExpanding;
+    }
+    else return Qt::IgnoreAspectRatio;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 

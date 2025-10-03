@@ -79,6 +79,9 @@ public: // QGraphicsItem reimplementation
                                                  QWidget                        * widget);
 #endif
 
+public: // Static functions
+    Q_INVOKABLE static Qt::AspectRatioMode ratioFromFill(FillMode fillMode);
+
 protected: // Functions
     void updatePaintedGeometry();
 
