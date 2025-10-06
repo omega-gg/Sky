@@ -46,7 +46,7 @@ include(src/kernel/kernel.pri)
 include(src/io/io.pri)
 include(src/thread/thread.pri)
 include(src/network/network.pri)
-#include(src/script/script.pri)
+include(src/script/script.pri)
 #include(src/plugin/plugin.pri)
 
 include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
