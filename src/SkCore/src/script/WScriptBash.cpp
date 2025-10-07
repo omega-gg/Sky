@@ -30,6 +30,9 @@
 #ifdef Q_OS_WIN
 #include <QDir>
 #endif
+#ifdef QT_OLD
+#include <QDebug>
+#endif
 #ifdef QT_4
 // Qt includes
 #include <QStringList>
