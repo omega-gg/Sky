@@ -5968,9 +5968,9 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 
 /* Q_INVOKABLE static */
 WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
-                                                         const QString & destination)
+                                                         const QString & destination, bool clean)
 {
-    if (QFile::exists(destination))
+    if (clean && QFile::exists(destination))
     {
         wControllerFile->startDeleteFolderContent(destination);
     }
