@@ -325,8 +325,9 @@ public: // Static functions
     // NOTE: Applies the context with the '#ctx=value" format.
     Q_INVOKABLE static QString applyContext(const QString & string, const QString & context);
 
+    // NOTE: Copy backends asynchronously to the destination and remove everything else.
     Q_INVOKABLE static WControllerFileReply * copyBackends(const QString & path,
-                                                           const QString & newPath);
+                                                           const QString & destination);
 
     Q_INVOKABLE static WRemoteData * getDataQuery(WAbstractLoader        * loader,
                                                   const WBackendNetQuery & query,

@@ -5968,9 +5968,14 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 
 /* Q_INVOKABLE static */
 WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
-                                                         const QString & newPath)
+                                                         const QString & destination)
 {
-    return WControllerFile::copyFiles(path, newPath, "vbml");
+    if (QFile::exists(destination))
+    {
+        wControllerFile->startDeleteFolderContent(destination);
+    }
+
+    return WControllerFile::copyFiles(path, destination, "vbml");
 }
 
 //-------------------------------------------------------------------------------------------------

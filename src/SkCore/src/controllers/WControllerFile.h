@@ -219,11 +219,17 @@ public: // Interface
     WControllerFileReply * startCreatePaths(const QStringList & paths);
 
 public: // Static functions
-    // NOTE: Copies files from path to newPath with the lowercase 'extension'. We create the path
-    //       if it does not exist.
+    // NOTE: Copies files from path to destination with the lowercase 'extension'. We create the
+    //       path if it does not exist.
     Q_INVOKABLE static WControllerFileReply * copyFiles(const QString & path,
-                                                        const QString & newPath,
-                                                        const QString & extension);
+                                                        const QString & destination,
+                                                        const QString & extension,
+                                                        bool            asynchronous = true);
+
+    // NOTE: Copies folders from path to destination. We create the path if it does not exist.
+    Q_INVOKABLE static WControllerFileReply * copyFolders(const QString & path,
+                                                          const QString & destination,
+                                                          bool            asynchronous = true);
 
     Q_INVOKABLE static QString absolute(const QUrl    & url);
     Q_INVOKABLE static QString absolute(const QString & string);
@@ -312,6 +318,7 @@ public: // Static functions
     // Folders
 
     static bool createFolder(const QString & path);
+    static bool createPath  (const QString & path);
 
     static bool moveFolder(const QString & oldPath, const QString & newPath);
 

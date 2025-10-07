@@ -30,6 +30,7 @@
 // Qt includes
 #include <QCoreApplication>
 #include <QDir>
+#include <QDirIterator>
 #include <qtlockedfile>
 #ifdef QT_4
 #include <QDesktopServices>
@@ -332,11 +333,9 @@ public: // Variables
 
 /* virtual */ bool WControllerFileCreatePaths::run()
 {
-    QDir dir;
-
     foreach (const QString & path, paths)
     {
-        if (dir.mkpath(path) == false)
+        if (WControllerFile::createPath(path) == false)
         {
             qWarning("WControllerFileCreatePaths::run: Failed to create path %s.", path.C_STR);
         }
@@ -1011,38 +1010,141 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */
-WControllerFileReply * WControllerFile::copyFiles(const QString & path, const QString & newPath,
-                                                  const QString & extension)
+WControllerFileReply * WControllerFile::copyFiles(const QString & path,
+                                                  const QString & destination,
+                                                  const QString & extension,
+                                                  bool            asynchronous)
 {
-    QStringList fileNames;
-    QStringList newNames;
+    QStringList listInput;
+    QStringList listOutput;
+
+    QString output = destination + '/';
 
     QFileInfoList list = QDir(path).entryInfoList(QDir::Files);
-
-    QString destination = newPath + '/';
 
     foreach (QFileInfo info, list)
     {
         if (info.suffix().toLower() != extension) continue;
 
-        fileNames.append(info.filePath());
+        listInput.append(info.filePath());
 
-        newNames.append(destination + info.fileName());
+        listOutput.append(output + info.fileName());
     }
-
-    if (QFile::exists(newPath))
-    {
-         wControllerFile->startDeleteFolderContent(newPath);
-    }
-    else wControllerFile->startCreateFolder(newPath);
 
 #ifdef Q_OS_UNIX
     // NOTE Unix: We need to make sure we can write on these files.
-    return wControllerFile->startCopyFiles(fileNames, newNames, WControllerFile::ReadOwner |
-                                                                WControllerFile::WriteOwner);
+    Permissions permissions = ReadOwner | WriteOwner;
 #else
-    return wControllerFile->startCopyFiles(fileNames, newNames);
+    Permissions permissions = Default;
 #endif
+
+    if (asynchronous)
+    {
+        if (QFile::exists(destination) == false)
+        {
+            wControllerFile->startCreateFolder(destination);
+        }
+
+        return wControllerFile->startCopyFiles(listInput, listOutput, permissions);
+    }
+    else
+    {
+        if (QFile::exists(destination) == false && createFolder(destination) == false)
+        {
+            qWarning("WControllerFile::copyFiles: Failed to create folder %s", destination.C_STR);
+
+            return NULL;
+        }
+
+        for (int i = 0; i < listInput.count(); i++)
+        {
+            copyFile(listInput.at(i), listOutput.at(i), permissions);
+        }
+
+        return NULL;
+    }
+}
+
+/* Q_INVOKABLE static */
+WControllerFileReply * WControllerFile::copyFolders(const QString & path,
+                                                    const QString & destination,
+                                                    bool            asynchronous)
+{
+    QSet<QString> listPath;
+
+    QStringList listInput;
+    QStringList listOutput;
+
+    QDir source(path);
+    QDir output(destination);
+
+    QDir::Filters filters = QDir::Files | QDir::NoSymLinks | QDir::Hidden | QDir::System;
+
+    QDirIterator iterator(path, filters, QDirIterator::Subdirectories);
+
+    while (iterator.hasNext())
+    {
+        QString from = iterator.next();
+
+        QString relative = source.relativeFilePath(from);
+
+        QString to = output.filePath(relative);
+
+        QString path = QFileInfo(to).absolutePath();
+
+        listPath.insert(path);
+
+        listInput .append(from);
+        listOutput.append(to);
+    }
+
+#ifdef Q_OS_UNIX
+    // NOTE Unix: We need to make sure we can write on these files.
+    Permissions permissions = ReadOwner | WriteOwner;
+#else
+    Permissions permissions = Default;
+#endif
+
+    if (asynchronous)
+    {
+        if (QFile::exists(destination) == false)
+        {
+            wControllerFile->startCreateFolder(destination);
+        }
+
+        foreach (const QString & path, listPath)
+        {
+            wControllerFile->startCreatePath(path);
+        }
+
+        return wControllerFile->startCopyFiles(listInput, listOutput, permissions);
+    }
+    else
+    {
+        if (QFile::exists(destination) == false && createFolder(destination) == false)
+        {
+            qWarning("WControllerFile::copyFolders: Failed to create folder %s",
+                     destination.C_STR);
+
+            return NULL;
+        }
+
+        foreach (const QString & path, listPath)
+        {
+            if (createPath(path)) continue;
+
+            qWarning("WControllerFile::copyFolders: Failed to create path %s", path.C_STR);
+
+            return NULL;
+        }
+
+        for (int i = 0; i < listInput.count(); i++)
+        {
+            copyFile(listInput.at(i), listOutput.at(i), permissions);
+        }
+
+        return NULL;
+    }
 }
 
 /* Q_INVOKABLE static */ QString WControllerFile::absolute(const QUrl & url)
@@ -1493,6 +1595,11 @@ WControllerFileReply * WControllerFile::copyFiles(const QString & path, const QS
 /* static */ bool WControllerFile::createFolder(const QString & path)
 {
     return QDir().mkdir(path);
+}
+
+/* static */ bool WControllerFile::createPath(const QString & path)
+{
+    return QDir().mkpath(path);
 }
 
 /* static */ bool WControllerFile::moveFolder(const QString & oldPath, const QString & newPath)
