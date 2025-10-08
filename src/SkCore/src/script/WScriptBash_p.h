@@ -46,6 +46,8 @@ class SK_CORE_EXPORT WScriptBashPrivate : public WPrivate
 public:
     WScriptBashPrivate(WScriptBash * p);
 
+    /* virtual */ ~WScriptBashPrivate();
+
     void init();
 
 public: // Slots
@@ -60,6 +62,10 @@ public: // Variables
     bool running;
 
     QString pathBash;
+
+#ifdef Q_OS_WIN
+    QString environment;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WScriptBash)

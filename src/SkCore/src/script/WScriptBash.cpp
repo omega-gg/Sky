@@ -44,6 +44,15 @@
 
 WScriptBashPrivate::WScriptBashPrivate(WScriptBash * p) : WPrivate(p) {}
 
+/* virtual */ WScriptBashPrivate::~WScriptBashPrivate()
+{
+    if (running == false) return;
+
+    process.kill();
+
+    process.waitForFinished(1000);
+}
+
 void WScriptBashPrivate::init()
 {
     running = false;
@@ -113,7 +122,7 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
 
     if (d->pathBash.isEmpty())
     {
-        d->pathBash = findBash();
+        setPathBash(findBash());
     }
 
 #ifdef Q_OS_WIN
@@ -140,6 +149,17 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
     connect(&(d->process), SIGNAL(readyReadStandardError ()), this, SLOT(onOutputError()));
 
     d->process.setWorkingDirectory(QFileInfo(fileName).absolutePath());
+
+#ifdef Q_OS_WIN
+    if (d->environment.isEmpty() == false)
+    {
+        QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+
+        environment.insert("PATH", d->environment + environment.value("PATH"));
+
+        d->process.setProcessEnvironment(environment);
+    }
+#endif
 
     if (asynchronous)
     {
@@ -278,6 +298,24 @@ void WScriptBash::setPathBash(const QString & path)
     if (d->pathBash == path) return;
 
     d->pathBash = path;
+
+#ifdef Q_OS_WIN
+    if (path.contains("usr/bin/bash.exe"))
+    {
+        QString pathUser = d->pathBash;
+
+        pathUser.remove("/bash.exe");
+
+        QString pathMingw = pathUser.replace("usr/", "mingw64/");
+
+        if (QFile::exists(pathMingw))
+        {
+             d->environment = pathMingw + ";" + pathUser + ";";
+        }
+        else d->environment = QString();
+    }
+    else d->environment = QString();
+#endif
 
     emit pathBashChanged();
 }
