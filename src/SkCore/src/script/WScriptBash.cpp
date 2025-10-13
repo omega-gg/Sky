@@ -84,18 +84,22 @@ void WScriptBashPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatu
 
 void WScriptBashPrivate::onOutput()
 {
-    const QByteArray data = process.readAllStandardOutput();
+    QByteArray data = process.readAllStandardOutput();
 
     if (data.isEmpty()) return;
+
+    if (data.endsWith('\n')) data.chop(1);
 
     qDebug().noquote().nospace() << QString::fromUtf8(data);
 }
 
 void WScriptBashPrivate::onOutputError()
 {
-    const QByteArray data = process.readAllStandardError();
+    QByteArray data = process.readAllStandardError();
 
     if (data.isEmpty()) return;
+
+    if (data.endsWith('\n')) data.chop(1);
 
     qDebug().noquote().nospace() << QString::fromUtf8(data);
 }
