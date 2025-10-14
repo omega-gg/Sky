@@ -283,6 +283,13 @@ public: // Static functions
 #endif
 
     //---------------------------------------------------------------------------------------------
+    // Environment
+
+    Q_INVOKABLE static QByteArray getEnv(const QString & name);
+
+    Q_INVOKABLE static void setEnv(const QString & name, const QByteArray & value);
+
+    //---------------------------------------------------------------------------------------------
     // Version
 
     // NOTE: Returns 0 when equal, -1 when lower, and 1 when higher.

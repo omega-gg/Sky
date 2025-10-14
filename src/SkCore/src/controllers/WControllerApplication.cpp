@@ -1157,6 +1157,20 @@ bool WControllerApplication::associateType(const QString & type, bool associate)
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// Environment
+
+/* Q_INVOKABLE static */ QByteArray WControllerApplication::getEnv(const QString & name)
+{
+    return qgetenv(name.C_STR);
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::setEnv(const QString    & name,
+                                                             const QByteArray & value)
+{
+    qputenv(name.C_STR, value);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Version
 
 /* Q_INVOKABLE static */ int WControllerApplication::versionCheck(const QString & versionA,
