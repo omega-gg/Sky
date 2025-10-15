@@ -26,7 +26,7 @@
 
 // Qt includes
 #include <QCoreApplication>
-#include <QProcess>
+#include <QFileInfo>
 #ifdef Q_OS_WIN
 #include <QDir>
 #endif
