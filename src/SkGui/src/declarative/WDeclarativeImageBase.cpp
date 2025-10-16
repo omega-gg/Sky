@@ -840,6 +840,16 @@ QPixmap WDeclarativeImageBase::pixmap() const
     Q_D(const WDeclarativeImageBase); return d->pix.pixmap();
 }
 
+int WDeclarativeImageBase::pixmapWidth() const
+{
+    Q_D(const WDeclarativeImageBase); return d->pix.pixmap().width();
+}
+
+int WDeclarativeImageBase::pixmapHeight() const
+{
+    Q_D(const WDeclarativeImageBase); return d->pix.pixmap().height();
+}
+
 void WDeclarativeImageBase::setPixmap(const QPixmap & pixmap)
 {
     Q_D(WDeclarativeImageBase);

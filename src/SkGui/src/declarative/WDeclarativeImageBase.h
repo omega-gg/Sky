@@ -54,6 +54,9 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeTexture
     Q_ENUMS(Status)
     Q_ENUMS(LoadMode)
 
+    Q_PROPERTY(int pixmapWidth  READ pixmapWidth  NOTIFY loaded)
+    Q_PROPERTY(int pixmapHeight READ pixmapHeight NOTIFY loaded)
+
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
     Q_PROPERTY(bool isNull    READ isNull    NOTIFY statusChanged)
@@ -197,11 +200,11 @@ signals:
     void filterChanged();
 
 public: // Properties
-    qreal ratioWidth () const;
-    qreal ratioHeight() const;
-
     QPixmap pixmap() const;
     void    setPixmap(const QPixmap & pixmap);
+
+    int pixmapWidth () const;
+    int pixmapHeight() const;
 
     Status status() const;
 
