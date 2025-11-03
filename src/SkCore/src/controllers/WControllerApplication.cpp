@@ -1454,7 +1454,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 /* Q_INVOKABLE static */ QStringList WControllerApplication::splitCommand(const QString & command)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#if defined(Q_OS_IOS) || QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     return QProcess::splitCommand(command);
 #else
     // NOTE: This fallback implementation tries to emulate QProcess::splitCommand.
