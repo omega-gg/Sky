@@ -1683,6 +1683,11 @@ void WControllerFile::setVerbosity(QtMsgType verbosity)
 
 //-------------------------------------------------------------------------------------------------
 
+QString WControllerFile::pathApplication() const
+{
+    return QCoreApplication::applicationDirPath();
+}
+
 QString WControllerFile::pathStorage() const
 {
     Q_D(const WControllerFile); return d->pathStorage;

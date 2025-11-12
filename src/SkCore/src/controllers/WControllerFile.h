@@ -103,6 +103,8 @@ class SK_CORE_EXPORT WControllerFile : public WController
 
     Q_PROPERTY(QtMsgType verbosity READ verbosity WRITE setVerbosity NOTIFY verbosityChanged)
 
+    Q_PROPERTY(QString pathApplication READ pathApplication CONSTANT)
+
     Q_PROPERTY(QString pathStorage READ pathStorage WRITE setPathStorage NOTIFY pathStorageChanged)
 
     Q_PROPERTY(QString pathLog READ pathLog NOTIFY pathStorageChanged)
@@ -345,8 +347,9 @@ public: // Properties
     QtMsgType verbosity() const;
     void      setVerbosity(QtMsgType verbosity);
 
-    QString pathStorage() const;
-    QString pathLog    () const;
+    QString pathApplication() const;
+    QString pathStorage    () const;
+    QString pathLog        () const;
 
     void setPathStorage(const QString & path);
 
