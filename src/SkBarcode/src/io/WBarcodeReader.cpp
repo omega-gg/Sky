@@ -231,7 +231,6 @@ public: // Variables
     emit loaded(text);
 }
 
-
 /* virtual */ void WBarcodeScanReply::onCompleted(bool)
 {
     emit loaded(result);
