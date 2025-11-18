@@ -57,18 +57,40 @@ MouseWatcher
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function showPanel(source)
+    function showPanel(source, asynchronous)
     {
-        loader.source = source;
+        pApplySource(source, asynchronous)
 
         visible = true;
     }
 
-    function hidePanel()
+    function hidePanel(asynchronous)
     {
         visible = false;
 
-        loader.source = "";
+        pApplySource("", asynchronous)
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pApplySource(source, asynchronous)
+    {
+//#QT_NEW
+        if (asynchronous != undefined
+            &&
+            loader.asynchronous != asynchronous)
+        {
+            loader.asynchronous = asynchronous;
+
+            loader.source = source;
+
+            loader.asynchronous = !(asynchronous);
+        }
+        else loader.source = source;
+//#ELSE
+        loader.source = source;
+//#END
     }
 
     //---------------------------------------------------------------------------------------------

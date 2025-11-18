@@ -886,7 +886,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */
 bool WControllerApplication::associateType(const QString & type, bool associate)
 {
-    if (typeIsAssociated(type) == associate) return false;
+    if (typeIsAssociated(type) == associate) return true;
 
 #ifdef Q_OS_WIN
     QSettings settings("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);

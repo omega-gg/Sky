@@ -78,7 +78,7 @@ void scanFolder(const QString & path, const QString & destination = QString())
 
     QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
-    foreach (QFileInfo info, list)
+    foreach (const QFileInfo & info, list)
     {
         if (info.isDir())
         {

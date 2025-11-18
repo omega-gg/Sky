@@ -56,9 +56,9 @@ ScrollArea
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onHeightChanged: pScrollToBottom()
+    onHeightChanged: onScrollToBottom()
 
-    onContentHeightChanged: pScrollToBottom()
+    onContentHeightChanged: onScrollToBottom()
 
     onValueChanged: pAtBottom = atBottom
 
@@ -77,9 +77,9 @@ ScrollArea
     }
 
     //---------------------------------------------------------------------------------------------
-    // Private
+    // Events
 
-    function pScrollToBottom()
+    function onScrollToBottom()
     {
         if (pAtBottom) scrollToBottom();
     }

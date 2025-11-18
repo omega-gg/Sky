@@ -515,7 +515,7 @@ bool WControllerFilePrivate::isLoading() const
         list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files  | QDir::AllDirs
                                                       | QDir::System | QDir::Hidden);
 
-        foreach (QFileInfo info, list)
+        foreach (const QFileInfo & info, list)
         {
             if (info.isDir())
             {
@@ -536,7 +536,7 @@ bool WControllerFilePrivate::isLoading() const
         list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files
                                                       | QDir::System | QDir::Hidden);
 
-        foreach (QFileInfo info, list)
+        foreach (const QFileInfo & info, list)
         {
             qDebug("Deleting file %s", info.fileName().C_STR);
 
@@ -1022,7 +1022,7 @@ WControllerFileReply * WControllerFile::copyFiles(const QString & path,
 
     QFileInfoList list = QDir(path).entryInfoList(QDir::Files);
 
-    foreach (QFileInfo info, list)
+    foreach (const QFileInfo & info, list)
     {
         if (info.suffix().toLower() != extension) continue;
 
@@ -1637,9 +1637,9 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 
      QFileInfoList list = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
-     foreach (QFileInfo info, list)
+     foreach (const QFileInfo & info, list)
      {
-        list.append(recursiveEntryInfoList(info.filePath()));
+         list.append(recursiveEntryInfoList(info.filePath()));
      }
 
      return list;

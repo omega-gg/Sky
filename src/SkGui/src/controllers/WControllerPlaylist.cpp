@@ -806,7 +806,7 @@ void WControllerPlaylistData::applyFolder(const QString & url)
                                                                 | QDir::System | QDir::Hidden,
                                            QDir::Name | QDir::Type);
 
-    foreach (QFileInfo info, list)
+    foreach (const QFileInfo & info, list)
     {
         addFile(info.absoluteFilePath());
     }
@@ -6971,7 +6971,7 @@ bool WControllerPlaylist::associateVbml() const
 
 void WControllerPlaylist::setAssociateVbml(bool associate)
 {
-    if (Sk::associateType("vbml", associate) == false) return;
+    if (Sk::associateType("vbml", associate) != associate) return;
 
     emit associateVbmlChanged();
 }

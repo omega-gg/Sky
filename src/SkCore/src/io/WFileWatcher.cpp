@@ -376,7 +376,7 @@ void WFolderWatch::scanFolders()
     QStringList folders;
     QStringList files;
 
-    foreach (QFileInfo info, list)
+    foreach (const QFileInfo & info, list)
     {
         if (contains(info.filePath()) || info.isHidden()) continue;
 
