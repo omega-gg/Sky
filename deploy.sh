@@ -331,7 +331,10 @@ else
 
             cp -r "$Qt"/plugins/webview $deploy
 
-            cp -r "$Qt"/resources $deploy
+            if [ $1 != "macOS" ]; then
+
+                cp -r "$Qt"/resources $deploy
+            fi
         fi
     fi
 
