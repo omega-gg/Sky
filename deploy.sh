@@ -142,13 +142,21 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     if [ $compiler = "mingw" ]; then
 
         MinGW="$external/MinGW/$MinGW_version/bin"
+
+        hasWeb=false
+    else
+        hasWeb=true
     fi
 else
     if [ $1 = "iOS" -o $1 = "android" ]; then
 
         os="mobile"
+
+        hasWeb=false
     else
         os="default"
+
+        hasWeb=true
     fi
 
     compiler="default"
@@ -315,7 +323,7 @@ else
 
         mkdir -p $deploy/QtQml/WorkerScript
 
-        if [ $os != "mobile" ]; then
+        if [ $hasWeb = true ]; then
 
             mkdir -p $deploy/QtWebView
             mkdir -p $deploy/QtWebEngine
@@ -345,7 +353,10 @@ else
             cp "$Qt"/bin/av*.dll $deploy
             cp "$Qt"/bin/sw*.dll $deploy
 
-            cp "$Qt"/bin/QtWebEngineProcess.exe $deploy
+            if [ $hasWeb = true ]; then
+
+                cp "$Qt"/bin/QtWebEngineProcess.exe $deploy
+            fi
         fi
 
         cp "$Qt/bin/$QtX"Core.dll            $deploy
@@ -367,8 +378,12 @@ else
         else
             cp "$Qt/bin/$QtX"Core5Compat.dll $deploy
             cp "$Qt/bin/$QtX"QmlMeta.dll     $deploy
-            cp "$Qt/bin/$QtX"Positioning.dll $deploy
-            cp "$Qt/bin/$QtX"Web*.dll        $deploy
+
+            if [ $hasWeb = true ]; then
+
+                cp "$Qt/bin/$QtX"Positioning.dll $deploy
+                cp "$Qt/bin/$QtX"Web*.dll        $deploy
+            fi
         fi
 
         if [ -f "$Qt/bin/$QtX"QmlModels.dll ]; then
@@ -403,9 +418,12 @@ else
 
             copyQml QtQml/WorkerScript dll
 
-            copyQml QtWebView    dll
-            copyQml QtWebEngine  dll
-            copyQml QtWebChannel dll
+            if [ $hasWeb = true ]; then
+
+                copyQml QtWebView    dll
+                copyQml QtWebEngine  dll
+                copyQml QtWebChannel dll
+            fi
         fi
 
     elif [ $1 = "macOS" ]; then
