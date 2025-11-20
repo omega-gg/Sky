@@ -105,6 +105,12 @@ copyAndroidQt()
     fi
 }
 
+copyQml()
+{
+    cp "$Qt"/qml/$1/*.$2   $deploy/$1
+    cp "$Qt"/qml/$1/qmldir $deploy/$1
+}
+
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
@@ -308,6 +314,17 @@ else
         mkdir -p $deploy/multimedia
 
         mkdir -p $deploy/QtQml/WorkerScript
+
+        if [ $os != "mobile" ]; then
+
+            mkdir -p $deploy/QtWebView
+            mkdir -p $deploy/QtWebEngine
+            mkdir -p $deploy/QtWebChannel
+
+            cp -r "$Qt"/plugins/webview $deploy
+
+            cp -r "$Qt"/resources $deploy
+        fi
     fi
 
     if [ $os = "windows" ]; then
@@ -327,6 +344,8 @@ else
             # FFmpeg
             cp "$Qt"/bin/av*.dll $deploy
             cp "$Qt"/bin/sw*.dll $deploy
+
+            cp "$Qt"/bin/QtWebEngineProcess.exe $deploy
         fi
 
         cp "$Qt/bin/$QtX"Core.dll            $deploy
@@ -348,6 +367,8 @@ else
         else
             cp "$Qt/bin/$QtX"Core5Compat.dll $deploy
             cp "$Qt/bin/$QtX"QmlMeta.dll     $deploy
+            cp "$Qt/bin/$QtX"Positioning.dll $deploy
+            cp "$Qt/bin/$QtX"Web*.dll        $deploy
         fi
 
         if [ -f "$Qt/bin/$QtX"QmlModels.dll ]; then
@@ -380,8 +401,11 @@ else
 
         if [ $qt = "qt6" ]; then
 
-            cp "$Qt"/qml/QtQml/WorkerScript/workerscriptplugin.dll $deploy/QtQml/WorkerScript
-            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                 $deploy/QtQml/WorkerScript
+            copyQml QtQml/WorkerScript dll
+
+            copyQml QtWebView    dll
+            copyQml QtWebEngine  dll
+            copyQml QtWebChannel dll
         fi
 
     elif [ $1 = "macOS" ]; then
@@ -412,6 +436,9 @@ else
                 $deploy/QtCore5Compat.dylib
 
             cp "$Qt"/lib/QtQmlMeta.framework/Versions/$qx/QtQmlMeta $deploy/QtQmlMeta.dylib
+
+            cp "$Qt"/lib/QtPositioning.framework/Versions/$qx/QtPositioning \
+                $deploy/QtPositioning.dylib
         fi
 
         if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels ]; then
@@ -420,6 +447,8 @@ else
 
             cp "$Qt"/lib/QtQmlWorkerScript.framework/Versions/$qx/QtQmlWorkerScript \
                $deploy/QtQmlWorkerScript.dylib
+
+            # FIXME WEB
         fi
 
         cp "$Qt"/plugins/platforms/libqcocoa.dylib $deploy/platforms
@@ -446,8 +475,11 @@ else
 
         if [ $qt = "qt6" ]; then
 
-            cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.dylib $deploy/QtQml/WorkerScript
-            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                      $deploy/QtQml/WorkerScript
+            copyQml QtQml/WorkerScript dylib
+
+            copyQml QtWebView    dylib
+            copyQml QtWebEngine  dylib
+            copyQml QtWebChannel dylib
 
             # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
             codesign --force --deep --sign - $deploy/Qt*.dylib
@@ -584,6 +616,8 @@ else
         else
             cp "$Qt/lib/lib$QtX"Core5Compat.so.$qx $deploy
             cp "$Qt/lib/lib$QtX"QmlMeta.so.$qx     $deploy
+            cp "$Qt/lib/lib$QtX"Positioning.so.$qx $deploy
+            cp "$Qt/lib/lib$QtX"Web*.so.$qx        $deploy
         fi
 
         if [ -f "$Qt/lib/lib$QtX"QmlModels.so.$qx ]; then
@@ -622,8 +656,11 @@ else
 
         if [ $qt = "qt6" ]; then
 
-            cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.so $deploy/QtQml/WorkerScript
-            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                   $deploy/QtQml/WorkerScript
+            copyQml QtQml/WorkerScript so
+
+            copyQml QtWebView    so
+            copyQml QtWebEngine  so
+            copyQml QtWebChannel so
         fi
 
     elif [ $1 = "android" ]; then
