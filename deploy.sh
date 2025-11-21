@@ -72,6 +72,8 @@ copyAndroidQt()
     else
         cp "$1/lib/lib$QtX"Core5Compat_*.so $deploy
         cp "$1/lib/lib$QtX"QmlMeta_*.so     $deploy
+        cp "$1/lib/lib$QtX"Positioning_*.so $deploy
+        cp "$1/lib/lib$QtX"Web_*.so         $deploy
     fi
 
     if [ -f "$1/lib/lib$QtX"QmlModels_"$2".so ]; then
@@ -93,6 +95,8 @@ copyAndroidQt()
         cp "$1"/plugins/tls/lib*qopensslbackend_*.so $deploy/tls
 
         cp "$1"/plugins/multimedia/lib*ffmpegmediaplugin_*.so $deploy/multimedia
+
+        cp "$1"/plugins/webview/lib*.so $deploy/webview
     fi
 
     cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so $deploy/$QtQuick
@@ -101,7 +105,11 @@ copyAndroidQt()
 
     if [ $qt = "qt6" ]; then
 
-        cp "$1"/qml/QtQml/WorkerScript/lib*workerscriptplugin_*.so $deploy/QtQml/WorkerScript
+        copyQml QtQml/WorkerScript so
+
+        copyQml QtWebView    so
+        copyQml QtWebEngine  so
+        copyQml QtWebChannel so
     fi
 }
 
@@ -142,21 +150,13 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     if [ $compiler = "mingw" ]; then
 
         MinGW="$external/MinGW/$MinGW_version/bin"
-
-        hasWeb=false
-    else
-        hasWeb=true
     fi
 else
     if [ $1 = "iOS" -o $1 = "android" ]; then
 
         os="mobile"
-
-        hasWeb=false
     else
         os="default"
-
-        hasWeb=true
     fi
 
     compiler="default"
@@ -323,18 +323,11 @@ else
 
         mkdir -p $deploy/QtQml/WorkerScript
 
-        if [ $hasWeb = true ]; then
+        if [ $compiler != "mingw" ]; then
 
             mkdir -p $deploy/QtWebView
             mkdir -p $deploy/QtWebEngine
             mkdir -p $deploy/QtWebChannel
-
-            cp -r "$Qt"/plugins/webview $deploy
-
-            if [ $1 != "macOS" ]; then
-
-                cp -r "$Qt"/resources $deploy
-            fi
         fi
     fi
 
@@ -352,14 +345,17 @@ else
             cp "$Qt"/bin/libEGL.dll    $deploy
             cp "$Qt"/bin/libGLESv2.dll $deploy
         else
-            # FFmpeg
-            cp "$Qt"/bin/av*.dll $deploy
-            cp "$Qt"/bin/sw*.dll $deploy
+            if [ $compiler != "mingw" ]; then
 
-            if [ $hasWeb = true ]; then
+                # NOTE: Required for the webview.
+                cp -r "$Qt"/resources $deploy
 
                 cp "$Qt"/bin/QtWebEngineProcess.exe $deploy
             fi
+
+            # FFmpeg
+            cp "$Qt"/bin/av*.dll $deploy
+            cp "$Qt"/bin/sw*.dll $deploy
         fi
 
         cp "$Qt/bin/$QtX"Core.dll            $deploy
@@ -382,7 +378,7 @@ else
             cp "$Qt/bin/$QtX"Core5Compat.dll $deploy
             cp "$Qt/bin/$QtX"QmlMeta.dll     $deploy
 
-            if [ $hasWeb = true ]; then
+            if [ $compiler != "mingw" ]; then
 
                 cp "$Qt/bin/$QtX"Positioning.dll $deploy
                 cp "$Qt/bin/$QtX"Web*.dll        $deploy
@@ -409,6 +405,11 @@ else
             cp "$Qt"/plugins/tls/qschannelbackend.dll $deploy/tls
 
             cp "$Qt"/plugins/multimedia/ffmpegmediaplugin.dll $deploy/multimedia
+
+            if [ $compiler != "mingw" ]; then
+
+                cp "$Qt"/plugins/webview/*.dll $deploy/webview
+            fi
         fi
 
         cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll $deploy/$QtQuick
@@ -421,7 +422,7 @@ else
 
             copyQml QtQml/WorkerScript dll
 
-            if [ $hasWeb = true ]; then
+            if [ $compiler != "mingw" ]; then
 
                 copyQml QtWebView    dll
                 copyQml QtWebEngine  dll
@@ -592,6 +593,12 @@ else
 
         mkdir $deploy/xcbglintegrations
 
+        if [ $qt = "qt6" ]; then
+
+            # NOTE: Required for the webview.
+            cp -r "$Qt"/resources $deploy
+        fi
+
         #cp "$libs"/libz.so.* $deploy
 
         #cp "$libs"/libdouble-conversion.so.* $deploy
@@ -664,6 +671,8 @@ else
             cp "$Qt"/plugins/tls/libqopensslbackend.so $deploy/tls
 
             cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.so $deploy/multimedia
+
+            cp "$Qt"/plugins/webview/lib*.so $deploy/webview
         fi
 
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so $deploy/xcbglintegrations
