@@ -44,6 +44,12 @@ qt="qt6"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
+copyQml()
+{
+    cp "$Qt"/qml/$1/*.$2   $deploy/$1
+    cp "$Qt"/qml/$1/qmldir $deploy/$1
+}
+
 copyAndroid()
 {
     cp -r "$1"/armeabi-v7a "$2"
@@ -105,18 +111,18 @@ copyAndroidQt()
 
     if [ $qt = "qt6" ]; then
 
-        copyQml QtQml/WorkerScript so
+        copyAndroidQml QtQml/WorkerScript "$1"
 
-        copyQml QtWebView    so
-        copyQml QtWebEngine  so
-        copyQml QtWebChannel so
+        copyAndroidQml QtWebView    "$1"
+        copyAndroidQml QtWebEngine  "$1"
+        copyAndroidQml QtWebChannel "$1"
     fi
 }
 
-copyQml()
+copyAndroidQml()
 {
-    cp "$Qt"/qml/$1/*.$2   $deploy/$1
-    cp "$Qt"/qml/$1/qmldir $deploy/$1
+    cp "$2"/qml/$1/*.so   $deploy/$1
+    cp "$2"/qml/$1/qmldir $deploy/$1
 }
 
 #--------------------------------------------------------------------------------------------------
