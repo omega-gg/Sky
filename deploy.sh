@@ -114,7 +114,6 @@ copyAndroidQt()
         copyAndroidQml QtQml/WorkerScript "$1"
 
         copyAndroidQml QtWebView    "$1"
-        copyAndroidQml QtWebEngine  "$1"
         copyAndroidQml QtWebChannel "$1"
     fi
 }
