@@ -73,7 +73,7 @@ copyAndroidQt()
         cp "$1/lib/lib$QtX"Core5Compat_*.so $deploy
         cp "$1/lib/lib$QtX"QmlMeta_*.so     $deploy
         cp "$1/lib/lib$QtX"Positioning_*.so $deploy
-        cp "$1/lib/lib$QtX"Web_*.so         $deploy
+        cp "$1/lib/lib$QtX"Web*_*.so        $deploy
     fi
 
     if [ -f "$1/lib/lib$QtX"QmlModels_"$2".so ]; then
