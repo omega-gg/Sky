@@ -330,6 +330,8 @@ else
 
         if [ $compiler != "mingw" ]; then
 
+            mkdir -p $deploy/webview
+
             mkdir -p $deploy/QtWebView
             mkdir -p $deploy/QtWebEngine
             mkdir -p $deploy/QtWebChannel
