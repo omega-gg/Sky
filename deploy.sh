@@ -357,7 +357,7 @@ else
                 # NOTE: Required for the webview.
                 cp -r "$Qt"/resources $deploy
 
-                cp "$Qt"/bin/QtWebEngineProcess.exe $deploy
+                cp "$Qt"/bin/QtWebEngineProcess* $deploy
             fi
 
             # FFmpeg
@@ -604,6 +604,8 @@ else
 
             # NOTE: Required for the webview.
             cp -r "$Qt"/resources $deploy
+
+            cp "$Qt"/libexec/QtWebEngineProcess* $deploy
         fi
 
         #cp "$libs"/libz.so.* $deploy
