@@ -44,6 +44,11 @@ BaseButton
     property bool enableFilter: true
 
     //---------------------------------------------------------------------------------------------
+    // Style
+
+    property real opacityBackground: st.buttonTouch_opacity
+
+    //---------------------------------------------------------------------------------------------
     // Private
 
     property bool pUdpate: true
@@ -194,7 +199,7 @@ BaseButton
         radius: height
 
         opacity: (isHovered) ? st.buttonTouch_opacityHover
-                             : st.buttonTouch_opacity
+                             : opacityBackground
 
         color: st.buttonTouch_color
 
