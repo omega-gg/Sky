@@ -415,7 +415,12 @@ Item
     property int baseConsole_maximumLength: 10000
 //#END
 
+//#MAC:IOS
+    // NOTE: No consolas on mac(s).
+    property string baseConsole_fontFamily: "menlo"
+//#ELSE
     property string baseConsole_fontFamily: "consolas"
+//#END
 
     property int baseConsole_pixelSize: dp14
 
