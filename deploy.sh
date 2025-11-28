@@ -442,32 +442,44 @@ else
         # FIXME Qt 5.14 macOS: We have to copy qt.conf to avoid a segfault.
         cp "$Qt"/bin/qt.conf $deploy
 
-        cp "$Qt"/lib/QtCore.framework/Versions/$qx/QtCore                       $deploy/QtCore.dylib
-        cp "$Qt"/lib/QtGui.framework/Versions/$qx/QtGui                         $deploy/QtGui.dylib
-        cp "$Qt"/lib/QtNetwork.framework/Versions/$qx/QtNetwork                 $deploy/QtNetwork.dylib
-        cp "$Qt"/lib/QtOpenGL.framework/Versions/$qx/QtOpenGL                   $deploy/QtOpenGL.dylib
-        cp "$Qt"/lib/QtQml.framework/Versions/$qx/QtQml                         $deploy/QtQml.dylib
-        cp "$Qt"/lib/QtQuick.framework/Versions/$qx/QtQuick                     $deploy/QtQuick.dylib
-        cp "$Qt"/lib/QtSvg.framework/Versions/$qx/QtSvg                         $deploy/QtSvg.dylib
-        cp "$Qt"/lib/QtWidgets.framework/Versions/$qx/QtWidgets                 $deploy/QtWidgets.dylib
-        cp "$Qt"/lib/QtXml.framework/Versions/$qx/QtXml                         $deploy/QtXml.dylib
-        cp "$Qt"/lib/QtMultimedia.framework/Versions/$qx/QtMultimedia           $deploy/QtMultimedia.dylib
-        cp "$Qt"/lib/QtMultimediaQuick.framework/Versions/$qx/QtMultimediaQuick $deploy/QtMultimediaQuick.dylib
-        cp "$Qt"/lib/QtDBus.framework/Versions/$qx/QtDBus                       $deploy/QtDBus.dylib
-        cp "$Qt"/lib/QtPrintSupport.framework/Versions/$qx/QtPrintSupport       $deploy/QtPrintSupport.dylib
+        copyMacOS QtCore
+        copyMacOS QtGui
+        copyMacOS QtNetwork
+        copyMacOS QtOpenGL
+        copyMacOS QtQml
+        copyMacOS QtQuick
+        copyMacOS QtSvg
+        copyMacOS QtWidgets
+        copyMacOS QtXml
+        copyMacOS QtMultimedia
+        copyMacOS QtMultimediaQuick
+        copyMacOS QtDBus
+        copyMacOS QtPrintSupport
 
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/lib/QtXmlPatterns.framework/Versions/$qx/QtXmlPatterns \
-                $deploy/QtXmlPatterns.dylib
+            copyMacOS QtXmlPatterns
         else
-            cp "$Qt"/lib/QtCore5Compat.framework/Versions/$qx/QtCore5Compat \
-                $deploy/QtCore5Compat.dylib
+            copyMacOS QtCore5Compat
+            copyMacOS QtQmlMeta
+            copyMacOS QtPositioning
+            copyMacOS QtWebEngineCore
+            copyMacOS QtWebEngineQuick
+            copyMacOS QtWebEngineQuickDelegatesQml
+            copyMacOS QtWebEngineWidgets
 
-            cp "$Qt"/lib/QtQmlMeta.framework/Versions/$qx/QtQmlMeta $deploy/QtQmlMeta.dylib
+            # NOTE: Required for the webview.
 
-            cp "$Qt"/lib/QtPositioning.framework/Versions/$qx/QtPositioning \
-                $deploy/QtPositioning.dylib
+            mkdir -p $deploy/resources
+
+            path="$Qt/lib/QtWebEngineCore.framework/Versions/$qx/Resources"
+
+            cp "$path"/*.dat $deploy/resources
+            cp "$path"/*.pak $deploy/resources
+            cp "$path"/*.bin $deploy/resources
+
+            cp "$Qt"/lib/QtWebEngineProcess.dSYM/Contents/Resources/DWARF/QtWebEngineProcess
+                $deploy
         fi
 
         if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels ]; then
@@ -476,8 +488,6 @@ else
 
             cp "$Qt"/lib/QtQmlWorkerScript.framework/Versions/$qx/QtQmlWorkerScript \
                $deploy/QtQmlWorkerScript.dylib
-
-            # FIXME WEB
         fi
 
         cp "$Qt"/plugins/platforms/libqcocoa.dylib $deploy/platforms
@@ -494,6 +504,8 @@ else
             cp "$Qt"/plugins/tls/libqsecuretransportbackend.dylib $deploy/tls
 
             cp "$Qt"/plugins/multimedia/libffmpegmediaplugin.dylib $deploy/multimedia
+
+            cp "$Qt"/plugins/webview/libqtwebview*.dylib $deploy/webview
         fi
 
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib $deploy/$QtQuick
