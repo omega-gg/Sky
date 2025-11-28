@@ -483,7 +483,7 @@ else
             cp "$path"/*.pak $deploy/resources
             cp "$path"/*.bin $deploy/resources
 
-            cp "$Qt"/lib/QtWebEngineProcess.dSYM/Contents/Resources/DWARF/QtWebEngineProcess
+            cp "$Qt"/lib/QtWebEngineProcess.dSYM/Contents/Resources/DWARF/QtWebEngineProcess \
                 $deploy
         fi
 
