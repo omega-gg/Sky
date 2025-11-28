@@ -949,11 +949,18 @@ void WViewPrivate::updateCursor()
     getItems(&itemsCursor, q->contentItem(), mousePos);
 #endif
 
-    if (itemsCursor.isEmpty()) return;
+    if (this->itemsCursor == itemsCursor) return;
 
     this->itemsCursor = itemsCursor;
 
     QList<WDeclarativeMouseArea *> areas = getMouseAreas(itemsCursor);
+
+    if (areas.isEmpty())
+    {
+        setCursor(Qt::ArrowCursor);
+
+        return;
+    }
 
     WDeclarativeMouseArea * area = areas.takeFirst();
 
