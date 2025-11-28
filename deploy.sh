@@ -469,6 +469,7 @@ else
             copyMacOS QtQmlMeta
             copyMacOS QtPositioning
             copyMacOS QtWebView
+            copyMacOS QtWebViewQuick
             copyMacOS QtWebChannel
             copyMacOS QtWebChannelQuick
             copyMacOS QtWebEngineCore
