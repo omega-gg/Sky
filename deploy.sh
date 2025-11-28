@@ -50,6 +50,11 @@ copyQml()
     cp "$Qt"/qml/$1/qmldir $deploy/$1
 }
 
+copyMacOS()
+{
+    cp "$Qt"/lib/$1.framework/Versions/$qx/$1 $deploy/$1.dylib
+}
+
 copyAndroid()
 {
     cp -r "$1"/armeabi-v7a "$2"
