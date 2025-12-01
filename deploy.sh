@@ -487,7 +487,7 @@ else
             cp "$path"/*.pak $deploy/resources
             cp "$path"/*.bin $deploy/resources
 
-            cp "$Qt"/lib/QtWebEngineProcess.dSYM/Contents/Resources/DWARF/QtWebEngineProcess \
+            cp  "$Qt"/lib/QtWebEngineCore.framework/Helpers/QtWebEngineProcess.app/Contents/MacOS/QtWebEngineProcess \
                 $deploy
         fi
 
@@ -531,8 +531,11 @@ else
             copyQml QtWebEngine  dylib
             copyQml QtWebChannel dylib
 
-            # FIXME Qt6: We need to resign each Qt library to avoid runtime issues.
+            # FIXME Qt6: We need to resign each Qt dependencies to avoid runtime issues.
+
             codesign --force --deep --sign - $deploy/Qt*.dylib
+
+            codesign --force --deep --sign - $deploy/QtWebEngineProcess
         fi
 
     elif [ $1 = "iOS" ]; then
