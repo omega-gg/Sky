@@ -1087,13 +1087,13 @@ WallBookmarkTrack
             {
                 if (item && item.visible
                     &&
-                    (player.isPlaying == false || player.item != item))
+                    (player.hasStarted == false || player.item != item))
                 {
                      return true;
                 }
                 else return false;
             }
-            else if (split != -1 || player.isPlaying == false)
+            else if (split != -1 || player.hasStarted == false)
             {
                  return true;
             }
