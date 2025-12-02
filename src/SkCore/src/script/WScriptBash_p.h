@@ -50,6 +50,9 @@ public:
 
     void init();
 
+public: // Functions
+    void applyRunning(bool running);
+
 public: // Slots
     void onFinished(int exitCode, QProcess::ExitStatus exitStatus);
 

@@ -105,6 +105,8 @@ public: // Variables
     QString message;
 #endif
 
+    bool cli;
+
     bool qrc;
 
 #ifndef SK_CONSOLE

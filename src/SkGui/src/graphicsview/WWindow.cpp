@@ -167,11 +167,14 @@ void WWindowPrivate::init()
 #endif
     }
 
+    if (sk->isCli() == false)
+    {
 #ifdef QT_4
-    view->setVisible(true);
+        view->setVisible(true);
 #else
-    q->WView::setVisible(true);
+        q->WView::setVisible(true);
 #endif
+    }
 
 #ifdef QT_4
     //---------------------------------------------------------------------------------------------

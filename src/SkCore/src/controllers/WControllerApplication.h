@@ -79,6 +79,9 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(bool isUwp READ isUwp CONSTANT)
 #endif
 
+    // NOTE: This prevents WWindow from showing up.
+    Q_PROPERTY(bool cli READ isCli WRITE setCli NOTIFY cliChanged)
+
     Q_PROPERTY(bool qrc READ isQrc WRITE setQrc NOTIFY qrcChanged)
 
     Q_PROPERTY(bool osWin   READ osWin   CONSTANT)
@@ -573,6 +576,8 @@ signals:
 
     void aboutToQuit();
 
+    void cliChanged();
+
     void qrcChanged();
 
     void nameChanged();
@@ -620,8 +625,11 @@ public: // Properties
     bool isCore() const;
     bool isGui () const;
 
+    bool isCli() const;
+    void setCli(bool enabled);
+
     bool isQrc() const;
-    void setQrc(bool qrc);
+    void setQrc(bool enabled);
 
     bool osWin  () const;
     bool osMac  () const;

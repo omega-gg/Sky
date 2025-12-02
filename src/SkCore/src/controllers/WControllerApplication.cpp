@@ -179,6 +179,8 @@ void WControllerApplicationPrivate::init()
 
     version = "1.0";
 
+    cli = false;
+
     qrc = true;
 
 #ifndef SK_CONSOLE
@@ -2788,18 +2790,34 @@ bool WControllerApplication::osLinux() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool WControllerApplication::isCli() const
+{
+    Q_D(const WControllerApplication); return d->cli;
+}
+
+void WControllerApplication::setCli(bool enabled)
+{
+    Q_D(WControllerApplication);
+
+    if (d->cli == enabled) return;
+
+    d->cli = enabled;
+
+    emit cliChanged();
+}
+
 bool WControllerApplication::isQrc() const
 {
     Q_D(const WControllerApplication); return d->qrc;
 }
 
-void WControllerApplication::setQrc(bool qrc)
+void WControllerApplication::setQrc(bool enabled)
 {
     Q_D(WControllerApplication);
 
-    if (d->qrc == qrc) return;
+    if (d->qrc == enabled) return;
 
-    d->qrc = qrc;
+    d->qrc = enabled;
 
     emit qrcChanged();
 }

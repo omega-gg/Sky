@@ -59,6 +59,19 @@ void WScriptBashPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WScriptBashPrivate::applyRunning(bool running)
+{
+    Q_Q(WScriptBash);
+
+    this->running = running;
+
+    emit q->runningChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -73,13 +86,11 @@ void WScriptBashPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatu
     onOutput     ();
     onOutputError();
 
-    running = false;
+    applyRunning(false);
 
     bool ok = (exitCode == 0 && exitStatus == QProcess::NormalExit);
 
     emit q->finished(ok);
-
-    emit q->runningChanged();
 }
 
 void WScriptBashPrivate::onOutput()
@@ -172,9 +183,7 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
 
         d->process.start();
 
-        d->running = true;
-
-        emit runningChanged();
+        d->applyRunning(true);
 
         return true;
     }
@@ -182,12 +191,16 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
     {
         d->process.start();
 
+        d->applyRunning(true);
+
         if (d->process.waitForStarted() == false) return false;
 
         while (d->process.state() != QProcess::NotRunning)
         {
             QCoreApplication::processEvents(QEventLoop::AllEvents);
         }
+
+        d->applyRunning(false);
 
         QObject::disconnect(&(d->process), 0, this, 0);
 
@@ -210,9 +223,7 @@ void WScriptBash::stop()
 
     d->process.waitForFinished();
 
-    d->running = false;
-
-    emit runningChanged();
+    d->applyRunning(false);
 }
 
 //-------------------------------------------------------------------------------------------------
