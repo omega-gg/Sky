@@ -167,12 +167,20 @@ void WWindowPrivate::init()
 #endif
     }
 
-    if (sk->isCli() == false)
+#ifdef QT_4
+    view->setVisible(true);
+#else
+    q->WView::setVisible(true);
+#endif
+
+    // NOTE: When using the cli, we start minimized and not hidden to trigger the event loop and
+    //       enable the quit function.
+    if (sk->isCli())
     {
 #ifdef QT_4
-        view->setVisible(true);
+        view->setMinimized(true);
 #else
-        q->WView::setVisible(true);
+        q->WView::setMinimized(true);
 #endif
     }
 
