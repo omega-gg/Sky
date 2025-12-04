@@ -48,9 +48,14 @@ WScriptBashPrivate::WScriptBashPrivate(WScriptBash * p) : WPrivate(p) {}
 {
     if (running == false) return;
 
-    process.kill();
+    process.terminate();
 
-    process.waitForFinished(1000);
+    if (process.waitForFinished(1000) == false)
+    {
+        process.kill();
+
+        process.waitForFinished(1000);
+    }
 }
 
 void WScriptBashPrivate::init()
@@ -219,9 +224,14 @@ void WScriptBash::stop()
 
     disconnect(&(d->process), 0, this, 0);
 
-    d->process.kill();
+    d->process.terminate();
 
-    d->process.waitForFinished();
+    if (d->process.waitForFinished() == false)
+    {
+        d->process.kill();
+
+        d->process.waitForFinished(1000);
+    }
 
     d->applyRunning(false);
 }
