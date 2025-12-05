@@ -9,7 +9,7 @@ SUBDIRS = $$PATH/3rdparty \
           $$PATH/assets-pro \
           $$PATH/snap \
           $$PATH/Sky-pro \
-          $$PATH/Sky-dev \
+          $$PATH/Sky-runtime-dev \
           $$PATH/MotionMonkey-dev \
           $$PATH/tevolution-dev \
           $$PATH/backend \
