@@ -212,6 +212,7 @@ public: // Functions
 
     void createSession();
 
+    void applyAll    ();
     void applyOptions();
     void applyProxy  ();
     void applySizeMax();

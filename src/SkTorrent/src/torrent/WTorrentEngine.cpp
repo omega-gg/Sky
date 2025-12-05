@@ -319,6 +319,45 @@ void WTorrentEnginePrivate::createSession()
     load();
 }
 
+void WTorrentEnginePrivate::applyAll()
+{
+    mutexB.lock();
+
+    _sizeMax = sizeMax;
+
+    bool proxyEmpty = proxyHost.isEmpty();
+
+    if (connections == -1 && proxyEmpty)
+    {
+        mutexB.unlock();
+
+        return;
+    }
+
+    settings_pack pack = session->get_settings();
+
+    if (connections != -1)
+    {
+        pack.set_int(settings_pack::connection_speed, connections);
+
+        pack.set_int(settings_pack::upload_rate_limit,   upload);
+        pack.set_int(settings_pack::download_rate_limit, download);
+    }
+
+    if (proxyEmpty == false)
+    {
+        pack.set_str(settings_pack::proxy_hostname, proxyHost.C_STR);
+        pack.set_int(settings_pack::proxy_port,     proxyPort);
+
+        pack.set_str(settings_pack::proxy_username, proxyUser    .C_STR);
+        pack.set_str(settings_pack::proxy_password, proxyPassword.C_STR);
+    }
+
+    mutexB.unlock();
+
+    session->apply_settings(pack);
+}
+
 void WTorrentEnginePrivate::applyOptions()
 {
     settings_pack pack = session->get_settings();
@@ -2247,13 +2286,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64    sizeMax,
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WTorrentEngine::create()
-{
-    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
-                                                 (WTorrentEnginePrivate::EventCreate)),
-                                Qt::HighEventPriority * 100);
-}
-
 /* Q_INVOKABLE */ void WTorrentEngine::load(WTorrent * torrent, QIODevice * device)
 {
     // NOTE: We get crashes in QNetworkRequest when doing this on Android.
@@ -2488,7 +2520,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64    sizeMax,
     if (d->session == NULL)
     {
         if (type != static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd)
-            ||
+            &&
             type != static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAddMagnet))
         {
             return true;
@@ -2496,26 +2528,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64    sizeMax,
 
         d->createSession();
 
-        d->mutexB.lock();
-
-        if (d->connections != -1)
-        {
-            d->applyOptions();
-        }
-
-        if (d->proxyHost.isEmpty() == false)
-        {
-            d->applyProxy();
-        }
-
-        if (d->_sizeMax != d->sizeMax)
-        {
-            d->applySizeMax();
-        }
-
-        d->mutexB.unlock();
-
-        return true;
+        d->applyAll();
     }
 
     if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
