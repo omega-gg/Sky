@@ -105,6 +105,8 @@ public: // Variables
     QString message;
 #endif
 
+    bool quitting;
+
     bool cli;
 
     bool qrc;

@@ -38,6 +38,9 @@
 #include <QStringList>
 #endif
 
+// Sk includes
+#include <WControllerApplication>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -203,6 +206,8 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
         while (d->process.state() != QProcess::NotRunning)
         {
             QCoreApplication::processEvents(QEventLoop::AllEvents);
+
+            if (sk->isQuitting()) return false;
         }
 
         d->applyRunning(false);

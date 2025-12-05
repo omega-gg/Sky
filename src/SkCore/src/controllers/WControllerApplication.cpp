@@ -179,6 +179,8 @@ void WControllerApplicationPrivate::init()
 
     version = "1.0";
 
+    quitting = false;
+
     cli = false;
 
     qrc = true;
@@ -303,6 +305,8 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
 void WControllerApplicationPrivate::onAboutToQuit()
 {
     Q_Q(WControllerApplication);
+
+    quitting = true;
 
     emit q->aboutToQuit();
 
@@ -2757,6 +2761,11 @@ bool WControllerApplication::isCore() const
 bool WControllerApplication::isGui() const
 {
     Q_D(const WControllerApplication); return d->gui;
+}
+
+bool WControllerApplication::isQuitting() const
+{
+    Q_D(const WControllerApplication); return d->quitting;
 }
 
 //-------------------------------------------------------------------------------------------------
