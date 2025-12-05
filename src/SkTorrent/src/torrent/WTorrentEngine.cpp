@@ -89,7 +89,9 @@ WTorrentEnginePrivate::WTorrentEnginePrivate(WTorrentEngine * p) : WPrivate(p) {
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::init(const QString & path, qint64 sizeMax, QThread * thread)
+void WTorrentEnginePrivate::init(const QString & path, qint64    sizeMax,
+                                                       bool      loadLater,
+                                                       QThread * thread)
 {
     Q_Q(WTorrentEngine);
 
@@ -100,7 +102,11 @@ void WTorrentEnginePrivate::init(const QString & path, qint64 sizeMax, QThread *
     this->sizeMax = sizeMax;
     _sizeMax      = sizeMax;
 
+    connections = -1;
+
     if (thread) q->moveToThread(thread);
+
+    if (loadLater) return;
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
                                               (WTorrentEnginePrivate::EventCreate)),
@@ -176,6 +182,185 @@ void WTorrentEnginePrivate::save() const
     if (timerSave->isActive()) return;
 
     timerSave->start();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::createSession()
+{
+    Q_Q(WTorrentEngine);
+
+    settings_pack pack;
+
+    QString name = sk->name() + "/" + sk->versionSky();
+
+    pack.set_str(settings_pack::user_agent, name.toStdString());
+
+#ifdef LIBTORRENT_ABI_1
+    pack.set_int(settings_pack::alert_mask, alert::error_notification   |
+                                            alert::storage_notification |
+                                            alert::status_notification  |
+                                            alert::progress_notification);
+#else
+    pack.set_int(settings_pack::alert_mask, alert::error_notification          |
+                                            alert::storage_notification        |
+                                            alert::status_notification         |
+                                            alert::block_progress_notification |
+                                            alert::piece_progress_notification |
+                                            alert::file_progress_notification);
+#endif
+
+    pack.set_bool(settings_pack::enable_dht, true);
+    pack.set_bool(settings_pack::enable_lsd, true);
+
+    pack.set_bool(settings_pack::enable_upnp,   true);
+    pack.set_bool(settings_pack::enable_natpmp, true);
+
+    pack.set_bool(settings_pack::smooth_connects, false);
+
+    // NOTE: We want to connect really fast to stream the content early.
+    pack.set_int(settings_pack::connection_speed,      200);
+    pack.set_int(settings_pack::torrent_connect_boost, 100);
+
+    //pack.set_int(settings_pack::max_failcount,      1);
+    pack.set_int(settings_pack::min_reconnect_time,   1);
+    pack.set_int(settings_pack::peer_connect_timeout, 3);
+
+    pack.set_int(settings_pack::piece_timeout,   10);
+    pack.set_int(settings_pack::request_timeout, 10);
+
+    pack.set_int(settings_pack::whole_pieces_threshold, 10);
+
+    pack.set_int(settings_pack::peer_timeout,    10);
+    pack.set_int(settings_pack::urlseed_timeout, 10);
+
+    //-----------------------------------------------------------------------------------------
+    // FIXME: Workaround to improve writing efficiency.
+
+    //pack.set_int(settings_pack::use_disk_cache_pool, false);
+
+    // NOTE: These are important to avoid issues when redirecting data to a third party, like
+    //       avoiding glitchy frames on a video player.
+    pack.set_int(settings_pack::cache_size,   0);
+    pack.set_int(settings_pack::cache_expiry, 0);
+
+    //pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
+
+    //-----------------------------------------------------------------------------------------
+
+    pack.set_bool(settings_pack::announce_to_all_tiers,    true);
+    pack.set_bool(settings_pack::announce_to_all_trackers, true);
+
+    //pack.set_bool(settings_pack::prioritize_partial_pieces, true);
+
+    pack.set_int(settings_pack::stop_tracker_timeout, 1);
+
+#ifdef LIBTORRENT_LATEST
+    pack.set_str(settings_pack::dht_bootstrap_nodes, "dht.libtorrent.org:25401,"
+                                                     "router.bittorrent.com:6881,"
+                                                     "router.utorrent.com:6881,"
+                                                     "dht.transmissionbt.com:6881,"
+                                                     "dht.aelitis.com:6881");
+#endif
+
+    session = new libtorrent::session(pack);
+
+    //-----------------------------------------------------------------------------------------
+    // NOTE: This seems to increase magnets loading time. I'm not too sure what I'm doing here
+    //       anyway...
+
+    //dht_settings dht;
+
+    //dht.search_branching = 10;
+
+    //dht.max_fail_count = 3;
+
+    ////dht.max_dht_items =  1000;
+    ////dht.max_peers     = 10000;
+
+    //d->session->set_dht_settings(dht);
+
+    //-----------------------------------------------------------------------------------------
+
+#ifndef LIBTORRENT_LATEST
+    session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),    25401));
+    session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),  6881));
+    session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),    6881));
+    session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"), 6881));
+    session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),        6881));
+#endif
+
+#ifdef LIBTORRENT_ABI_1
+    boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, this));
+#else
+    std::function<void()> alert(std::bind(&WTorrentEnginePrivate::events, this));
+#endif
+
+    session->set_alert_notify(alert);
+
+    session->add_extension(&create_ut_pex_plugin);
+
+    pathIndex   = path + "index";
+    pathMagnets = path + "magnets";
+
+    size = 0;
+
+    timerUpdate = new QTimer(q);
+    timerSave   = new QTimer(q);
+
+    timerUpdate->setInterval(TORRENTENGINE_INTERVAL);
+    timerSave  ->setInterval(TORRENTENGINE_INTERVAL);
+
+    timerSave->setSingleShot(true);
+
+    QObject::connect(timerUpdate, SIGNAL(timeout()), q, SLOT(onUpdate()));
+    QObject::connect(timerSave,   SIGNAL(timeout()), q, SLOT(onSave  ()));
+
+    load();
+}
+
+void WTorrentEnginePrivate::applyOptions()
+{
+    settings_pack pack = session->get_settings();
+
+    mutexB.lock();
+
+    pack.set_int(settings_pack::connection_speed, connections);
+
+    pack.set_int(settings_pack::upload_rate_limit,   upload);
+    pack.set_int(settings_pack::download_rate_limit, download);
+
+    mutexB.unlock();
+
+    session->apply_settings(pack);
+}
+
+void WTorrentEnginePrivate::applyProxy()
+{
+    settings_pack pack = session->get_settings();
+
+    mutexB.lock();
+
+    pack.set_str(settings_pack::proxy_hostname, proxyHost.C_STR);
+    pack.set_int(settings_pack::proxy_port,     proxyPort);
+
+    pack.set_str(settings_pack::proxy_username, proxyUser    .C_STR);
+    pack.set_str(settings_pack::proxy_password, proxyPassword.C_STR);
+
+    mutexB.unlock();
+
+    session->apply_settings(pack);
+}
+
+void WTorrentEnginePrivate::applySizeMax()
+{
+    mutexB.lock();
+
+    _sizeMax = sizeMax;
+
+    mutexB.unlock();
+
+    cleanCache();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2049,16 +2234,25 @@ void WTorrentEnginePrivate::onSave()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * thread,
-                                                                     QObject * parent)
+WTorrentEngine::WTorrentEngine(const QString & path, qint64    sizeMax,
+                                                     bool      loadLater,
+                                                     QThread * thread,
+                                                     QObject * parent)
     : QObject(parent), WPrivatable(new WTorrentEnginePrivate(this))
 {
-    Q_D(WTorrentEngine); d->init(path, sizeMax, thread);
+    Q_D(WTorrentEngine); d->init(path, sizeMax, loadLater, thread);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTorrentEngine::create()
+{
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WTorrentEnginePrivate::EventCreate)),
+                                Qt::HighEventPriority * 100);
+}
 
 /* Q_INVOKABLE */ void WTorrentEngine::load(WTorrent * torrent, QIODevice * device)
 {
@@ -2120,7 +2314,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 /* Q_INVOKABLE */ void WTorrentEngine::deleteInstance()
 {
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
-                                                 (WTorrentEnginePrivate::EventClear)),
+                                                 (WTorrentEnginePrivate::EventDelete)),
                                 Qt::HighEventPriority * 100);
 }
 
@@ -2204,143 +2398,127 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
     QEvent::Type type = event->type();
 
-    if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventCreate))
+    if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventDelete))
     {
-        settings_pack pack;
+        if (d->session == NULL) return true;
 
-        QString name = sk->name() + "/" + sk->versionSky();
+        d->timerUpdate->stop();
 
-        pack.set_str(settings_pack::user_agent, name.toStdString());
+        qDebug("TORRENT SESSION BEFORE");
 
-#ifdef LIBTORRENT_ABI_1
-        pack.set_int(settings_pack::alert_mask, alert::error_notification   |
-                                                alert::storage_notification |
-                                                alert::status_notification  |
-                                                alert::progress_notification);
-#else
-        pack.set_int(settings_pack::alert_mask, alert::error_notification          |
-                                                alert::storage_notification        |
-                                                alert::status_notification         |
-                                                alert::block_progress_notification |
-                                                alert::piece_progress_notification |
-                                                alert::file_progress_notification);
-#endif
+        delete d->session;
 
-        pack.set_bool(settings_pack::enable_dht, true);
-        pack.set_bool(settings_pack::enable_lsd, true);
+        qDebug("TORRENT SESSION AFTER");
 
-        pack.set_bool(settings_pack::enable_upnp,   true);
-        pack.set_bool(settings_pack::enable_natpmp, true);
+        d->session = NULL;
 
-        pack.set_bool(settings_pack::smooth_connects, false);
+        QHashIterator<QTimer *, WTorrentData *> i(d->deleteTorrents);
 
-        // NOTE: We want to connect really fast to stream the content early.
-        pack.set_int(settings_pack::connection_speed,      200);
-        pack.set_int(settings_pack::torrent_connect_boost, 100);
+        while (i.hasNext())
+        {
+            i.next();
 
-        //pack.set_int(settings_pack::max_failcount,      1);
-        pack.set_int(settings_pack::min_reconnect_time,   1);
-        pack.set_int(settings_pack::peer_connect_timeout, 3);
+            delete i.key();
+        }
 
-        pack.set_int(settings_pack::piece_timeout,   10);
-        pack.set_int(settings_pack::request_timeout, 10);
+        QHashIterator<QTimer *, WMagnetData *> j(d->deleteMagnets);
 
-        pack.set_int(settings_pack::whole_pieces_threshold, 10);
+        while (j.hasNext())
+        {
+            j.next();
 
-        pack.set_int(settings_pack::peer_timeout,    10);
-        pack.set_int(settings_pack::urlseed_timeout, 10);
+            delete j.key();
+        }
 
-        //-----------------------------------------------------------------------------------------
-        // FIXME: Workaround to improve writing efficiency.
+        foreach (WTorrentData * data, d->datas)
+        {
+            if (data) delete data;
+        }
 
-        //pack.set_int(settings_pack::use_disk_cache_pool, false);
+        foreach (WMagnetData * data, d->datasMagnets)
+        {
+            delete data;
+        }
 
-        // NOTE: These are important to avoid issues when redirecting data to a third party, like
-        //       avoiding glitchy frames on a video player.
-        pack.set_int(settings_pack::cache_size,   0);
-        pack.set_int(settings_pack::cache_expiry, 0);
+        QHashIterator<uintptr_t, WTorrentData *> k(d->torrents);
 
-        //pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
+        while (k.hasNext())
+        {
+            k.next();
 
-        //-----------------------------------------------------------------------------------------
+            delete k.value();
+        }
 
-        pack.set_bool(settings_pack::announce_to_all_tiers,    true);
-        pack.set_bool(settings_pack::announce_to_all_trackers, true);
+        QHashIterator<uintptr_t, WMagnetData *> l(d->magnets);
 
-        //pack.set_bool(settings_pack::prioritize_partial_pieces, true);
+        while (l.hasNext())
+        {
+            l.next();
 
-        pack.set_int(settings_pack::stop_tracker_timeout, 1);
+            delete l.value();
+        }
 
-#ifdef LIBTORRENT_LATEST
-        pack.set_str(settings_pack::dht_bootstrap_nodes, "dht.libtorrent.org:25401,"
-                                                         "router.bittorrent.com:6881,"
-                                                         "router.utorrent.com:6881,"
-                                                         "dht.transmissionbt.com:6881,"
-                                                         "dht.aelitis.com:6881");
-#endif
+        if (d->timerSave->isActive())
+        {
+            d->onSave();
+        }
 
-        d->session = new session(pack);
-
-        //-----------------------------------------------------------------------------------------
-        // NOTE: This seems to increase magnets loading time. I'm not too sure what I'm doing here
-        //       anyway...
-
-        //dht_settings dht;
-
-        //dht.search_branching = 10;
-
-        //dht.max_fail_count = 3;
-
-        ////dht.max_dht_items =  1000;
-        ////dht.max_peers     = 10000;
-
-        //d->session->set_dht_settings(dht);
-
-        //-----------------------------------------------------------------------------------------
-
-#ifndef LIBTORRENT_LATEST
-        d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),    25401));
-        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),  6881));
-        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),    6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"), 6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),        6881));
-#endif
-
-#ifdef LIBTORRENT_ABI_1
-        boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
-#else
-        std::function<void()> alert(std::bind(&WTorrentEnginePrivate::events, d));
-#endif
-
-        d->session->set_alert_notify(alert);
-
-        d->session->add_extension(&create_ut_pex_plugin);
-
-        d->pathIndex   = d->path + "index";
-        d->pathMagnets = d->path + "magnets";
-
-        d->size = 0;
-
-        d->timerUpdate = new QTimer(this);
-        d->timerSave   = new QTimer(this);
-
-        d->timerUpdate->setInterval(TORRENTENGINE_INTERVAL);
-        d->timerSave  ->setInterval(TORRENTENGINE_INTERVAL);
-
-        d->timerSave->setSingleShot(true);
-
-        connect(d->timerUpdate, SIGNAL(timeout()), this, SLOT(onUpdate()));
-        connect(d->timerSave,   SIGNAL(timeout()), this, SLOT(onSave  ()));
-
-        d->load();
+        foreach (WTorrentSource * source, d->sources)
+        {
+            delete source;
+        }
 
         return true;
     }
-    else if (d->session == NULL)
+
+    if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventCreate))
     {
-        return QObject::event(event);
+        if (d->session)
+        {
+            qWarning("WTorrentEngine::event: Session already exists.");
+
+            return true;
+        }
+
+        d->createSession();
+
+        return true;
     }
-    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
+
+    if (d->session == NULL)
+    {
+        if (type != static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd)
+            ||
+            type != static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAddMagnet))
+        {
+            return true;
+        }
+
+        d->createSession();
+
+        d->mutexB.lock();
+
+        if (d->connections != -1)
+        {
+            d->applyOptions();
+        }
+
+        if (d->proxyHost.isEmpty() == false)
+        {
+            d->applyProxy();
+        }
+
+        if (d->_sizeMax != d->sizeMax)
+        {
+            d->applySizeMax();
+        }
+
+        d->mutexB.unlock();
+
+        return true;
+    }
+
+    if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
     {
         qDebug("TORRENT ADD");
 
@@ -2978,18 +3156,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         qDebug("TORRENT OPTIONS");
 
-        settings_pack pack = d->session->get_settings();
-
-        d->mutexB.lock();
-
-        pack.set_int(settings_pack::connection_speed, d->connections);
-
-        pack.set_int(settings_pack::upload_rate_limit,   d->upload);
-        pack.set_int(settings_pack::download_rate_limit, d->download);
-
-        d->mutexB.unlock();
-
-        d->session->apply_settings(pack);
+        d->applyOptions();
 
         return true;
     }
@@ -2997,29 +3164,15 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         qDebug("TORRENT PROXY");
 
-        settings_pack pack = d->session->get_settings();
-
-        d->mutexB.lock();
-
-        pack.set_str(settings_pack::proxy_hostname, d->proxyHost.C_STR);
-        pack.set_int(settings_pack::proxy_port,     d->proxyPort);
-
-        pack.set_str(settings_pack::proxy_username, d->proxyUser    .C_STR);
-        pack.set_str(settings_pack::proxy_password, d->proxyPassword.C_STR);
-
-        d->mutexB.unlock();
-
-        d->session->apply_settings(pack);
+        d->applyProxy();
 
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventSizeMax))
     {
-        WTorrentEngineEvent * eventTorrent = static_cast<WTorrentEngineEvent *> (event);
+        qDebug("TORRENT SIZE MAX");
 
-        d->_sizeMax = eventTorrent->value.toLongLong();
-
-        d->cleanCache();
+        d->applySizeMax();
 
         return true;
     }
@@ -3062,76 +3215,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventClear))
-    {
-        d->timerUpdate->stop();
-
-        qDebug("TORRENT SESSION BEFORE");
-
-        delete d->session;
-
-        qDebug("TORRENT SESSION AFTER");
-
-        d->session = NULL;
-
-        QHashIterator<QTimer *, WTorrentData *> i(d->deleteTorrents);
-
-        while (i.hasNext())
-        {
-            i.next();
-
-            delete i.key();
-        }
-
-        QHashIterator<QTimer *, WMagnetData *> j(d->deleteMagnets);
-
-        while (j.hasNext())
-        {
-            j.next();
-
-            delete j.key();
-        }
-
-        foreach (WTorrentData * data, d->datas)
-        {
-            if (data) delete data;
-        }
-
-        foreach (WMagnetData * data, d->datasMagnets)
-        {
-            delete data;
-        }
-
-        QHashIterator<uintptr_t, WTorrentData *> k(d->torrents);
-
-        while (k.hasNext())
-        {
-            k.next();
-
-            delete k.value();
-        }
-
-        QHashIterator<uintptr_t, WMagnetData *> l(d->magnets);
-
-        while (l.hasNext())
-        {
-            l.next();
-
-            delete l.value();
-        }
-
-        if (d->timerSave->isActive())
-        {
-            d->onSave();
-        }
-
-        foreach (WTorrentSource * source, d->sources)
-        {
-            delete source;
-        }
-
-        return true;
-    }
     else return QObject::event(event);
 }
 
@@ -3148,12 +3231,21 @@ void WTorrentEngine::setSizeMax(qint64 max)
 {
     Q_D(WTorrentEngine);
 
-    if (d->sizeMax == max) return;
+    d->mutexB.lock();
+
+    if (d->sizeMax == max)
+    {
+        d->mutexB.unlock();
+
+        return;
+    }
 
     d->sizeMax = max;
 
-    QCoreApplication::postEvent(this, new WTorrentEngineEvent(WTorrentEnginePrivate::EventSizeMax,
-                                                              max));
+    d->mutexB.unlock();
+
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WTorrentEnginePrivate::EventSizeMax)));
 }
 
 #endif // SK_NO_TORRENTENGINE

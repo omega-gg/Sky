@@ -439,7 +439,8 @@ WControllerTorrentPrivate::WControllerTorrentPrivate(WControllerTorrent * p)
     W_CLEAR_CONTROLLER(WControllerTorrent);
 }
 
-void WControllerTorrentPrivate::init(const QString & path, int port, qint64 sizeMax)
+void WControllerTorrentPrivate::init(const QString & path,
+                                     int port, qint64 sizeMax, bool loadLater)
 {
     Q_Q(WControllerTorrent);
 
@@ -451,7 +452,7 @@ void WControllerTorrentPrivate::init(const QString & path, int port, qint64 size
 
     thread->start();
 
-    engine = new WTorrentEngine(path, sizeMax, thread);
+    engine = new WTorrentEngine(path, sizeMax, loadLater, thread);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -741,7 +742,7 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WControllerTorrent::initController(const QString & path,
-                                                      int port, qint64 sizeMax)
+                                                      int port, qint64 sizeMax, bool loadLater)
 {
     Q_D(WControllerTorrent);
 
@@ -749,7 +750,7 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     {
         d->created = true;
 
-        d->init(path, port, sizeMax);
+        d->init(path, port, sizeMax, loadLater);
     }
     else qWarning("WControllerTorrent::initController: Controller is already initialized.");
 }

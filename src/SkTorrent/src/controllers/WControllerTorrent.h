@@ -389,8 +389,9 @@ private:
 
 public: // Initialize
     virtual void initController(const QString & path,
-                                int             port = 8000, // NOTE: Default port for testing.
-                                qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
+                                int             port      = 8000, // Default port for testing
+                                qint64          sizeMax   = 1048576 * 1000, // 1 gigabyte
+                                bool            loadLater = true);
 
 public: // Interface
     Q_INVOKABLE WTorrentReply * getTorrent(const QString  & url,

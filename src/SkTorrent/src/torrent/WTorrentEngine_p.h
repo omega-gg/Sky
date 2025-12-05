@@ -198,17 +198,23 @@ public: // Enums
         EventSizeMax,
         EventClearSource,
         EventClearCache,
-        EventClear
+        EventDelete
     };
 
 public:
     WTorrentEnginePrivate(WTorrentEngine * p);
 
-    void init(const QString & path, qint64 sizeMax, QThread * thread);
+    void init(const QString & path, qint64 sizeMax, bool loadLater, QThread * thread);
 
 public: // Functions
     void load();
     void save() const;
+
+    void createSession();
+
+    void applyOptions();
+    void applyProxy  ();
+    void applySizeMax();
 
     torrent_info * loadInfo(const QByteArray & array) const;
 

@@ -44,11 +44,20 @@ class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
     Q_PROPERTY(qint64 sizeMax READ sizeMax WRITE setSizeMax NOTIFY sizeMaxChanged)
 
 public:
-    WTorrentEngine(const QString & path, qint64    sizeMax = 1048576 * 1000, // 1 gigabyte
-                                         QThread * thread  = NULL,
-                                         QObject * parent  = NULL);
+    // NOTE: loadLater is useful when we want to avoid creating the session before adding torrents.
+    //
+    // FIXME: It seems that deleting a libtorrent::session while processing a bash script inside
+    //        WScriptBash is causing the call to freeze the application until the script is done.
+    //        loadLater is a workaround to this for non torrent applications.
+
+    WTorrentEngine(const QString & path, qint64    sizeMax   = 1048576 * 1000, // 1 gigabyte
+                                         bool      loadLater = true,
+                                         QThread * thread    = NULL,
+                                         QObject * parent    = NULL);
 
 public: // Interface
+    Q_INVOKABLE void create();
+
     Q_INVOKABLE void load(WTorrent * torrent, QIODevice * device);
 
     Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
