@@ -404,16 +404,9 @@ void WVlcAudioPrivate::setWait(bool enabled)
 
     float progress = event->u.media_player_buffering.new_cache;
 
-    if (progress != 100)
-    {
-        d->buffering = true;
+    d->buffering = (progress != 100);
 
-        return;
-    }
-
-    d->buffering = false;
-
-    d->setWait(false);
+    d->setWait(d->buffering);
 }
 
 /* static */ void WVlcAudioPrivate::onTime(const struct libvlc_event_t *, void * data)
