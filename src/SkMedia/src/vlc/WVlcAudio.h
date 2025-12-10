@@ -60,12 +60,12 @@ public:
 public: // Interface
     Q_INVOKABLE void setSource(const QString & url, int loop = false);
 
-    Q_INVOKABLE void play(int time);
+    Q_INVOKABLE void synchronize(int time);
 
     Q_INVOKABLE void pause();
     Q_INVOKABLE void stop ();
 
-    Q_INVOKABLE void applyBuffering();
+    Q_INVOKABLE void applyBuffering(float progress);
 
     Q_INVOKABLE void setSpeed(qreal speed);
 

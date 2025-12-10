@@ -60,7 +60,7 @@ public: // Enums
         EventCreate = QEvent::User,
         EventSource,
         EventBuffering,
-        EventPlay,
+        EventSynchronize,
         EventPause,
         EventStop,
         EventSpeed,
@@ -78,12 +78,12 @@ public: // Functions
 
     void setSource(const QString & url, int loop);
 
-    void play(int time);
+    void synchronize(int time);
 
     void pause();
     void stop ();
 
-    void applyBuffering();
+    void applyBuffering(float progress);
 
     void setSpeed(qreal speed);
 
@@ -104,6 +104,8 @@ public: // Static events
     static void onPaused (const struct libvlc_event_t * event, void * data);
     static void onStopped(const struct libvlc_event_t * event, void * data);
 
+    static void onBuffering(const struct libvlc_event_t * event, void * data);
+
     static void onTime(const struct libvlc_event_t * event, void * data);
 
 public: // Slots
@@ -117,6 +119,8 @@ public: // Variables
 
     bool playing;
     bool buffering;
+
+    bool playerBuffering;
 
     bool wait;
 

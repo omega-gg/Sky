@@ -466,7 +466,7 @@ void WVlcPlayerPrivate::setVideo(int id)
 #else
     libvlc_media_track_t * track = getTrack(id, libvlc_track_video);
 
-    if (track == NULL) return true;
+    if (track == NULL) return;
 
     libvlc_media_player_select_track(player, track);
 #endif
@@ -479,7 +479,7 @@ void WVlcPlayerPrivate::setAudio(int id)
 #else
     libvlc_media_track_t * track = getTrack(id, libvlc_track_audio);
 
-    if (track == NULL) return true;
+    if (track == NULL) return;
 
     libvlc_media_player_select_track(player, track);
 #endif
@@ -863,15 +863,22 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
 #ifdef VLCPLAYER_AUDIO
-    if (d->hasAudio) d->playerAudio->applyBuffering();
-#endif
+    float progress = event->u.media_player_buffering.new_cache;
 
+    if (d->hasAudio) d->playerAudio->applyBuffering(progress);
+
+    if (d->backend == NULL) return;
+
+    QCoreApplication::postEvent(d->backend,
+                                new WVlcPlayerEvent(WVlcPlayer::EventBuffering, progress));
+#else
     if (d->backend == NULL) return;
 
     float progress = event->u.media_player_buffering.new_cache;
 
     QCoreApplication::postEvent(d->backend,
                                 new WVlcPlayerEvent(WVlcPlayer::EventBuffering, progress));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -916,7 +923,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     {
         int time = event->u.media_player_time_changed.new_time;
 
-        if (d->playing) d->playerAudio->play(time);
+        if (d->playing) d->playerAudio->synchronize(time);
 
         if (d->backend == NULL) return;
 
@@ -966,12 +973,14 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 
 void WVlcPlayerPrivate::onPlay()
 {
-    if (player) libvlc_media_player_play(player);
+    if (player == NULL || playing) return;
+
+    libvlc_media_player_play(player);
 }
 
 void WVlcPlayerPrivate::onPause()
 {
-    if (player == NULL) return;
+    if (player == NULL || playing == false) return;
 
     libvlc_media_player_set_pause(player, 1);
 

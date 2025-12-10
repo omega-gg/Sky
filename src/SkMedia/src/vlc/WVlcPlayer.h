@@ -42,7 +42,7 @@ typedef SSIZE_T ssize_t;
 
 // Defines
 #if LIBVLC_VERSION_MAJOR > 3
-//#define VLCPLAYER_AUDIO
+#define VLCPLAYER_AUDIO
 #endif
 
 #ifndef SK_NO_VLCPLAYER
