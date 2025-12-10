@@ -258,8 +258,6 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
                 //           because it does not support multiple players.
                 if (hasOutput == false)
                 {
-                    hasAudio = true;
-
                     if (playerAudio == NULL)
                     {
                         Q_Q(WVlcPlayer);
@@ -284,6 +282,8 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
                         QObject::connect(playerAudio, SIGNAL(triggerPlay ()), q, SLOT(onPlay ()));
                         QObject::connect(playerAudio, SIGNAL(triggerPause()), q, SLOT(onPause()));
                     }
+
+                    hasAudio = true;
 
                     playerAudio->setSource(audio, loop);
                 }
@@ -704,12 +704,13 @@ void WVlcPlayerPrivate::applyEnd()
 {
     if (backend)
     {
-        if (checkTime(backend->currentTime())) return;
+        if (checkTime(backend->currentTime(), backend->duration())) return;
 
         QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
                                                         (WVlcPlayer::EventEndReached)));
     }
-    else if (checkTime(libvlc_media_player_get_time(player))) return;
+    else if (checkTime(libvlc_media_player_get_time  (player),
+                       libvlc_media_player_get_length(player))) return;
 }
 
 void WVlcPlayerPrivate::applyAdjust()
@@ -727,15 +728,15 @@ void WVlcPlayerPrivate::applyAdjust()
     libvlc_video_set_adjust_float(player, libvlc_adjust_Gamma,      adjust.gamma);
 }
 
-bool WVlcPlayerPrivate::checkTime(int at)
+bool WVlcPlayerPrivate::checkTime(int at, int duration)
 {
     // FIXME VLC 3.0.21: Sometimes the seeking fails, so we try try again. The position has to be
     //                   valid otherwise it might have been set to zero already in the onTime
     //                   callback after reaching the end.
     //                   We don't do it when playing on a remote output because of latency.
-    if (hasOutput || at == 0
+    if (hasOutput || duration < 0 || at == 0
         ||
-        (libvlc_media_player_get_length(player) - at < PLAYER_RETRY_GAP || retry >= 3)) return false;
+        (duration - at < PLAYER_RETRY_GAP || retry >= 3)) return false;
 
     Q_Q(WVlcPlayer);
 
@@ -976,8 +977,7 @@ void WVlcPlayerPrivate::onPause()
 
     if (backend == NULL) return;
 
-    QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
-                                                    (WVlcPlayer::EventBuffering)));
+    QCoreApplication::postEvent(backend, new WVlcPlayerEvent(WVlcPlayer::EventBuffering, 0));
 }
 
 void WVlcPlayerPrivate::onOutputAdded(const WBackendOutput & output)

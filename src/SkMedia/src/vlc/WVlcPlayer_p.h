@@ -127,7 +127,7 @@ public: // Functions
 
     void applyAdjust();
 
-    bool checkTime(int at);
+    bool checkTime(int at, int duration);
 
 #if LIBVLC_VERSION_MAJOR > 3
     libvlc_media_track_t * getTrack(int id, libvlc_track_type_t type) const;
