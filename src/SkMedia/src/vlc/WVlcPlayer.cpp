@@ -734,7 +734,7 @@ bool WVlcPlayerPrivate::checkTime(int at, int duration)
     //                   valid otherwise it might have been set to zero already in the onTime
     //                   callback after reaching the end.
     //                   We don't do it when playing on a remote output because of latency.
-    if (hasOutput || duration < 0 || at == 0
+    if (hasOutput || at == 0 || duration < 0
         ||
         (duration - at < PLAYER_RETRY_GAP || retry >= 3)) return false;
 
