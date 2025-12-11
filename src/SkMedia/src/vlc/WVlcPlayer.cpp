@@ -285,7 +285,7 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
 
                         mutex.unlock();
 
-                        QObject::connect(playerAudio, SIGNAL(onWaitingChanged(bool)),
+                        QObject::connect(playerAudio, SIGNAL(waitingChanged(bool)),
                                          q,           SLOT(onWaitingChanged(bool)));
                     }
 
