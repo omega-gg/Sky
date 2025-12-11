@@ -126,6 +126,8 @@ public: // Variables
 
     qint64 delay;
 
+    int count;
+
     QStringList options;
 
     int networkCache;

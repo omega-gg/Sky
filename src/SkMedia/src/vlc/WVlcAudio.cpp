@@ -37,11 +37,13 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int AUDIO_RESYNCHRONIZE = 10000; // 10 seconds
-
-static const int AUDIO_EXTRA = 2000; // 2 second
+static const int AUDIO_EXTRA = 1000; // 1 second
 
 static const int AUDIO_TOLERANCE = 10; // 10 milliseconds
+
+static const int AUDIO_RESYNCHRONIZE = 10000; // 10 seconds
+
+static const int AUDIO_DELAY_COUNT = 10;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -66,6 +68,8 @@ void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
     wait = false;
 
     delay = -1;
+
+    count = 0;
 
     // FIXME: Should we set this to 1000 by default like VLC ?
     networkCache = -1;
@@ -184,9 +188,14 @@ void WVlcAudioPrivate::synchronize(int time)
 
         qint64 gap = timePlayer - time;
 
-        if (qAbs(delay - gap) < AUDIO_TOLERANCE) return;
+        if (qAbs(delay - gap) < AUDIO_TOLERANCE)
+        {
+            count = 0;
 
-        if (gap < 0 || gap > AUDIO_RESYNCHRONIZE)
+            return;
+        }
+
+        if (gap > AUDIO_RESYNCHRONIZE)
         {
             qDebug("AUDIO RESYNC");
 
@@ -195,6 +204,24 @@ void WVlcAudioPrivate::synchronize(int time)
 
             return;
         }
+
+        count++;
+
+        if (count < AUDIO_DELAY_COUNT) return;
+
+        count = 0;
+
+        if (gap < 0)
+        {
+            qDebug("AUDIO RESYNCB");
+
+            // NOTE: We skip ahead because we can only add a delay.
+            applyTime(time + AUDIO_EXTRA);
+
+            return;
+        }
+
+        qDebug("AUDIO DELAY");
 
         delay = gap;
 
@@ -323,6 +350,8 @@ void WVlcAudioPrivate::applyTime(int time)
 
     delay = 0;
 
+    count = 0;
+
     libvlc_audio_set_delay(player, 0);
 
 #if LIBVLC_VERSION_MAJOR < 4
@@ -337,6 +366,8 @@ void WVlcAudioPrivate::clearDelay()
     if (delay == -1) return;
 
     delay = -1;
+
+    count = 0;
 
     libvlc_audio_set_delay(player, 0);
 }
