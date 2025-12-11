@@ -127,6 +127,10 @@ public: // Functions
 
     void applyAdjust();
 
+    void applySize(unsigned int * width, unsigned int * height);
+
+    void applyTrackDefault(libvlc_media_track_t * track);
+
     bool checkTime(int at, int duration);
 
 #if LIBVLC_VERSION_MAJOR > 3
@@ -197,6 +201,9 @@ public: // Variables
     int trackId;
 
 #if LIBVLC_VERSION_MAJOR > 3
+    int trackWidth;
+    int trackHeight;
+
     int currentTime;
 #endif
 

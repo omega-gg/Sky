@@ -1551,7 +1551,7 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
 
     WVlcPlayerPrivate * p = d->player->d_func();
 
-    libvlc_video_get_size(p->player, p->trackId, vlcWidth, vlcHeight);
+    p->applySize(vlcWidth, vlcHeight);
 
     *vlcWidth  = qMin((int) (*vlcWidth),  PLAYER_MAX_WIDTH);
     *vlcHeight = qMin((int) (*vlcHeight), PLAYER_MAX_HEIGHT);

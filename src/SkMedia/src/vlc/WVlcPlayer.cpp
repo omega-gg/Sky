@@ -82,9 +82,12 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     retry = 0;
 
-    trackId = 0;
+    trackId = -1;
 
 #if LIBVLC_VERSION_MAJOR > 3
+    trackWidth  = -1;
+    trackHeight = -1;
+
     currentTime = 0;
 #endif
 
@@ -359,6 +362,13 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
 
     retry = 0;
 
+    trackId = -1;
+
+#if LIBVLC_VERSION_MAJOR > 3
+    trackWidth  = -1;
+    trackHeight = -1;
+#endif
+
     libvlc_media_player_set_media(player, media);
 }
 
@@ -608,7 +618,7 @@ void WVlcPlayerPrivate::applyPlay()
 
     QList<WBackendTrack> backendTracks;
 
-    trackId = 0;
+    trackId = -1;
 
     int trackVideo = -1;
     int trackAudio = -1;
@@ -666,7 +676,7 @@ void WVlcPlayerPrivate::applyPlay()
 
     QList<WBackendTrack> backendTracks;
 
-    trackId = 0;
+    trackId = -1;
 
     int trackVideo = -1;
     int trackAudio = -1;
@@ -681,9 +691,19 @@ void WVlcPlayerPrivate::applyPlay()
         {
             trackId    = id;
             trackVideo = id;
+
+            libvlc_video_track_t * video = track->video;
+
+            trackWidth  = video->i_width;
+            trackHeight = video->i_height;
         }
 
         backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackVideo, track->psz_language));
+    }
+
+    if (trackId == -1 && countVideo)
+    {
+        applyTrackDefault(libvlc_media_tracklist_at(videos, 0));
     }
 
     for (int i = 0; i < countAudio; i++)
@@ -717,6 +737,51 @@ void WVlcPlayerPrivate::applyEnd()
     }
     else if (checkTime(libvlc_media_player_get_time  (player),
                        libvlc_media_player_get_length(player))) return;
+}
+
+void WVlcPlayerPrivate::applySize(unsigned int * width, unsigned int * height)
+{
+#if LIBVLC_VERSION_MAJOR < 4
+    if (trackId == -1)
+    {
+        libvlc_video_get_size(player, 0, width, height);
+    }
+    else libvlc_video_get_size(player, trackId, width, height);
+#else
+    if (trackId == -1)
+    {
+        libvlc_media_t * media = libvlc_media_player_get_media(player);
+
+        libvlc_media_tracklist_t * videos = libvlc_media_get_tracklist(media, libvlc_track_video);
+
+        int countVideo = libvlc_media_tracklist_count(videos);
+
+        if (countVideo)
+        {
+            applyTrackDefault(libvlc_media_tracklist_at(videos, 0));
+
+            *width  = trackWidth;
+            *height = trackHeight;
+        }
+
+        libvlc_media_tracklist_delete(videos);
+    }
+    else
+    {
+        *width  = trackWidth;
+        *height = trackHeight;
+    }
+#endif
+}
+
+void WVlcPlayerPrivate::applyTrackDefault(libvlc_media_track_t * track)
+{
+    trackId = track->i_id;
+
+    libvlc_video_track_t * video = track->video;
+
+    trackWidth  = video->i_width;
+    trackHeight = video->i_height;
 }
 
 void WVlcPlayerPrivate::applyAdjust()
@@ -1055,8 +1120,6 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     QCoreApplication::postEvent(this, new WVlcPlayerEventBackend(backend, setup, cleanup, lock,
                                                                  unlock, display));
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & url,
                                              const QString & audio, int loop)
