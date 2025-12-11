@@ -39,11 +39,11 @@
 
 static const int AUDIO_EXTRA = 1000; // 1 second
 
-static const int AUDIO_TOLERANCE = 10; // 10 milliseconds
+static const int AUDIO_TOLERANCE = 100; // 100 milliseconds
 
 static const int AUDIO_RESYNCHRONIZE = 10000; // 10 seconds
 
-static const int AUDIO_DELAY_COUNT = 10;
+static const int AUDIO_DELAY_COUNT = 5;
 
 //-------------------------------------------------------------------------------------------------
 // Private
