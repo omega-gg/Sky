@@ -43,7 +43,7 @@
 
 static const int PLAYER_RETRY_GAP = 1000; // 1 second
 
-static const int PLAYER_RETRY_COUNT = 1;
+static const int PLAYER_RETRY_COUNT = 2;
 
 //=================================================================================================
 // WVlcPlayerPrivate
