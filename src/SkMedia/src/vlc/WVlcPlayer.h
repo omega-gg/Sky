@@ -151,8 +151,7 @@ private:
     W_DECLARE_PRIVATE(WVlcPlayer)
 
 #ifdef VLCPLAYER_AUDIO
-    Q_PRIVATE_SLOT(d_func(), void onPlay ())
-    Q_PRIVATE_SLOT(d_func(), void onPause())
+    Q_PRIVATE_SLOT(d_func(), void onWaitingChanged(bool))
 #endif
 
     friend class WBackendVlc;

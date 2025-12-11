@@ -49,6 +49,8 @@ static const int AUDIO_DELAY_COUNT = 5;
 // Private
 //-------------------------------------------------------------------------------------------------
 
+#include "WVlcAudio_p.h"
+
 WVlcAudioPrivate::WVlcAudioPrivate(WVlcAudio * p) : WPrivate(p) {}
 
 void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
@@ -171,7 +173,7 @@ void WVlcAudioPrivate::setSource(const QString & url, int loop)
 
     playerBuffering = false;
 
-    wait = false;
+    setWait(false);
 
     libvlc_media_player_set_media(player, media);
 }
@@ -248,7 +250,7 @@ void WVlcAudioPrivate::pause()
 
     playing = false;
 
-    wait = false;
+    setWait(false);
 
     libvlc_media_player_set_pause(player, 1);
 
@@ -264,7 +266,7 @@ void WVlcAudioPrivate::stop()
 
     playerBuffering = false;
 
-    wait = false;
+    setWait(false);
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_stop(player);
@@ -380,13 +382,7 @@ void WVlcAudioPrivate::setWait(bool enabled)
 
     wait = enabled;
 
-    if (wait)
-    {
-        emit q->triggerPause();
-    }
-    else emit q->triggerPlay();
-
-    emit q->waitingChanged();
+    emit q->waitingChanged(wait);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -445,29 +441,6 @@ void WVlcAudioPrivate::setWait(bool enabled)
         d->applyPlay();
     }
 #endif
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private slots
-//-------------------------------------------------------------------------------------------------
-
-void WVlcAudioPrivate::onWait(bool enabled)
-{
-    QMutexLocker locker(&mutex);
-
-    if (wait == enabled) return;
-
-    Q_Q(WVlcAudio);
-
-    wait = enabled;
-
-    if (wait)
-    {
-        emit q->triggerPause();
-    }
-    else emit q->triggerPlay();
-
-    emit q->waitingChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -710,15 +683,6 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
-
-bool WVlcAudio::isWaiting()
-{
-    Q_D(WVlcAudio);
-
-    const QMutexLocker locker(&d->mutex);
-
-    return d->wait;
-}
 
 QStringList WVlcAudio::options()
 {

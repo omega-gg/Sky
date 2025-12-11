@@ -108,9 +108,6 @@ public: // Static events
 
     static void onTime(const struct libvlc_event_t * event, void * data);
 
-public: // Slots
-    void onWait(bool enabled);
-
 public: // Variables
     QThread    * thread;
     WVlcEngine * engine;

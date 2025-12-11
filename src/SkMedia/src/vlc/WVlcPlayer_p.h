@@ -155,8 +155,8 @@ public: // Static events
     static void onEncounteredError(const struct libvlc_event_t * event, void * data);
 
 public: // Slots
-    void onPlay ();
-    void onPause();
+
+    void onWaitingChanged(bool waiting);
 
     void onOutputAdded(const WBackendOutput & output);
 
@@ -187,6 +187,10 @@ public: // Variables
     bool opening;
 #endif
     bool playing;
+
+#ifdef VLCPLAYER_AUDIO
+    bool waiting;
+#endif
 
     int retry;
 

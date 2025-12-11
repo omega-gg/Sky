@@ -48,8 +48,6 @@ class SK_MEDIA_EXPORT WVlcAudio : public QObject, public WPrivatable
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool isWaiting READ isWaiting NOTIFY waitingChanged)
-
     Q_PROPERTY(QStringList options READ options WRITE setOptions NOTIFY optionsChanged)
 
     Q_PROPERTY(int networkCache READ networkCache WRITE setNetworkCache NOTIFY networkCacheChanged)
@@ -81,18 +79,13 @@ protected: // Events
     /* virtual */ bool event(QEvent * event);
 
 signals:
-    void triggerPlay ();
-    void triggerPause();
-
-    void waitingChanged();
+    void waitingChanged(bool waiting);
 
     void optionsChanged();
 
     void networkCacheChanged();
 
 public: // Properties
-    bool isWaiting();
-
     QStringList options();
     void        setOptions(const QStringList & options);
 
@@ -101,11 +94,7 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WVlcAudio)
-
-    Q_PRIVATE_SLOT(d_func(), void onWait(bool))
 };
-
-#include <private/WVlcAudio_p>
 
 #endif // SK_NO_VLCAUDIO
 #endif // WVLCAUDIO_H

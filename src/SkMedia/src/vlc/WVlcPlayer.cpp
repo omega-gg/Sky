@@ -76,6 +76,10 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 #endif
     playing = false;
 
+#ifdef VLCPLAYER_AUDIO
+    waiting = false;
+#endif
+
     retry = 0;
 
     trackId = 0;
@@ -281,8 +285,8 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
 
                         mutex.unlock();
 
-                        QObject::connect(playerAudio, SIGNAL(triggerPlay ()), q, SLOT(onPlay ()));
-                        QObject::connect(playerAudio, SIGNAL(triggerPause()), q, SLOT(onPause()));
+                        QObject::connect(playerAudio, SIGNAL(onWaitingChanged(bool)),
+                                         q,           SLOT(onWaitingChanged(bool)));
                     }
 
                     hasAudio = true;
@@ -821,7 +825,7 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
     if (d->hasAudio)
     {
         // NOTE: We avoid sending EventPaused when we're waiting for the audio.
-        if (d->playerAudio->isWaiting()) return;
+        if (d->waiting) return;
 
         d->playerAudio->pause();
     }
@@ -973,22 +977,28 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WVlcPlayerPrivate::onPlay()
+void WVlcPlayerPrivate::onWaitingChanged(bool waiting)
 {
-    if (player == NULL || playing) return;
+    this->waiting = waiting;
+
+    if (player == NULL) return;
+
+    if (waiting)
+    {
+        if (libvlc_media_player_get_state(player) == libvlc_Paused) return;
+
+        libvlc_media_player_set_pause(player, 1);
+
+        if (backend == NULL) return;
+
+        QCoreApplication::postEvent(backend, new WVlcPlayerEvent(WVlcPlayer::EventBuffering, 0));
+
+        return;
+    }
+
+    if (libvlc_media_player_get_state(player) == libvlc_Playing) return;
 
     libvlc_media_player_play(player);
-}
-
-void WVlcPlayerPrivate::onPause()
-{
-    if (player == NULL || playing == false) return;
-
-    libvlc_media_player_set_pause(player, 1);
-
-    if (backend == NULL) return;
-
-    QCoreApplication::postEvent(backend, new WVlcPlayerEvent(WVlcPlayer::EventBuffering, 0));
 }
 
 void WVlcPlayerPrivate::onOutputAdded(const WBackendOutput & output)
