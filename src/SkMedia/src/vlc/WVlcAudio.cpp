@@ -37,9 +37,9 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int AUDIO_RESYNCHRONIZE = 2000; // 2 seconds
+static const int AUDIO_RESYNCHRONIZE = 10000; // 10 seconds
 
-static const int AUDIO_DELAY = 1000; // 1 second
+static const int AUDIO_EXTRA = 2000; // 2 second
 
 static const int AUDIO_TOLERANCE = 10; // 10 milliseconds
 
@@ -70,16 +70,6 @@ void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
     // FIXME: Should we set this to 1000 by default like VLC ?
     networkCache = -1;
 
-    timer.setInterval(AUDIO_DELAY);
-
-    timer.setSingleShot(true);
-
-    const QMetaObject * meta = q->metaObject();
-
-    method = meta->method(meta->indexOfMethod("onWait(bool)"));
-
-    QObject::connect(&timer, SIGNAL(timeout()), q, SIGNAL(triggerPause()));
-
     if (thread == NULL)
     {
         create();
@@ -88,8 +78,6 @@ void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
     }
 
     q->moveToThread(thread);
-
-    timer.moveToThread(thread);
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
                                                    (WVlcAudioPrivate::EventCreate)),
@@ -190,15 +178,6 @@ void WVlcAudioPrivate::synchronize(int time)
 
     if (playing)
     {
-        if (delay == -1)
-        {
-            qDebug("AUDIO SYNC");
-
-            applyTime(time);
-
-            return;
-        }
-
         int timePlayer = libvlc_media_player_get_time(player);
 
         if (timePlayer <= 0) return;
@@ -207,11 +186,12 @@ void WVlcAudioPrivate::synchronize(int time)
 
         if (qAbs(delay - gap) < AUDIO_TOLERANCE) return;
 
-        if (qAbs(gap) > AUDIO_RESYNCHRONIZE)
+        if (gap < 0 || gap > AUDIO_RESYNCHRONIZE)
         {
             qDebug("AUDIO RESYNC");
 
-            applyTime(time);
+            // NOTE: We skip ahead because we can only add a delay.
+            applyTime(time + AUDIO_EXTRA);
 
             return;
         }
@@ -229,7 +209,8 @@ void WVlcAudioPrivate::synchronize(int time)
 
     qDebug("AUDIO STARTING");
 
-    if (delay == -1) applyTime(time);
+    // NOTE: We skip ahead because we can only add a delay.
+    if (delay == -1) applyTime(time + AUDIO_EXTRA);
 
     libvlc_media_player_play(player);
 }
@@ -332,6 +313,8 @@ void WVlcAudioPrivate::applyPlay()
         clearDelay();
     }
     else playing = true;
+
+    setWait(false);
 }
 
 void WVlcAudioPrivate::applyTime(int time)
@@ -360,10 +343,19 @@ void WVlcAudioPrivate::clearDelay()
 
 void WVlcAudioPrivate::setWait(bool enabled)
 {
+    if (wait == enabled) return;
+
     Q_Q(WVlcAudio);
 
-    // NOTE Qt: QTimer(s) cannot be called from a different thread.
-    method.invoke(q, Qt::QueuedConnection, Q_ARG(bool, enabled));
+    wait = enabled;
+
+    if (wait)
+    {
+        emit q->triggerPause();
+    }
+    else emit q->triggerPlay();
+
+    emit q->waitingChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -382,8 +374,6 @@ void WVlcAudioPrivate::setWait(bool enabled)
     WVlcAudioPrivate * d = static_cast<WVlcAudioPrivate *> (data);
 
     d->playing = false;
-
-    d->setWait(false);
 }
 
 /* static */ void WVlcAudioPrivate::onStopped(const struct libvlc_event_t *, void * data)
@@ -404,9 +394,13 @@ void WVlcAudioPrivate::setWait(bool enabled)
 
     float progress = event->u.media_player_buffering.new_cache;
 
-    d->buffering = (progress != 100);
+    int buffering = (progress != 100);
 
-    d->setWait(d->buffering);
+    if (d->buffering == buffering) return;
+
+    d->buffering = buffering;
+
+    d->setWait(buffering);
 }
 
 /* static */ void WVlcAudioPrivate::onTime(const struct libvlc_event_t *, void * data)
@@ -420,8 +414,6 @@ void WVlcAudioPrivate::setWait(bool enabled)
         d->applyPlay();
     }
 #endif
-
-    d->setWait(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -438,13 +430,11 @@ void WVlcAudioPrivate::onWait(bool enabled)
 
     wait = enabled;
 
-    if (wait == false)
+    if (wait)
     {
-        timer.stop();
-
-        emit q->triggerPlay();
+        emit q->triggerPause();
     }
-    else timer.start();
+    else emit q->triggerPlay();
 
     emit q->waitingChanged();
 }

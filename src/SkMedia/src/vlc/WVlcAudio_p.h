@@ -133,10 +133,6 @@ public: // Variables
     QString proxyHost;
     QString proxyPassword;
 
-    QTimer timer;
-
-    QMetaMethod method;
-
     QMutex mutex;
 
 protected:

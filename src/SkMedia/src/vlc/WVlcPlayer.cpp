@@ -43,6 +43,8 @@
 
 static const int PLAYER_RETRY_GAP = 1000; // 1 second
 
+static const int PLAYER_RETRY_COUNT = 1;
+
 //=================================================================================================
 // WVlcPlayerPrivate
 //=================================================================================================
@@ -734,9 +736,9 @@ bool WVlcPlayerPrivate::checkTime(int at, int duration)
     //                   valid otherwise it might have been set to zero already in the onTime
     //                   callback after reaching the end.
     //                   We don't do it when playing on a remote output because of latency.
-    if (hasOutput || at == 0 || duration < 0
+    if (hasOutput || at == 0 || duration < 1
         ||
-        (duration - at < PLAYER_RETRY_GAP || retry >= 3)) return false;
+        (duration - at < PLAYER_RETRY_GAP || retry >= PLAYER_RETRY_COUNT)) return false;
 
     Q_Q(WVlcPlayer);
 
