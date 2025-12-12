@@ -117,6 +117,8 @@ public: // Properties
 
     QList<WSubtitle> subtitles() const;
 
+    QStringList options() const;
+
     bool isLoaded() const;
 
     bool hasError() const;
@@ -155,6 +157,8 @@ private: // Variables
     QString _ambient;
 
     QList<WSubtitle> _subtitles;
+
+    QStringList _options;
 
     bool _loaded;
 

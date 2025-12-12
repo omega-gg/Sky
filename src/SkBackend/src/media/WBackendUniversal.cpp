@@ -4095,6 +4095,8 @@ void WBackendUniversalPrivate::applySourceParameters(WBackendUniversalParameters
     parameters->add("chapters");
     parameters->add("subtitles");
 
+    parameters->add("options");
+
     parameters->add("expiry", reply.expiry);
 
     parameters->add("next");
@@ -4112,6 +4114,8 @@ void WBackendUniversalPrivate::applySourceResults(WBackendUniversalParameters * 
 
     applyChapters (&(reply->chapters),  parameters->value("chapters"));
     applySubtitles(&(reply->subtitles), parameters->value("subtitles"));
+
+    reply->options = parameters->value("options")->toStringList();
 
     reply->expiry = getDate(*(parameters->value("expiry")));
 

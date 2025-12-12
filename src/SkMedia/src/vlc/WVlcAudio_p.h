@@ -76,7 +76,7 @@ public:
 public: // Functions
     void create();
 
-    void setSource(const QString & url, int loop);
+    void setSource(const QString & url, const QStringList & options, int loop);
 
     void synchronize(int time);
 
@@ -162,16 +162,20 @@ public: // Variables
 class WVlcAudioEventSource : public QEvent
 {
 public:
-    WVlcAudioEventSource(const QString & url, int loop)
+    WVlcAudioEventSource(const QString & url, const QStringList & options, int loop)
         : QEvent(static_cast<QEvent::Type> (WVlcAudioPrivate::EventSource))
     {
         this->url = url;
+
+        this->options = options;
 
         this->loop = loop;
     }
 
 public: // Variables
     QString url;
+
+    QStringList options;
 
     bool loop;
 };

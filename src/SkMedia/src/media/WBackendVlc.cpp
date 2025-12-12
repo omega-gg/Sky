@@ -1246,6 +1246,8 @@ void WBackendVlcPrivate::applySources(const WMediaReply * reply, bool play)
     medias = reply->medias();
     audios = reply->audios();
 
+    options = reply->options();
+
     q->setVbml(reply->isVbml());
 
     loop = (reply->typeSource() == WTrack::Hub);
@@ -1334,7 +1336,7 @@ void WBackendVlcPrivate::playMedia()
 {
     Q_Q(WBackendVlc);
 
-    player->setSource(currentMedia, currentAudio, loop);
+    player->setSource(currentMedia, currentAudio, options, loop);
 
     q->setOutputActive (closestOutput);
     q->setQualityActive(closestQuality);
@@ -2007,7 +2009,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
     d->onFrameUpdated();
 
-    d->player->setSource(d->currentMedia, d->currentAudio, d->loop);
+    d->player->setSource(d->currentMedia, d->currentAudio, d->options, d->loop);
 
     if (d->state == StatePlaying)
     {
@@ -2641,7 +2643,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
             // NOTE: We repeat at the lowest level possible, instead of relying on the WPlayer.
             if (d->repeat)
             {
-                d->player->setSource(d->currentMedia, d->currentAudio, d->loop);
+                d->player->setSource(d->currentMedia, d->currentAudio, d->options, d->loop);
 
                 d->player->play(0);
 

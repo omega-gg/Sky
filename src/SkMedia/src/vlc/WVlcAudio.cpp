@@ -109,7 +109,7 @@ void WVlcAudioPrivate::create()
     libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged, onTime, this);
 }
 
-void WVlcAudioPrivate::setSource(const QString & url, int loop)
+void WVlcAudioPrivate::setSource(const QString & url, const QStringList & options, int loop)
 {
     if (player == NULL) return;
 
@@ -117,6 +117,8 @@ void WVlcAudioPrivate::setSource(const QString & url, int loop)
 
     QString proxy;
     QString proxyPassword;
+
+    QStringList parameters;
 
     mutex.lock();
 
@@ -131,6 +133,8 @@ void WVlcAudioPrivate::setSource(const QString & url, int loop)
         proxy         = "http-proxy="     + proxyHost;
         proxyPassword = "http-proxy-pwd=" + proxyPassword;
     }
+
+    parameters = this->options;
 
     mutex.unlock();
 
@@ -164,6 +168,11 @@ void WVlcAudioPrivate::setSource(const QString & url, int loop)
     }
 
     foreach (const QString & option, options)
+    {
+        libvlc_media_add_option(media, option.C_STR);
+    }
+
+    foreach (const QString & option, parameters)
     {
         libvlc_media_add_option(media, option.C_STR);
     }
@@ -335,13 +344,14 @@ void WVlcAudioPrivate::applyPlay()
 {
     qDebug("AUDIO APPLY PLAY");
 
+    playing = true;
+
     if (playerBuffering)
     {
         libvlc_media_player_set_pause(player, 1);
 
         clearDelay();
     }
-    else playing = true;
 
     setWait(false);
 }
@@ -457,18 +467,19 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcAudio::setSource(const QString & url, int loop)
+/* Q_INVOKABLE */ void WVlcAudio::setSource(const QString     & url,
+                                            const QStringList & options, int loop)
 {
     Q_D(WVlcAudio);
 
     if (d->thread == NULL)
     {
-        d->setSource(url, loop);
+        d->setSource(url, options, loop);
 
         return;
     }
 
-    QCoreApplication::postEvent(this, new WVlcAudioEventSource(url, loop));
+    QCoreApplication::postEvent(this, new WVlcAudioEventSource(url, options, loop));
 }
 
 /* Q_INVOKABLE */ void WVlcAudio::synchronize(int time)
@@ -623,7 +634,7 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcAudioEventSource * eventSource = static_cast<WVlcAudioEventSource *> (event);
 
-        d->setSource(eventSource->url, eventSource->loop);
+        d->setSource(eventSource->url, eventSource->options, eventSource->loop);
 
         return true;
     }

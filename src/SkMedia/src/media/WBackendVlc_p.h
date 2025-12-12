@@ -356,6 +356,8 @@ public: // Variables
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
 
+    QStringList options;
+
     bool loop;
 
     QString currentMedia;

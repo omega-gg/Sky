@@ -187,6 +187,8 @@ public: // Variables
     QList<WChapter>  chapters;
     QList<WSubtitle> subtitles;
 
+    QStringList options;
+
     QDateTime expiry;
 };
 

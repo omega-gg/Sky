@@ -56,7 +56,8 @@ public:
     WVlcAudio(WVlcEngine * engine, QThread * thread = NULL, QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void setSource(const QString & url, int loop = false);
+    Q_INVOKABLE void setSource(const QString     & url,
+                               const QStringList & options = QStringList(), int loop = false);
 
     Q_INVOKABLE void synchronize(int time);
 

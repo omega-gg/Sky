@@ -188,7 +188,8 @@ void WVlcPlayerPrivate::setBackend(WAbstractBackend      * backend,
     libvlc_video_set_callbacks(player, lock, unlock, display, backend);
 }
 
-void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, int loop)
+void WVlcPlayerPrivate::setSource(const QString & url,
+                                  const QString & audio, const QStringList & options, int loop)
 {
     WAbstractBackend::Output output;
 
@@ -197,7 +198,7 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
     QString proxy;
     QString proxyPassword;
 
-    QStringList options;
+    QStringList preferences;
 
     mutex.lock();
 
@@ -215,7 +216,7 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
         proxyPassword = "http-proxy-pwd=" + proxyPassword;
     }
 
-    options = this->options;
+    preferences = this->options;
 
     mutex.unlock();
 
@@ -282,7 +283,7 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
 
                         playerAudio->setProxy(proxyHost, proxyPassword);
 
-                        playerAudio->setOptions(options);
+                        playerAudio->setOptions(preferences);
 
                         playerAudio->setNetworkCache(networkCache);
 
@@ -294,7 +295,7 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
 
                     hasAudio = true;
 
-                    playerAudio->setSource(audio, loop);
+                    playerAudio->setSource(audio, options, loop);
                 }
                 else
                 {
@@ -351,6 +352,11 @@ void WVlcPlayerPrivate::setSource(const QString & url, const QString & audio, in
     }
 
     foreach (const QString & option, options)
+    {
+        libvlc_media_add_option(media, option.C_STR);
+    }
+
+    foreach (const QString & option, preferences)
     {
         libvlc_media_add_option(media, option.C_STR);
     }
@@ -1121,19 +1127,20 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                                  unlock, display));
 }
 
-/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & url,
-                                             const QString & audio, int loop)
+/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString     & url,
+                                             const QString     & audio,
+                                             const QStringList & options, int loop)
 {
     Q_D(WVlcPlayer);
 
     if (d->thread == NULL)
     {
-        d->setSource(url, audio, loop);
+        d->setSource(url, audio, options, loop);
 
         return;
     }
 
-    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(url, audio, loop));
+    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(url, audio, options, loop));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1390,7 +1397,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerEventSource * eventSource = static_cast<WVlcPlayerEventSource *> (event);
 
-        d->setSource(eventSource->url, eventSource->audio, eventSource->loop);
+        d->setSource(eventSource->url, eventSource->audio, eventSource->options,
+                     eventSource->loop);
 
         return true;
     }

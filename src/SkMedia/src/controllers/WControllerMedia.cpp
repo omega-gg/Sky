@@ -267,6 +267,11 @@ QList<WSubtitle> WMediaReply::subtitles() const
     return _subtitles;
 }
 
+QStringList WMediaReply::options() const
+{
+    return _options;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WMediaReply::isLoaded() const
@@ -1896,6 +1901,8 @@ void WControllerMediaPrivate::applyDataSlice(WPrivateMediaData        * media,
 
     media->subtitles.append(slice.subtitles);
 
+    media->options.append(slice.options);
+
     if (media->timeB != -1)
     {
         applyChapters(media, slice.chapters);
@@ -1965,6 +1972,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
     const QList<WChapter>  & chapters  = media->chapters;
     const QList<WSubtitle> & subtitles = media->subtitles;
 
+    const QStringList & options = media->options;
+
     int timeB = media->timeB;
 
     if (timeB == -1)
@@ -2011,6 +2020,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.chapters  = chapters;
         slice.subtitles = subtitles;
 
+        slice.options = options;
+
         slice.expiry = source.expiry;
 
         appendSlice(slice, url, mode);
@@ -2025,6 +2036,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             slice.chapters  = QList<WChapter> ();
             slice.subtitles = QList<WSubtitle>();
+
+            slice.options = QStringList();
 
             appendSlice(slice, urlSource, mode);
         }
@@ -2043,6 +2056,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
             reply->_chapters  = chapters;
             reply->_subtitles = subtitles;
+
+            reply->_options = options;
 
             reply->_loaded = true;
 
@@ -2106,6 +2121,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.subtitles = subtitles;
 
+        slice.options = options;
+
         slice.expiry = source.expiry;
 
         // NOTE: If the currentTime was updated we don't cache.
@@ -2138,6 +2155,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
                 slice.ambient = QString();
 
                 slice.subtitles = QList<WSubtitle>();
+
+                slice.options = QStringList();
 
                 appendSlice(slice, urlSource, mode);
             }
@@ -2173,6 +2192,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             reply->_ambient = ambient;
 
             reply->_subtitles = subtitles;
+
+            reply->_options = options;
 
             reply->_loaded = true;
 
@@ -2679,6 +2700,8 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
     media->subtitles.append(source.subtitles);
 
+    media->options.append(source.options);
+
     applySource(media, source, backendQuery.mode, true);
 
     this->medias.removeOne(media);
@@ -3015,6 +3038,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
             reply->_ambient = slice->ambient;
 
             reply->_subtitles = slice->subtitles;
+
+            reply->_options = slice->options;
 
             reply->_loaded = true;
 
