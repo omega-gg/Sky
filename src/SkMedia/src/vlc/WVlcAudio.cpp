@@ -214,7 +214,7 @@ void WVlcAudioPrivate::applyBuffering(float progress)
 
 void WVlcAudioPrivate::synchronize(int time)
 {
-    if (player == NULL || buffering || playerBuffering) return;
+    if (player == NULL || buffering || playerBuffering || wait) return;
 
     if (playing)
     {
@@ -263,13 +263,7 @@ void WVlcAudioPrivate::synchronize(int time)
 
     qDebug("AUDIO STARTING");
 
-    // NOTE: We skip ahead because we can only add a delay.
-    if (delay == -1)
-    {
-        setWait(true);
-
-        applyTime(time);
-    }
+    applyTime(time);
 
     libvlc_media_player_play(player);
 }

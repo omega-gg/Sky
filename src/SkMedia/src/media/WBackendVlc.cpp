@@ -2535,8 +2535,6 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventPaused))
     {
-        pause();
-
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventStopped))

@@ -119,7 +119,7 @@ public: // Functions
 
     void setAdjust(const WBackendAdjust & adjust);
 
-    void setWaiting(bool waiting);
+    void setWait(bool wait);
 
     void deletePlayer();
 
@@ -197,7 +197,7 @@ public: // Variables
     bool playing;
 
 #ifdef VLCPLAYER_AUDIO
-    bool waiting;
+    bool wait;
 #endif
 
     int retry;
