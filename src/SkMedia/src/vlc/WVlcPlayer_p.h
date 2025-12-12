@@ -73,6 +73,7 @@ public: // Enums
         EventScan,   // WVlcPlayerEvent bool
         EventOutput, // WVlcPlayerEvent int
         EventAdjust, // WVlcPlayerEventAdjust
+        EventWaiting,
         EventDelete
     };
 
@@ -103,7 +104,7 @@ public: // Functions
     void pause();
     void stop ();
 
-    void seek(int time);
+    void seek(int msec);
 
     void setSpeed(float speed);
 
@@ -117,6 +118,8 @@ public: // Functions
     void setOutput(int index);
 
     void setAdjust(const WBackendAdjust & adjust);
+
+    void setWaiting(bool waiting);
 
     void deletePlayer();
 

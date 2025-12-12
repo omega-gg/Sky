@@ -187,9 +187,34 @@ void WVlcAudioPrivate::setSource(const QString & url, const QStringList & option
     libvlc_media_player_set_media(player, media);
 }
 
+void WVlcAudioPrivate::applyBuffering(float progress)
+{
+    if (progress == 100)
+    {
+        qDebug("AUDIO BUFFERING ENDED");
+
+        playerBuffering = false;
+
+        if (playing) libvlc_media_player_play(player);
+
+        return;
+    }
+
+    playerBuffering = true;
+
+    if (playing)
+    {
+        qDebug("AUDIO BUFFERING");
+
+        libvlc_media_player_set_pause(player, 1);
+
+        clearDelay();
+    }
+}
+
 void WVlcAudioPrivate::synchronize(int time)
 {
-    if (player == NULL || buffering) return;
+    if (player == NULL || buffering || playerBuffering) return;
 
     if (playing)
     {
@@ -210,8 +235,9 @@ void WVlcAudioPrivate::synchronize(int time)
         {
             qDebug("AUDIO RESYNC");
 
-            // NOTE: We skip ahead because we can only add a delay.
-            applyTime(time + AUDIO_EXTRA);
+            setWait(true);
+
+            applyTime(time);
 
             return;
         }
@@ -226,8 +252,9 @@ void WVlcAudioPrivate::synchronize(int time)
         {
             qDebug("AUDIO RESYNCB");
 
-            // NOTE: We skip ahead because we can only add a delay.
-            applyTime(time + AUDIO_EXTRA);
+            setWait(true);
+
+            applyTime(time);
 
             return;
         }
@@ -248,9 +275,20 @@ void WVlcAudioPrivate::synchronize(int time)
     qDebug("AUDIO STARTING");
 
     // NOTE: We skip ahead because we can only add a delay.
-    if (delay == -1) applyTime(time + AUDIO_EXTRA);
+    if (delay == -1)
+    {
+        setWait(true);
+
+        applyTime(time);
+    }
 
     libvlc_media_player_play(player);
+}
+
+// NOTE: We wait for synchronize to be called before stating playback at the proper timestamp.
+void WVlcAudioPrivate::play(int)
+{
+    pause();
 }
 
 void WVlcAudioPrivate::pause()
@@ -290,29 +328,13 @@ void WVlcAudioPrivate::stop()
 #endif
 }
 
-void WVlcAudioPrivate::applyBuffering(float progress)
+void WVlcAudioPrivate::seek(int msec)
 {
-    if (progress == 100)
-    {
-        qDebug("AUDIO BUFFERING ENDED");
+    if (player == NULL) return;
 
-        playerBuffering = false;
+    setWait(false);
 
-        return;
-    }
-
-    playerBuffering = true;
-
-    if (playing)
-    {
-        qDebug("AUDIO BUFFERING");
-
-        playing = false;
-
-        libvlc_media_player_set_pause(player, 1);
-
-        clearDelay();
-    }
+    applyTime(msec);
 }
 
 void WVlcAudioPrivate::setSpeed(qreal speed)
@@ -358,13 +380,14 @@ void WVlcAudioPrivate::applyPlay()
 
 void WVlcAudioPrivate::applyTime(int time)
 {
-    setWait(true);
-
     delay = 0;
 
     count = 0;
 
     libvlc_audio_set_delay(player, 0);
+
+    // NOTE: We skip ahead because we can only add a delay.
+    time += AUDIO_EXTRA;
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_time(player, time);
@@ -482,6 +505,21 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
     QCoreApplication::postEvent(this, new WVlcAudioEventSource(url, options, loop));
 }
 
+/* Q_INVOKABLE */ void WVlcAudio::applyBuffering(float progress)
+{
+    Q_D(WVlcAudio);
+
+    if (d->thread == NULL)
+    {
+        d->applyBuffering(progress);
+
+        return;
+    }
+
+    QCoreApplication::postEvent(this, new WVlcAudioPrivateEvent(WVlcAudioPrivate::EventBuffering,
+                                                                progress));
+}
+
 /* Q_INVOKABLE */ void WVlcAudio::synchronize(int time)
 {
     Q_D(WVlcAudio);
@@ -495,6 +533,20 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
 
     QCoreApplication::postEvent(this, new WVlcAudioPrivateEvent(WVlcAudioPrivate::EventSynchronize,
                                                                 time));
+}
+
+/* Q_INVOKABLE */ void WVlcAudio::play(int at)
+{
+    Q_D(WVlcAudio);
+
+    if (d->thread == NULL)
+    {
+        d->play(at);
+
+        return;
+    }
+
+    QCoreApplication::postEvent(this, new WVlcAudioPrivateEvent(WVlcAudioPrivate::EventPlay, at));
 }
 
 /* Q_INVOKABLE */ void WVlcAudio::pause()
@@ -527,19 +579,18 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                  (WVlcAudioPrivate::EventStop)));
 }
 
-/* Q_INVOKABLE */ void WVlcAudio::applyBuffering(float progress)
+/* Q_INVOKABLE */ void WVlcAudio::seek(int msec)
 {
     Q_D(WVlcAudio);
 
     if (d->thread == NULL)
     {
-        d->applyBuffering(progress);
+        d->seek(msec);
 
         return;
     }
 
-    QCoreApplication::postEvent(this, new WVlcAudioPrivateEvent(WVlcAudioPrivate::EventBuffering,
-                                                                progress));
+    QCoreApplication::postEvent(this, new WVlcAudioPrivateEvent(WVlcAudioPrivate::EventSeek, msec));
 }
 
 /* Q_INVOKABLE */ void WVlcAudio::setSpeed(qreal speed)
@@ -638,11 +689,27 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
+    else if (type == static_cast<QEvent::Type> (WVlcAudioPrivate::EventBuffering))
+    {
+        WVlcAudioPrivateEvent * eventPlayer = static_cast<WVlcAudioPrivateEvent *> (event);
+
+        d->applyBuffering(eventPlayer->value.toFloat());
+
+        return true;
+    }
     else if (type == static_cast<QEvent::Type> (WVlcAudioPrivate::EventSynchronize))
     {
         WVlcAudioPrivateEvent * eventPlayer = static_cast<WVlcAudioPrivateEvent *> (event);
 
         d->synchronize(eventPlayer->value.toInt());
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WVlcAudioPrivate::EventPlay))
+    {
+        WVlcAudioPrivateEvent * eventPlayer = static_cast<WVlcAudioPrivateEvent *> (event);
+
+        d->play(eventPlayer->value.toInt());
 
         return true;
     }
@@ -658,11 +725,11 @@ WVlcAudio::WVlcAudio(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WVlcAudioPrivate::EventBuffering))
+    else if (type == static_cast<QEvent::Type> (WVlcAudioPrivate::EventSeek))
     {
         WVlcAudioPrivateEvent * eventPlayer = static_cast<WVlcAudioPrivateEvent *> (event);
 
-        d->applyBuffering(eventPlayer->value.toFloat());
+        d->seek(eventPlayer->value.toInt());
 
         return true;
     }

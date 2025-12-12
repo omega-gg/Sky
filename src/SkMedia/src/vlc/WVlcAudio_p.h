@@ -61,8 +61,10 @@ public: // Enums
         EventSource,
         EventBuffering,
         EventSynchronize,
+        EventPlay,
         EventPause,
         EventStop,
+        EventSeek,
         EventSpeed,
         EventVolume,
         EventDelete
@@ -78,12 +80,16 @@ public: // Functions
 
     void setSource(const QString & url, const QStringList & options, int loop);
 
+    void applyBuffering(float progress);
+
     void synchronize(int time);
+
+    void play(int at);
 
     void pause();
     void stop ();
 
-    void applyBuffering(float progress);
+    void seek(int msec);
 
     void setSpeed(qreal speed);
 
