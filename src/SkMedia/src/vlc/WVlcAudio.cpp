@@ -231,24 +231,13 @@ void WVlcAudioPrivate::synchronize(int time)
             return;
         }
 
-        if (gap > AUDIO_RESYNCHRONIZE)
-        {
-            qDebug("AUDIO RESYNC");
-
-            setWait(true);
-
-            applyTime(time);
-
-            return;
-        }
-
         count++;
 
         if (count < AUDIO_DELAY_COUNT) return;
 
         count = 0;
 
-        if (gap < 0)
+        if (gap < 0 || gap > AUDIO_RESYNCHRONIZE)
         {
             qDebug("AUDIO RESYNCB");
 
