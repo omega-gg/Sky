@@ -62,7 +62,8 @@ void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
 
     player = NULL;
 
-    playing = false;
+    playing   = false;
+    buffering = false;
 
     playerBuffering = false;
 
@@ -176,7 +177,8 @@ void WVlcAudioPrivate::setSource(const QString & url, const QStringList & option
         libvlc_media_add_option(media, option.C_STR);
     }
 
-    playing = false;
+    playing   = false;
+    buffering = false;
 
     playerBuffering = false;
 
@@ -295,7 +297,8 @@ void WVlcAudioPrivate::stop()
 {
     if (player == NULL) return;
 
-    playing = false;
+    playing   = false;
+    buffering = false;
 
     playerBuffering = false;
 
@@ -417,7 +420,10 @@ void WVlcAudioPrivate::setWait(bool enabled)
 
     d->playing = false;
 
-    d->setWait(false);
+    if (d->buffering == false)
+    {
+        d->setWait(false);
+    }
 }
 
 /* static */ void WVlcAudioPrivate::onStopped(const struct libvlc_event_t *, void * data)
@@ -437,7 +443,13 @@ void WVlcAudioPrivate::setWait(bool enabled)
 
     float progress = event->u.media_player_buffering.new_cache;
 
-    d->setWait(progress != 100);
+    bool buffering = (progress != 100);
+
+    if (d->buffering == buffering) return;
+
+    d->buffering = buffering;
+
+    d->setWait(buffering);
 }
 
 /* static */ void WVlcAudioPrivate::onTime(const struct libvlc_event_t *, void * data)

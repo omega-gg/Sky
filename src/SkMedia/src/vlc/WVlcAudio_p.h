@@ -123,6 +123,7 @@ public: // Variables
     libvlc_media_player_t * player;
 
     bool playing;
+    bool buffering;
 
     bool playerBuffering;
 
