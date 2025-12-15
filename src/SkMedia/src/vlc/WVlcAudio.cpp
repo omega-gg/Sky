@@ -37,8 +37,6 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int AUDIO_EXTRA = 1000; // 1 second
-
 static const int AUDIO_TOLERANCE = 100; // 100 milliseconds
 
 static const int AUDIO_RESYNCHRONIZE = 10000; // 10 seconds
@@ -189,27 +187,17 @@ void WVlcAudioPrivate::setSource(const QString & url, const QStringList & option
 
 void WVlcAudioPrivate::applyBuffering(float progress)
 {
-    if (progress == 100)
-    {
-        qDebug("AUDIO BUFFERING ENDED");
+    int buffering = (progress != 100);
 
-        playerBuffering = false;
+    if (playerBuffering == buffering) return;
 
-        if (playing) libvlc_media_player_play(player);
+    playerBuffering = buffering;
 
-        return;
-    }
+    if (buffering == false || playing == false) return;
 
-    playerBuffering = true;
+    libvlc_media_player_set_pause(player, 1);
 
-    if (playing)
-    {
-        qDebug("AUDIO BUFFERING");
-
-        libvlc_media_player_set_pause(player, 1);
-
-        clearDelay();
-    }
+    clearDelay();
 }
 
 void WVlcAudioPrivate::synchronize(int time)
@@ -239,7 +227,7 @@ void WVlcAudioPrivate::synchronize(int time)
 
         if (gap < 0 || gap > AUDIO_RESYNCHRONIZE)
         {
-            qDebug("AUDIO RESYNCB");
+            qDebug("AUDIO RESYNC");
 
             setWait(true);
 
@@ -263,15 +251,31 @@ void WVlcAudioPrivate::synchronize(int time)
 
     qDebug("AUDIO STARTING");
 
-    applyTime(time);
+    setWait(true);
 
     libvlc_media_player_play(player);
+
+    applyTime(time);
 }
 
-// NOTE: We wait for synchronize to be called before stating playback at the proper timestamp.
-void WVlcAudioPrivate::play(int)
+void WVlcAudioPrivate::play(int at)
 {
-    pause();
+    if (player == NULL) return;
+
+    if (playing)
+    {
+        seek(at);
+
+        return;
+    }
+
+    playing = false;
+
+    setWait(false);
+
+    libvlc_media_player_play(player);
+
+    applyTime(at);
 }
 
 void WVlcAudioPrivate::pause()
@@ -313,9 +317,7 @@ void WVlcAudioPrivate::stop()
 
 void WVlcAudioPrivate::seek(int msec)
 {
-    if (player == NULL) return;
-
-    setWait(false);
+    if (player == NULL || playing == false) return;
 
     applyTime(msec);
 }
@@ -357,8 +359,6 @@ void WVlcAudioPrivate::applyPlay()
 
         clearDelay();
     }
-
-    setWait(false);
 }
 
 void WVlcAudioPrivate::applyTime(int time)
@@ -368,9 +368,6 @@ void WVlcAudioPrivate::applyTime(int time)
     count = 0;
 
     libvlc_audio_set_delay(player, 0);
-
-    // NOTE: We skip ahead because we can only add a delay.
-    time += AUDIO_EXTRA;
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_time(player, time);
@@ -417,6 +414,8 @@ void WVlcAudioPrivate::setWait(bool enabled)
     WVlcAudioPrivate * d = static_cast<WVlcAudioPrivate *> (data);
 
     d->playing = false;
+
+    d->setWait(false);
 }
 
 /* static */ void WVlcAudioPrivate::onStopped(const struct libvlc_event_t *, void * data)
@@ -457,6 +456,8 @@ void WVlcAudioPrivate::setWait(bool enabled)
         d->applyPlay();
     }
 #endif
+
+    d->setWait(false);
 }
 
 //-------------------------------------------------------------------------------------------------

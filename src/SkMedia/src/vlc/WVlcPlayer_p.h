@@ -73,7 +73,6 @@ public: // Enums
         EventScan,   // WVlcPlayerEvent bool
         EventOutput, // WVlcPlayerEvent int
         EventAdjust, // WVlcPlayerEventAdjust
-        EventWaiting,
         EventDelete
     };
 
@@ -119,8 +118,6 @@ public: // Functions
 
     void setAdjust(const WBackendAdjust & adjust);
 
-    void setWait(bool wait);
-
     void deletePlayer();
 
 #if LIBVLC_VERSION_MAJOR > 3
@@ -163,8 +160,9 @@ public: // Static events
     static void onEncounteredError(const struct libvlc_event_t * event, void * data);
 
 public: // Slots
-
+#ifdef VLCPLAYER_AUDIO
     void onWaitingChanged(bool waiting);
+#endif
 
     void onOutputAdded(const WBackendOutput & output);
 
