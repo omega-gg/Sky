@@ -554,16 +554,15 @@ void WVlcPlayerPrivate::setAdjust(const WBackendAdjust & adjust)
 
 void WVlcPlayerPrivate::deletePlayer()
 {
-    stop();
-
-    libvlc_media_player_release(player);
-
 #ifdef VLCPLAYER_AUDIO
     if (playerAudio)
     {
         Q_Q(WVlcPlayer);
 
         QObject::disconnect(playerAudio, 0, q, 0);
+
+        // NOTE: We stop after disconnecting the playerAudio to skip the waitingChanged signal.
+        stop();
 
         hasAudio = false;
 
@@ -573,7 +572,12 @@ void WVlcPlayerPrivate::deletePlayer()
 
         playerAudio = NULL;
     }
+    else stop();
+#else
+    stop();
 #endif
+
+    libvlc_media_player_release(player);
 
     player = NULL;
 
