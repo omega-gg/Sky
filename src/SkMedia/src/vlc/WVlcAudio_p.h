@@ -103,6 +103,8 @@ public: // Functions
 
     void clearDelay();
 
+    void setBuffering(bool buffering);
+
     void setWait(bool enabled);
 
 public: // Static events
@@ -121,7 +123,6 @@ public: // Variables
     libvlc_media_player_t * player;
 
     bool playing;
-    bool buffering;
 
     bool playerBuffering;
 
