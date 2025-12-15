@@ -561,6 +561,10 @@ void WVlcPlayerPrivate::deletePlayer()
 #ifdef VLCPLAYER_AUDIO
     if (playerAudio)
     {
+        Q_Q(WVlcPlayer);
+
+        QObject::disconnect(playerAudio, 0, q, 0);
+
         hasAudio = false;
 
         playerAudio->deletePlayer();

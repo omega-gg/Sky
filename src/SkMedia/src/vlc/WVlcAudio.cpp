@@ -37,7 +37,9 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int AUDIO_TOLERANCE = 200; // 200 milliseconds
+static const int AUDIO_EXTRA = 50; // 50 milliseconds
+
+static const int AUDIO_TOLERANCE = 100; // 100 milliseconds
 
 static const int AUDIO_RESYNCHRONIZE = 10000; // 10 seconds
 
@@ -365,6 +367,9 @@ void WVlcAudioPrivate::applyTime(int time)
     count = 0;
 
     libvlc_audio_set_delay(player, 0);
+
+    // NOTE: We skip ahead because we can only add a delay.
+    time += AUDIO_EXTRA;
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_time(player, time);
