@@ -130,7 +130,9 @@ public: // Functions
 
     void applySize(unsigned int * width, unsigned int * height);
 
+#if LIBVLC_VERSION_MAJOR > 3
     void applyTrackDefault(libvlc_media_track_t * track);
+#endif
 
     bool checkTime(int at, int duration);
 

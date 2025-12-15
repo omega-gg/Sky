@@ -782,6 +782,8 @@ void WVlcPlayerPrivate::applySize(unsigned int * width, unsigned int * height)
 #endif
 }
 
+#if LIBVLC_VERSION_MAJOR > 3
+
 void WVlcPlayerPrivate::applyTrackDefault(libvlc_media_track_t * track)
 {
     trackId = track->i_id;
@@ -791,6 +793,8 @@ void WVlcPlayerPrivate::applyTrackDefault(libvlc_media_track_t * track)
     trackWidth  = video->i_width;
     trackHeight = video->i_height;
 }
+
+#endif
 
 void WVlcPlayerPrivate::applyAdjust()
 {
