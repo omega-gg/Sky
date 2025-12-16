@@ -905,13 +905,16 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 #ifdef VLCPLAYER_AUDIO
     if (d->hasAudio)
     {
-        d->playLater = false;
-
-        if (d->playing && d->playLater)
+        if (d->playLater)
         {
-            libvlc_media_player_play(d->player);
+            d->playLater = false;
 
-            return;
+            if (d->playing)
+            {
+                libvlc_media_player_play(d->player);
+
+                return;
+            }
         }
 
         d->playing = false;
@@ -1084,9 +1087,9 @@ void WVlcPlayerPrivate::onWaitingChanged(bool waiting)
 
     if (wait)
     {
-        if (libvlc_media_player_get_state(player) != libvlc_Playing) return;
-
         playLater = false;
+
+        if (libvlc_media_player_get_state(player) != libvlc_Playing) return;
 
         libvlc_media_player_set_pause(player, 1);
 
