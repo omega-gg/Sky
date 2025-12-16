@@ -905,10 +905,10 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 #ifdef VLCPLAYER_AUDIO
     if (d->hasAudio)
     {
+        d->playLater = false;
+
         if (d->playing && d->playLater)
         {
-            d->playLater = false;
-
             libvlc_media_player_play(d->player);
 
             return;
