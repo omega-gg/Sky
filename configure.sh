@@ -304,7 +304,7 @@ else
 
                 if [ $mobile = "simulator" ]; then
 
-                    name="ios-arm64-simulator"
+                    name="ios-x86_64-simulator"
                 else
                     name="ios-arm64"
                 fi
