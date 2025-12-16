@@ -198,6 +198,8 @@ public: // Variables
 
 #ifdef VLCPLAYER_AUDIO
     bool wait;
+
+    bool playLater;
 #endif
 
     int retry;

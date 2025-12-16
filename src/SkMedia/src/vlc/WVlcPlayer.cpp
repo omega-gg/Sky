@@ -78,6 +78,8 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
 #ifdef VLCPLAYER_AUDIO
     wait = false;
+
+    playLater = false;
 #endif
 
     retry = 0;
@@ -610,6 +612,10 @@ void WVlcPlayerPrivate::applyPlay()
 {
     playing = true;
 
+#ifdef VLCPLAYER_AUDIO
+    playLater = false;
+#endif
+
     if (backend == NULL) return;
 
     QCoreApplication::postEvent(backend,
@@ -896,16 +902,28 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
-    d->playing = false;
-
 #ifdef VLCPLAYER_AUDIO
     if (d->hasAudio)
     {
+        if (d->playing && d->playLater)
+        {
+            d->playLater = false;
+
+            libvlc_media_player_play(d->player);
+
+            return;
+        }
+
+        d->playing = false;
+
         // NOTE: We avoid sending EventPaused when we're waiting for the audio.
         if (d->wait) return;
 
         d->playerAudio->pause();
     }
+    else d->playing = false;
+#else
+    d->playing = false;
 #endif
 
     if (d->backend == NULL) return;
@@ -1064,21 +1082,25 @@ void WVlcPlayerPrivate::onWaitingChanged(bool waiting)
 
     wait = waiting;
 
-    // FIXME VLC 4.0.0: set_pause(player, 0) seems to work better than set_pause(player, 1) and
-    //                  player_play(player)
-
     if (wait)
     {
         if (libvlc_media_player_get_state(player) != libvlc_Playing) return;
 
-        libvlc_media_player_set_pause(player, 0);
+        playLater = false;
+
+        libvlc_media_player_set_pause(player, 1);
 
         return;
     }
 
+    // FIXME VLC 4.0.0: set_pause(player, 1) and player_play(player) are asynchronous, so we use
+    //                  a playLater boolean to ensure that we don't get stuck in pause mode.
+
+    playLater = true;
+
     if (libvlc_media_player_get_state(player) == libvlc_Playing) return;
 
-    libvlc_media_player_set_pause(player, 0);
+    libvlc_media_player_play(player);
 }
 
 #endif

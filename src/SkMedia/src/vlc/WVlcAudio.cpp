@@ -43,7 +43,7 @@ static const int AUDIO_TOLERANCE = 100; // 100 milliseconds
 
 static const int AUDIO_RESYNCHRONIZE = 10000; // 10 seconds
 
-static const int AUDIO_DELAY_COUNT = 5;
+static const int AUDIO_DELAY_COUNT = 10;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -277,7 +277,7 @@ void WVlcAudioPrivate::play(int at)
 
     libvlc_media_player_play(player);
 
-    applyTime(at);
+    if (at) applyTime(at);
 }
 
 void WVlcAudioPrivate::pause()
