@@ -98,7 +98,7 @@ public: // Functions
     void setSource(const QString & url,
                    const QString & audio, const QStringList & options, int loop);
 
-    void play(int time);
+    void play(int at);
 
     void pause();
     void stop ();

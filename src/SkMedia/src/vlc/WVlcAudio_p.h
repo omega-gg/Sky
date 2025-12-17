@@ -80,6 +80,10 @@ public: // Functions
 
     void setSource(const QString & url, const QStringList & options, int loop);
 
+#if LIBVLC_VERSION_MAJOR > 3
+    void applyOpen();
+#endif
+
     void applyBuffering(float progress);
 
     void synchronize(int time);
@@ -108,6 +112,11 @@ public: // Functions
     void setWait(bool enabled);
 
 public: // Static events
+#if LIBVLC_VERSION_MAJOR > 3
+    static void onChanged(const struct libvlc_event_t * event, void * data);
+    static void onOpening(const struct libvlc_event_t * event, void * data);
+#endif
+
     static void onPlaying(const struct libvlc_event_t * event, void * data);
     static void onPaused (const struct libvlc_event_t * event, void * data);
     static void onStopped(const struct libvlc_event_t * event, void * data);
@@ -122,10 +131,17 @@ public: // Variables
 
     libvlc_media_player_t * player;
 
+#if LIBVLC_VERSION_MAJOR > 3
+    bool opening;
+#endif
     bool playing;
     bool buffering;
 
     bool playerBuffering;
+
+#if LIBVLC_VERSION_MAJOR > 3
+    int currentTime;
+#endif
 
     bool wait;
 

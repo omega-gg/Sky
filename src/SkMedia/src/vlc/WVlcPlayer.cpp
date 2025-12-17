@@ -376,12 +376,12 @@ void WVlcPlayerPrivate::setSource(const QString & url,
     libvlc_media_player_set_media(player, media);
 }
 
-void WVlcPlayerPrivate::play(int time)
+void WVlcPlayerPrivate::play(int at)
 {
 #if LIBVLC_VERSION_MAJOR > 3
     if (opening)
     {
-        currentTime = time;
+        currentTime = at;
 
         return;
     }
@@ -389,23 +389,23 @@ void WVlcPlayerPrivate::play(int time)
 
     if (playing)
     {
-        if (time) seek(time);
+        if (at) seek(at);
 
         return;
     }
 
 #if LIBVLC_VERSION_MAJOR > 3
-    currentTime = time;
+    currentTime = at;
 #endif
 
     libvlc_media_player_play(player);
 
 #if LIBVLC_VERSION_MAJOR < 4
-    if (time) libvlc_media_player_set_time(player, time);
+    if (at) libvlc_media_player_set_time(player, at);
 #endif
 
 #ifdef VLCPLAYER_AUDIO
-    if (hasAudio) playerAudio->play(time);
+    if (hasAudio) playerAudio->play(at);
 #endif
 }
 
