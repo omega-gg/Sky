@@ -25,6 +25,9 @@
 
 // Qt includes
 #include <QObject>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // FIXME MSVC: ssize_t is required by vlc headers.
 #ifdef _MSC_VER
