@@ -858,9 +858,13 @@ elif [ $1 = "android" ]; then
 
     echo "COPYING VLC"
 
-    mkdir $deploy/vlc
+    vlc="$deploy/vlc"
 
-    copyAndroid "$VLC" $deploy/vlc
+    mkdir $vlc
+
+    copyAndroid "$VLC" $vlc
+
+    cp "$1"/*.jar $vlc
 fi
 
 #--------------------------------------------------------------------------------------------------
