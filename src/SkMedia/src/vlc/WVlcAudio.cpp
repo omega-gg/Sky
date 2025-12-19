@@ -29,6 +29,7 @@
 
 // Sk includes
 #include <WVlcEngine>
+#include <WVlcPlayer>
 #include <WAbstractBackend>
 
 // Private includes
@@ -53,6 +54,15 @@ static const int AUDIO_DELAY_COUNT = 10;
 
 WVlcAudioPrivate::WVlcAudioPrivate(WVlcAudio * p) : WPrivate(p) {}
 
+#if LIBVLC_VERSION_MAJOR > 3
+
+/* virtual */ WVlcAudioPrivate::~WVlcAudioPrivate()
+{
+    if (control) delete control;
+}
+
+#endif
+
 void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
 {
     Q_Q(WVlcAudio);
@@ -61,6 +71,10 @@ void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
     this->engine = engine;
 
     player = NULL;
+
+#if LIBVLC_VERSION_MAJOR > 3
+    control = NULL;
+#endif
 
 #if LIBVLC_VERSION_MAJOR > 3
     opening   = false;
@@ -104,6 +118,10 @@ void WVlcAudioPrivate::init(WVlcEngine * engine, QThread * thread)
 void WVlcAudioPrivate::create()
 {
     player = libvlc_media_player_new(engine->d_func()->instance);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    control = new WVlcPlayerControl(player);
+#endif
 
     libvlc_event_manager_t * manager = libvlc_media_player_event_manager(player);
 
@@ -189,6 +207,9 @@ void WVlcAudioPrivate::setSource(const QString & url, const QStringList & option
         libvlc_media_add_option(media, option.C_STR);
     }
 
+#if LIBVLC_VERSION_MAJOR > 3
+    opening   = true;
+#endif
     playing   = false;
     buffering = false;
 
@@ -224,7 +245,11 @@ void WVlcAudioPrivate::applyBuffering(float progress)
 
     if (buffering == false || playing == false) return;
 
+#if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_pause(player, 1);
+#else
+    control->pause();
+#endif
 
     clearDelay();
 }
@@ -278,7 +303,11 @@ void WVlcAudioPrivate::synchronize(int time)
 
     setWait(true);
 
+#if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_play(player);
+#else
+    control->play();
+#endif
 
     applyTime(time);
 }
@@ -298,7 +327,7 @@ void WVlcAudioPrivate::play(int at)
 
     if (playing)
     {
-        seek(at);
+        if (at) seek(at);
 
         return;
     }
@@ -309,10 +338,12 @@ void WVlcAudioPrivate::play(int at)
     currentTime = at;
 #endif
 
+#if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_play(player);
 
-#if LIBVLC_VERSION_MAJOR < 4
-    if (at) applyTime(at);
+    if (at) libvlc_media_player_set_time(player, at);
+#else
+    control->play();
 #endif
 }
 
@@ -324,7 +355,11 @@ void WVlcAudioPrivate::pause()
 
     setWait(false);
 
+#if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_pause(player, 1);
+#else
+    control->pause();
+#endif
 
     clearDelay();
 }
@@ -350,7 +385,7 @@ void WVlcAudioPrivate::stop()
 #else
     currentTime = 0;
 
-    libvlc_media_player_set_pause(player, 1);
+    control->pause();
 
     clearDelay();
 
@@ -360,7 +395,16 @@ void WVlcAudioPrivate::stop()
 
 void WVlcAudioPrivate::seek(int msec)
 {
-    if (player == NULL || playing == false) return;
+    if (player == NULL) return;
+
+#if LIBVLC_VERSION_MAJOR > 3
+    if (opening)
+    {
+        currentTime = msec;
+
+        return;
+    }
+#endif
 
     applyTime(msec);
 }
@@ -392,16 +436,21 @@ void WVlcAudioPrivate::deletePlayer()
 
 void WVlcAudioPrivate::applyPlay()
 {
-    qDebug("AUDIO APPLY PLAY");
+#if LIBVLC_VERSION_MAJOR > 3
+    if (control->applyPlay() == false) return;
+#endif
 
     playing = true;
 
-    if (playerBuffering)
-    {
-        libvlc_media_player_set_pause(player, 1);
+    if (playerBuffering == false) return;
 
-        clearDelay();
-    }
+#if LIBVLC_VERSION_MAJOR < 4
+    libvlc_media_player_set_pause(player, 1);
+#else
+    control->pause();
+#endif
+
+    clearDelay();
 }
 
 void WVlcAudioPrivate::applyTime(int time)
@@ -477,6 +526,10 @@ void WVlcAudioPrivate::setWait(bool enabled)
 {
     WVlcAudioPrivate * d = static_cast<WVlcAudioPrivate *> (data);
 
+#if LIBVLC_VERSION_MAJOR > 3
+    if (d->control->applyPause() == false) return;
+#endif
+
     d->playing = false;
 
     if (d->buffering == false)
@@ -488,6 +541,10 @@ void WVlcAudioPrivate::setWait(bool enabled)
 /* static */ void WVlcAudioPrivate::onStopped(const struct libvlc_event_t *, void * data)
 {
     WVlcAudioPrivate * d = static_cast<WVlcAudioPrivate *> (data);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    if (d->control->applyPause() == false) return;
+#endif
 
     d->playing = false;
 

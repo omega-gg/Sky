@@ -48,6 +48,11 @@
 
 #ifndef SK_NO_VLCAUDIO
 
+#if LIBVLC_VERSION_MAJOR > 3
+// Forward declarations
+class WVlcPlayerControl;
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // WVlcAudioPrivate
 //-------------------------------------------------------------------------------------------------
@@ -72,6 +77,10 @@ public: // Enums
 
 public:
     WVlcAudioPrivate(WVlcAudio * p);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    /* virtual */ ~WVlcAudioPrivate();
+#endif
 
     void init(WVlcEngine * engine, QThread * thread);
 
@@ -130,6 +139,10 @@ public: // Variables
     WVlcEngine * engine;
 
     libvlc_media_player_t * player;
+
+#if LIBVLC_VERSION_MAJOR > 3
+    WVlcPlayerControl * control;
+#endif
 
 #if LIBVLC_VERSION_MAJOR > 3
     bool opening;

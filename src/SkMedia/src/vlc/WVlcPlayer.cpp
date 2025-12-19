@@ -45,6 +45,81 @@ static const int PLAYER_RETRY_GAP = 1000; // 1 second
 
 static const int PLAYER_RETRY_COUNT = 1;
 
+#if LIBVLC_VERSION_MAJOR > 3
+
+//=================================================================================================
+// WVlcPlayerControl
+//=================================================================================================
+
+WVlcPlayerControl::WVlcPlayerControl(libvlc_media_player_t * player)
+{
+    this->player = player;
+
+    state = StateDefault;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+void WVlcPlayerControl::play()
+{
+    if (state == StateDefault || state == StatePaused)
+    {
+        state = StateRequestPlay;
+
+        libvlc_media_player_play(player);
+    }
+    else if (state == StateRequestPause)
+    {
+        state = StateRequestPlay;
+    }
+}
+
+void WVlcPlayerControl::pause()
+{
+    if (state == StateDefault || state == StatePlaying)
+    {
+        state = StateRequestPause;
+
+        libvlc_media_player_set_pause(player, 1);
+    }
+    else if (state == StateRequestPlay)
+    {
+        state = StateRequestPause;
+    }
+}
+
+bool WVlcPlayerControl::applyPlay()
+{
+    if (state == StateRequestPause)
+    {
+        libvlc_media_player_set_pause(player, 1);
+
+        return false;
+    }
+
+    state = StatePlaying;
+
+    return true;
+}
+
+bool WVlcPlayerControl::applyPause()
+{
+    if (state == StateRequestPlay)
+    {
+        libvlc_media_player_play(player);
+
+        return false;
+    }
+
+    state = StatePaused;
+
+    return true;
+}
+
+#endif // LIBVLC_VERSION_MAJOR > 3
+
 //=================================================================================================
 // WVlcPlayerPrivate
 //=================================================================================================
@@ -64,6 +139,10 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
     playerAudio = NULL;
 #endif
 
+#if LIBVLC_VERSION_MAJOR > 3
+    control = NULL;
+#endif
+
     backend = NULL;
 
 #ifdef VLCPLAYER_AUDIO
@@ -78,8 +157,6 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
 #ifdef VLCPLAYER_AUDIO
     wait = false;
-
-    playLater = false;
 #endif
 
     retry = 0;
@@ -140,6 +217,10 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 void WVlcPlayerPrivate::create()
 {
     player = libvlc_media_player_new(engine->d_func()->instance);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    control = new WVlcPlayerControl(player);
+#endif
 
     // FIXME: Applying the player default volume.
     //libvlc_audio_set_volume(player, 100);
@@ -383,6 +464,10 @@ void WVlcPlayerPrivate::play(int at)
     {
         currentTime = at;
 
+#ifdef VLCPLAYER_AUDIO
+        if (hasAudio) playerAudio->play(at);
+#endif
+
         return;
     }
 #endif
@@ -398,10 +483,12 @@ void WVlcPlayerPrivate::play(int at)
     currentTime = at;
 #endif
 
+#if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_play(player);
 
-#if LIBVLC_VERSION_MAJOR < 4
     if (at) libvlc_media_player_set_time(player, at);
+#else
+    control->play();
 #endif
 
 #ifdef VLCPLAYER_AUDIO
@@ -415,7 +502,11 @@ void WVlcPlayerPrivate::pause()
 
     playing = false;
 
+#if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_pause(player, 1);
+#else
+    control->pause();
+#endif
 
 #ifdef VLCPLAYER_AUDIO
     if (hasAudio) playerAudio->pause();
@@ -434,7 +525,7 @@ void WVlcPlayerPrivate::stop()
 #else
     currentTime = 0;
 
-    libvlc_media_player_set_pause(player, 1);
+    control->pause();
 
     libvlc_media_player_set_time(player, 0, false);
 #endif
@@ -447,6 +538,19 @@ void WVlcPlayerPrivate::stop()
 void WVlcPlayerPrivate::seek(int msec)
 {
     retry = 0;
+
+#if LIBVLC_VERSION_MAJOR > 3
+    if (opening)
+    {
+        currentTime = msec;
+
+#ifdef VLCPLAYER_AUDIO
+        if (hasAudio) playerAudio->seek(msec);
+#endif
+
+        return;
+    }
+#endif
 
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_player_set_time(player, msec);
@@ -579,6 +683,12 @@ void WVlcPlayerPrivate::deletePlayer()
     stop();
 #endif
 
+#if LIBVLC_VERSION_MAJOR > 3
+    delete control;
+
+    control = NULL;
+#endif
+
     libvlc_media_player_release(player);
 
     player = NULL;
@@ -610,11 +720,11 @@ void WVlcPlayerPrivate::applyOpen()
 
 void WVlcPlayerPrivate::applyPlay()
 {
-    playing = true;
-
-#ifdef VLCPLAYER_AUDIO
-    playLater = false;
+#if LIBVLC_VERSION_MAJOR > 3
+    if (control->applyPlay() == false) return;
 #endif
+
+    playing = true;
 
     if (backend == NULL) return;
 
@@ -902,31 +1012,20 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
+#if LIBVLC_VERSION_MAJOR > 3
+    if (d->control->applyPause() == false) return;
+#endif
+
+    d->playing = false;
+
 #ifdef VLCPLAYER_AUDIO
     if (d->hasAudio)
     {
-        if (d->playLater)
-        {
-            d->playLater = false;
-
-            if (d->playing)
-            {
-                libvlc_media_player_play(d->player);
-
-                return;
-            }
-        }
-
-        d->playing = false;
-
         // NOTE: We avoid sending EventPaused when we're waiting for the audio.
         if (d->wait) return;
 
         d->playerAudio->pause();
     }
-    else d->playing = false;
-#else
-    d->playing = false;
 #endif
 
     if (d->backend == NULL) return;
@@ -938,6 +1037,10 @@ libvlc_media_track_t * WVlcPlayerPrivate::getTrack(int id, libvlc_track_type_t t
 /* static */ void WVlcPlayerPrivate::onStopped(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
+
+#if LIBVLC_VERSION_MAJOR > 3
+    if (d->control->applyPause() == false) return;
+#endif
 
 #if LIBVLC_VERSION_MAJOR > 3
     if (d->playing)
@@ -1085,25 +1188,8 @@ void WVlcPlayerPrivate::onWaitingChanged(bool waiting)
 
     wait = waiting;
 
-    if (wait)
-    {
-        playLater = false;
-
-        if (libvlc_media_player_get_state(player) != libvlc_Playing) return;
-
-        libvlc_media_player_set_pause(player, 1);
-
-        return;
-    }
-
-    // FIXME VLC 4.0.0: set_pause(player, 1) and player_play(player) are asynchronous, so we use
-    //                  a playLater boolean to ensure that we don't get stuck in pause mode.
-
-    playLater = true;
-
-    if (libvlc_media_player_get_state(player) == libvlc_Playing) return;
-
-    libvlc_media_player_play(player);
+    if (wait) control->pause();
+    else      control->play ();
 }
 
 #endif

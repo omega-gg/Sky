@@ -50,6 +50,42 @@ class WVlcPlayerPrivateAudio;
 class WVlcAudio;
 #endif
 
+#if LIBVLC_VERSION_MAJOR > 3
+
+//-------------------------------------------------------------------------------------------------
+// WVlcPlayerControl
+//-------------------------------------------------------------------------------------------------
+
+class SK_MEDIA_EXPORT WVlcPlayerControl
+{
+public: // Enums
+    enum State
+    {
+        StateDefault = QEvent::User,
+        StatePlaying,
+        StatePaused,
+        StateRequestPlay,
+        StateRequestPause
+    };
+
+public:
+    WVlcPlayerControl(libvlc_media_player_t * player);
+
+public: // Interface
+    void play ();
+    void pause();
+
+    bool applyPlay ();
+    bool applyPause();
+
+public: // Variables
+    libvlc_media_player_t * player;
+
+    State state;
+};
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivate
 //-------------------------------------------------------------------------------------------------
@@ -182,6 +218,10 @@ public: // Variables
     WVlcAudio * playerAudio;
 #endif
 
+#if LIBVLC_VERSION_MAJOR > 3
+    WVlcPlayerControl * control;
+#endif
+
     WAbstractBackend * backend;
 
     QStringList options;
@@ -198,8 +238,6 @@ public: // Variables
 
 #ifdef VLCPLAYER_AUDIO
     bool wait;
-
-    bool playLater;
 #endif
 
     int retry;
