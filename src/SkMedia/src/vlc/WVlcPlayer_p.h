@@ -35,6 +35,13 @@
 
 // Qt includes
 #include <QMutex>
+#ifdef Q_OS_ANDROID
+#ifdef QT_5
+    #include <QtAndroid>
+#else
+    #include <QJniObject>
+#endif
+#endif
 #ifdef VLCPLAYER_AUDIO
 #include <QTimer>
 #endif
@@ -219,6 +226,10 @@ public: // Variables
 #endif
 
 #if LIBVLC_VERSION_MAJOR > 3
+#ifdef Q_OS_ANDROID
+    QJniObject window;
+#endif
+
     WVlcPlayerControl * control;
 #endif
 

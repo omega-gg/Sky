@@ -38,6 +38,11 @@
 // Private includes
 #include <private/WVlcEngine_p>
 
+// Typedefs
+#if defined(Q_OS_ANDROID) && defined(QT_5)
+typedef QAndroidJniObject QJniObject;
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
@@ -219,6 +224,27 @@ void WVlcPlayerPrivate::create()
     player = libvlc_media_player_new(engine->d_func()->instance);
 
 #if LIBVLC_VERSION_MAJOR > 3
+#ifdef Q_OS_ANDROID
+    // NOTE android/VLC: A window surface is required for the decoder even if it's rendered
+    //      offscreen.
+
+    QJniObject app = QJniObject::callStaticObjectMethod("android/app/ActivityThread",
+                                                        "currentApplication",
+                                                        "()Landroid/app/Application;");
+
+    QJniObject loader = app.callObjectMethod("getClassLoader", "()Ljava/lang/ClassLoader;");
+
+    QJniObject name = QJniObject::fromString("org.videolan.libvlc.AWindow");
+
+    loader.callObjectMethod("loadClass",
+                            "(Ljava/lang/String;)Ljava/lang/Class;", name.object<jstring>());
+
+    window = QJniObject("org/videolan/libvlc/AWindow",
+                        "(Lorg/videolan/libvlc/AWindow$SurfaceCallback;)V", nullptr);
+
+    libvlc_media_player_set_android_context(player, window.object());
+#endif
+
     control = new WVlcPlayerControl(player);
 #endif
 

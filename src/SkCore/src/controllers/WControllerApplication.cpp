@@ -74,7 +74,7 @@
     #ifdef QT_6
         #include <QPermissions>
     #endif
-#elif defined (Q_OS_ANDROID)
+#elif defined(Q_OS_ANDROID)
 #ifdef QT_5
     #include <QtAndroid>
     #include <QAndroidJniEnvironment>
