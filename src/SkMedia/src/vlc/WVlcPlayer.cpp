@@ -910,13 +910,16 @@ void WVlcPlayerPrivate::applySize(unsigned int * width, unsigned int * height)
         {
             applyTrackDefault(libvlc_media_tracklist_at(videos, 0));
 
-            *width  = trackWidth;
-            *height = trackHeight;
+            if (trackWidth > 0)
+            {
+                *width  = trackWidth;
+                *height = trackHeight;
+            }
         }
 
         libvlc_media_tracklist_delete(videos);
     }
-    else
+    else if (trackWidth > 0)
     {
         *width  = trackWidth;
         *height = trackHeight;
