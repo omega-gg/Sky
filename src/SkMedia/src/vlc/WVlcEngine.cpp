@@ -173,6 +173,20 @@ void WVlcEnginePrivate::create()
     {
         qWarning("WVlcEnginePrivate::create: LibVLC error: %s", libvlc_errmsg());
     }
+
+#if LIBVLC_VERSION_MAJOR > 3
+    libvlc_dialog_cbs dialogs;
+
+    dialogs.pf_display_question = onDialogQuestion;
+
+    dialogs.pf_cancel = onDialogCancel;
+
+    dialogs.pf_display_login    = NULL;
+    dialogs.pf_display_progress = NULL;
+    dialogs.pf_update_progress  = NULL;
+
+    libvlc_dialog_set_callbacks(instance, &dialogs, nullptr);
+#endif
 }
 
 void WVlcEnginePrivate::startLog()
@@ -340,6 +354,32 @@ void WVlcEnginePrivate::clearDiscoverers()
         return;
     }
 }
+
+#if LIBVLC_VERSION_MAJOR > 3
+
+/* static */ void WVlcEnginePrivate::onDialogQuestion(void                        *,
+                                                      libvlc_dialog_id            * id,
+                                                      const char                  * title,
+                                                      const char                  * text,
+                                                      libvlc_dialog_question_type,
+                                                      const char                  *,
+                                                      const char                  *,
+                                                      const char                  *)
+{
+    // NOTE VLC 4.0.0: This seem to be required for Chromecast to connect.
+    if (std::strstr(title, "Insecure") && std::strstr(text, "certificate"))
+    {
+        libvlc_dialog_post_action(id, 1);
+    }
+    else libvlc_dialog_dismiss(id);
+}
+
+/* static */ void WVlcEnginePrivate::onDialogCancel(void *, libvlc_dialog_id * id)
+{
+    libvlc_dialog_dismiss(id);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor

@@ -73,6 +73,19 @@ public: // Static events
     static void onRendererAdded  (const struct libvlc_event_t * event, void * data);
     static void onRendererDeleted(const struct libvlc_event_t * event, void * data);
 
+#if LIBVLC_VERSION_MAJOR > 3
+    static void onDialogQuestion(void                        * data,
+                                 libvlc_dialog_id            * id,
+                                 const char                  * title,
+                                 const char                  * text,
+                                 libvlc_dialog_question_type   type,
+                                 const char                  * cancel,
+                                 const char                  * action1,
+                                 const char                  * action2);
+
+    static void onDialogCancel(void * data, libvlc_dialog_id * id);
+#endif
+
 public: // Variables
     QThread * thread;
 

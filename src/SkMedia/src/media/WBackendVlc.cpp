@@ -2643,7 +2643,10 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
             // NOTE: We repeat at the lowest level possible, instead of relying on the WPlayer.
             if (d->repeat)
             {
+                // NOTE VLC 4.0.0: Setting the source does not seem to be required.
+#if LIBVLC_VERSION_MAJOR < 4
                 d->player->setSource(d->currentMedia, d->currentAudio, d->options, d->loop);
+#endif
 
                 d->player->play(0);
 

@@ -119,18 +119,20 @@ void WDeclarativeImageBasePrivate::loadUrl()
         return;
     }
 
+    if (url.startsWith("image://"))
+    {
+        if (file) clearFile();
+
+        q->applyUrl(url, asynchronous);
+
+        return;
+    }
+
     if (file)
     {
         QObject::disconnect(file, 0, q, 0);
 
         file->deleteLater();
-    }
-
-    if (url.startsWith("image://"))
-    {
-        q->applyUrl(url, asynchronous);
-
-        return;
     }
 
     QString source = WControllerFile::resolvedUrl(q, url);
