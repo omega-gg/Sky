@@ -330,7 +330,7 @@ public: // Static functions
     static QFileInfoList recursiveEntryInfoList(const QString & path);
 
 signals:
-    void logChanged();
+    void logChanged(const QString & message);
 
     void verbosityChanged();
 

@@ -569,7 +569,7 @@ void WControllerFilePrivate::onLog(const QString & message)
         log.remove(0, length - CONTROLLERFILE_LOG_MAX);
     }
 
-    emit q->logChanged();
+    emit q->logChanged(string);
 
     logBuffer.append(string);
 
@@ -1662,7 +1662,7 @@ void WControllerFile::setLog(const QString & log)
 
     d->log = log;
 
-    emit logChanged();
+    emit logChanged(log);
 }
 
 QtMsgType WControllerFile::verbosity() const
