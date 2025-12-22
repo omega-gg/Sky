@@ -38,7 +38,12 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+#ifdef Q_OS_ANDROID
+// FIXME android/VLC 4.0.0: 300 ms seems to work better.
+static const int AUDIO_EXTRA = 300; // 300 milliseconds
+#else
 static const int AUDIO_EXTRA = 50; // 50 milliseconds
+#endif
 
 static const int AUDIO_TOLERANCE = 100; // 100 milliseconds
 

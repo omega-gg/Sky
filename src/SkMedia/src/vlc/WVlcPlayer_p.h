@@ -262,6 +262,10 @@ public: // Variables
     int currentTime;
 #endif
 
+    qreal speed;
+
+    int volume;
+
     WAbstractBackend::Output output;
     QString                  quality;
 

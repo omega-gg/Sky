@@ -175,6 +175,10 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
     currentTime = 0;
 #endif
 
+    speed = 1.0;
+
+    volume = 100;
+
     output  = WAbstractBackend::OutputMedia;
     quality = "";
 
@@ -384,9 +388,9 @@ void WVlcPlayerPrivate::setSource(const QString & url,
                         // NOTE: We create this instance on the VLC threads.
                         playerAudio = new WVlcAudio(engine);
 
-                        playerAudio->setSpeed(libvlc_media_player_get_rate(player));
+                        playerAudio->setSpeed(speed);
 
-                        playerAudio->setVolume(libvlc_audio_get_volume(player));
+                        playerAudio->setVolume(volume);
 
                         mutex.lock();
 
@@ -591,6 +595,10 @@ void WVlcPlayerPrivate::seek(int msec)
 
 void WVlcPlayerPrivate::setSpeed(float speed)
 {
+    if (this->speed == speed) return;
+
+    this->speed = speed;
+
     libvlc_media_player_set_rate(player, speed);
 
 #ifdef VLCPLAYER_AUDIO
@@ -600,6 +608,10 @@ void WVlcPlayerPrivate::setSpeed(float speed)
 
 void WVlcPlayerPrivate::setVolume(int volume)
 {
+    if (this->volume == volume) return;
+
+    this->volume = volume;
+
     libvlc_audio_set_volume(player, volume);
 
 #ifdef VLCPLAYER_AUDIO
