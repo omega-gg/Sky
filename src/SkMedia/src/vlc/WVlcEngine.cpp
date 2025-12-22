@@ -175,17 +175,12 @@ void WVlcEnginePrivate::create()
     }
 
 #if LIBVLC_VERSION_MAJOR > 3
-    libvlc_dialog_cbs dialogs;
+    libvlc_dialog_cbs dialogs {};
 
     dialogs.pf_display_question = onDialogQuestion;
+    dialogs.pf_cancel           = onDialogCancel;
 
-    dialogs.pf_cancel = onDialogCancel;
-
-    dialogs.pf_display_login    = NULL;
-    dialogs.pf_display_progress = NULL;
-    dialogs.pf_update_progress  = NULL;
-
-    libvlc_dialog_set_callbacks(instance, &dialogs, nullptr);
+    libvlc_dialog_set_callbacks(instance, &dialogs, NULL);
 #endif
 }
 
@@ -363,11 +358,18 @@ void WVlcEnginePrivate::clearDiscoverers()
                                                       const char                  * text,
                                                       libvlc_dialog_question_type,
                                                       const char                  *,
-                                                      const char                  *,
-                                                      const char                  *)
+                                                      const char                  * action1,
+                                                      const char                  * action2)
 {
-    // NOTE VLC 4.0.0: This seem to be required for Chromecast to connect.
+    qDebug("QUESTION [%s] [%s] [%s] [%s]", title, text, action1, action2);
+
+    // NOTE VLC 4.0.0: These seem to be required for Chromecast to connect.
+
     if (std::strstr(title, "Insecure") && std::strstr(text, "certificate"))
+    {
+        libvlc_dialog_post_action(id, 1);
+    }
+    else if (std::strstr(title, "Performance"))
     {
         libvlc_dialog_post_action(id, 1);
     }
