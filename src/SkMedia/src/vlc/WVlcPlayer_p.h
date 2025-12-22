@@ -91,7 +91,7 @@ public: // Variables
     State state;
 };
 
-#endif
+#endif // LIBVLC_VERSION_MAJOR > 3
 
 //-------------------------------------------------------------------------------------------------
 // WVlcPlayerPrivate
