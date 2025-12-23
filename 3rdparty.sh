@@ -14,8 +14,6 @@ compiler_win="mingw"
 
 qt="qt6"
 
-vlc="vlc3"
-
 mobile="simulator"
 
 #--------------------------------------------------------------------------------------------------
@@ -55,7 +53,6 @@ if [ "$2" = "all" ]; then
 
     sh environment.sh $compiler_win
     sh environment.sh $qt
-    sh environment.sh $vlc
     sh environment.sh $mobile
 fi
 
