@@ -81,6 +81,7 @@ copyAndroidQt()
 
         cp "$1/lib/lib$QtX"XmlPatterns_*.so $deploy
     else
+        cp "$1/lib/lib$QtX"Concurrent_*.so  $deploy
         cp "$1/lib/lib$QtX"Core5Compat_*.so $deploy
         cp "$1/lib/lib$QtX"QmlMeta_*.so     $deploy
         cp "$1/lib/lib$QtX"Positioning_*.so $deploy
@@ -387,6 +388,7 @@ else
             cp "$Qt/bin/$QtX"XmlPatterns.dll $deploy
             cp "$Qt/bin/$QtX"WinExtras.dll   $deploy
         else
+            cp "$Qt/bin/$QtX"Concurrent.dll  $deploy
             cp "$Qt/bin/$QtX"Core5Compat.dll $deploy
             cp "$Qt/bin/$QtX"QmlMeta.dll     $deploy
 
@@ -465,6 +467,7 @@ else
 
             copyMacOS QtXmlPatterns
         else
+            copyMacOS QtConcurrent
             copyMacOS QtCore5Compat
             copyMacOS QtQmlMeta
             copyMacOS QtPositioning
@@ -554,13 +557,7 @@ else
             cp "$Qt/lib/lib$QtX"Multimedia.a      $deploy
             cp "$Qt/lib/lib$QtX"MultimediaQuick.a $deploy
 
-            if [ $qt = "qt5" ]; then
-
-                cp "$Qt/lib/lib$QtX"XmlPatterns.a $deploy
-            else
-                cp "$Qt/lib/lib$QtX"Core5Compat.a $deploy
-                cp "$Qt/lib/lib$QtX"QmlMeta.a     $deploy
-            fi
+            cp "$Qt/lib/lib$QtX"XmlPatterns.a $deploy
 
             if [ -f "$Qt/lib/lib$QtX"QmlModels.a ]; then
 
@@ -579,6 +576,7 @@ else
             cp "$Qt"/lib/QtXml.framework/QtXml                         $deploy/libQt6Xml.a
             cp "$Qt"/lib/QtMultimedia.framework/QtMultimedia           $deploy/libQt6Multimedia.a
             cp "$Qt"/lib/QtMultimediaQuick.framework/QtMultimediaQuick $deploy/libQt6MultimediaQuick.a
+            cp "$Qt"/lib/QtConcurrent.framework/Concurrent             $deploy/libQt6Concurrent.a
 
             cp "$Qt"/lib/QtCore5Compat.framework/QtCore5Compat $deploy/libQt6Core5Compat.a
 
@@ -675,6 +673,7 @@ else
 
             cp "$Qt/lib/lib$QtX"XmlPatterns.so.$qx $deploy
         else
+            cp "$Qt/lib/lib$QtX"Concurrent.so.$qx  $deploy
             cp "$Qt/lib/lib$QtX"Core5Compat.so.$qx $deploy
             cp "$Qt/lib/lib$QtX"QmlMeta.so.$qx     $deploy
             cp "$Qt/lib/lib$QtX"Positioning.so.$qx $deploy
