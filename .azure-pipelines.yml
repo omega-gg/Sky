@@ -163,6 +163,7 @@ jobs:
   steps:
   - bash: |
       sh environment.sh qt6
+      sh environment.sh vlc4
       sh build.sh android all
       cd deploy
       zip -rq ../Sky.zip *
