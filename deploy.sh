@@ -576,7 +576,7 @@ else
             cp "$Qt"/lib/QtXml.framework/QtXml                         $deploy/libQt6Xml.a
             cp "$Qt"/lib/QtMultimedia.framework/QtMultimedia           $deploy/libQt6Multimedia.a
             cp "$Qt"/lib/QtMultimediaQuick.framework/QtMultimediaQuick $deploy/libQt6MultimediaQuick.a
-            cp "$Qt"/lib/QtConcurrent.framework/Concurrent             $deploy/libQt6Concurrent.a
+            cp "$Qt"/lib/QtConcurrent.framework/QtConcurrent           $deploy/libQt6Concurrent.a
 
             cp "$Qt"/lib/QtCore5Compat.framework/QtCore5Compat $deploy/libQt6Core5Compat.a
 
