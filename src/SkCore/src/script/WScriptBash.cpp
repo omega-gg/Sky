@@ -33,10 +33,6 @@
 #ifdef QT_OLD
 #include <QDebug>
 #endif
-#ifdef QT_4
-// Qt includes
-#include <QStringList>
-#endif
 
 // Sk includes
 #include <WControllerApplication>
