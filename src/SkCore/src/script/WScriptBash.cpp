@@ -124,6 +124,7 @@ void WScriptBashPrivate::onOutputError()
     qDebug().nospace() << QString::fromUtf8(data);
 #else
     qDebug().noquote().nospace() << QString::fromUtf8(data);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
