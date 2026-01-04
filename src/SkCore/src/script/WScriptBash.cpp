@@ -105,7 +105,11 @@ void WScriptBashPrivate::onOutput()
 
     if (data.endsWith('\n')) data.chop(1);
 
+#ifdef QT_4
+    qDebug().nospace() << QString::fromUtf8(data);
+#else
     qDebug().noquote().nospace() << QString::fromUtf8(data);
+#endif
 }
 
 void WScriptBashPrivate::onOutputError()
@@ -116,6 +120,9 @@ void WScriptBashPrivate::onOutputError()
 
     if (data.endsWith('\n')) data.chop(1);
 
+#ifdef QT_4
+    qDebug().nospace() << QString::fromUtf8(data);
+#else
     qDebug().noquote().nospace() << QString::fromUtf8(data);
 }
 
