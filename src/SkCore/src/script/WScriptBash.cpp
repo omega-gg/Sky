@@ -168,9 +168,11 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
     list.append("-lc");
     list.append("set -e; " + command);
 
+#ifndef QT_4
     d->process.setProgram(d->pathBash);
 
     d->process.setArguments(list);
+#endif
 
     connect(&(d->process), SIGNAL(readyReadStandardOutput()), this, SLOT(onOutput     ()));
     connect(&(d->process), SIGNAL(readyReadStandardError ()), this, SLOT(onOutputError()));
@@ -193,7 +195,11 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
         connect(&(d->process), SIGNAL(finished(int, QProcess::ExitStatus)),
                 this,          SLOT(onFinished(int, QProcess::ExitStatus)));
 
+#ifdef QT_4
+        d->process.start(d->pathBash, list);
+#else
         d->process.start();
+#endif
 
         d->applyRunning(true);
 
@@ -201,7 +207,11 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
     }
     else
     {
+#ifdef QT_4
+        d->process.start(d->pathBash, list);
+#else
         d->process.start();
+#endif
 
         d->applyRunning(true);
 
