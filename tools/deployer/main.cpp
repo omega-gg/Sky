@@ -212,7 +212,13 @@ bool applyImports(QString * content, const QString & line)
 
         if (line.startsWith(import) == false) continue;
 
-        content->append(import + ' ' + versions.at(i) + '\n');
+        QString version = versions.at(i);
+
+        if (version.isEmpty())
+        {
+            content->append(import + '\n');
+        }
+        else content->append(import + ' ' + versions.at(i) + '\n');
 
         return true;
     }
@@ -703,11 +709,20 @@ int main(int argc, char *argv[])
     {
         QStringList value = string.split('=');
 
-        if (value.count() != 2) continue;
+        int count = value.count();
 
-        imports.append("import " + value.at(0));
+        if (count == 1)
+        {
+            imports.append("import " + string);
 
-        versions.append(value.at(1));
+            versions.append("");
+        }
+        else if (count == 2)
+        {
+            imports.append("import " + value.at(0));
+
+            versions.append(value.at(1));
+        }
     }
 
     list = QString(argv[4]).split(' ');
