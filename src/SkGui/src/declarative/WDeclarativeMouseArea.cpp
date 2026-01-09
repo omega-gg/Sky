@@ -294,6 +294,19 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     QPoint position = d->view->d_func()->mousePos;
 
+#ifdef QT_6
+    if (isVisible() == false)
+    {
+        QQuickMouseEvent event;
+
+        event.reset(position.x(), position.y(), button, button, Qt::NoModifier);
+
+        emit pressed(&event);
+
+        return;
+    }
+#endif
+
     QMouseEvent event(QEvent::MouseButtonPress, position, d->view->mapToGlobal(position),
                       button, button, Qt::NoModifier);
 
@@ -306,6 +319,19 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     QPoint position = d->view->d_func()->mousePos;
 
+#ifdef QT_6
+    if (isVisible() == false)
+    {
+        QQuickMouseEvent event;
+
+        event.reset(position.x(), position.y(), button, Qt::NoButton, Qt::NoModifier);
+
+        emit released(&event);
+
+        return;
+    }
+#endif
+
     QMouseEvent event(QEvent::MouseButtonRelease, position, d->view->mapToGlobal(position),
                       button, Qt::NoButton, Qt::NoModifier);
 
@@ -314,8 +340,29 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
 /* Q_INVOKABLE */ void WDeclarativeMouseArea::click(Qt::MouseButton button)
 {
+#ifdef QT_6
+    if (isVisible() == false)
+    {
+        Q_D(WDeclarativeMouseArea);
+
+        press(button);
+
+        QQuickMouseEvent event;
+
+        QPoint position = d->view->d_func()->mousePos;
+
+        event.reset(position.x(), position.y(), button, Qt::NoButton, Qt::NoModifier, true);
+
+        emit clicked(&event);
+
+        release(button);
+
+        return;
+    }
+
     press  (button);
     release(button);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
