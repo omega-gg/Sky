@@ -19,7 +19,7 @@ SSL_versionA="1.0.2u"
 SSL_versionB="1.1.1w"
 SSL_versionC="3.5.3"
 
-VLC3_version="3.0.21"
+VLC3_version="3.0.23"
 VLC4_version="4.0.0"
 
 libtorrent_version="2.0.11"

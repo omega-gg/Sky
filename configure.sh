@@ -13,7 +13,7 @@ Qt4_version="4.8.7"
 Qt5_version="5.15.2"
 Qt6_version="6.10.1"
 
-VLC3_version="3.0.21"
+VLC3_version="3.0.23"
 VLC4_version="4.0.0"
 
 libtorrent_version="2.0.11"
