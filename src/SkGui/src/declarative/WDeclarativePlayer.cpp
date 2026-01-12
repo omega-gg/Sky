@@ -112,8 +112,6 @@ void WDeclarativePlayerPrivate::init()
     QObject::connect(player, SIGNAL(outputActiveChanged ()), q, SIGNAL(outputActiveChanged ()));
     QObject::connect(player, SIGNAL(qualityActiveChanged()), q, SIGNAL(qualityActiveChanged()));
 
-    QObject::connect(player, SIGNAL(fillModeChanged()), q, SIGNAL(fillModeChanged()));
-
     QObject::connect(player, SIGNAL(videosChanged()), q, SIGNAL(videosChanged()));
     QObject::connect(player, SIGNAL(audiosChanged()), q, SIGNAL(audiosChanged()));
 
@@ -150,6 +148,27 @@ void WDeclarativePlayerPrivate::init()
     QObject::connect(player, SIGNAL(tabIndexChanged()), q, SIGNAL(tabIndexChanged()));
 
     QObject::connect(player, SIGNAL(videoTagChanged()), q, SIGNAL(videoTagChanged()));
+
+    //---------------------------------------------------------------------------------------------
+
+    QObject::connect(player, SIGNAL(fillModeChanged()), q, SLOT(onFillMode()));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativePlayerPrivate::onFillMode()
+{
+    Q_Q(WDeclarativePlayer);
+
+    emit q->fillModeChanged();
+
+#ifdef QT_NEW
+    frameUpdate = true;
+#endif
+
+    q->update();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1006,12 +1025,6 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
     Q_D(WDeclarativePlayer);
 
     d->player->setFillMode(fillMode);
-
-#ifdef QT_NEW
-    d->frameUpdate = true;
-#endif
-
-    update();
 }
 
 //-------------------------------------------------------------------------------------------------

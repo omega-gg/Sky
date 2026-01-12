@@ -546,6 +546,8 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WDeclarativePlayer)
+
+    Q_PRIVATE_SLOT(d_func(), void onFillMode())
 };
 
 #include <private/WDeclarativePlayer_p>

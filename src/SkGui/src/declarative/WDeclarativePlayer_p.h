@@ -56,6 +56,9 @@ public:
 
     void init();
 
+public: // Slots
+    void onFillMode();
+
 public: // Variables
     WPlayer * player;
 
