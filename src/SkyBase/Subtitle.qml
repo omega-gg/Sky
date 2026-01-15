@@ -50,7 +50,7 @@ TextSubtitle
     // NOTE: The player has to be playing on the default output.
     visible: (player.visible
               &&
-              player.isLoading == false && player.isPlaying && player.hasOutput == false)
+              player.hasStarted && player.hasOutput == false && player.isLoading == false)
 
     source: player.subtitle
 
