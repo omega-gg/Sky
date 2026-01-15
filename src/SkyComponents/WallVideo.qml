@@ -499,13 +499,6 @@ WallBookmarkTrack
 
     //---------------------------------------------------------------------------------------------
 
-    function pUpdateText()
-    {
-        pMargin = subtitle.applySize(player, playerCover);
-    }
-
-    //---------------------------------------------------------------------------------------------
-
     function pGetItemActive()
     {
         if      (itemContextual) return itemContextual;
