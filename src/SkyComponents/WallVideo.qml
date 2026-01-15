@@ -201,16 +201,6 @@ WallBookmarkTrack
         /* QML_CONNECTION */ function onTabsMoved() { pUpdateSplit(); }
     }
 
-    Connections
-    {
-        target: (subtitle.visible) ? player : null
-
-        /* QML_CONNECTION */ function onWidthChanged () { pUpdateText(); }
-        /* QML_CONNECTION */ function onHeightChanged() { pUpdateText(); }
-
-        /* QML_CONNECTION */ function onFillModeChanged() { pUpdateText(); }
-    }
-
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
@@ -883,29 +873,18 @@ WallBookmarkTrack
         filter: st.wallVideo_filterShadow
     }
 
-    TextSubtitle
+    Subtitle
     {
         id: subtitle
 
-        anchors.left  : player.left
-        anchors.right : player.right
-        anchors.bottom: player.bottom
-
-        anchors.leftMargin  : st.dp8
-        anchors.rightMargin : st.dp8
-        anchors.bottomMargin: pMargin
-
-        z: player.z
-
-        visible: (player.visible && player.isLoading == false && player.isPlaying)
-
-        source: player.subtitle
-
-        currentTime: player.currentTime
+        player: player
 
         /* QML_EVENT */ onLoaded: function(ok) { subtitleLoaded(ok); }
 
-        onVisibleChanged: pUpdateText()
+        function onUpdateMargin()
+        {
+            margin = applySize(player, playerCover);
+        }
     }
 
     Rectangle
