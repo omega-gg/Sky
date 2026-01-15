@@ -601,6 +601,8 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
     }
     else
     {
+        qDebug("HELLO BASE URL %s", baseUrl.C_STR);
+
         host = WControllerNetwork::extractUrlHost(baseUrl);
 
         title = WControllerNetwork::extractTitle(head);
@@ -615,7 +617,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
 
     if (cover.isEmpty() == false)
     {
-        cover = generateUrl(cover, host);
+        cover = generateUrl(cover, baseUrl, host);
     }
 
     this->title = title;
@@ -638,7 +640,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
 
         type = WControllerPlaylist::Redirect;
 
-        origin = generateUrl(url, host);
+        origin = generateUrl(url, baseUrl, host);
 
         return;
     }
@@ -659,7 +661,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
 
         if (url.isEmpty()) continue;
 
-        url = generateUrl(url, host);
+        url = generateUrl(url, baseUrl, host);
 
         if (addUrl(&urls, url))
         {
@@ -679,7 +681,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
 
         foreach (const QString & source, sources)
         {
-            QString url = generateUrl(source, host);
+            QString url = generateUrl(source, baseUrl, host);
 
             if (addUrl(&urls, url))
             {
@@ -703,7 +705,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
 
         foreach (const QString & string, list)
         {
-            QString url = generateUrl(start + string + end, host);
+            QString url = generateUrl(start + string + end, baseUrl, host);
 
             if (url.contains(' ')) continue;
 
@@ -901,14 +903,15 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
         if (url.isEmpty()) continue;
 
-        return generateUrl(url, host);
+        return generateUrl(url, baseUrl, host);
     }
 
     return QString();
 }
 
 /* static */ QString WControllerPlaylistData::generateUrl(const QString & url,
-                                                          const QString & baseUrl)
+                                                          const QString & baseUrl,
+                                                          const QString & host)
 {
     QString result = url.simplified().remove(' ');
 
@@ -920,7 +923,11 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
     result.remove("\\");
 
-    return WControllerNetwork::generateUrl(result, baseUrl);
+    if (result.startsWith("/"))
+    {
+         return WControllerNetwork::generateUrl(result, host);
+    }
+    else return WControllerNetwork::generateUrl(result, baseUrl);
 }
 
 /* static */ QString WControllerPlaylistData::generateTitle(const QString & url,

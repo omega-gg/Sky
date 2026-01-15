@@ -565,7 +565,8 @@ public: // Static functions
 
     static QString extractHtmlLink(const QByteArray & array, const QString & url);
 
-    static QString generateUrl  (const QString & url, const QString & baseUrl);
+    static QString generateUrl(const QString & url, const QString & baseUrl, const QString & host);
+
     static QString generateTitle(const QString & url, const QString & urlName);
 
 private: // Functions
