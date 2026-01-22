@@ -53,6 +53,8 @@ public:
 public: // Functions
     void applyRunning(bool running);
 
+    void terminate();
+
 public: // Slots
     void onFinished(int exitCode, QProcess::ExitStatus exitStatus);
 

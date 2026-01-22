@@ -47,14 +47,7 @@ WScriptBashPrivate::WScriptBashPrivate(WScriptBash * p) : WPrivate(p) {}
 {
     if (running == false) return;
 
-    process.terminate();
-
-    if (process.waitForFinished(1000) == false)
-    {
-        process.kill();
-
-        process.waitForFinished(1000);
-    }
+    terminate();
 }
 
 void WScriptBashPrivate::init()
@@ -73,6 +66,29 @@ void WScriptBashPrivate::applyRunning(bool running)
     this->running = running;
 
     emit q->runningChanged();
+}
+
+void WScriptBashPrivate::terminate()
+{
+#ifdef Q_OS_WIN
+    qint64 id = process.processId();
+
+    if (id > 0)
+    {
+        // NOTE windows: This is useful for killing child processes.
+        QProcess::execute("taskkill", { "/PID", QString::number(id), "/T", "/F" });
+    }
+    else process.terminate();
+#else
+    process.terminate();
+#endif
+
+    if (process.waitForFinished(3000) == false)
+    {
+        process.kill();
+
+        process.waitForFinished(1000);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -144,6 +160,8 @@ void WScriptBashPrivate::onOutputError()
 bool WScriptBash::run(const QString & fileName, const QStringList & arguments, bool asynchronous)
 {
     Q_D(WScriptBash);
+
+    qDebug("BASH %s", fileName.C_STR);
 
     if (d->running) stop();
 
@@ -243,14 +261,7 @@ void WScriptBash::stop()
 
     disconnect(&(d->process), 0, this, 0);
 
-    d->process.terminate();
-
-    if (d->process.waitForFinished() == false)
-    {
-        d->process.kill();
-
-        d->process.waitForFinished(1000);
-    }
+    d->terminate();
 
     d->applyRunning(false);
 }
