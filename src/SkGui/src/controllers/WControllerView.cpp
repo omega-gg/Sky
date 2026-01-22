@@ -79,7 +79,9 @@ public: // Variables
 
 /* virtual */ bool WControllerViewWriteImages::run()
 {
-    const char * formatData = format.C_STR;
+    QByteArray array = format.toLatin1();
+
+    const char * formatData = array.constData();
 
     for (int i = 0; i < fileNames.count(); i++)
     {
@@ -116,7 +118,9 @@ public: // Variables
 
 /* virtual */ bool WControllerViewWritePaths::run()
 {
-    const char * formatData = format.C_STR;
+    QByteArray array = format.toLatin1();
+
+    const char * formatData = array.constData();
 
     for (int i = 0; i < fileNames.count(); i++)
     {
