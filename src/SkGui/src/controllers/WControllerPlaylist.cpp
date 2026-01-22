@@ -601,8 +601,6 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
     }
     else
     {
-        qDebug("HELLO BASE URL %s", baseUrl.C_STR);
-
         host = WControllerNetwork::extractUrlHost(baseUrl);
 
         title = WControllerNetwork::extractTitle(head);

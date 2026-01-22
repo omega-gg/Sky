@@ -453,7 +453,9 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
     if (count == lengthA)
     {
-        const char * bits = finished.C_STR;
+        QByteArray array = finished.toLatin1();
+
+        const char * bits = array.constData();
 
         for (int i = 0; i < lengthA; i++)
         {
@@ -484,7 +486,9 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
         QString bitmask = WControllerNetwork::stringBencodeAfter(string, "bitmask");
 
-        const char * bits = bitmask.C_STR;
+        QByteArray array = bitmask.toLatin1();
+
+        const char * bits = array.constData();
 
         for (int i = 0; i < bitmask.length(); i++)
         {
