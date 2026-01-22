@@ -161,8 +161,6 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
 {
     Q_D(WScriptBash);
 
-    qDebug("BASH %s", fileName.C_STR);
-
     if (d->running) stop();
 
     if (d->pathBash.isEmpty())
