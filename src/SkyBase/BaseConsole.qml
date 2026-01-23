@@ -65,7 +65,9 @@ BaseTextEdit
 
     onVisibleChanged: if (visible) text = log
 
-    onLogChanged: if (visible && pUpdate) text = log
+    // FIXME Qt6.10.1: When the text is empty we have to assign the log right away, otherwise we
+    //                 get an incorrect scrollToBottom behavior when showing the console.
+    onLogChanged: if ((visible || text == "") && pUpdate) text = log
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -109,7 +111,7 @@ BaseTextEdit
         {
             pSetLog(log + string);
 
-            var size = log.length;
+            /* var */ size = log.length;
 
             if (size > maximumLength)
             {
