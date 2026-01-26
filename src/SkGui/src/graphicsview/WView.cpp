@@ -2608,7 +2608,8 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     else if (api == QSGRendererInterface::Software)   return "software";
     else if (api == QSGRendererInterface::OpenVG)     return "OpenVG";
     else if (api == QSGRendererInterface::OpenGL)     return "OpenGL";
-    else if (api == QSGRendererInterface::Direct3D11) return "Direct3d";
+    else if (api == QSGRendererInterface::Direct3D11) return "Direct3d11";
+    else if (api == QSGRendererInterface::Direct3D12) return "Direct3d12";
     else if (api == QSGRendererInterface::Vulkan)     return "Vulkan";
     else if (api == QSGRendererInterface::Metal)      return "Metal";
     else                                              return "";
