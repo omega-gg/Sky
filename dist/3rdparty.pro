@@ -16,6 +16,7 @@ SUBDIRS = $$PATH/3rdparty \
           $$PATH/VLC \
           $$PATH/libtorrent \
           $$PATH/PeerTube \
+          $$PATH/spark \
           $$PATH/docker \
           $$PATH/documentation \
           $$PATH/BML \
