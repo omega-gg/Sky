@@ -157,6 +157,9 @@ public: // Static functions
     Q_INVOKABLE static QString extractUrlFileName (const QString & string);
     Q_INVOKABLE static QString extractUrlExtension(const QString & string);
 
+    // NOTE: Extract the base64 part of a data:image uri.
+    Q_INVOKABLE static QByteArray extractUrlDataImage(const QString & string);
+
     Q_INVOKABLE static bool hasQuery(const QString & string, const QString & key);
 
     Q_INVOKABLE static int queryIndex(const QString & string, const QString & key);

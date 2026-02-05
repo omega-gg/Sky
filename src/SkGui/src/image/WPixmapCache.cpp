@@ -879,15 +879,9 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
 
     if (source.startsWith("data:image/"))
     {
-        source = WControllerNetwork::decodeUrl(source.toUtf8());
+        QByteArray bytes = WControllerNetwork::extractUrlDataImage(source);
 
-        int index = source.indexOf(',');
-
-        if (index == -1) return QPixmap();
-
-        source = source.mid(index + 1);
-
-        QByteArray bytes = QByteArray::fromBase64(source.toUtf8());
+        if (bytes.isEmpty()) return QPixmap();
 
         QImage image = QImage::fromData(bytes);
 

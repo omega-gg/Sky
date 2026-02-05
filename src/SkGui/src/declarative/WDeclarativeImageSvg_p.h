@@ -77,7 +77,10 @@ public: // Functions
 
     void loadUrl();
 
-    void applyUrl(const QString & url);
+    void applyData(const QString & data);
+    void applyUrl (const QString & url);
+
+    void applySvg();
 
     void clearUrl(WDeclarativeImageSvg::Status status);
 

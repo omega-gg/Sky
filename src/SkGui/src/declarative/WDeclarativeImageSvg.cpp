@@ -33,6 +33,7 @@
 
 // Sk includes
 #include <WControllerFile>
+#include <WControllerNetwork>
 #include <WControllerView>
 #include <WView>
 #include <WCache>
@@ -164,6 +165,13 @@ void WDeclarativeImageSvgPrivate::loadUrl()
         file->deleteLater();
     }
 
+    if (url.startsWith("image://data:image"))
+    {
+        applyData(url);
+
+        return;
+    }
+
     QString source = WControllerFile::resolvedUrl(q, url);
 
     file = wControllerFile->getHttp(source, q);
@@ -197,10 +205,26 @@ void WDeclarativeImageSvgPrivate::loadUrl()
 
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeImageSvgPrivate::applyData(const QString & data)
+{
+    QByteArray bytes = WControllerNetwork::extractUrlDataImage(data);
+
+    if (bytes.isEmpty() == false && renderer->load(bytes))
+    {
+        progress = 1.0;
+        status   = WDeclarativeImageSvg::Ready;
+    }
+    else
+    {
+        progress = 0.0;
+        status   = WDeclarativeImageSvg::Error;
+    }
+
+    applySvg();
+}
+
 void WDeclarativeImageSvgPrivate::applyUrl(const QString & url)
 {
-    Q_Q(WDeclarativeImageSvg);
-
     QString source = WControllerFile::toLocalFile(url);
 
     if (renderer->load(source))
@@ -213,6 +237,13 @@ void WDeclarativeImageSvgPrivate::applyUrl(const QString & url)
         progress = 0.0;
         status   = WDeclarativeImageSvg::Error;
     }
+
+    applySvg();
+}
+
+void WDeclarativeImageSvgPrivate::applySvg()
+{
+    Q_Q(WDeclarativeImageSvg);
 
     size = renderer->defaultSize();
 

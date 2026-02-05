@@ -54,7 +54,8 @@ Item
 
     property alias radius: background.radius
 
-    property alias text: textEdit.text
+    property alias text       : textEdit.text
+    property alias textDefault: textEdit.textDefault
 
     //---------------------------------------------------------------------------------------------
 

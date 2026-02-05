@@ -1362,6 +1362,19 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     else return QString();
 }
 
+/* Q_INVOKABLE static */ QByteArray WControllerNetwork::extractUrlDataImage(const QString & string)
+{
+    QString data = WControllerNetwork::decodeUrl(string);
+
+    int index = data.indexOf(',');
+
+    if (index == -1) return QByteArray();
+
+    data = data.mid(index + 1);
+
+    return QByteArray::fromBase64(data.toUtf8());
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::hasQuery(const QString & string,

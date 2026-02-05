@@ -45,11 +45,24 @@ TextEdit
 
     property int durationCursor: st.baseLineEdit_durationCursor
 
+    property color colorCursor: st.baseLineEdit_colorCursor
+
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias textDefault: itemTextDefault.text
+
+    property alias itemTextDefault: itemTextDefault
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
     property alias colorText         : baseTextEdit.color
     property alias colorTextSelection: baseTextEdit.selectionColor
     property alias colorTextSelected : baseTextEdit.selectedTextColor
 
-    property color colorCursor: st.baseLineEdit_colorCursor
+    property alias colorDefault: itemTextDefault.color
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -196,5 +209,24 @@ TextEdit
         hoverEnabled: true
 
         cursor: Qt.IBeamCursor
+    }
+
+    TextBase
+    {
+        id: itemTextDefault
+
+        anchors.fill: parent
+
+        anchors.margins: baseTextEdit.textMargin
+
+        verticalAlignment: Text.AlignTop
+
+        maximumLineCount: 1
+
+        visible: (isFocused == false && baseTextEdit.text == "")
+
+        color: st.baseLineEdit_colorDefault
+
+        font: baseTextEdit.font
     }
 }
