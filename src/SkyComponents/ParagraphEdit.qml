@@ -118,6 +118,12 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
+    // Events
+
+    function onKeyPressed (event) {}
+    function onKeyReleased(event) {}
+
+    //---------------------------------------------------------------------------------------------
     // Private
 
     function pScrollToBottom()
@@ -206,6 +212,19 @@ Item
 //#ELSE
             height: Math.max(paragraphEdit.height, contentHeight)
 //#END
+
+            //-------------------------------------------------------------------------------------
+            // BaseTextEdit events
+
+            function onKeyPressed(event)
+            {
+                paragraphEdit.onKeyPressed(event);
+            }
+
+            function onKeyReleased(event)
+            {
+                paragraphEdit.onKeyReleased(event);
+            }
         }
     }
 }
