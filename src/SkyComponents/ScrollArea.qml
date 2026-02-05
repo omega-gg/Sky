@@ -225,10 +225,13 @@ MouseArea
         }
         else
         {
-            value    = 0;
             pageStep = 0;
 
             scrollBar.model.setRange(0, 0);
+
+            // NOTE: We reset the value after setting the range. That's useful for pAtBottom based
+            //       implementations and avoid thinking the user scrolled at the top voluntarily.
+            value = 0;
 
             isScrollable = false;
         }
