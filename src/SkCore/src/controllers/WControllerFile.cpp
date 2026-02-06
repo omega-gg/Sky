@@ -1348,6 +1348,15 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 #endif
 }
 
+/* Q_INVOKABLE static */ QString WControllerFile::pathDesktop()
+{
+#ifdef QT_4
+    return QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+#endif
+}
+
 /* Q_INVOKABLE static */ QString WControllerFile::pathDocuments()
 {
 #ifdef QT_4

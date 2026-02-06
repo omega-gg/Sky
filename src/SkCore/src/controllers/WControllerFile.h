@@ -271,6 +271,7 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static QString pathWritable ();
+    Q_INVOKABLE static QString pathDesktop  ();
     Q_INVOKABLE static QString pathDocuments();
     Q_INVOKABLE static QString pathPictures ();
     Q_INVOKABLE static QString pathTemp     ();
