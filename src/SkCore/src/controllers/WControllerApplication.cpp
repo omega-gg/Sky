@@ -2911,6 +2911,20 @@ void WControllerApplication::setApplicationUrl(const QString & url)
     emit applicationUrlChanged();
 }
 
+QString WControllerApplication::locale() const
+{
+    return QLocale().name();
+}
+
+void WControllerApplication::setLocale(const QString & name)
+{
+    if (QLocale().name() == name) return;
+
+    QLocale::setDefault(QLocale(name));
+
+    emit localeChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 #if defined(Q_OS_MACOS) || defined(SK_MOBILE)

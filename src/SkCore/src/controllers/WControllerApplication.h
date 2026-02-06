@@ -101,6 +101,8 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
+    Q_PROPERTY(QString locale READ locale WRITE setLocale NOTIFY localeChanged)
+
 #if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
 #endif
@@ -589,6 +591,8 @@ signals:
 
     void applicationUrlChanged();
 
+    void localeChanged();
+
 #if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     // NOTE android: This is useful to notify that the 'intent' has changed.
     void messageChanged();
@@ -653,6 +657,9 @@ public: // Properties
 
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
+
+    QString locale() const;
+    void    setLocale(const QString & name);
 
 #if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     // NOTE android: This returns the 'intent' text.
