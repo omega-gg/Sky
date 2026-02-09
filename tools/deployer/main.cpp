@@ -212,6 +212,11 @@ bool applyImports(QString * content, const QString & line)
 
         if (line.startsWith(import) == false) continue;
 
+        int length = import.length();
+
+        // NOTE: We don't want to update 'QtQuick.' imports.
+        if (length < line.length() && line.at(length) == '.') continue;
+
         QString version = versions.at(i);
 
         if (version.isEmpty())
