@@ -71,7 +71,7 @@ Panel
         visible: (imageFront.visible == false)
     }
 
-    Image
+    SkyImage
     {
         id: imageFront
 

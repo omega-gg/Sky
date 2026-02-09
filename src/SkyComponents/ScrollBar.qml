@@ -230,7 +230,7 @@ Item
             if (visible) model.scroll(-steps * 3);
         }
 
-        Image
+        SkyImage
         {
             id: background
 
@@ -268,7 +268,7 @@ Item
 
             onYChanged: if (drag.active) position = y
 
-            Image
+            SkyImage
             {
                 anchors.fill: parent
 

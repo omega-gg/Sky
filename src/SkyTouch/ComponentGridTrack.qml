@@ -100,7 +100,7 @@ Item
 
         icon: cover
 
-        iconFillMode: Image.PreserveAspectFit
+        iconFillMode: SkyImage.PreserveAspectFit
 
         iconAsynchronous: gui.asynchronous
 

@@ -281,7 +281,7 @@ BaseButton
                 // NOTE: Since 'margins' comes from a static model we apply the ratio manually.
                 sourceSize.height: getSourceHeight(st.dp(margins))
 
-                clip: (fillMode == Image.PreserveAspectCrop)
+                clip: (fillMode == SkyImage.PreserveAspectCrop)
 
                 source: cover
 

@@ -31,5 +31,5 @@ SlideImage
 
     anchors.fill: parent
 
-    fillMode: Image.PreserveAspectCrop
+    fillMode: SkyImage.PreserveAspectCrop
 }

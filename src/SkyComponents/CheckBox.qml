@@ -136,7 +136,7 @@ BaseButton
         border.color: st.border_color
     }
 
-    Image
+    SkyImage
     {
         anchors.fill: parent
 

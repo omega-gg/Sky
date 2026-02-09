@@ -148,7 +148,7 @@ BaseButtonTouch
 
         sourceSize.height: getSourceHeight()
 
-        clip: (fillMode == Image.PreserveAspectCrop)
+        clip: (fillMode == SkyImage.PreserveAspectCrop)
 
         opacity: (buttonTouchFull.enabled) ? 1.0 : st.icon_opacityDisable
 

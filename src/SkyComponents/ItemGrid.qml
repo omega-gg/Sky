@@ -139,7 +139,7 @@ SkyMouseArea
         anchors.top   : background.top
         anchors.bottom: border.top
 
-        fillMode: Image.PreserveAspectFit
+        fillMode: SkyImage.PreserveAspectFit
     }
 
     BorderHorizontal

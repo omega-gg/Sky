@@ -222,7 +222,7 @@ SkyMouseArea
             sourceSize: Qt.size(width, height)
             sourceArea: Qt.size(width, height)
 
-            clip: (fillMode == Image.PreserveAspectCrop)
+            clip: (fillMode == SkyImage.PreserveAspectCrop)
 
             style: (itemText.style == st.text_raised) ? st.icon_raised
                                                       : st.icon_sunken

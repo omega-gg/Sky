@@ -148,7 +148,7 @@ BaseLabel
 
         sourceSize.height: getSourceHeight()
 
-        clip: (fillMode == Image.PreserveAspectCrop)
+        clip: (fillMode == SkyImage.PreserveAspectCrop)
 
         filter: (enableFilter) ? getFilter() : null
     }

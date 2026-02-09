@@ -68,8 +68,8 @@ ButtonExtraFull
 
     iconDefault: st.icon_feed
 
-    iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
-                                    : Image.PreserveAspectCrop
+    iconFillMode: (isSourceDefault) ? SkyImage.PreserveAspectFit
+                                    : SkyImage.PreserveAspectCrop
 
     iconAsynchronous: gui.asynchronous
 

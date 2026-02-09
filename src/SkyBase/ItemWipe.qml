@@ -240,7 +240,7 @@ Item
             }
         ]
 
-        Image
+        SkyImage
         {
             id: itemImage
 

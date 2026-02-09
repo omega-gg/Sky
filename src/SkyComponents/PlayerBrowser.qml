@@ -167,7 +167,7 @@ BasePlayerBrowser
         icon       : st.icon_backward
         iconScaling: true
 
-        iconFillMode: Image.PreserveAspectFit
+        iconFillMode: SkyImage.PreserveAspectFit
 
         cursor: Qt.PointingHandCursor
 
@@ -203,7 +203,7 @@ BasePlayerBrowser
         icon       : st.icon_forward
         iconScaling: true
 
-        iconFillMode: Image.PreserveAspectFit
+        iconFillMode: SkyImage.PreserveAspectFit
 
         cursor: Qt.PointingHandCursor
 
@@ -238,7 +238,7 @@ BasePlayerBrowser
 
         iconScaling: true
 
-        iconFillMode: Image.PreserveAspectFit
+        iconFillMode: SkyImage.PreserveAspectFit
 
         cursor: Qt.PointingHandCursor
 

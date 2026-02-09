@@ -122,7 +122,7 @@ ComponentWall
         else return qsTr("New Tab");
     }
 
-    iconFillMode: Image.PreserveAspectCrop
+    iconFillMode: SkyImage.PreserveAspectCrop
 
     iconCache: (item.cover != "")
 
@@ -132,7 +132,7 @@ ComponentWall
 
     itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
 
-    itemImage.clip: (itemImage.fillMode == Image.PreserveAspectCrop)
+    itemImage.clip: (itemImage.fillMode == SkyImage.PreserveAspectCrop)
 
 //#QT_4
     itemImage.sourceDefault: logo

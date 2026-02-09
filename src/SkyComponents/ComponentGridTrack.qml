@@ -79,7 +79,7 @@ ComponentGrid
 
     itemImage.sourceDefault: view.logo
 
-    itemImage.fillMode: Image.PreserveAspectFit
+    itemImage.fillMode: SkyImage.PreserveAspectFit
 
     itemImage.scaling: isSourceDefault
 

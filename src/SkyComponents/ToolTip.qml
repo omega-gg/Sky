@@ -136,7 +136,7 @@ BaseToolTip
 
         iconDefaultSize = Qt.size(width, height);
 
-        iconFillMode = Image.Stretch;
+        iconFillMode = SkyImage.Stretch;
 
         toolTip.text = text;
 
@@ -153,7 +153,7 @@ BaseToolTip
 
         iconDefaultSize = Qt.size(widthDefault, heightDefault);
 
-        iconFillMode = Image.PreserveAspectCrop;
+        iconFillMode = SkyImage.PreserveAspectCrop;
 
         toolTip.text = text;
 
@@ -180,7 +180,7 @@ BaseToolTip
         sourceSize: Qt.size(width, height)
         sourceArea: Qt.size(width, height)
 
-        clip: (fillMode == Image.PreserveAspectCrop)
+        clip: (fillMode == SkyImage.PreserveAspectCrop)
 
         enableFilter: isSourceDefault
     }

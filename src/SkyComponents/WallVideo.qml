@@ -576,11 +576,11 @@ WallBookmarkTrack
 
             anchors.rightMargin: anchors.leftMargin
 
-            clip: (fillMode == Image.PreserveAspectCrop)
+            clip: (fillMode == SkyImage.PreserveAspectCrop)
 
             sourceDefault: logo
 
-            fillMode: (isSourceDefault) ? Image.PreserveAspectFit
+            fillMode: (isSourceDefault) ? SkyImage.PreserveAspectFit
                                         : pFillMode
 
             cache: false
@@ -798,7 +798,7 @@ WallBookmarkTrack
 
             anchors.rightMargin: anchors.leftMargin
 
-            clip: (fillMode == Image.PreserveAspectCrop)
+            clip: (fillMode == SkyImage.PreserveAspectCrop)
 
             source:
             {
@@ -815,7 +815,7 @@ WallBookmarkTrack
 
             sourceDefault: logo
 
-            fillMode: (isSourceDefault) ? Image.PreserveAspectFit
+            fillMode: (isSourceDefault) ? SkyImage.PreserveAspectFit
                                         : pFillMode
 
             cache: false
@@ -919,13 +919,13 @@ WallBookmarkTrack
 
             anchors.rightMargin: anchors.leftMargin
 
-            clip: (fillMode == Image.PreserveAspectCrop)
+            clip: (fillMode == SkyImage.PreserveAspectCrop)
 
             source: (currentTab) ? currentTab.coverShot : ""
 
             sourceDefault: logo
 
-            fillMode: (isSourceDefault) ? Image.PreserveAspectFit
+            fillMode: (isSourceDefault) ? SkyImage.PreserveAspectFit
                                         : pFillMode
 
             asynchronous: wall.asynchronous

@@ -97,7 +97,7 @@ ComponentTab
         else return qsTr("New Tab");
     }
 
-    iconFillMode: Image.PreserveAspectCrop
+    iconFillMode: SkyImage.PreserveAspectCrop
 
     iconCache: (item.cover != "")
 

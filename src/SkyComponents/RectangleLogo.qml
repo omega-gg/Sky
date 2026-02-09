@@ -66,6 +66,6 @@ Rectangle
 
         source: st.logo
 
-        fillMode: Image.PreserveAspectFit
+        fillMode: SkyImage.PreserveAspectFit
     }
 }

@@ -169,7 +169,7 @@ SkyMouseArea
 
             opacity: (itemTab.enabled) ? 1.0 : st.icon_opacityDisable
 
-            clip: (fillMode == Image.PreserveAspectCrop)
+            clip: (fillMode == SkyImage.PreserveAspectCrop)
 
             style: (isCurrent) ? st.icon_raised
                                : st.icon_sunken

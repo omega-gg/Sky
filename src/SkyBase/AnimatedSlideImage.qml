@@ -40,7 +40,7 @@ AnimatedSlide
     // Children
     //---------------------------------------------------------------------------------------------
 
-    Image
+    SkyImage
     {
         id: imageB
 
@@ -55,7 +55,7 @@ AnimatedSlide
         smooth: imageA.smooth
     }
 
-    Image
+    SkyImage
     {
         id: imageA
 

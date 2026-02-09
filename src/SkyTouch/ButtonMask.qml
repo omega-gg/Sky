@@ -116,7 +116,7 @@ BaseButton
 
         sourceSize.height: getSourceHeight()
 
-        clip: (fillMode == Image.PreserveAspectCrop)
+        clip: (fillMode == SkyImage.PreserveAspectCrop)
 
         opacity: (buttonMask.enabled) ? getOpacity() : st.icon_opacityDisable
 
