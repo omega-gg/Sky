@@ -121,7 +121,7 @@ BasePlayerBrowser
     // Children
     //---------------------------------------------------------------------------------------------
 
-    MouseArea
+    SkyMouseArea
     {
         id: areaPlay
 

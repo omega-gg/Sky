@@ -114,7 +114,7 @@ BaseSlider
 //#END
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: itemHandle
 

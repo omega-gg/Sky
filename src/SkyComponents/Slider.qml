@@ -153,7 +153,7 @@ BaseSlider
         border.color: st.border_color
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: itemHandle
 

@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-MouseArea
+SkyMouseArea
 {
     id: buttonCheck
 
@@ -197,7 +197,7 @@ MouseArea
         border.color: st.border_color
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: handle
 

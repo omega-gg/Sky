@@ -173,7 +173,7 @@ BasePlayerBrowser
         onReleased: scrollClear()
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: areaPlay
 

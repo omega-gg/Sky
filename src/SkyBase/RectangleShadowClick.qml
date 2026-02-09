@@ -114,7 +114,7 @@ RectangleShadow
         interval: st.duration_normal
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: mouseArea
 

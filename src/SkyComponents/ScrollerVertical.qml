@@ -154,7 +154,7 @@ Item
         }
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: mouseAreaUp
 
@@ -205,7 +205,7 @@ Item
         }
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: mouseAreaDown
 

@@ -269,7 +269,7 @@ Scanner
         onTriggered: scan()
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: mouseArea
 

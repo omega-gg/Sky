@@ -208,7 +208,7 @@ BaseButton
 //#END
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: handle
 

@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-MouseArea
+SkyMouseArea
 {
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -240,7 +240,7 @@ MouseArea
         onTriggered: pForward = false
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: areaBackward
 
@@ -262,7 +262,7 @@ MouseArea
         }
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: areaForward
 

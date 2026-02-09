@@ -589,7 +589,7 @@ WallBookmarkTrack
         }
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: playerMouseArea
 

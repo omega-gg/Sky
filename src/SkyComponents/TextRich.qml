@@ -86,7 +86,7 @@ TextBase
     // Children
     //---------------------------------------------------------------------------------------------
 
-    MouseArea
+    SkyMouseArea
     {
         anchors.fill: parent
 

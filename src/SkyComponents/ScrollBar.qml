@@ -201,7 +201,7 @@ Item
         onRunningChanged: interval = st.scrollBar_intervalPress
     }
 
-    MouseArea
+    SkyMouseArea
     {
         id: handleArea
 
@@ -243,7 +243,7 @@ Item
             filter: st.scrollBar_filterHorizontalDefault
         }
 
-        MouseArea
+        SkyMouseArea
         {
             id: handle
 

@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-MouseArea
+SkyMouseArea
 {
     id: baseScrollBar
 
@@ -162,7 +162,7 @@ MouseArea
     // Children
     //---------------------------------------------------------------------------------------------
 
-    MouseArea
+    SkyMouseArea
     {
         id: handle
 
