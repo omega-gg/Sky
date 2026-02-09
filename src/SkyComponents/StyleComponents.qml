@@ -1330,7 +1330,7 @@ Style
         border_colorLight = "#c8c8c8";
         border_colorFocus = "#00a0f0";
 
-//#WindowSky
+//#SkyWindow
         //-----------------------------------------------------------------------------------------
         // Window
 
@@ -1640,7 +1640,7 @@ Style
         border_colorLight = border_color;
         border_colorFocus = color_highlight;
 
-//#WindowSky
+//#SkyWindow
         //-----------------------------------------------------------------------------------------
         // Window
 
@@ -1950,7 +1950,7 @@ Style
         border_colorLight = "#242424";
         border_colorFocus = color_highlight;
 
-//#WindowSky
+//#SkyWindow
         //-----------------------------------------------------------------------------------------
         // Window
 

@@ -1,6 +1,6 @@
 Style 1.0 Style.qml
 
-WindowSky 1.0 WindowSky.qml
+SkyWindow 1.0 SkyWindow.qml
 
 ItemSlide 1.0 ItemSlide.qml
 ItemWipe  1.0 ItemWipe.qml
