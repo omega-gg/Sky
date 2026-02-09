@@ -36,7 +36,7 @@ PanelContextualLoader 1.0 PanelContextualLoader.qml
 PanelImage            1.0 PanelImage.qml
 
 BaseToolTip 1.0 BaseToolTip.qml
-ToolTip     1.0 ToolTip.qml
+SkyToolTip  1.0 SkyToolTip.qml
 
 BarWindow       1.0 BarWindow.qml
 BarTitle        1.0 BarTitle.qml

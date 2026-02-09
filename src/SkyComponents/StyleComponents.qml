@@ -141,7 +141,7 @@ Style
     property color baseToolTip_colorB: barTitle_colorB
 //#END
 
-//#ToolTip
+//#SkyToolTip
     //---------------------------------------------------------------------------------------------
     // ToolTip
 
