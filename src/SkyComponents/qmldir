@@ -108,7 +108,7 @@ LabelStream        1.0 LabelStream.qml
 
 LabelWide 1.0 LabelWide.qml
 
-Popup 1.0 Popup.qml
+SkyPopup 1.0 SkyPopup.qml
 
 CheckBox     1.0 CheckBox.qml
 CheckBoxText 1.0 CheckBoxText.qml

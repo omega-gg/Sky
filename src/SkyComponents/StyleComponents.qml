@@ -553,7 +553,7 @@ Style
     property color labelStream_colorB: scrollBar_colorB
 //#END
 
-//#Popup
+//#SkyPopup
     //---------------------------------------------------------------------------------------------
     // Popup
 

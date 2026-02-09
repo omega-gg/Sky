@@ -202,7 +202,7 @@ Style
     property int labelWide_margins: buttonWide_margins
 //#END
 
-//#Popup
+//#SkyPopup
     //---------------------------------------------------------------------------------------------
     // Popup
 

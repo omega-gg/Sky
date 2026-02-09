@@ -44,7 +44,7 @@ LabelWide     1.0 LabelWide.qml
 LabelWideTiny 1.0 LabelWideTiny.qml
 LabelWideFull 1.0 LabelWideFull.qml
 
-Popup 1.0 Popup.qml
+SkyPopup 1.0 SkyPopup.qml
 
 LineEdit      1.0 LineEdit.qml
 LineEditClear 1.0 LineEditClear.qml
