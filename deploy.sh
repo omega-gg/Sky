@@ -50,9 +50,38 @@ copyQml()
     cp "$Qt"/qml/$1/qmldir $deploy/$1
 }
 
+copyFolder()
+{
+   find "$1" -type f -iname "$3" | while read -r file; do
+
+       path="${file#$1/}"
+
+       target="$2/$(dirname "$path")"
+
+       mkdir -p "$target"
+
+       cp "$file" "$target/"
+   done
+}
+
 copyMacOS()
 {
-    cp "$Qt"/lib/$1.framework/Versions/$qx/$1 $deploy/$1.dylib
+    for path in "$Qt"/lib/$1*.framework; do
+
+        name=$(basename "$path" .framework)
+
+        cp "$path/Versions/$qx/$name" "$deploy/$name.dylib"
+    done
+}
+
+copyiOS()
+{
+    for path in "$Qt"/lib/$1*.framework; do
+
+        name=$(basename "$path" .framework)
+
+        cp "$path/$name" "$deploy/libQt6${name}.a"
+    done
 }
 
 copyAndroid()
@@ -70,7 +99,7 @@ copyAndroidQt()
     cp "$1/lib/lib$QtX"Network_*.so         $deploy
     cp "$1/lib/lib$QtX"OpenGL_*.so          $deploy
     cp "$1/lib/lib$QtX"Qml_*.so             $deploy
-    cp "$1/lib/lib$QtX"Quick_*.so           $deploy
+    cp "$1/lib/lib$QtX"Quick*.so            $deploy
     cp "$1/lib/lib$QtX"Svg_*.so             $deploy
     cp "$1/lib/lib$QtX"Widgets_*.so         $deploy
     cp "$1/lib/lib$QtX"Xml_*.so             $deploy
@@ -111,7 +140,8 @@ copyAndroidQt()
         cp "$1"/plugins/webview/lib*.so $deploy/webview
     fi
 
-    cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so $deploy/$QtQuick
+    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "*.so"
+    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "qmldir"
 
     cp "$1"/qml/QtMultimedia/lib*multimedia*.so $deploy/$QtQuick
 
@@ -376,7 +406,7 @@ else
         cp "$Qt/bin/$QtX"Network.dll         $deploy
         cp "$Qt/bin/$QtX"OpenGL.dll          $deploy
         cp "$Qt/bin/$QtX"Qml.dll             $deploy
-        cp "$Qt/bin/$QtX"Quick.dll           $deploy
+        cp "$Qt/bin/$QtX"Quick*.dll          $deploy
         cp "$Qt/bin/$QtX"Svg.dll             $deploy
         cp "$Qt/bin/$QtX"Widgets.dll         $deploy
         cp "$Qt/bin/$QtX"Xml.dll             $deploy
@@ -426,8 +456,8 @@ else
             fi
         fi
 
-        cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll $deploy/$QtQuick
-        cp "$Qt"/qml/$QtQuick/qmldir             $deploy/$QtQuick
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dll"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
 
         cp "$Qt"/qml/QtMultimedia/*multimedia*.dll $deploy/QtMultimedia
         cp "$Qt"/qml/QtMultimedia/qmldir           $deploy/QtMultimedia
@@ -520,8 +550,8 @@ else
             cp "$Qt"/plugins/webview/libqtwebview*.dylib $deploy/webview
         fi
 
-        cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib $deploy/$QtQuick
-        cp "$Qt"/qml/$QtQuick/qmldir                  $deploy/$QtQuick
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dylib"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
 
         cp "$Qt"/qml/QtMultimedia/lib*multimedia*.dylib $deploy/QtMultimedia
         cp "$Qt"/qml/QtMultimedia/qmldir                $deploy/QtMultimedia
@@ -550,7 +580,7 @@ else
             cp "$Qt/lib/lib$QtX"Network.a         $deploy
             cp "$Qt/lib/lib$QtX"OpenGL.a          $deploy
             cp "$Qt/lib/lib$QtX"Qml.a             $deploy
-            cp "$Qt/lib/lib$QtX"Quick.a           $deploy
+            cp "$Qt/lib/lib$QtX"Quick*.a          $deploy
             cp "$Qt/lib/lib$QtX"Svg.a             $deploy
             cp "$Qt/lib/lib$QtX"Widgets.a         $deploy
             cp "$Qt/lib/lib$QtX"Xml.a             $deploy
@@ -565,29 +595,25 @@ else
                 cp "$Qt/lib/lib$QtX"QmlWorkerScript.a $deploy
             fi
         else
-            cp "$Qt"/lib/QtCore.framework/QtCore                       $deploy/libQt6Core.a
-            cp "$Qt"/lib/QtGui.framework/QtGui                         $deploy/libQt6Gui.a
-            cp "$Qt"/lib/QtNetwork.framework/QtNetwork                 $deploy/libQt6Network.a
-            cp "$Qt"/lib/QtOpenGL.framework/QtOpenGL                   $deploy/libQt6OpenGL.a
-            cp "$Qt"/lib/QtQml.framework/QtQml                         $deploy/libQt6Qml.a
-            cp "$Qt"/lib/QtQuick.framework/QtQuick                     $deploy/libQt6Quick.a
-            cp "$Qt"/lib/QtSvg.framework/QtSvg                         $deploy/libQt6Svg.a
-            cp "$Qt"/lib/QtWidgets.framework/QtWidgets                 $deploy/libQt6Widgets.a
-            cp "$Qt"/lib/QtXml.framework/QtXml                         $deploy/libQt6Xml.a
-            cp "$Qt"/lib/QtMultimedia.framework/QtMultimedia           $deploy/libQt6Multimedia.a
-            cp "$Qt"/lib/QtMultimediaQuick.framework/QtMultimediaQuick $deploy/libQt6MultimediaQuick.a
-            cp "$Qt"/lib/QtConcurrent.framework/QtConcurrent           $deploy/libQt6Concurrent.a
-
-            cp "$Qt"/lib/QtCore5Compat.framework/QtCore5Compat $deploy/libQt6Core5Compat.a
-
-            cp "$Qt"/lib/QtQmlMeta.framework/QtQmlMeta $deploy/libQt6QmlMeta.a
+            copyiOS QtCore
+            copyiOS QtGui
+            copyiOS QtNetwork
+            copyiOS QtOpenGL
+            copyiOS QtQml
+            copyiOS QtQuick
+            copyiOS QtSvg
+            copyiOS QtWidgets
+            copyiOS QtXml
+            copyiOS QtMultimedia
+            copyiOS QtMultimediaQuick
+            copyiOS QtConcurrent
+            copyiOS QtCore5Compat
+            copyiOS QtQmlMeta
 
             if [ -f "$Qt"/lib/QtQmlModels.framework/QtQmlModels ]; then
 
-                cp "$Qt"/lib/QtQmlModels.framework/QtQmlModels $deploy/libQt6QmlModels.a
-
-                cp "$Qt"/lib/QtQmlWorkerScript.framework/QtQmlWorkerScript \
-                   $deploy/libQt6QmlWorkerScript.a
+                copyiOS QtQmlModels
+                copyiOS QtQmlWorkerScript
             fi
         fi
 
@@ -660,7 +686,7 @@ else
         cp "$Qt/lib/lib$QtX"Network.so.$qx           $deploy
         cp "$Qt/lib/lib$QtX"OpenGL.so.$qx            $deploy
         cp "$Qt/lib/lib$QtX"Qml.so.$qx               $deploy
-        cp "$Qt/lib/lib$QtX"Quick.so.$qx             $deploy
+        cp "$Qt/lib/lib$QtX"Quick*.so.$qx            $deploy
         cp "$Qt/lib/lib$QtX"Svg.so.$qx               $deploy
         cp "$Qt/lib/lib$QtX"Widgets.so.$qx           $deploy
         cp "$Qt/lib/lib$QtX"Xml.so.$qx               $deploy
@@ -710,8 +736,8 @@ else
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so $deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so $deploy/xcbglintegrations
 
-        cp "$Qt"/qml/$QtQuick/libqtquick2plugin.so $deploy/$QtQuick
-        cp "$Qt"/qml/$QtQuick/qmldir               $deploy/$QtQuick
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.so"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
 
         cp "$Qt"/qml/QtMultimedia/lib*multimedia*.so $deploy/QtMultimedia
         cp "$Qt"/qml/QtMultimedia/qmldir             $deploy/QtMultimedia
