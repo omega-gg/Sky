@@ -286,7 +286,7 @@ Item
         itemText.visible: (buttonLeft.visible || live)
     }
 
-    Slider
+    SkySlider
     {
         id: slider
 

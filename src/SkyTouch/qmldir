@@ -70,7 +70,7 @@ GridPlaylist 1.0 GridPlaylist.qml
 ScrollArea   1.0 ScrollArea.qml
 SkyScrollBar 1.0 SkyScrollBar.qml
 
-Slider       1.0 Slider.qml
+SkySlider    1.0 SkySlider.qml
 SliderStream 1.0 SliderStream.qml
 
 SliderWide 1.0 SliderWide.qml

@@ -273,7 +273,7 @@ Style
     property color scrollBar_color: icon1_colorA
 //#END
 
-//#Slider
+//#SkySlider
     //---------------------------------------------------------------------------------------------
     // Slider
 

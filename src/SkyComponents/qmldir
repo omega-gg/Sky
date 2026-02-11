@@ -145,7 +145,7 @@ ScrollCompletion  1.0 ScrollCompletion.qml
 ScrollerVertical 1.0 ScrollerVertical.qml
 ScrollerList     1.0 ScrollerList.qml
 
-Slider       1.0 Slider.qml
+SkySlider    1.0 SkySlider.qml
 SliderVolume 1.0 SliderVolume.qml
 SliderStream 1.0 SliderStream.qml
 

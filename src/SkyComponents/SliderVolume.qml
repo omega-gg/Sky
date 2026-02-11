@@ -80,7 +80,7 @@ Item
         onPressed: slider.value = 0
     }
 
-    Slider
+    SkySlider
     {
         id: slider
 

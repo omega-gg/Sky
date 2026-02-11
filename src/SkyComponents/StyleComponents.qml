@@ -767,7 +767,7 @@ Style
     property real scrollerList_scroll: 0.1
 //#END
 
-//#Slider
+//#SkySlider
     //---------------------------------------------------------------------------------------------
     // Slider
 
