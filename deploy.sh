@@ -140,10 +140,8 @@ copyAndroidQt()
         cp "$1"/plugins/webview/lib*.so $deploy/webview
     fi
 
-    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "*.so"
-    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-    cp "$1"/qml/QtMultimedia/lib*multimedia*.so $deploy/$QtQuick
+    copyFolder "$1"/qml/$QtQuick     $deploy/$QtQuick     "*.so"
+    copyFolder "$1"/qml/QtMultimedia $deploy/QtMultimedia "*.so"
 
     if [ $qt = "qt6" ]; then
 
@@ -456,11 +454,8 @@ else
             fi
         fi
 
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dll"
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-        cp "$Qt"/qml/QtMultimedia/*multimedia*.dll $deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir           $deploy/QtMultimedia
+        copyFolder "$Qt"/qml/$QtQuick     $deploy/$QtQuick     "*.dll"
+        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.dll"
 
         if [ $qt = "qt6" ]; then
 
@@ -550,11 +545,8 @@ else
             cp "$Qt"/plugins/webview/libqtwebview*.dylib $deploy/webview
         fi
 
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dylib"
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-        cp "$Qt"/qml/QtMultimedia/lib*multimedia*.dylib $deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                $deploy/QtMultimedia
+        copyFolder "$Qt"/qml/$QtQuick     $deploy/$QtQuick     "*.dylib"
+        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.dylib"
 
         if [ $qt = "qt6" ]; then
 
@@ -736,11 +728,8 @@ else
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so $deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so $deploy/xcbglintegrations
 
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.so"
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-        cp "$Qt"/qml/QtMultimedia/lib*multimedia*.so $deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir             $deploy/QtMultimedia
+        copyFolder "$Qt"/qml/$QtQuick     $deploy/$QtQuick     "*.so"
+        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.so"
 
         if [ $qt = "qt6" ]; then
 
