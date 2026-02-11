@@ -210,7 +210,7 @@ SkyMouseArea
         onClicked: playlist.abortQuery()
     }
 
-    ScrollBar
+    SkyScrollBar
     {
         id: scrollBar
 

@@ -67,8 +67,8 @@ GridTouch    1.0 GridTouch.qml
 GridLoading  1.0 GridLoading.qml
 GridPlaylist 1.0 GridPlaylist.qml
 
-ScrollArea 1.0 ScrollArea.qml
-ScrollBar  1.0 ScrollBar.qml
+ScrollArea   1.0 ScrollArea.qml
+SkyScrollBar 1.0 SkyScrollBar.qml
 
 Slider       1.0 Slider.qml
 SliderStream 1.0 SliderStream.qml

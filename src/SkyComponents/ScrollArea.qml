@@ -257,7 +257,7 @@ SkyMouseArea
         onYChanged: onValueUpdated()
     }
 
-    ScrollBar
+    SkyScrollBar
     {
         id: scrollBar
 

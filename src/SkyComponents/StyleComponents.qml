@@ -651,7 +651,7 @@ Style
     property int gridPlaylist_spacingBottom: dp32
 //#END
 
-//#ScrollBar
+//#SkyScrollBar
     //---------------------------------------------------------------------------------------------
     // ScrollBar
 
@@ -1128,7 +1128,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // Images
 
-//#pictures_blank:ScrollBar
+//#pictures_blank:SkyScrollBar
     property url picture_blank: "pictures/blank.png"
 //#END
 
@@ -1527,7 +1527,7 @@ Style
         lineEditBox_colorHoverB = lineEditBox_colorHoverA;
 //#END
 
-//#ScrollBar
+//#SkyScrollBar
         //-----------------------------------------------------------------------------------------
         // ScrollBar
 
@@ -1837,7 +1837,7 @@ Style
         lineEditBox_colorHoverB = lineEditBox_colorHoverA;
 //#END
 
-//#ScrollBar
+//#SkyScrollBar
         //-----------------------------------------------------------------------------------------
         // ScrollBar
 
@@ -2147,7 +2147,7 @@ Style
         lineEditBox_colorHoverB = "#646464";
 //#END
 
-//#ScrollBar
+//#SkyScrollBar
         //-----------------------------------------------------------------------------------------
         // ScrollBar
 

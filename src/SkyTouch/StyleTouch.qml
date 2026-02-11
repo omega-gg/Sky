@@ -257,7 +257,7 @@ Style
     property int gridPlaylist_padding: dp4
 //#END
 
-//#ScrollBar
+//#SkyScrollBar
     //---------------------------------------------------------------------------------------------
     // ScrollBar
 

@@ -73,7 +73,7 @@ PanelContextual
         }
     }
 
-    ScrollBar
+    SkyScrollBar
     {
         id: scrollBar
 

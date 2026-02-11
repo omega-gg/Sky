@@ -216,7 +216,7 @@ Loader
         }
     }
 
-    ScrollBar
+    SkyScrollBar
     {
         id: scrollBar
 

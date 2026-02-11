@@ -103,7 +103,7 @@ Item
         onMovementStarted: window.checkContextual(areaContextual, flickable)
     }
 
-    ScrollBar
+    SkyScrollBar
     {
         id: scrollBar
 

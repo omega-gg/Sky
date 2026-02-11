@@ -134,8 +134,8 @@ ListContextual 1.0 ListContextual.qml
 BaseGrid     1.0 BaseGrid.qml
 GridPlaylist 1.0 GridPlaylist.qml
 
-ScrollArea 1.0 ScrollArea.qml
-ScrollBar  1.0 ScrollBar.qml
+ScrollArea   1.0 ScrollArea.qml
+SkyScrollBar 1.0 SkyScrollBar.qml
 
 ScrollList        1.0 ScrollList.qml
 ScrollListDefault 1.0 ScrollListDefault.qml
