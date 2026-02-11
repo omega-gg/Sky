@@ -61,6 +61,7 @@
 #include <QMimeData>
 #include <QDir>
 #include <QProcess>
+#include <QLocale>
 #ifdef QT_NEW
 #include <QTimeZone>
 #endif
@@ -2611,7 +2612,59 @@ QDateTime WControllerApplication::currentDateUtc(const QString & timeZone)
     else return defaultValue;
 }
 
-//---------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+// Locale
+
+/* Q_INVOKABLE static */ QStringList WControllerApplication::getLocales()
+{
+    QStringList list;
+
+    for (int i = QLocale::C + 1; i <= QLocale::LastLanguage; i++)
+    {
+        QLocale::Language language = static_cast<QLocale::Language>(i);
+
+        list.append(QLocale(language).name());
+    }
+
+    return list;
+}
+
+/* Q_INVOKABLE static */ QStringList WControllerApplication::getLanguages()
+{
+    QStringList list;
+
+    for (int i = QLocale::C + 1; i <= QLocale::LastLanguage; i++)
+    {
+        QLocale::Language language = static_cast<QLocale::Language>(i);
+
+        list.append(QLocale::languageToString(language));
+    }
+
+    return list;
+}
+
+/* Q_INVOKABLE static */
+QString WControllerApplication::localeFromLanguage(const QString & language)
+{
+    for (int i = QLocale::C + 1; i <= QLocale::LastLanguage; i++)
+    {
+        QLocale::Language current = static_cast<QLocale::Language>(i);
+
+        if (QLocale::languageToString(current) != language) continue;
+
+        return QLocale(current).name();
+    }
+
+    return QString();
+}
+
+/* Q_INVOKABLE static */
+QString WControllerApplication::localeToLanguage(const QString & locale)
+{
+    return QLocale::languageToString(QLocale(locale).language());
+}
+
+//-------------------------------------------------------------------------------------------------
 // BML
 
 /* Q_INVOKABLE static */ QString WControllerApplication::readBml(const QByteArray & array)

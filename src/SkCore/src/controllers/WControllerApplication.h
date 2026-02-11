@@ -528,6 +528,16 @@ public: // Static functions
     Q_INVOKABLE static int extractMsecs(const QString & text, int defaultValue = 0);
 
     //---------------------------------------------------------------------------------------------
+    // Locale
+
+    Q_INVOKABLE static QStringList getLocales  ();
+    Q_INVOKABLE static QStringList getLanguages();
+
+    Q_INVOKABLE static QString localeFromLanguage(const QString & language);
+
+    Q_INVOKABLE static QString localeToLanguage(const QString & locale);
+
+    //---------------------------------------------------------------------------------------------
     // BML
 
     // NOTE: This reads UTF-8 and removes invalid characters.
