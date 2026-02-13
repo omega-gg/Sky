@@ -1282,6 +1282,13 @@ void WViewPrivate::applyCursor(Qt::CursorShape shape)
 
     cursor = shape;
 
+    applyShape(shape);
+
+    emit q->mouseCursorChanged();
+}
+
+void WViewPrivate::applyShape(Qt::CursorShape shape)
+{
     if (cursors.contains(shape))
     {
         const QCursor & cursor = cursors.value(shape);
@@ -1289,30 +1296,36 @@ void WViewPrivate::applyCursor(Qt::CursorShape shape)
 #ifdef QT_4
         if (QApplication::overrideCursor())
         {
-             QApplication::changeOverrideCursor(cursor);
+            QApplication::changeOverrideCursor(cursor);
         }
         else QApplication::setOverrideCursor(cursor);
     }
     else if (QApplication::overrideCursor())
     {
-        QApplication::changeOverrideCursor(shape);
+        if (shape)
+        {
+            QApplication::changeOverrideCursor(shape);
+        }
+        else QApplication::restoreOverrideCursor();
     }
     else if (shape) QApplication::setOverrideCursor(shape);
 #else
         if (QGuiApplication::overrideCursor())
         {
-             QGuiApplication::changeOverrideCursor(cursor);
+            QGuiApplication::changeOverrideCursor(cursor);
         }
         else QGuiApplication::setOverrideCursor(cursor);
     }
     else if (QGuiApplication::overrideCursor())
     {
-        QGuiApplication::changeOverrideCursor(shape);
+        if (shape)
+        {
+            QGuiApplication::changeOverrideCursor(shape);
+        }
+        else QGuiApplication::restoreOverrideCursor();
     }
     else if (shape) QGuiApplication::setOverrideCursor(shape);
 #endif
-
-    emit q->mouseCursorChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2629,21 +2642,7 @@ void WView::hoverEnter()
 
 #ifdef QT_NEW
     // FIXME Qt5: Resetting the cursor by hand.
-    if (d->cursors.contains(d->cursor))
-    {
-        const QCursor & cursor = d->cursors.value(d->cursor);
-
-        if (QGuiApplication::overrideCursor())
-        {
-             QGuiApplication::changeOverrideCursor(cursor);
-        }
-        else QGuiApplication::setOverrideCursor(cursor);
-    }
-    else if (QGuiApplication::overrideCursor())
-    {
-        QGuiApplication::changeOverrideCursor(d->cursor);
-    }
-    else if (d->cursor) QGuiApplication::setOverrideCursor(d->cursor);
+    d->applyShape(d->cursor);
 #endif
 
     if (d->resetHover == false) return;

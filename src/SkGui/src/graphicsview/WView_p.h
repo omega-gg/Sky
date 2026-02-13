@@ -137,6 +137,7 @@ public: // Functions
 
     void setCursor  (Qt::CursorShape shape);
     void applyCursor(Qt::CursorShape shape);
+    void applyShape (Qt::CursorShape shape);
 
     void setKeyShiftPressed  (bool pressed);
     void setKeyControlPressed(bool pressed);
