@@ -38,9 +38,15 @@ public: // Interface
 
     bool insertId(int id);
 
+    void removeAt(int index);
+
     bool removeOne(int id);
 
     void clear();
+
+    int at(int index);
+
+    int indexOf(int id);
 
 private: // Variables
     QList<int> ids;

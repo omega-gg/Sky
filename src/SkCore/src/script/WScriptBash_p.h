@@ -72,6 +72,9 @@ public: // Variables
     QString environment;
 #endif
 
+    QString output;
+    QString outputError;
+
 protected:
     W_DECLARE_PUBLIC(WScriptBash)
 };

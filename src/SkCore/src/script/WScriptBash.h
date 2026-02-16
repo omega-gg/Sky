@@ -36,6 +36,27 @@
 
 class WScriptBashPrivate;
 
+//-------------------------------------------------------------------------------------------------
+// WScriptBashResult
+//-------------------------------------------------------------------------------------------------
+
+struct WScriptBashResult
+{
+    WScriptBashResult(bool ok = false)
+    {
+        this->ok = ok;
+    }
+
+    bool ok;
+
+    QString output;
+    QString outputError;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WScriptBash
+//-------------------------------------------------------------------------------------------------
+
 class SK_CORE_EXPORT WScriptBash : public QObject, public WPrivatable
 {
     Q_OBJECT
@@ -49,9 +70,9 @@ public:
     explicit WScriptBash(QObject * parent = NULL);
 
 public: // Interface
-    bool run(const QString     & fileName,
-             const QStringList & arguments    = QStringList(),
-             bool                asynchronous = true);
+    WScriptBashResult run(const QString     & fileName,
+                          const QStringList & arguments    = QStringList(),
+                          bool                asynchronous = true);
 
     void stop();
 
@@ -61,7 +82,7 @@ public: // Static functions
     static QString quote(const QString & string);
 
 signals:
-    void finished(bool ok);
+    void finished(const WScriptBashResult & result);
 
     void runningChanged();
 

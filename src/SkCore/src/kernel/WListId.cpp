@@ -72,6 +72,11 @@ bool WListId::insertId(int id)
 
 //-------------------------------------------------------------------------------------------------
 
+void WListId::removeAt(int index)
+{
+    ids.removeAt(index);
+}
+
 bool WListId::removeOne(int id)
 {
     return ids.removeOne(id);
@@ -80,6 +85,27 @@ bool WListId::removeOne(int id)
 void WListId::clear()
 {
     ids.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WListId::at(int index)
+{
+    return ids.at(index);
+}
+
+int WListId::indexOf(int id)
+{
+    for (int i = 0; i < ids.count(); i++)
+    {
+        int itemId = ids.at(i);
+
+        if (itemId != id) continue;
+
+        return i;
+    }
+
+    return -1;
 }
 
 #endif // SK_NO_LISTID

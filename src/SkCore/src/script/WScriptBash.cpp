@@ -108,9 +108,12 @@ void WScriptBashPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatu
 
     applyRunning(false);
 
-    bool ok = (exitCode == 0 && exitStatus == QProcess::NormalExit);
+    WScriptBashResult result(exitCode == 0 && exitStatus == QProcess::NormalExit);
 
-    emit q->finished(ok);
+    result.output      = output;
+    result.outputError = outputError;
+
+    emit q->finished(result);
 }
 
 void WScriptBashPrivate::onOutput()
@@ -118,6 +121,8 @@ void WScriptBashPrivate::onOutput()
     QByteArray data = process.readAllStandardOutput();
 
     if (data.isEmpty()) return;
+
+    output.append(data);
 
     if (data.endsWith('\n')) data.chop(1);
 
@@ -133,6 +138,8 @@ void WScriptBashPrivate::onOutputError()
     QByteArray data = process.readAllStandardError();
 
     if (data.isEmpty()) return;
+
+    outputError.append(data);
 
     if (data.endsWith('\n')) data.chop(1);
 
@@ -157,7 +164,8 @@ void WScriptBashPrivate::onOutputError()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-bool WScriptBash::run(const QString & fileName, const QStringList & arguments, bool asynchronous)
+WScriptBashResult WScriptBash::run(const QString     & fileName,
+                                   const QStringList & arguments, bool asynchronous)
 {
     Q_D(WScriptBash);
 
@@ -219,7 +227,7 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
 
         d->applyRunning(true);
 
-        return true;
+        return WScriptBashResult(true);
     }
     else
     {
@@ -231,13 +239,19 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
 
         d->applyRunning(true);
 
-        if (d->process.waitForStarted() == false) return false;
+        if (d->process.waitForStarted() == false)
+        {
+            return WScriptBashResult();
+        }
 
         while (d->process.state() != QProcess::NotRunning)
         {
             QCoreApplication::processEvents(QEventLoop::AllEvents);
 
-            if (sk->isQuitting()) return false;
+            if (sk->isQuitting())
+            {
+                return WScriptBashResult();
+            }
         }
 
         d->applyRunning(false);
@@ -247,7 +261,14 @@ bool WScriptBash::run(const QString & fileName, const QStringList & arguments, b
         d->onOutput     ();
         d->onOutputError();
 
-        return (d->process.exitCode() == 0 && d->process.exitStatus() == QProcess::NormalExit);
+        WScriptBashResult result(d->process.exitCode() == 0
+                                 &&
+                                 d->process.exitStatus() == QProcess::NormalExit);
+
+        result.output      = d->output;
+        result.outputError = d->outputError;
+
+        return result;
     }
 }
 
@@ -262,6 +283,9 @@ void WScriptBash::stop()
     d->terminate();
 
     d->applyRunning(false);
+
+    d->output      = QString();
+    d->outputError = QString();
 }
 
 //-------------------------------------------------------------------------------------------------
