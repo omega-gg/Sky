@@ -94,6 +94,11 @@ int WListId::at(int index)
     return ids.at(index);
 }
 
+int WListId::takeAt(int index)
+{
+    return ids.takeAt(index);
+}
+
 int WListId::indexOf(int id)
 {
     for (int i = 0; i < ids.count(); i++)

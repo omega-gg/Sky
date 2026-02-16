@@ -46,6 +46,8 @@ public: // Interface
 
     int at(int index);
 
+    int takeAt(int index);
+
     int indexOf(int id);
 
 private: // Variables

@@ -354,6 +354,18 @@ void WScriptBash::stop()
     return "'" + result + "'";
 }
 
+/* static */ QVariantMap WScriptBash::resultToMap(const WScriptBashResult & result)
+{
+    QVariantMap map;
+
+    map.insert("ok", result.ok);
+
+    map.insert("output",      result.output);
+    map.insert("outputError", result.outputError);
+
+    return map;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

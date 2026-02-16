@@ -42,10 +42,7 @@ class WScriptBashPrivate;
 
 struct WScriptBashResult
 {
-    WScriptBashResult(bool ok = false)
-    {
-        this->ok = ok;
-    }
+    WScriptBashResult(bool ok = false) { this->ok = ok; }
 
     bool ok;
 
@@ -80,6 +77,8 @@ public: // Static functions
     static QString findBash();
 
     static QString quote(const QString & string);
+
+    static QVariantMap resultToMap(const WScriptBashResult & result);
 
 signals:
     void finished(const WScriptBashResult & result);
