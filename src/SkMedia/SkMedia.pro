@@ -56,6 +56,7 @@ INCLUDEPATH += $$SK/include/SkCore \
 android:greaterThan(QT_MAJOR_VERSION, 4) {
     INCLUDEPATH += $$SK/include/$$QTX \
                    $$SK/include/$$QTX/QtCore
+}
 
 android {
     CONFIG(debug, debug|release) {
