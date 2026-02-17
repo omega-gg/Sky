@@ -164,8 +164,9 @@ void WScriptBashPrivate::onOutputError()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-WScriptBashResult WScriptBash::run(const QString     & fileName,
-                                   const QStringList & arguments, bool asynchronous)
+/* Q_INVOKABLE */ WScriptBashResult WScriptBash::run(const QString     & fileName,
+                                                     const QStringList & arguments,
+                                                     bool                asynchronous)
 {
     Q_D(WScriptBash);
 
@@ -272,7 +273,7 @@ WScriptBashResult WScriptBash::run(const QString     & fileName,
     }
 }
 
-void WScriptBash::stop()
+/* Q_INVOKABLE */ void WScriptBash::stop()
 {
     Q_D(WScriptBash);
 
@@ -292,7 +293,7 @@ void WScriptBash::stop()
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QString WScriptBash::findBash()
+/* Q_INVOKABLE static */ QString WScriptBash::findBash()
 {
     QString environment = QString::fromLocal8Bit(qgetenv("SKY_PATH_BASH"));
 
@@ -345,7 +346,7 @@ void WScriptBash::stop()
 #endif
 }
 
-/* static */ QString WScriptBash::quote(const QString & string)
+/* Q_INVOKABLE static */ QString WScriptBash::quote(const QString & string)
 {
     QString result = string;
 
@@ -354,7 +355,7 @@ void WScriptBash::stop()
     return "'" + result + "'";
 }
 
-/* static */ QVariantMap WScriptBash::resultToMap(const WScriptBashResult & result)
+/* Q_INVOKABLE static */ QVariantMap WScriptBash::resultToMap(const WScriptBashResult & result)
 {
     QVariantMap map;
 

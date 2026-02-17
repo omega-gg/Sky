@@ -25,6 +25,7 @@
 
 // Qt includes
 #include <QObject>
+#include <QVariantMap>
 #ifdef QT_4
 #include <QStringList>
 #endif
@@ -67,18 +68,18 @@ public:
     explicit WScriptBash(QObject * parent = NULL);
 
 public: // Interface
-    WScriptBashResult run(const QString     & fileName,
-                          const QStringList & arguments    = QStringList(),
-                          bool                asynchronous = true);
+    Q_INVOKABLE WScriptBashResult run(const QString     & fileName,
+                                      const QStringList & arguments    = QStringList(),
+                                      bool                asynchronous = true);
 
-    void stop();
+    Q_INVOKABLE void stop();
 
 public: // Static functions
-    static QString findBash();
+    Q_INVOKABLE static QString findBash();
 
-    static QString quote(const QString & string);
+    Q_INVOKABLE static QString quote(const QString & string);
 
-    static QVariantMap resultToMap(const WScriptBashResult & result);
+    Q_INVOKABLE static QVariantMap resultToMap(const WScriptBashResult & result);
 
 signals:
     void finished(const WScriptBashResult & result);
