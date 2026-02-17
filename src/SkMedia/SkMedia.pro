@@ -20,6 +20,10 @@ contains(QT_MAJOR_VERSION, 4) {
     QT += quick network
 }
 
+contains(QT_MAJOR_VERSION, 5) {
+    android:QT += androidextras
+}
+
 win32:CONFIG += dll
 
 # C++17
@@ -51,12 +55,6 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkMedia \
                $$SK/include/SkMedia/private \
                $$SK/include
-
-# NOTE android: Required for qandroidextras_p
-android:greaterThan(QT_MAJOR_VERSION, 4) {
-    INCLUDEPATH += $$SK/include/$$QTX \
-                   $$SK/include/$$QTX/QtCore
-}
 
 android {
     CONFIG(debug, debug|release) {
