@@ -41,6 +41,22 @@
 
 #ifndef SK_NO_BASHMANAGER
 
+//-------------------------------------------------------------------------------------------------
+// WBashManagerPrivateJob
+//-------------------------------------------------------------------------------------------------
+
+struct WBashManagerPrivateJob
+{
+    WScriptBash * script;
+
+    QString     fileName;
+    QStringList arguments;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBashManagerPrivate
+//-------------------------------------------------------------------------------------------------
+
 class SK_CORE_EXPORT WBashManagerPrivate : public WPrivate
 {
 public:
@@ -48,12 +64,23 @@ public:
 
     void init();
 
+public: // Functions
+    void processJob();
+
+    void removePending(WScriptBash * script);
+
 public: // Slots
     void onScriptFinished(const WScriptBashResult & result);
 
 public: // Variables
     QList<WScriptBash *> scripts;
     WListId              ids;
+
+    QList<WBashManagerPrivateJob> pending;
+
+    QList<WScriptBash *> jobs;
+
+    int maxJobs;
 
 protected:
     W_DECLARE_PUBLIC(WBashManager)

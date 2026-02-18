@@ -56,6 +56,8 @@ class SK_CORE_EXPORT WBashManager : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_PROPERTY(int maxJobs READ maxJobs WRITE setMaxJobs NOTIFY maxJobsChanged)
+
 public:
     explicit WBashManager(QObject * parent = NULL);
 
@@ -72,6 +74,12 @@ public: // Static functions
 
 signals:
     void finished(const WBashManagerResult & map);
+
+    void maxJobsChanged();
+
+public: // Properties
+    int  maxJobs() const;
+    void setMaxJobs(int max);
 
 private:
     W_DECLARE_PRIVATE(WBashManager)
