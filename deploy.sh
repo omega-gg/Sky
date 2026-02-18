@@ -140,8 +140,11 @@ copyAndroidQt()
         cp "$1"/plugins/webview/lib*.so $deploy/webview
     fi
 
-    copyFolder "$1"/qml/$QtQuick     $deploy/$QtQuick     "*.so"
+    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "*.so"
+    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "qmldir"
+
     copyFolder "$1"/qml/QtMultimedia $deploy/QtMultimedia "*.so"
+    copyFolder "$1"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
 
     if [ $qt = "qt6" ]; then
 
@@ -454,8 +457,11 @@ else
             fi
         fi
 
-        copyFolder "$Qt"/qml/$QtQuick     $deploy/$QtQuick     "*.dll"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dll"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
+
         copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.dll"
+        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
 
         if [ $qt = "qt6" ]; then
 
@@ -545,8 +551,11 @@ else
             cp "$Qt"/plugins/webview/libqtwebview*.dylib $deploy/webview
         fi
 
-        copyFolder "$Qt"/qml/$QtQuick     $deploy/$QtQuick     "*.dylib"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dylib"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
+
         copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.dylib"
+        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
 
         if [ $qt = "qt6" ]; then
 
@@ -728,8 +737,11 @@ else
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so $deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so $deploy/xcbglintegrations
 
-        copyFolder "$Qt"/qml/$QtQuick     $deploy/$QtQuick     "*.so"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.so"
+        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
+
         copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.so"
+        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
 
         if [ $qt = "qt6" ]; then
 
