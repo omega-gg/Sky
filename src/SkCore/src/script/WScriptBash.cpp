@@ -87,7 +87,7 @@ void WScriptBashPrivate::terminate()
     {
         process.kill();
 
-        process.waitForFinished(1000);
+        //process.waitForFinished(1000);
     }
 }
 
@@ -175,6 +175,13 @@ void WScriptBashPrivate::onOutputError()
     if (d->pathBash.isEmpty())
     {
         setPathBash(findBash());
+    }
+
+    if (QFile::exists(fileName) == false)
+    {
+        qWarning("WScriptBash::run: fileName %s does not exist.", fileName.C_STR);
+
+        return WScriptBashResult();
     }
 
 #ifdef Q_OS_WIN

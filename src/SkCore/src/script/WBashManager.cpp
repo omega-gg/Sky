@@ -56,10 +56,14 @@ void WBashManagerPrivate::processJob()
 
     jobs.append(script);
 
-    script->run(job.fileName, job.arguments, true);
+    WScriptBashResult result = script->run(job.fileName, job.arguments, true);
 
-    QObject::connect(script, SIGNAL(finished      (const WScriptBashResult &)),
-                     q,      SLOT(onScriptFinished(const WScriptBashResult &)));
+    if (result.ok)
+    {
+        QObject::connect(script, SIGNAL(finished      (const WScriptBashResult &)),
+                         q,      SLOT(onScriptFinished(const WScriptBashResult &)));
+    }
+    else onScriptFinished(result);
 }
 
 void WBashManagerPrivate::removePending(WScriptBash * script)
@@ -90,20 +94,17 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
 
     script->deleteLater();
 
-    if (index != -1)
-    {
-        jobs.removeOne(script);
+    if (index == -1) return;
 
-        scripts.removeAt(index);
+    jobs.removeOne(script);
 
-        WBashManagerResult manager;
+    scripts.removeAt(index);
 
-        manager.id = ids.takeAt(index);
+    WBashManagerResult manager(ids.takeAt(index));
 
-        manager.bash = result;
+    manager.bash = result;
 
-        emit q->finished(manager);
-    }
+    emit q->finished(manager);
 
     processJob();
 }
@@ -129,16 +130,10 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
 
     WScriptBash * script = new WScriptBash(this);
 
-    d->scripts.append(script);
-
-    int id = d->ids.generateId();
-
-    WBashManagerResult result;
-
-    result.id = id;
-
     if (d->jobs.count() == d->maxJobs)
     {
+        d->scripts.append(script);
+
         WBashManagerPrivateJob job;
 
         job.script = script;
@@ -148,15 +143,28 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
 
         d->pending.append(job);
 
-        return result;
+        return WBashManagerResult(d->ids.generateId(), true);
     }
 
-    d->jobs.append(script);
+    WScriptBashResult bash = script->run(fileName, arguments, true);
 
-    result.bash = script->run(fileName, arguments, true);
+    if (bash.ok == false)
+    {
+        delete script;
+
+        return WBashManagerResult();
+    }
 
     connect(script, SIGNAL(finished      (const WScriptBashResult &)),
             this,   SLOT(onScriptFinished(const WScriptBashResult &)));
+
+    d->scripts.append(script);
+
+    d->jobs.append(script);
+
+    WBashManagerResult result(d->ids.generateId());
+
+    result.bash = bash;
 
     return result;
 }
