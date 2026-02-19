@@ -20,7 +20,7 @@
 */
 //=================================================================================================
 
-#include "WScriptBash.h"
+#include "WBashScript.h"
 
 #ifndef SK_NO_SCRIPTBASH
 
@@ -41,16 +41,16 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-WScriptBashPrivate::WScriptBashPrivate(WScriptBash * p) : WPrivate(p) {}
+WBashScriptPrivate::WBashScriptPrivate(WBashScript * p) : WPrivate(p) {}
 
-/* virtual */ WScriptBashPrivate::~WScriptBashPrivate()
+/* virtual */ WBashScriptPrivate::~WBashScriptPrivate()
 {
     if (running == false) return;
 
     terminate();
 }
 
-void WScriptBashPrivate::init()
+void WBashScriptPrivate::init()
 {
     running = false;
 }
@@ -59,16 +59,16 @@ void WScriptBashPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WScriptBashPrivate::applyRunning(bool running)
+void WBashScriptPrivate::applyRunning(bool running)
 {
-    Q_Q(WScriptBash);
+    Q_Q(WBashScript);
 
     this->running = running;
 
     emit q->runningChanged();
 }
 
-void WScriptBashPrivate::terminate()
+void WBashScriptPrivate::terminate()
 {
 #ifdef Q_OS_WIN
     qint64 id = process.processId();
@@ -95,11 +95,11 @@ void WScriptBashPrivate::terminate()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WScriptBashPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void WBashScriptPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (running == false) return;
 
-    Q_Q(WScriptBash);
+    Q_Q(WBashScript);
 
     QObject::disconnect(&process, 0, q, 0);
 
@@ -108,7 +108,7 @@ void WScriptBashPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatu
 
     applyRunning(false);
 
-    WScriptBashResult result(exitCode == 0 && exitStatus == QProcess::NormalExit);
+    WBashScriptResult result(exitCode == 0 && exitStatus == QProcess::NormalExit);
 
     result.output      = output;
     result.outputError = outputError;
@@ -116,7 +116,7 @@ void WScriptBashPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatu
     emit q->finished(result);
 }
 
-void WScriptBashPrivate::onOutput()
+void WBashScriptPrivate::onOutput()
 {
     QByteArray data = process.readAllStandardOutput();
 
@@ -133,7 +133,7 @@ void WScriptBashPrivate::onOutput()
 #endif
 }
 
-void WScriptBashPrivate::onOutputError()
+void WBashScriptPrivate::onOutputError()
 {
     QByteArray data = process.readAllStandardError();
 
@@ -154,21 +154,21 @@ void WScriptBashPrivate::onOutputError()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-/* explicit */ WScriptBash::WScriptBash(QObject * parent)
-    : QObject(parent), WPrivatable(new WScriptBashPrivate(this))
+/* explicit */ WBashScript::WBashScript(QObject * parent)
+    : QObject(parent), WPrivatable(new WBashScriptPrivate(this))
 {
-    Q_D(WScriptBash); d->init();
+    Q_D(WBashScript); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WScriptBashResult WScriptBash::run(const QString     & fileName,
+/* Q_INVOKABLE */ WBashScriptResult WBashScript::run(const QString     & fileName,
                                                      const QStringList & arguments,
                                                      bool                asynchronous)
 {
-    Q_D(WScriptBash);
+    Q_D(WBashScript);
 
     if (d->running) stop();
 
@@ -179,9 +179,9 @@ void WScriptBashPrivate::onOutputError()
 
     if (QFile::exists(fileName) == false)
     {
-        qWarning("WScriptBash::run: fileName %s does not exist.", fileName.C_STR);
+        qWarning("WBashScript::run: fileName %s does not exist.", fileName.C_STR);
 
-        return WScriptBashResult();
+        return WBashScriptResult();
     }
 
 #ifdef Q_OS_WIN
@@ -235,7 +235,7 @@ void WScriptBashPrivate::onOutputError()
 
         d->applyRunning(true);
 
-        return WScriptBashResult(true);
+        return WBashScriptResult(true);
     }
     else
     {
@@ -249,7 +249,7 @@ void WScriptBashPrivate::onOutputError()
 
         if (d->process.waitForStarted() == false)
         {
-            return WScriptBashResult();
+            return WBashScriptResult();
         }
 
         while (d->process.state() != QProcess::NotRunning)
@@ -258,7 +258,7 @@ void WScriptBashPrivate::onOutputError()
 
             if (sk->isQuitting())
             {
-                return WScriptBashResult();
+                return WBashScriptResult();
             }
         }
 
@@ -269,7 +269,7 @@ void WScriptBashPrivate::onOutputError()
         d->onOutput     ();
         d->onOutputError();
 
-        WScriptBashResult result(d->process.exitCode() == 0
+        WBashScriptResult result(d->process.exitCode() == 0
                                  &&
                                  d->process.exitStatus() == QProcess::NormalExit);
 
@@ -280,9 +280,9 @@ void WScriptBashPrivate::onOutputError()
     }
 }
 
-/* Q_INVOKABLE */ void WScriptBash::stop()
+/* Q_INVOKABLE */ void WBashScript::stop()
 {
-    Q_D(WScriptBash);
+    Q_D(WBashScript);
 
     if (d->running == false) return;
 
@@ -300,7 +300,7 @@ void WScriptBashPrivate::onOutputError()
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WScriptBash::findBash()
+/* Q_INVOKABLE static */ QString WBashScript::findBash()
 {
     QString environment = QString::fromLocal8Bit(qgetenv("SKY_PATH_BASH"));
 
@@ -353,7 +353,7 @@ void WScriptBashPrivate::onOutputError()
 #endif
 }
 
-/* Q_INVOKABLE static */ QString WScriptBash::quote(const QString & string)
+/* Q_INVOKABLE static */ QString WBashScript::quote(const QString & string)
 {
     QString result = string;
 
@@ -362,7 +362,7 @@ void WScriptBashPrivate::onOutputError()
     return "'" + result + "'";
 }
 
-/* Q_INVOKABLE static */ QVariantMap WScriptBash::resultToMap(const WScriptBashResult & result)
+/* Q_INVOKABLE static */ QVariantMap WBashScript::resultToMap(const WBashScriptResult & result)
 {
     QVariantMap map;
 
@@ -378,19 +378,19 @@ void WScriptBashPrivate::onOutputError()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-bool WScriptBash::isRunning() const
+bool WBashScript::isRunning() const
 {
-    Q_D(const WScriptBash); return d->running;
+    Q_D(const WBashScript); return d->running;
 }
 
-QString WScriptBash::pathBash() const
+QString WBashScript::pathBash() const
 {
-    Q_D(const WScriptBash); return d->pathBash;
+    Q_D(const WBashScript); return d->pathBash;
 }
 
-void WScriptBash::setPathBash(const QString & path)
+void WBashScript::setPathBash(const QString & path)
 {
-    Q_D(WScriptBash);
+    Q_D(WBashScript);
 
     if (d->pathBash == path) return;
 

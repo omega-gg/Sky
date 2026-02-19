@@ -52,21 +52,21 @@ void WBashManagerPrivate::processJob()
 
     WBashManagerPrivateJob job = pending.takeFirst();
 
-    WScriptBash * script = job.script;
+    WBashScript * script = job.script;
 
     jobs.append(script);
 
-    WScriptBashResult result = script->run(job.fileName, job.arguments, true);
+    WBashScriptResult result = script->run(job.fileName, job.arguments, true);
 
     if (result.ok)
     {
-        QObject::connect(script, SIGNAL(finished      (const WScriptBashResult &)),
-                         q,      SLOT(onScriptFinished(const WScriptBashResult &)));
+        QObject::connect(script, SIGNAL(finished      (const WBashScriptResult &)),
+                         q,      SLOT(onScriptFinished(const WBashScriptResult &)));
     }
     else onScriptFinished(result);
 }
 
-void WBashManagerPrivate::removePending(WScriptBash * script)
+void WBashManagerPrivate::removePending(WBashScript * script)
 {
     for (int i = 0; i < pending.count(); i++)
     {
@@ -82,11 +82,11 @@ void WBashManagerPrivate::removePending(WScriptBash * script)
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
+void WBashManagerPrivate::onScriptFinished(const WBashScriptResult & result)
 {
     Q_Q(WBashManager);
 
-    WScriptBash * script = static_cast<WScriptBash *> (q->sender());
+    WBashScript * script = static_cast<WBashScript *> (q->sender());
 
     QObject::disconnect(script, 0, q, 0);
 
@@ -128,7 +128,7 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
 {
     Q_D(WBashManager);
 
-    WScriptBash * script = new WScriptBash(this);
+    WBashScript * script = new WBashScript(this);
 
     if (d->jobs.count() == d->maxJobs)
     {
@@ -146,7 +146,7 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
         return WBashManagerResult(d->ids.generateId(), true);
     }
 
-    WScriptBashResult bash = script->run(fileName, arguments, true);
+    WBashScriptResult bash = script->run(fileName, arguments, true);
 
     if (bash.ok == false)
     {
@@ -155,8 +155,8 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
         return WBashManagerResult();
     }
 
-    connect(script, SIGNAL(finished      (const WScriptBashResult &)),
-            this,   SLOT(onScriptFinished(const WScriptBashResult &)));
+    connect(script, SIGNAL(finished      (const WBashScriptResult &)),
+            this,   SLOT(onScriptFinished(const WBashScriptResult &)));
 
     d->scripts.append(script);
 
@@ -179,7 +179,7 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
 
     d->ids.removeAt(index);
 
-    WScriptBash * script = d->scripts.takeAt(index);
+    WBashScript * script = d->scripts.takeAt(index);
 
     d->removePending(script);
 
@@ -198,7 +198,7 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
 {
     Q_D(WBashManager);
 
-    foreach (WScriptBash * script, d->scripts)
+    foreach (WBashScript * script, d->scripts)
     {
         script->stop();
 
@@ -220,7 +220,7 @@ void WBashManagerPrivate::onScriptFinished(const WScriptBashResult & result)
 
 /* Q_INVOKABLE static */ QVariantMap WBashManager::resultToMap(const WBashManagerResult & result)
 {
-    QVariantMap map = WScriptBash::resultToMap(result.bash);
+    QVariantMap map = WBashScript::resultToMap(result.bash);
 
     map.insert("id", result.id);
 

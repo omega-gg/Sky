@@ -47,7 +47,7 @@
 
 struct WBashManagerPrivateJob
 {
-    WScriptBash * script;
+    WBashScript * script;
 
     QString     fileName;
     QStringList arguments;
@@ -67,18 +67,18 @@ public:
 public: // Functions
     void processJob();
 
-    void removePending(WScriptBash * script);
+    void removePending(WBashScript * script);
 
 public: // Slots
-    void onScriptFinished(const WScriptBashResult & result);
+    void onScriptFinished(const WBashScriptResult & result);
 
 public: // Variables
-    QList<WScriptBash *> scripts;
+    QList<WBashScript *> scripts;
     WListId              ids;
 
     QList<WBashManagerPrivateJob> pending;
 
-    QList<WScriptBash *> jobs;
+    QList<WBashScript *> jobs;
 
     int maxJobs;
 

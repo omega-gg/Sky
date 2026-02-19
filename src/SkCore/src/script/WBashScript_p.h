@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WSCRIPTBASH_P_H
-#define WSCRIPTBASH_P_H
+#ifndef WBASHSCRIPT_P_H
+#define WBASHSCRIPT_P_H
 
 /*  W A R N I N G
     -------------
@@ -39,14 +39,14 @@
 // Private includes
 #include <private/Sk_p>
 
-#ifndef SK_NO_SCRIPTBASH
+#ifndef SK_NO_BASHSCRIPT
 
-class SK_CORE_EXPORT WScriptBashPrivate : public WPrivate
+class SK_CORE_EXPORT WBashScriptPrivate : public WPrivate
 {
 public:
-    WScriptBashPrivate(WScriptBash * p);
+    WBashScriptPrivate(WBashScript * p);
 
-    /* virtual */ ~WScriptBashPrivate();
+    /* virtual */ ~WBashScriptPrivate();
 
     void init();
 
@@ -76,8 +76,8 @@ public: // Variables
     QString outputError;
 
 protected:
-    W_DECLARE_PUBLIC(WScriptBash)
+    W_DECLARE_PUBLIC(WBashScript)
 };
 
-#endif // SK_NO_SCRIPTBASH
-#endif // WSCRIPTBASH_P_H
+#endif // SK_NO_BASHSCRIPT
+#endif // WBASHSCRIPT_P_H

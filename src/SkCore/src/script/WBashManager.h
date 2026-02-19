@@ -24,7 +24,7 @@
 #define WBASHMANAGER_H
 
 // Sk includes
-#include <WScriptBash>
+#include <WBashScript>
 
 #ifndef SK_NO_BASHMANAGER
 
@@ -45,7 +45,7 @@ struct WBashManagerResult
 
     int id;
 
-    WScriptBashResult bash;
+    WBashScriptResult bash;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WBashManager)
 
-    Q_PRIVATE_SLOT(d_func(), void onScriptFinished(const WScriptBashResult &))
+    Q_PRIVATE_SLOT(d_func(), void onScriptFinished(const WBashScriptResult &))
 };
 
 #include <private/WBashManager_p>

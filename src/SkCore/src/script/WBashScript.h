@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WSCRIPTBASH_H
-#define WSCRIPTBASH_H
+#ifndef WBASHSCRIPT_H
+#define WBASHSCRIPT_H
 
 // Qt includes
 #include <QObject>
@@ -33,17 +33,17 @@
 // Sk includes
 #include <Sk>
 
-#ifndef SK_NO_SCRIPTBASH
+#ifndef SK_NO_BASHSCRIPT
 
-class WScriptBashPrivate;
+class WBashScriptPrivate;
 
 //-------------------------------------------------------------------------------------------------
-// WScriptBashResult
+// WBashScriptResult
 //-------------------------------------------------------------------------------------------------
 
-struct WScriptBashResult
+struct WBashScriptResult
 {
-    WScriptBashResult(bool ok = false) { this->ok = ok; }
+    WBashScriptResult(bool ok = false) { this->ok = ok; }
 
     bool ok;
 
@@ -52,10 +52,10 @@ struct WScriptBashResult
 };
 
 //-------------------------------------------------------------------------------------------------
-// WScriptBash
+// WBashScript
 //-------------------------------------------------------------------------------------------------
 
-class SK_CORE_EXPORT WScriptBash : public QObject, public WPrivatable
+class SK_CORE_EXPORT WBashScript : public QObject, public WPrivatable
 {
     Q_OBJECT
 
@@ -65,10 +65,10 @@ class SK_CORE_EXPORT WScriptBash : public QObject, public WPrivatable
     Q_PROPERTY(QString pathBash READ pathBash WRITE setPathBash NOTIFY pathBashChanged)
 
 public:
-    explicit WScriptBash(QObject * parent = NULL);
+    explicit WBashScript(QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE WScriptBashResult run(const QString     & fileName,
+    Q_INVOKABLE WBashScriptResult run(const QString     & fileName,
                                       const QStringList & arguments    = QStringList(),
                                       bool                asynchronous = true);
 
@@ -79,10 +79,10 @@ public: // Static functions
 
     Q_INVOKABLE static QString quote(const QString & string);
 
-    Q_INVOKABLE static QVariantMap resultToMap(const WScriptBashResult & result);
+    Q_INVOKABLE static QVariantMap resultToMap(const WBashScriptResult & result);
 
 signals:
-    void finished(const WScriptBashResult & result);
+    void finished(const WBashScriptResult & result);
 
     void runningChanged();
 
@@ -95,7 +95,7 @@ public: // Properties
     void    setPathBash(const QString & path);
 
 private:
-    W_DECLARE_PRIVATE(WScriptBash)
+    W_DECLARE_PRIVATE(WBashScript)
 
     Q_PRIVATE_SLOT(d_func(), void onFinished(int, QProcess::ExitStatus))
 
@@ -103,7 +103,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onOutputError())
 };
 
-#include <private/WScriptBash_p>
+#include <private/WBashScript_p>
 
-#endif // SK_NO_SCRIPTBASH
-#endif // WSCRIPTBASH_H
+#endif // SK_NO_BASHSCRIPT
+#endif // WBASHSCRIPT_H
