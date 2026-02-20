@@ -114,6 +114,8 @@ class SK_CORE_EXPORT WControllerFile : public WController
     Q_PROPERTY(int watcherInterval READ watcherInterval WRITE setWatcherInterval
                NOTIFY watcherIntervalChanged)
 
+    Q_PROPERTY(int maxLog READ maxLog WRITE setMaxLog NOTIFY maxLogChanged)
+
 public: // Enums
     enum Permission
     {
@@ -341,6 +343,8 @@ signals:
 
     void watcherIntervalChanged();
 
+    void maxLogChanged();
+
 public: // Properties
     QString log() const;
     void    setLog(const QString & log);
@@ -359,6 +363,9 @@ public: // Properties
 
     int  watcherInterval() const;
     void setWatcherInterval(int interval);
+
+    int  maxLog() const;
+    void setMaxLog(int max);
 
 private:
     W_DECLARE_PRIVATE   (WControllerFile)

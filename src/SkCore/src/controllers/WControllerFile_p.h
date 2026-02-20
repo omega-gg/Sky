@@ -102,6 +102,8 @@ public: // Variables
     QTimer timerLog;
     QTimer timerWatcher;
 
+    int maxLog;
+
 protected:
     W_DECLARE_PUBLIC(WControllerFile)
 };

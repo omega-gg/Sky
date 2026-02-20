@@ -376,6 +376,8 @@ void WControllerFilePrivate::init()
     pathLog = "log.txt";
 
     cache = NULL;
+
+    maxLog = CONTROLLERFILE_LOG_MAX;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -564,9 +566,9 @@ void WControllerFilePrivate::onLog(const QString & message)
 
     int length = log.length();
 
-    if (length > CONTROLLERFILE_LOG_MAX)
+    if (length > maxLog)
     {
-        log.remove(0, length - CONTROLLERFILE_LOG_MAX);
+        log.remove(0, length - maxLog);
     }
 
     emit q->logChanged(string);
@@ -1762,6 +1764,24 @@ void WControllerFile::setWatcherInterval(int interval)
     else d->timerWatcher.setInterval(interval);
 
     emit watcherIntervalChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WControllerFile::maxLog() const
+{
+    Q_D(const WControllerFile); return d->maxLog;
+}
+
+void WControllerFile::setMaxLog(int max)
+{
+    Q_D(WControllerFile);
+
+    if (d->maxLog == max) return;
+
+    d->maxLog = max;
+
+    emit maxLogChanged();
 }
 
 #endif // SK_NO_CONTROLLERFILE
