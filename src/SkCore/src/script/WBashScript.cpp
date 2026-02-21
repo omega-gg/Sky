@@ -83,11 +83,14 @@ void WBashScriptPrivate::terminate()
     process.terminate();
 #endif
 
-    if (process.waitForFinished(3000) == false)
+    if (process.waitForFinished(1000) == false)
     {
-        process.kill();
+        if (process.waitForFinished(2000) == false)
+        {
+            process.kill();
 
-        //process.waitForFinished(1000);
+            process.waitForFinished(1000);
+        }
     }
 }
 
@@ -170,7 +173,12 @@ void WBashScriptPrivate::onOutputError()
 {
     Q_D(WBashScript);
 
-    if (d->running) stop();
+    if (d->running == false)
+    {
+        d->output      = QString();
+        d->outputError = QString();
+    }
+    else stop();
 
     if (d->pathBash.isEmpty())
     {
@@ -198,7 +206,7 @@ void WBashScriptPrivate::onOutputError()
     QStringList list;
 
     list.append("-lc");
-    list.append("set -e; " + command);
+    list.append(command);
 
 #ifndef QT_4
     d->process.setProgram(d->pathBash);
@@ -249,22 +257,48 @@ void WBashScriptPrivate::onOutputError()
 
         if (d->process.waitForStarted() == false)
         {
+            QObject::disconnect(&(d->process), 0, this, 0);
+
+            d->applyRunning(false);
+
             return WBashScriptResult();
         }
 
+        QEventLoop loop;
+
+        connect(sk, SIGNAL(aboutToQuit()), &loop, SLOT(quit()));
+
         while (d->process.state() != QProcess::NotRunning)
         {
-            QCoreApplication::processEvents(QEventLoop::AllEvents);
+            loop.exec();
 
             if (sk->isQuitting())
             {
+                QObject::disconnect(&(d->process), 0, this, 0);
+
+                d->terminate();
+
+                d->applyRunning(false);
+
                 return WBashScriptResult();
             }
         }
 
-        d->applyRunning(false);
+        /*while (d->process.state() != QProcess::NotRunning)
+        {
+            QCoreApplication::processEvents();
+
+            if (sk->isQuitting())
+            {
+                QObject::disconnect(&(d->process), 0, this, 0);
+
+                return WBashScriptResult();
+            }
+        }*/
 
         QObject::disconnect(&(d->process), 0, this, 0);
+
+        d->applyRunning(false);
 
         d->onOutput     ();
         d->onOutputError();
