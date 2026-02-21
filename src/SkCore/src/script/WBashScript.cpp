@@ -266,6 +266,8 @@ void WBashScriptPrivate::onOutputError()
 
         QEventLoop loop;
 
+        connect(&(d->process), SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
+
         connect(sk, SIGNAL(aboutToQuit()), &loop, SLOT(quit()));
 
         while (d->process.state() != QProcess::NotRunning)
