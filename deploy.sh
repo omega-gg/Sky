@@ -981,9 +981,10 @@ echo "COPYING tools"
 
 if [ $os = "windows" ]; then
 
-    cp bin/includeGenerator.exe $deploy
     cp bin/deployer.exe         $deploy
+    cp bin/includeGenerator.exe $deploy
     cp bin/projectGenerator.exe $deploy
+    cp bin/qmlGenerator.exe     $deploy
     cp bin/imageConverter.exe   $deploy
 
     if [ -f bin/androiddeployqt.exe ]; then
@@ -995,9 +996,10 @@ elif [ $os = "mobile" ]; then
 
     cp -r "$external"/Sky/* $deploy
 else
-    cp bin/includeGenerator $deploy
     cp bin/deployer         $deploy
+    cp bin/includeGenerator $deploy
     cp bin/projectGenerator $deploy
+    cp bin/qmlGenerator     $deploy
     cp bin/imageConverter   $deploy
 
     if [ -f bin/androiddeployqt ]; then

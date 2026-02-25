@@ -1,8 +1,9 @@
 TEMPLATE = subdirs
 
-SUBDIRS = includeGenerator \
-          deployer \
+SUBDIRS = deployer \
+          includeGenerator \
           projectGenerator \
+          qmlGenerator \
           imageConverter \
 
 # NOTE Qt5: We need an updated androiddeployqt with the latests changes.

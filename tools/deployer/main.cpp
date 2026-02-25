@@ -31,7 +31,6 @@ void skipElse(QTextStream * stream, QString * line);
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
-
 static QStringList imports;
 static QStringList versions;
 
