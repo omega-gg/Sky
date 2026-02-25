@@ -34,6 +34,9 @@
 #ifndef SK_NO_CONTROLLERFILE
 
 // Forward declarations
+#ifndef QT_6
+class QTextStream;
+#endif
 class WFileWatcher;
 class WLocalObject;
 class WThreadActions;
