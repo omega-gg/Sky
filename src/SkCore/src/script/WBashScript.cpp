@@ -70,7 +70,7 @@ void WBashScriptPrivate::applyRunning(bool running)
 
 void WBashScriptPrivate::terminate()
 {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && defined(QT_NEW)
     qint64 id = process.processId();
 
     if (id > 0)
