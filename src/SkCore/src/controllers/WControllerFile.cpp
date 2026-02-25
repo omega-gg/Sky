@@ -32,6 +32,9 @@
 #include <QDir>
 #include <QDirIterator>
 #include <qtlockedfile>
+#ifndef QT_6
+#include <QTextStream>
+#endif
 #ifdef QT_4
 #include <QDesktopServices>
 #else
