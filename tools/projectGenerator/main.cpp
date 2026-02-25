@@ -117,11 +117,7 @@ void writeProject(const QString & name)
 
     file.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
-    QTextStream stream(&file);
-
-    stream << content;
-
-    file.close();
+    file.write(content.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------

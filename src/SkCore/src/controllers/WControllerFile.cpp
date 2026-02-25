@@ -508,6 +508,243 @@ bool WControllerFilePrivate::isLoading() const
 
 //-------------------------------------------------------------------------------------------------
 
+/* static */ QString WControllerFilePrivate::scanFile(const QString     & input,
+                                                      const QStringList & defines)
+{
+    QString content;
+
+    QFile file(input);
+
+    if (file.open(QIODevice::ReadOnly) == false)
+    {
+        return QString();
+    }
+
+    QTextStream stream(&file);
+
+    QString line = stream.readLine();
+
+    while (line.isNull() == false)
+    {
+        if (line.startsWith("//#"))
+        {
+            if (match(line.mid(3), defines))
+            {
+                writeLines(&stream, &content, &line, defines);
+            }
+            else skipLines(&stream, &content, &line, defines);
+
+            if (line.startsWith("//#END"))
+            {
+                line = stream.readLine();
+            }
+        }
+        else
+        {
+            content.append(line + '\n');
+
+            line = stream.readLine();
+        }
+    }
+
+    return content;
+}
+
+/* static */ bool WControllerFilePrivate::matchStar(const QString     & string,
+                                                    const QStringList & defines, bool match)
+{
+    foreach (const QString & define, defines)
+    {
+        if (define.startsWith(string) == match)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/* static */ bool WControllerFilePrivate::match(const QString     & string,
+                                                const QStringList & defines)
+{
+    QStringList listA = string.split(':');
+
+    foreach (const QString & name, listA)
+    {
+        bool result = true;
+
+        QStringList listB = name.split('+');
+
+        foreach (const QString & name, listB)
+        {
+            bool match = true;
+
+            QString string = name;
+
+            if (string.startsWith('!'))
+            {
+                string.remove(0, 1);
+
+                match = false;
+            }
+
+            if (string.endsWith('*'))
+            {
+                string.chop(1);
+
+                if (matchStar(string, defines, match) == false)
+                {
+                    result = false;
+
+                    break;
+                }
+            }
+            else if (defines.contains(string) != match)
+            {
+                result = false;
+
+                break;
+            }
+        }
+
+        if (result) return true;
+    }
+
+    return false;
+}
+
+/* static */ bool WControllerFilePrivate::matchElif(const QString     & string,
+                                                    const QStringList & defines)
+{
+    int index = string.lastIndexOf(' ');
+
+    if (index == -1)
+    {
+        return false;
+    }
+    else return match(string.mid(index + 1), defines);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ bool WControllerFilePrivate::writeNext(QTextStream * stream, QString * content,
+                                                                          QString * line)
+{
+    *line = stream->readLine();
+
+    if (line->isNull()) return false;
+
+    while (line->startsWith("//#") == false)
+    {
+        content->append(*line + '\n');
+
+        *line = stream->readLine();
+
+        if (line->isNull()) return false;
+    }
+
+    return true;
+}
+
+/* static */ void WControllerFilePrivate::writeLines(QTextStream       * stream,
+                                                     QString           * content,
+                                                     QString           * line,
+                                                     const QStringList & defines)
+{
+    while (writeNext(stream, content, line))
+    {
+        if (line->startsWith("//#END")) return;
+
+        if (line->startsWith("//#ELSE") || line->startsWith("//#ELIF"))
+        {
+            skipElse(stream, line);
+
+            return;
+        }
+
+        if (match(line->mid(3), defines))
+        {
+            writeLines(stream, content, line, defines);
+        }
+        else skipLines(stream, content, line, defines);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ bool WControllerFilePrivate::skipNext(QTextStream * stream, QString * line)
+{
+    *line = stream->readLine();
+
+    if (line->isNull()) return false;
+
+    while (line->startsWith("//#") == false)
+    {
+        *line = stream->readLine();
+
+        if (line->isNull()) return false;
+    }
+
+    return true;
+}
+
+/* static */ void WControllerFilePrivate::skipLines(QTextStream       * stream,
+                                                    QString           * content,
+                                                    QString           * line,
+                                                    const QStringList & defines)
+{
+    int count = 0;
+
+    while (skipNext(stream, line))
+    {
+        if (line->startsWith("//#ELSE"))
+        {
+            if (count == 0)
+            {
+                writeLines(stream, content, line, defines);
+
+                return;
+            }
+        }
+        else if (line->startsWith("//#ELIF"))
+        {
+            if (count == 0 && matchElif(*line, defines))
+            {
+                writeLines(stream, content, line, defines);
+
+                return;
+            }
+        }
+        else if (line->startsWith("//#END"))
+        {
+            if (count == 0) return;
+
+            count--;
+        }
+        else count++;
+    }
+}
+
+/* static */ void WControllerFilePrivate::skipElse(QTextStream * stream, QString * line)
+{
+    int count = 0;
+
+    while (skipNext(stream, line))
+    {
+        if (line->startsWith("//#ELSE") || line->startsWith("//#ELIF")) continue;
+
+        if (line->startsWith("//#END"))
+        {
+            if (count == 0) return;
+
+            count--;
+        }
+        else count++;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* static */ void WControllerFilePrivate::deleteDir(QDir & dir, bool recursive)
 {
     QFileInfoList list;
@@ -1654,6 +1891,63 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
      }
 
      return list;
+}
+
+//-------------------------------------------------------------------------------------------------
+// QML
+
+/* static */ bool WControllerFile::generateQml(const QString     & fileName,
+                                               const QString     & fileOutput,
+                                               const QStringList & defines)
+{
+    QString content = WControllerFilePrivate::scanFile(fileName, defines);
+
+    if (content.isEmpty()) return false;
+
+    QFile file(fileOutput);
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate) == false) return false;
+
+    file.write(content.toUtf8());
+
+    return true;
+}
+
+/* static */ QStringList WControllerFile::qmlDefines()
+{
+    QStringList list;
+
+#ifdef QT_4
+    list.append("QT_4");
+    list.append("QT_OLD");
+#elif defined(QT_5)
+    list.append("QT_5");
+    list.append("QT_OLD");
+    list.append("QT_NEW");
+#else
+    list.append("QT_6");
+    list.append("QT_NEW");
+#endif
+
+#ifdef Q_OS_WIN
+    list.append("DESKTOP");
+    list.append("WINDOWS");
+#elif defined(Q_OS_MACOS)
+    list.append("DESKTOP");
+    list.append("MAC");
+#elif defined(Q_OS_IOS)
+    list.append("MOBILE");
+    list.append("IOS");
+    list.append("NO_TORRENT");
+#elif defined(Q_OS_ANDROID)
+    list.append("MOBILE");
+    list.append("ANDROID");
+#else
+    list.append("DESKTOP");
+    list.append("LINUX");
+#endif
+
+    return list;
 }
 
 //-------------------------------------------------------------------------------------------------

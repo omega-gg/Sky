@@ -290,9 +290,7 @@ void applyContent(const QString & path, const QString & content)
 
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate) == false) return;
 
-    QTextStream stream(&file);
-
-    stream << content;
+    file.write(content.toUtf8());
 }
 
 void generate(const QString & input, const QString & output)

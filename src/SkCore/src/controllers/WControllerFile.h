@@ -332,6 +332,15 @@ public: // Static functions
 
     static QFileInfoList recursiveEntryInfoList(const QString & path);
 
+    //---------------------------------------------------------------------------------------------
+    // QML
+
+    static bool generateQml(const QString     & fileName,
+                            const QString     & fileOutput,
+                            const QStringList & defines = QStringList());
+
+    static QStringList qmlDefines();
+
 signals:
     void logChanged(const QString & message);
 

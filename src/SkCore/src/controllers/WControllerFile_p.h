@@ -71,6 +71,25 @@ public: // Static functions
                                                const QString            & message);
 #endif
 
+    static QString scanFile(const QString & input, const QStringList & defines);
+
+    static bool matchStar(const QString & string, const QStringList & defines, bool match);
+    static bool match    (const QString & string, const QStringList & defines);
+
+    static bool matchElif(const QString & string, const QStringList & defines);
+
+    static bool writeNext (QTextStream * stream, QString * content, QString * line);
+
+    static void writeLines(QTextStream * stream,
+                           QString     * content, QString * line, const QStringList & defines);
+
+    static bool skipNext(QTextStream * stream, QString * line);
+
+    static void skipLines(QTextStream * stream,
+                          QString     * content, QString * line, const QStringList & defines);
+
+    static void skipElse(QTextStream * stream, QString * line);
+
     static void deleteDir(QDir & dir, bool recursive);
 
 public: // Slots

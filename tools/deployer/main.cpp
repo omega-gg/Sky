@@ -196,9 +196,7 @@ void replaceFile(const QString & path, const QString & content)
 
     file.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
-    QTextStream stream(&file);
-
-    stream << content;
+    file.write(content.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -683,9 +681,7 @@ void generateQrc(const QString & path)
 
     file.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
-    QTextStream stream(&file);
-
-    stream << content;
+    file.write(content.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------
