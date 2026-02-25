@@ -26,6 +26,9 @@
 // Qt includes
 #include <QFileInfo>
 #include <QUrl>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Sk includes
 #include <WController>
