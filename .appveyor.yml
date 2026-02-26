@@ -5,6 +5,7 @@ environment:
 
   SKY_PATH_WINDOWS_KIT: "C:/Program Files (x86)/Windows Kits/10"
 
+  matrix:
     - qt: qt5
       platform: win32
       compiler: msvc
