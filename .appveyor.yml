@@ -23,17 +23,45 @@ environment:
       compiler: msvc
 
 build_script:
-  # Locate Visual Studio / BuildTools
   - cmd: |
-      echo ==== LOCATING VISUAL STUDIO VIA VSWHERE ====
-      set VSWHERE="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+      echo ==== LOCATING VISUAL STUDIO / BUILDTOOLS ====
+      echo ProgramFiles(x86)=%ProgramFiles(x86)%
+      echo ProgramFiles=%ProgramFiles%
 
-      %VSWHERE% -all -products * -format table
-      echo.
+      set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+      if not exist "%VSWHERE%" set "VSWHERE=%ProgramFiles%\Microsoft Visual Studio\Installer\vswhere.exe"
+      if not exist "%VSWHERE%" set "VSWHERE=C:\ProgramData\chocolatey\bin\vswhere.exe"
+      if not exist "%VSWHERE%" set "VSWHERE=C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+      if not exist "%VSWHERE%" set "VSWHERE=C:\Program Files\Microsoft Visual Studio\Installer\vswhere.exe"
 
-      for /f "usebackq delims=" %%i in (`%VSWHERE% -latest -products * -property installationPath`) do (
-        echo Detected VS install: %%i
-        dir "%%i\VC\Tools\MSVC"
+      echo VSWHERE=%VSWHERE%
+      if exist "%VSWHERE%" (
+        "%VSWHERE%" -all -products * -format table
+        echo.
+
+        for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -products * -property installationPath`) do (
+          echo Detected VS install: %%i
+          if exist "%%i\VC\Tools\MSVC" (
+            dir "%%i\VC\Tools\MSVC"
+          ) else (
+            echo No VC\Tools\MSVC under detected install.
+          )
+        )
+      ) else (
+        echo vswhere.exe NOT FOUND. Dumping hardcoded paths instead...
+        echo SKY_PATH_BUILD_TOOLS=%SKY_PATH_BUILD_TOOLS%
+        if exist "%SKY_PATH_BUILD_TOOLS%\VC\Tools\MSVC" (
+          dir "%SKY_PATH_BUILD_TOOLS%\VC\Tools\MSVC"
+        ) else (
+          echo Missing: %SKY_PATH_BUILD_TOOLS%\VC\Tools\MSVC
+        )
+
+        echo SKY_PATH_WINDOWS_KIT=%SKY_PATH_WINDOWS_KIT%
+        if exist "%SKY_PATH_WINDOWS_KIT%\10\bin" (
+          dir "%SKY_PATH_WINDOWS_KIT%\10\bin"
+        ) else (
+          echo Missing: %SKY_PATH_WINDOWS_KIT%\10\bin
+        )
       )
 
   - sh environment.sh %compiler%
