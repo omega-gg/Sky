@@ -22,9 +22,9 @@ make_arguments="-j 4"
 #--------------------------------------------------------------------------------------------------
 # Windows
 
-BuildTools="${SKY_PATH_BUILD_TOOLS:-/c/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools}"
+BuildTools="/c/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools"
 
-WindowsKit="${SKY_PATH_WINDOWS_KIT:-/c/Program Files (x86)/Windows Kits}"
+WindowsKit="/c/Program Files (x86)/Windows Kits"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -300,10 +300,6 @@ elif [ $compiler = "msvc" ]; then
     else
         spec=win32-msvc
     fi
-
-    echo "PATH"
-    echo "$MSVC/bin/Host$abi/$abi"
-    ls -la "$MSVC/bin/Host$abi/$abi"
 
     PATH="$jom:$MSVC/bin/Host$abi/$abi:\
 $WindowsKit/bin/$WindowsKit_version/$abi:\
