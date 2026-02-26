@@ -1,11 +1,38 @@
+image: Visual Studio 2022
+
 clone_folder: C:\dev\workspace\Sky
 
 environment:
   matrix:
+    - qt: qt4
+      platform: win32
+      compiler: mingw
+
+    - qt: qt5
+      platform: win32
+      compiler: mingw
+
+    - qt: qt5
+      platform: win64
+      compiler: mingw
+
+    - qt: qt5
+      platform: win32
+      compiler: msvc
+
+    - qt: qt5
+      platform: win64
+      compiler: msvc
+
+    - qt: qt6
+      platform: win64
+      compiler: mingw
+
     - qt: qt6
       platform: win64
       compiler: msvc
 
 build_script:
-  - cmd: |
-      bash -lc "sh environment.sh %compiler% && sh environment.sh %qt% && sh build.sh %platform% all"
+  - sh environment.sh %compiler%
+  - sh environment.sh %qt%
+  - sh build.sh %platform% all
