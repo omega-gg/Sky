@@ -10,5 +10,4 @@ environment:
 
 build_script:
   - cmd: |
-      where cl
       bash -lc "sh environment.sh %compiler% && sh environment.sh %qt% && sh build.sh %platform% all"
