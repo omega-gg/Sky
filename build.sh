@@ -24,6 +24,8 @@ make_arguments="-j 4"
 
 ProgramFiles="/c/Program Files (x86)"
 
+BuildTools="$ProgramFiles/Microsoft Visual Studio/2022/BuildTools"
+
 #--------------------------------------------------------------------------------------------------
 
 MinGW_version="13.1.0"
@@ -166,11 +168,9 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     else
         jom="$external/jom/$jom_version"
 
-        MSVC="$external/BuildTools/VC/Tools/MSVC"
+        MSVC_version=$(getPath "$BuildTools/VC/Tools/MSVC" $MSVC_version)
 
-        MSVC_version=$(getPath "$MSVC" $MSVC_version)
-
-        MSVC="$MSVC/$MSVC_version"
+        MSVC="$BuildTools/VC/Tools/MSVC/$MSVC_version"
 
         WindowsKit="$ProgramFiles/Windows Kits/$WindowsKit_version"
 
