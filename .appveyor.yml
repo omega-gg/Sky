@@ -17,23 +17,6 @@ environment:
       compiler: msvc
 
 build_script:
-  - cmd: |
-      set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
-      if not exist "%VSWHERE%" set "VSWHERE=%ProgramFiles%\Microsoft Visual Studio\Installer\vswhere.exe"
-
-      if exist "%VSWHERE%" (
-          "%VSWHERE%" -latest -products * -property installationPath > vs_path.txt
-          set /p VS_PATH=<vs_path.txt
-      )
-
-      if defined VS_PATH (
-          echo Detected VS install: %VS_PATH%
-          dir "%VS_PATH%\VC\Tools\MSVC"
-      ) else (
-          echo vswhere.exe NOT FOUND or VS NOT DETECTED.
-          dir "%SKY_PATH_BUILD_TOOLS%\VC\Tools\MSVC"
-      )
-
   - sh environment.sh %compiler%
   - sh environment.sh %qt%
   - sh build.sh %platform% all
