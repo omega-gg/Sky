@@ -3,21 +3,12 @@ image: Visual Studio 2022
 clone_folder: C:\dev\workspace\Sky
 
 environment:
-  SKY_PATH_BUILD_TOOLS: "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools"
-
-  SKY_PATH_WINDOWS_KIT: "C:/Program Files (x86)/Windows Kits"
-
   matrix:
-    - qt: qt5
-      platform: win64
-      compiler: msvc
-
     - qt: qt6
       platform: win64
       compiler: msvc
 
 build_script:
   - cmd: |
-      call "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat" -arch=amd64
       where cl
       bash -lc "sh environment.sh %compiler% && sh environment.sh %qt% && sh build.sh %platform% all"

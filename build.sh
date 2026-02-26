@@ -301,6 +301,10 @@ elif [ $compiler = "msvc" ]; then
         spec=win32-msvc
     fi
 
+    echo "PATH"
+    echo "$MSVC/bin/Host$abi/$abi"
+    ls -la "$MSVC/bin/Host$abi/$abi"
+
     PATH="$jom:$MSVC/bin/Host$abi/$abi:\
 $WindowsKit/bin/$WindowsKit_version/$abi:\
 $Qt/bin:$PATH"
