@@ -9,16 +9,8 @@ environment:
 
   matrix:
     - qt: qt5
-      platform: win32
-      compiler: msvc
-
-    - qt: qt5
       platform: win64
       compiler: msvc
-
-    - qt: qt6
-      platform: win64
-      compiler: mingw
 
     - qt: qt6
       platform: win64
@@ -26,33 +18,21 @@ environment:
 
 build_script:
   - cmd: |
-      echo ==== LOCATING VISUAL STUDIO / BUILDTOOLS ====
       set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
       if not exist "%VSWHERE%" set "VSWHERE=%ProgramFiles%\Microsoft Visual Studio\Installer\vswhere.exe"
 
-      if not exist "%VSWHERE%" goto :MISSING_VSWHERE
-
-      :FOUND_VSWHERE
-      echo Using VSWHERE at: %VSWHERE%
-      "%VSWHERE%" -all -products * -format table
-
-      for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -products * -property installationPath`) do (
-          echo Detected VS install: %%i
-          if exist "%%i\VC\Tools\MSVC" (
-              dir "%%i\VC\Tools\MSVC"
-          ) else (
-              echo No VC\Tools\MSVC under detected install.
-          )
+      if exist "%VSWHERE%" (
+          "%VSWHERE%" -latest -products * -property installationPath > vs_path.txt
+          set /p VS_PATH=<vs_path.txt
       )
-      goto :CONTINUE_BUILD
 
-      :MISSING_VSWHERE
-      echo vswhere.exe NOT FOUND.
-      echo SKY_PATH_BUILD_TOOLS=%SKY_PATH_BUILD_TOOLS%
-      dir "%SKY_PATH_BUILD_TOOLS%\VC\Tools\MSVC"
-
-      :CONTINUE_BUILD
-      echo Done locating. Proceeding to scripts...
+      if defined VS_PATH (
+          echo Detected VS install: %VS_PATH%
+          dir "%VS_PATH%\VC\Tools\MSVC"
+      ) else (
+          echo vswhere.exe NOT FOUND or VS NOT DETECTED.
+          dir "%SKY_PATH_BUILD_TOOLS%\VC\Tools\MSVC"
+      )
 
   - sh environment.sh %compiler%
   - sh environment.sh %qt%
