@@ -23,6 +23,19 @@ environment:
       compiler: msvc
 
 build_script:
+  # Locate Visual Studio / BuildTools
+  - cmd: |
+      echo ==== LOCATING VISUAL STUDIO VIA VSWHERE ====
+      set VSWHERE="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+
+      %VSWHERE% -all -products * -format table
+      echo.
+
+      for /f "usebackq delims=" %%i in (`%VSWHERE% -latest -products * -property installationPath`) do (
+        echo Detected VS install: %%i
+        dir "%%i\VC\Tools\MSVC"
+      )
+
   - sh environment.sh %compiler%
   - sh environment.sh %qt%
   - sh build.sh %platform% all
