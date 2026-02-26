@@ -1,8 +1,9 @@
 clone_folder: C:\dev\workspace\Sky
 
 environment:
-  SKY_PATH_BUILD_TOOLS: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community"
-  SKY_PATH_WINDOWS_KIT: "C:\\Program Files (x86)\\Windows Kits\\10"
+  SKY_PATH_BUILD_TOOLS: "C:/Program Files/Microsoft Visual Studio/2022/Community"
+
+  SKY_PATH_WINDOWS_KIT: "C:/Program Files (x86)/Windows Kits/10"
 
     - qt: qt5
       platform: win32
