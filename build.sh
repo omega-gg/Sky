@@ -168,9 +168,11 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     else
         jom="$external/jom/$jom_version"
 
-        MSVC_version=$(getPath "$BuildTools/VC/Tools/MSVC" $MSVC_version)
+        MSVC="$external/BuildTools/VC/Tools/MSVC"
 
-        MSVC="$BuildTools/VC/Tools/MSVC/$MSVC_version"
+        MSVC_version=$(getPath "$MSVC" $MSVC_version)
+
+        MSVC="$MSVC/$MSVC_version"
 
         WindowsKit="$ProgramFiles/Windows Kits/$WindowsKit_version"
 
