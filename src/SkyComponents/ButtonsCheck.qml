@@ -159,6 +159,8 @@ Item
 
                     padding: buttonsCheck.padding
 
+                    enabled: buttonsCheck.enabled
+
                     highlighted: (checked && isActive)
 
                     checked   : (index == currentIndex)
@@ -187,6 +189,8 @@ Item
 
                     padding: buttonsCheck.padding - margins
 
+                    enabled: buttonsCheck.enabled
+
                     highlighted: (checked && isActive)
 
                     checked   : (index == currentIndex)
@@ -214,6 +218,8 @@ Item
                     anchors.fill: parent
 
                     padding: buttonsCheck.padding
+
+                    enabled: buttonsCheck.enabled
 
                     highlighted: (checked && isActive)
 
