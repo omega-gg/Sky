@@ -531,7 +531,7 @@ Style
 
     property int labelLoadingText_height: dp32
 
-    property int labelLoadingText_padding: dp8
+    property int labelLoadingText_padding: dp6
     property int labelLoadingText_spacing: dp8
 
     property color labelLoadingText_colorText: text2_color
