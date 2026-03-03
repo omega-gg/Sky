@@ -529,7 +529,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // LabelLoadingText
 
-    property int labelLoadingText_height: dp32
+    property int labelLoadingText_height: dp34
 
     property int labelLoadingText_padding: dp6
     property int labelLoadingText_spacing: dp8
