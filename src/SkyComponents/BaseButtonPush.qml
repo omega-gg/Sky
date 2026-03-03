@@ -31,8 +31,6 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 8
-
 //#QT_4
     property int radius: height / 3.75
 //#ELSE

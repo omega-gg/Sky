@@ -44,9 +44,11 @@ LabelLoadingText
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: paddingLeft + itemIcon.width + iconMargins * 2 + spacing + itemText.width + button.width
+    width: paddingLeft + itemIcon.width + spacing * 2 + itemText.width + button.width
            +
            paddingRight
+
+    paddingRight: st.labelLoadingButton_padding
 
     //---------------------------------------------------------------------------------------------
     // Children
@@ -56,14 +58,14 @@ LabelLoadingText
     {
         id: button
 
-        anchors.left: itemText.right
+        anchors.right: parent.right
 
-        anchors.leftMargin: spacing
+        anchors.rightMargin: paddingRight
 
         anchors.verticalCenter: parent.verticalCenter
 
         width : height
-        height: parent.height - st.labelLoadingText_padding
+        height: parent.height - paddingRight * 2
 
         icon          : st.icon12x12_close
         iconSourceSize: st.size12x12

@@ -31,10 +31,8 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 8
-
 //#QT_4
-    property int radius: (height - margins * 2) / 3.75
+    property int radius: height / 3.75
 //#ELSE
     property int radius: background.height / 3.75
 //#END
@@ -65,8 +63,8 @@ BaseButton
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.checkBox_width
-    height: st.checkBox_height
+    width : st.checkBox_size
+    height: st.checkBox_size
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -91,37 +89,9 @@ BaseButton
 
     Rectangle
     {
-        id: itemFocus
-
-        anchors.fill: background
-
-//#QT_4
-        anchors.margins: -borderSize
-//#ELSE
-        anchors.margins: -borderSizeFocus
-//#END
-
-        radius: Math.round(checkBox.radius * (height / background.height))
-
-        opacity: (window.isActive && isFocused)
-
-        color: "transparent"
-
-//#QT_4
-        smooth: true
-//#END
-
-        border.width: borderSize + borderSizeFocus
-        border.color: st.border_colorFocus
-    }
-
-    Rectangle
-    {
         id: background
 
         anchors.fill: parent
-
-        anchors.margins: margins
 
         radius: checkBox.radius
 
@@ -157,5 +127,25 @@ BaseButton
                 easing.type: st.easing
             }
         }
+    }
+
+    Rectangle
+    {
+        id: itemFocus
+
+        anchors.fill: background
+
+        radius: Math.round(checkBox.radius * (height / background.height))
+
+        opacity: (window.isActive && isFocused)
+
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize + borderSizeFocus
+        border.color: st.border_colorFocus
     }
 }

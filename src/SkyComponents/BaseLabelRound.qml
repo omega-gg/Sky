@@ -31,8 +31,6 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 8
-
     property int radius: background.height
 
     property int borderSize: st.border_size
@@ -61,8 +59,6 @@ Item
         id: background
 
         anchors.fill: parent
-
-        anchors.margins: margins
 
         radius: baseLabelRound.radius
 

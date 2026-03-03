@@ -330,6 +330,8 @@ BasePlayerBrowser
     {
         anchors.bottom: parent.bottom
 
+        anchors.bottomMargin: st.dp16
+
         anchors.horizontalCenter: parent.horizontalCenter
 
         visible: (tab && tab.isLoading)

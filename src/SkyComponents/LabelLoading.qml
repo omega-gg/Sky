@@ -31,8 +31,6 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 8
-
     property int radius: background.height
 
     //---------------------------------------------------------------------------------------------
@@ -100,8 +98,6 @@ Item
         id: background
 
         anchors.fill: parent
-
-        anchors.margins: margins
 
         radius: labelLoading.radius
 

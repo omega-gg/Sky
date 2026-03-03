@@ -31,16 +31,12 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 8
-
     property int radius: background.height
 
     property int paddingLeft : st.labelLoadingText_padding
     property int paddingRight: st.labelLoadingText_padding
 
     property int spacing: st.labelLoadingText_spacing
-
-    property int iconMargins: st.labelLoadingText_iconMargins
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -100,9 +96,7 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: paddingLeft + itemIcon.width + iconMargins * 2 + spacing + itemText.width + paddingRight
-           +
-           st.dp8
+    width: paddingLeft + itemIcon.width + spacing + itemText.width + paddingRight + st.dp8
 
     height: st.labelLoadingText_height
 
@@ -115,8 +109,6 @@ Item
         id: background
 
         anchors.fill: parent
-
-        anchors.margins: margins
 
         radius: labelLoadingText.radius
 
@@ -139,7 +131,7 @@ Item
 
         anchors.left: parent.left
 
-        anchors.leftMargin: paddingLeft + iconMargins
+        anchors.leftMargin: paddingLeft
 
         anchors.verticalCenter: parent.verticalCenter
 
@@ -152,7 +144,7 @@ Item
 
         anchors.left: itemIcon.right
 
-        anchors.leftMargin: iconMargins + spacing
+        anchors.leftMargin: spacing
 
         anchors.verticalCenter: parent.verticalCenter
 

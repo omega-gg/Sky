@@ -137,34 +137,6 @@ Item
 
     Rectangle
     {
-        id: itemFocus
-
-        anchors.fill: background
-
-//#QT_4
-        anchors.margins: -borderSize
-//#ELSE
-        anchors.margins: -borderSizeFocus
-//#END
-
-        z: (radius) ? 1 : -1
-
-        radius: background.radius
-
-        opacity: (window.isActive && isFocused)
-
-        color: "transparent"
-
-//#QT_4
-        smooth: true
-//#END
-
-        border.width: borderSize + borderSizeFocus
-        border.color: textEdit.colorTextSelection
-    }
-
-    Rectangle
-    {
         id: background
 
         anchors.fill: parent
@@ -226,5 +198,27 @@ Item
                 paragraphEdit.onKeyReleased(event);
             }
         }
+    }
+
+    Rectangle
+    {
+        id: itemFocus
+
+        anchors.fill: background
+
+        z: (radius) ? 1 : -1
+
+        radius: background.radius
+
+        opacity: (window.isActive && isFocused)
+
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize + borderSizeFocus
+        border.color: textEdit.colorTextSelection
     }
 }

@@ -37,8 +37,6 @@ Item
 
     property alias enableFilter: buttonFull.enableFilter
 
-    property alias margins: buttonFull.margins
-
     property alias padding: buttonFull.padding
     property alias spacing: buttonFull.spacing
 

@@ -398,7 +398,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonCheckLabel
 
-    property int buttonCheckLabel_height: buttonCheck_height
+    property int buttonCheckLabel_height: dp32
 
     property int buttonCheckLabel_padding: dp4
 //#END
@@ -471,17 +471,16 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonsItem
 
-    property int buttonsItem_buttonWidth : dp28
-    property int buttonsItem_buttonHeight: dp30
+    property int buttonsItem_buttonSize: dp24
 //#END
 
 //#BaseLabelRound
     //---------------------------------------------------------------------------------------------
     // LabelRound
 
-    property int labelRound_height: dp40
+    property int labelRound_height: dp32
 
-    property int labelRound_padding: dp16
+    property int labelRound_padding: dp8
     property int labelRound_spacing: buttonPush_spacing
 
     property color labelRound_colorA: buttonPush_colorHoverA
@@ -530,14 +529,19 @@ Style
     //---------------------------------------------------------------------------------------------
     // LabelLoadingText
 
-    property int labelLoadingText_height: dp44
+    property int labelLoadingText_height: dp32
 
-    property int labelLoadingText_padding: dp4
-    property int labelLoadingText_spacing: dp2
-
-    property int labelLoadingText_iconMargins: dp6
+    property int labelLoadingText_padding: dp8
+    property int labelLoadingText_spacing: dp8
 
     property color labelLoadingText_colorText: text2_color
+//#END
+
+//#LabelLoadingButton
+    //---------------------------------------------------------------------------------------------
+    // LabelLoadingButton
+
+    property int labelLoadingButton_padding: dp2
 //#END
 
 //#LabelStream
@@ -566,8 +570,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // CheckBox
 
-    property int checkBox_width : dp22
-    property int checkBox_height: checkBox_width
+    property int checkBox_size: dp22
 
     property url checkBox_sourceCheck: "pictures/checkBoxCheck.png"
 //#END
@@ -587,9 +590,9 @@ Style
     // LineEdit
 
     property int lineEdit_width : dp192
-    property int lineEdit_height: dp40
+    property int lineEdit_height: dp32
 
-    property int lineEdit_padding: dp13
+    property int lineEdit_padding: dp9
 
     property color lineEdit_color     : "#f0f0f0"
     property color lineEdit_colorHover: "white"
@@ -599,10 +602,10 @@ Style
     //---------------------------------------------------------------------------------------------
     // LineEditLabel
 
-    property int lineEditLabel_lineEditLeftMargin: dp26
+    property int lineEditLabel_lineEditLeftMargin: dp24
 
-    property int lineEditLabel_labelPaddingLeft : dp16
-    property int lineEditLabel_labelPaddingRight: dp30
+    property int lineEditLabel_labelPaddingLeft : dp12
+    property int lineEditLabel_labelPaddingRight: dp32
 //#END
 
 //#LineEditBox

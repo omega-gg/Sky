@@ -187,8 +187,6 @@ Item
 
                     anchors.fill: parent
 
-                    padding: buttonsCheck.padding - margins
-
                     enabled: buttonsCheck.enabled
 
                     highlighted: (checked && isActive)

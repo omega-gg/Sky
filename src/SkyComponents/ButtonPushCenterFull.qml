@@ -33,8 +33,6 @@ ButtonPushFull
 
     clip: true
 
-    padding: st.buttonPush_padding - margins
-
     background.anchors.leftMargin: -(borderSize / 2)
 
     background.anchors.rightMargin: background.anchors.leftMargin

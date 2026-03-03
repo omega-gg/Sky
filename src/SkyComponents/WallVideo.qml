@@ -1193,8 +1193,8 @@ WallBookmarkTrack
         anchors.right: (itemActive) ? itemActive.right : undefined
         anchors.top  : (itemActive) ? itemActive.top   : undefined
 
-        anchors.rightMargin: st.dp4
-        anchors.topMargin  : st.dp4
+        anchors.rightMargin: st.dp8
+        anchors.topMargin  : st.dp8
 
         z: (itemActive) ? itemActive.z : 0
 

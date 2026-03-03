@@ -50,7 +50,8 @@ Item
     //---------------------------------------------------------------------------------------------
 
     width : buttonContextual.width + buttonClose.width
-    height: st.buttonsItem_buttonHeight
+
+    height: st.buttonsItem_buttonSize
 
     //---------------------------------------------------------------------------------------------
     // Children
@@ -60,8 +61,8 @@ Item
     {
         id: buttonContextual
 
-        width : st.buttonsItem_buttonWidth
-        height: st.buttonsItem_buttonHeight
+        width : st.buttonsItem_buttonSize
+        height: st.buttonsItem_buttonSize
 
         icon          : st.icon10x10_contextualDown
         iconSourceSize: st.size10x10
@@ -77,8 +78,8 @@ Item
 
         anchors.left: buttonContextual.right
 
-        width : st.buttonsItem_buttonWidth
-        height: st.buttonsItem_buttonHeight
+        width : st.buttonsItem_buttonSize
+        height: st.buttonsItem_buttonSize
 
         icon          : st.icon12x12_close
         iconSourceSize: st.size12x12

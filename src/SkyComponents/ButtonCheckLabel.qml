@@ -49,7 +49,7 @@ LabelRoundInfo
 
     height: st.buttonCheckLabel_height
 
-    paddingRight: button.width - st.buttonCheckLabel_padding
+    paddingRight: padding + button.width
 
     //---------------------------------------------------------------------------------------------
     // Children
@@ -62,6 +62,8 @@ LabelRoundInfo
         anchors.right : parent.right
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
+
+        anchors.margins: st.buttonCheckLabel_padding
 
         enabled: parent.enabled
 

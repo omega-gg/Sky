@@ -548,7 +548,7 @@ BaseTabs
 
         anchors.verticalCenter: parent.verticalCenter
 
-        x: (itemActive) ? pButtonsX - width - st.dp4 : 0
+        x: (itemActive) ? pButtonsX - width - st.dp5 : 0
 
         z: (itemActive) ? itemActive.z : 0
 

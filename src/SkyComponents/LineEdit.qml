@@ -31,10 +31,8 @@ BaseLineEdit
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 8
-
 //#QT_4
-    property int radius: (height - margins * 2) / 5
+    property int radius: height / 5
 //#ELSE
     property int radius: background.height / 5
 //#END
@@ -70,39 +68,9 @@ BaseLineEdit
 
     Rectangle
     {
-        id: itemFocus
-
-        anchors.fill: background
-
-//#QT_4
-        anchors.margins: -borderSize
-//#ELSE
-        anchors.margins: -borderSizeFocus
-//#END
-
-        radius: Math.round(lineEdit.radius * (height / background.height))
-
-        z: -1
-
-        opacity: (window.isActive && isFocused)
-
-        color: "transparent"
-
-//#QT_4
-        smooth: true
-//#END
-
-        border.width: borderSize + borderSizeFocus
-        border.color: colorTextSelection
-    }
-
-    Rectangle
-    {
         id: background
 
         anchors.fill: parent
-
-        anchors.margins: margins
 
         radius: lineEdit.radius
 
@@ -117,5 +85,25 @@ BaseLineEdit
 
         border.width: borderSize
         border.color: st.border_color
+    }
+
+    Rectangle
+    {
+        id: itemFocus
+
+        anchors.fill: background
+
+        radius: Math.round(lineEdit.radius * (height / background.height))
+
+        opacity: (window.isActive && isFocused)
+
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize + borderSizeFocus
+        border.color: colorTextSelection
     }
 }

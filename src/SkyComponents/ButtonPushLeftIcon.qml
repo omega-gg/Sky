@@ -37,7 +37,7 @@ ButtonPushIcon
 
     clip: true
 
-    background.anchors.rightMargin: -margins - radius
+    background.anchors.rightMargin: -radius
 
     //---------------------------------------------------------------------------------------------
     // Children
