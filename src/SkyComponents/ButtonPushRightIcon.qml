@@ -39,13 +39,6 @@ ButtonPushIcon
 
     background.anchors.leftMargin: -margins - radius
 
-    itemIcon.anchors.centerIn: undefined
-
-    itemIcon.anchors.verticalCenter: verticalCenter
-
-    itemIcon.x: (showBorder) ? Math.round(-width / 12) + border.width
-                             : Math.round(-width / 12)
-
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------

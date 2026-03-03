@@ -34,7 +34,7 @@ BaseButton
     property int margins: height / 8
 
 //#QT_4
-    property int radius: (height - margins * 2) / 3.75
+    property int radius: height / 3.75
 //#ELSE
     property int radius: background.height / 3.75
 //#END
@@ -98,37 +98,9 @@ BaseButton
 
     Rectangle
     {
-        id: itemFocus
-
-        anchors.fill: background
-
-//#QT_4
-        anchors.margins: -borderSize
-//#ELSE
-        anchors.margins: -borderSizeFocus
-//#END
-
-        radius: Math.round(baseButtonPush.radius * (height / background.height))
-
-        opacity: (window.isActive && isFocused)
-
-        color: "transparent"
-
-//#QT_4
-        smooth: true
-//#END
-
-        border.width: borderSize + borderSizeFocus
-        border.color: st.button_colorFocus
-    }
-
-    Rectangle
-    {
         id: background
 
         anchors.fill: parent
-
-        anchors.margins: margins
 
         radius: baseButtonPush.radius
 
@@ -193,5 +165,25 @@ BaseButton
 
         border.width: borderSize
         border.color: st.border_color
+    }
+
+    Rectangle
+    {
+        id: itemFocus
+
+        anchors.fill: background
+
+        radius: Math.round(baseButtonPush.radius * (height / background.height))
+
+        opacity: (window.isActive && isFocused)
+
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize + borderSizeFocus
+        border.color: st.button_colorFocus
     }
 }

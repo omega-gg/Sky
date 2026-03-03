@@ -110,11 +110,11 @@ BasePlayerBrowser
 
     function pGetSize()
     {
-        var size = Math.round(width / 8);
+        var size = Math.round(width / 10);
 
-        size = Math.max(st.dp48, size);
+        size = Math.max(st.dp40, size);
 
-        return Math.min(size, st.dp72);
+        return Math.min(size, st.dp56);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ BasePlayerBrowser
 
         anchors.left: parent.left
 
-        anchors.leftMargin: st.dp8
+        anchors.leftMargin: st.dp16
 
         anchors.verticalCenter: parent.verticalCenter
 
@@ -181,7 +181,7 @@ BasePlayerBrowser
 
         anchors.right: parent.right
 
-        anchors.rightMargin: st.dp8
+        anchors.rightMargin: st.dp16
 
         anchors.verticalCenter: parent.verticalCenter
 
@@ -220,7 +220,7 @@ BasePlayerBrowser
         width : pGetSize()
         height: width
 
-        iconWidth : Math.round(width / 3)
+        iconWidth : Math.round(width / 2.3)
         iconHeight: iconWidth
 
         borderSize: st.border_sizeFocus

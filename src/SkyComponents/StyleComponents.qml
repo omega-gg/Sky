@@ -242,9 +242,9 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonPush
 
-    property int buttonPush_height: dp40
+    property int buttonPush_height: dp32
 
-    property int buttonPush_padding: dp14
+    property int buttonPush_padding: dp8
     property int buttonPush_spacing: dp6
 
     property color buttonPush_colorA: "#dcdcdc"
@@ -375,8 +375,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonCheck
 
-    property int buttonCheck_width : dp64
-    property int buttonCheck_height: buttonPush_height
+    property int buttonCheck_width : dp48
+    property int buttonCheck_height: dp24
 
     property color buttonCheck_colorA: buttonPush_colorPressA
     property color buttonCheck_colorB: buttonPush_colorPressB
@@ -461,8 +461,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonStream
 
-    property int buttonStream_width : dp70
-    property int buttonStream_height: slider_height
+    property int buttonStream_width : dp64
+    property int buttonStream_height: dp16
 
     property color buttonStream_color: scrollBar_colorA
 //#END

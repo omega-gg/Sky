@@ -31,8 +31,6 @@ SkyMouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: height / 5
-
     property int radius: background.height
 
     property int borderSize: st.border_size
@@ -168,8 +166,6 @@ SkyMouseArea
 
         anchors.fill: parent
 
-        anchors.margins: margins
-
         radius: buttonCheck.radius
 
         gradient: Gradient
@@ -224,8 +220,6 @@ SkyMouseArea
         Rectangle
         {
             anchors.fill: parent
-
-            anchors.margins: margins
 
             radius: buttonCheck.radius
 

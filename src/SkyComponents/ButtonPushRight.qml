@@ -31,8 +31,6 @@ ButtonPush
 
     clip: true
 
-    paddingLeft: padding - margins
-
     background.anchors.leftMargin: -margins - radius
 
     //---------------------------------------------------------------------------------------------

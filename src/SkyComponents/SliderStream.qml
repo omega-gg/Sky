@@ -259,7 +259,7 @@ Item
 
         anchors.verticalCenter: parent.verticalCenter
 
-        paddingRight: (sk.osLinux) ? st.dp10 : st.dp9
+        paddingRight: st.dp16
 
         enabled: false
 
@@ -276,7 +276,7 @@ Item
 
         anchors.verticalCenter: parent.verticalCenter
 
-        paddingLeft: (sk.osLinux) ? st.dp10 : st.dp9
+        paddingLeft: st.dp16
 
         enabled: false
 

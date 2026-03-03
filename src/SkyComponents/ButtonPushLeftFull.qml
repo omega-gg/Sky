@@ -31,9 +31,9 @@ ButtonPushFull
 
     clip: true
 
-    paddingRight: padding - margins - borderSize
+    paddingRight: padding - borderSize
 
-    background.anchors.rightMargin: -margins - radius
+    background.anchors.rightMargin: -radius
 
     //---------------------------------------------------------------------------------------------
     // Children

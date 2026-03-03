@@ -32,8 +32,6 @@ ButtonPush
     width : st.buttonStream_width
     height: st.buttonStream_height
 
-    margins: height / 5
-
     radius: height
 
     padding: 0
