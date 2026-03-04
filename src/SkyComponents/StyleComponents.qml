@@ -566,7 +566,7 @@ Style
     property int popup_interval: 5000
 //#END
 
-//#CheckBox
+//#SkyCheckBox
     //---------------------------------------------------------------------------------------------
     // CheckBox
 
