@@ -95,6 +95,7 @@ Item
         x: st.getSliderX(slider.slider, width, position)
 
         borderLeft  : borderSize
+        borderRight : borderSize
         borderTop   : borderSize
         borderBottom: borderSize
 
@@ -128,7 +129,8 @@ Item
 
         x: st.getSliderX(slider.slider, width, position)
 
-        borderLeft: borderSize
+        borderLeft : borderSize
+        borderRight: borderSize
 
         enabled: false
 

@@ -384,8 +384,6 @@ Item
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            borderRight: 0
-
             enabled: isEnabled
 
             text: title

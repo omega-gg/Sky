@@ -161,6 +161,8 @@ ViewDrag
 
         maximumWidth: buttonsWindow.x - st.dp32
 
+        borderRight: borderSize
+
         spacing: st.dp6
 
         checkable: true

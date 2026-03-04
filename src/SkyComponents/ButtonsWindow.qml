@@ -80,7 +80,6 @@ Item
         anchors.bottom: buttonClose.bottom
 
         borderLeft  : borderSize
-        borderRight : 0
         borderBottom: borderSize
 
         icon          : st.icon12x12_iconify
@@ -97,7 +96,6 @@ Item
         anchors.top   : buttonClose.top
         anchors.bottom: buttonClose.bottom
 
-        borderRight : 0
         borderBottom: borderSize
 
         highlighted: (window.maximized || window.fullScreen)
@@ -119,7 +117,6 @@ Item
 
         height: st.barWindow_height + borderSizeHeight
 
-        borderRight : 0
         borderBottom: borderSize
 
         icon          : st.icon12x12_close

@@ -1221,6 +1221,7 @@ WallBookmarkTrack
         height: st.wallVideo_overlayHeight
 
         borderLeft  : borderSize
+        borderRight : borderSize
         borderTop   : borderSize
         borderBottom: borderSize
 

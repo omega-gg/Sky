@@ -575,6 +575,7 @@ BaseTabs
         z: buttonsItem.z
 
         borderLeft  : borderSize
+        borderRight : borderSize
         borderBottom: borderSize
 
         visible: (pButtonsVisible && itemActive != null

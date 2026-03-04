@@ -223,6 +223,7 @@ BaseButton
         anchors.fill: parent
 
         borderLeft  : 0
+        borderRight : 0
         borderTop   : 0
         borderBottom: 0
     }

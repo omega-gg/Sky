@@ -602,8 +602,9 @@ SkyMouseArea
 
             width: st.dp28 + borderSizeWidth
 
-            borderTop : borderSize
-            borderLeft: borderSize
+            borderLeft : borderSize
+            borderRight: borderSize
+            borderTop  : borderSize
 
             enabled: (currentPage > 0)
 
@@ -625,7 +626,8 @@ SkyMouseArea
 
             width: st.dp28 + borderSizeWidth
 
-            borderTop: borderSize
+            borderRight: borderSize
+            borderTop  : borderSize
 
             enabled: (currentPage < (pageCount - 1))
 
