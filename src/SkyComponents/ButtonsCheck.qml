@@ -33,11 +33,9 @@ Item
 
     /* read */ property int count: (model) ? model.count : 0
 
-    /* read */ property int buttonWidth: (width - extra * 2) / count
+    /* read */ property int buttonWidth: width / count
 
     property int padding: st.buttonPush_padding
-
-    property int extra: height / 8 + st.border_size / 2
 
     property bool checkable: true
 
@@ -101,11 +99,7 @@ Item
 
     function pGetWidth(index, x)
     {
-        if (index == 0)
-        {
-            return buttonWidth + extra;
-        }
-        else if (index == count - 1)
+        if (index == count - 1)
         {
             return width - x;
         }
@@ -114,11 +108,7 @@ Item
 
     function pGetX(index)
     {
-        if (index == 0)
-        {
-             return index * buttonWidth;
-        }
-        else return index * buttonWidth + extra;
+        return index * buttonWidth;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -133,8 +123,9 @@ Item
 
         delegate: Loader
         {
-            anchors.top   : parent.top
-            anchors.bottom: parent.bottom
+            // NOTE: This is useful when we want to add margins to the Repeater.
+            anchors.top   : repeater.top
+            anchors.bottom: repeater.bottom
 
             width: pGetWidth(index, x)
 
