@@ -73,7 +73,7 @@ BaseButtonPiano
 
     width: height + borderSizeWidth
 
-    height: st.buttonPianoIcon_size + borderSizeHeight
+    height: st.buttonPiano_size + borderSizeHeight
 
     //---------------------------------------------------------------------------------------------
     // Children

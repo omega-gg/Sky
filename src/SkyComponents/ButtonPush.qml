@@ -57,7 +57,7 @@ BaseButtonPush
     width: st.getSize(sk.textWidth(font, text) + paddingLeft + paddingRight,
                       minimumWidth, maximumWidth)
 
-    height: st.buttonPush_height
+    height: st.buttonPush_size
 
     //---------------------------------------------------------------------------------------------
     // Children

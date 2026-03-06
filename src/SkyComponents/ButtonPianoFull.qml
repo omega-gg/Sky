@@ -96,7 +96,7 @@ BaseButtonPiano
 
     width: getWidth()
 
-    height: st.buttonPiano_height + borderSizeHeight
+    height: st.buttonPiano_size + borderSizeHeight
 
     //---------------------------------------------------------------------------------------------
     // Functions

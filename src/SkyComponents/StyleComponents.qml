@@ -242,7 +242,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonPush
 
-    property int buttonPush_height: dp32
+    property int buttonPush_size: dp32
 
     property int buttonPush_padding: dp8
     property int buttonPush_spacing: dp6
@@ -304,7 +304,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonPiano
 
-    property int buttonPiano_height: dp32
+    property int buttonPiano_size: dp32
 
     property int buttonPiano_padding: dp8
     property int buttonPiano_spacing: dp4
@@ -332,13 +332,6 @@ Style
 
     property color buttonPiano_colorCheckHoverA: buttonPush_colorCheckHoverA
     property color buttonPiano_colorCheckHoverB: buttonPush_colorCheckHoverB
-//#END
-
-//#ButtonPianoIcon
-    //---------------------------------------------------------------------------------------------
-    // ButtonPianoIcon
-
-    property int buttonPianoIcon_size: buttonPiano_height
 //#END
 
 //#ButtonPianoWindow

@@ -57,7 +57,7 @@ BaseButtonPiano
     width: st.getSize(sk.textWidth(font, text) + paddingLeft + paddingRight + borderSizeWidth,
                       minimumWidth, maximumWidth)
 
-    height: st.buttonPiano_height + borderSizeHeight
+    height: st.buttonPiano_size + borderSizeHeight
 
     //---------------------------------------------------------------------------------------------
     // Children

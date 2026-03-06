@@ -91,7 +91,7 @@ BaseButtonPush
 
     width: getWidth()
 
-    height: st.buttonPush_height
+    height: st.buttonPush_size
 
     //---------------------------------------------------------------------------------------------
     // Functions
