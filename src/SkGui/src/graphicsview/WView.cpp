@@ -1496,7 +1496,9 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
 
 QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
 {
-    QRectF rect = item->childrenRect();
+    return item->childrenRect();
+
+    /*QRectF rect = item->childrenRect();
 
     // NOTE: The rectangle position should always be 0, otherwise it fails when a ListView has a
     //        negative content origin.
@@ -1511,7 +1513,7 @@ QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
     if (rect.width () > width)  rect.setWidth (width);
     if (rect.height() > height) rect.setHeight(height);
 
-    return rect;
+    return rect;*/
 }
 
 #endif

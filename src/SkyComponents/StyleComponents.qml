@@ -272,14 +272,6 @@ Style
     property color buttonPush_colorCheckHoverB: buttonPush_colorHighlightHoverB
 //#END
 
-//#ButtonPushIcon
-    //---------------------------------------------------------------------------------------------
-    // ButtonPushIcon
-
-    property int buttonPushIcon_width : buttonPush_height
-    property int buttonPushIcon_height: buttonPush_height
-//#END
-
 //#ButtonPushOverlay
     //---------------------------------------------------------------------------------------------
     // ButtonPushOverlay
@@ -361,14 +353,6 @@ Style
     // ButtonPianoReset
 
     property int buttonPianoReset_durationOpacity: duration_normal
-//#END
-
-//#ButtonRound
-    //---------------------------------------------------------------------------------------------
-    // ButtonRound
-
-    property int buttonRound_width : dp48
-    property int buttonRound_height: dp48
 //#END
 
 //#ButtonCheck

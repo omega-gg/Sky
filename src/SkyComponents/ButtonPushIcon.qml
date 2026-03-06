@@ -71,8 +71,8 @@ BaseButtonPush
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.buttonPushIcon_width
-    height: st.buttonPushIcon_height
+    width : st.buttonPush_height
+    height: width
 
     //---------------------------------------------------------------------------------------------
     // Children

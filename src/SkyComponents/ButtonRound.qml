@@ -29,8 +29,7 @@ ButtonPushIcon
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.buttonRound_width
-    height: st.buttonRound_height
+    height: width
 
     radius: height
 }
