@@ -76,10 +76,11 @@ static const int CONTROLLERFILE_LOG_MAX      = 10000;
 
 static const int CONTROLLERFILE_WATCHER_INTERVAL = 1000; // 1 seconds
 
-static const QString CONTROLLERFILE_IMAGE = "^(bmp|png|jpg|jpeg|svg|tga)$";
+static const QString CONTROLLERFILE_IMAGE = "^(png|jpg|jpeg|bmp|svg|tga|webp)$";
 
-static const QString CONTROLLERFILE_FILTER = "Images (*.bmp *.png *.jpg *.jpeg *.svg *.tga);;"
-                                             "All files (*)";
+static const QString CONTROLLERFILE_FILTER
+    = "Images (*.png *.jpg *.jpeg *.bmp *.svg *.tga *.webp);;"
+      "All files (*)";
 
 //=================================================================================================
 // WControllerFileAction
