@@ -99,6 +99,8 @@ public: // Static functions
     Q_INVOKABLE static qreal screenRatioPixel(QScreen * screen);
 #endif
 
+    Q_INVOKABLE static QSize imageSize(const QString & fileName);
+
     Q_INVOKABLE static QByteArray imageData(const QImage & image,
                                             const char   * format = NULL, int quality = -1);
 

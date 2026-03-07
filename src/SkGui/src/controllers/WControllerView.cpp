@@ -445,6 +445,11 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QSize WControllerView::imageSize(const QString & fileName)
+{
+    return QImage(fileName).size();
+}
+
 /* Q_INVOKABLE static */ QByteArray WControllerView::imageData(const QImage & image,
                                                                const char   * format, int quality)
 {
