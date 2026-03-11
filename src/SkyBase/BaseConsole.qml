@@ -44,6 +44,10 @@ BaseTextEdit
     // Settings
     //---------------------------------------------------------------------------------------------
 
+//#QT_NEW
+    textFormat: TextEdit.PlainText
+//#END
+
 //#MOBILE
     // NOTE: We want to be read only.
     readOnly: true
@@ -111,7 +115,7 @@ BaseTextEdit
         {
             pSetLog(log + string);
 
-            /* var */ size = log.length;
+            var size = log.length;
 
             if (size > maximumLength)
             {

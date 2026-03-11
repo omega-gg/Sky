@@ -249,8 +249,10 @@ SkyMouseArea
 
         anchors.left: parent.left
 
-        anchors.right: (isScrollable) ? scrollBar.left
-                                      : parent.right
+        // NOTE: We use scrollBar.visible and not isScrollable for this to be evaluated after the
+        //       scrollBar is visible.
+        anchors.right: (scrollBar.visible) ? scrollBar.left
+                                           : parent.right
 
         onHeightChanged: pUpdateRange()
 

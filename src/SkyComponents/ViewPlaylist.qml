@@ -29,6 +29,8 @@ SkyMouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    /* read */ property bool isScrollable: false
+
     property string textDefault: qsTr("Playlist is empty")
 
     //---------------------------------------------------------------------------------------------
@@ -43,8 +45,6 @@ SkyMouseArea
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
-
-    /* read */ property bool isScrollable: false
 
     property alias playlist: grid.playlist
 
@@ -165,7 +165,9 @@ SkyMouseArea
 
         anchors.fill: parent
 
-        anchors.rightMargin: (isScrollable) ? scrollBar.width : 0
+        // NOTE: We use scrollBar.visible and not isScrollable for this to be evaluated after the
+        //       scrollBar is visible.
+        anchors.rightMargin: (scrollBar.visible) ? scrollBar.width : 0
 
         delegate: ComponentGridTrack {}
 
