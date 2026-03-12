@@ -57,6 +57,15 @@ if [ $qt = "qt6" ]; then
     Qt="$external/Qt/$Qt6_version"
 fi
 
+if [ $1 = "iOS" ]; then
+
+    Qt="$Qt/macos"
+
+elif [ $1 = "android" ]; then
+
+    Qt="$Qt/gcc_64"
+fi
+
 qsb="$Qt/bin/qsb"
 
 #--------------------------------------------------------------------------------------------------
