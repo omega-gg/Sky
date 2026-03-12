@@ -1048,5 +1048,11 @@ if [ $qt = "qt6" ]; then
 
     mkdir -p $deploy/shaders
 
-    cp dist/shaders/qsb/*.qsb $deploy/shaders
+    cd dist/shaders
+
+    sh generate.sh $1
+
+    cp qsb/*.qsb $deploy/shaders
+
+    cd -
 fi

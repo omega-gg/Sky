@@ -31,9 +31,10 @@ generate()
 
 if [ $# != 1 ] \
    || \
-   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ]; then
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "iOS" -a $1 != "linux" -a \
+     $1 != "android" ]; then
 
-    echo "Usage: generate <win32 | win64 | macOS | linux | android>"
+    echo "Usage: generate <win32 | win64 | macOS | iOS | linux | android>"
 
     exit 1
 fi
