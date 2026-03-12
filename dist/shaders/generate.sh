@@ -57,16 +57,23 @@ if [ $qt = "qt6" ]; then
     Qt="$external/Qt/$Qt6_version"
 fi
 
-if [ $1 = "iOS" ]; then
+if [ $qt = "qt6" ]; then
 
-    Qt="$Qt/macos"
+    if [ $1 = "iOS" ]; then
 
-elif [ $1 = "android" ]; then
+        QtBin="$Qt/macos/bin"
 
-    Qt="$Qt/gcc_64"
+    elif [ $1 = "android" ]; then
+
+        QtBin="$Qt/gcc_64/bin"
+    else
+        QtBin="$Qt/bin"
+    fi
+else
+    QtBin="$Qt/bin"
 fi
 
-qsb="$Qt/bin/qsb"
+qsb="$QtBin/qsb"
 
 #--------------------------------------------------------------------------------------------------
 # Generate
