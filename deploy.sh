@@ -52,16 +52,16 @@ copyQml()
 
 copyFolder()
 {
-   find "$1" -type f -iname "$3" | while read -r file; do
+    find "$1" -type f -iname "$3" | while read -r file; do
 
-       path="${file#$1/}"
+        path="${file#$1/}"
 
-       target="$2/$(dirname "$path")"
+        target="$2/$(dirname "$path")"
 
-       mkdir -p "$target"
+        mkdir -p "$target"
 
-       cp "$file" "$target/"
-   done
+        cp "$file" "$target/"
+    done
 }
 
 copyMacOS()
