@@ -127,7 +127,11 @@ void WBashScriptPrivate::onOutput()
 
     output.append(data);
 
-    if (data.endsWith('\n')) data.chop(1);
+#ifdef Q_OS_WIN
+    while (data.endsWith('\n') || data.endsWith('\r')) data.chop(1);
+#else
+    while (data.endsWith('\n')) data.chop(1);
+#endif
 
 #ifdef QT_4
     qDebug().nospace() << QString::fromUtf8(data);
@@ -144,7 +148,11 @@ void WBashScriptPrivate::onOutputError()
 
     outputError.append(data);
 
-    if (data.endsWith('\n')) data.chop(1);
+#ifdef Q_OS_WIN
+    while (data.endsWith('\n') || data.endsWith('\r')) data.chop(1);
+#else
+    while (data.endsWith('\n')) data.chop(1);
+#endif
 
 #ifdef QT_4
     qDebug().nospace() << QString::fromUtf8(data);
