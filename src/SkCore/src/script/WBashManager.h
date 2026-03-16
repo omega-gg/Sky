@@ -56,6 +56,9 @@ class SK_CORE_EXPORT WBashManager : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    // NOTE: This is useful to override the bash default path.
+    Q_PROPERTY(QString pathBash READ pathBash WRITE setPathBash NOTIFY pathBashChanged)
+
     Q_PROPERTY(int maxJobs READ maxJobs WRITE setMaxJobs NOTIFY maxJobsChanged)
 
 public:
@@ -75,9 +78,14 @@ public: // Static functions
 signals:
     void finished(const WBashManagerResult & map);
 
+    void pathBashChanged();
+
     void maxJobsChanged();
 
 public: // Properties
+    QString pathBash() const;
+    void    setPathBash(const QString & path);
+
     int  maxJobs() const;
     void setMaxJobs(int max);
 

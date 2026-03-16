@@ -130,6 +130,10 @@ void WBashManagerPrivate::onScriptFinished(const WBashScriptResult & result)
 
     WBashScript * script = new WBashScript(this);
 
+    QString pathBash = d->pathBash;
+
+    if (pathBash.isEmpty() == false) script->setPathBash(pathBash);
+
     if (d->jobs.count() == d->maxJobs)
     {
         d->scripts.append(script);
@@ -230,6 +234,22 @@ void WBashManagerPrivate::onScriptFinished(const WBashScriptResult & result)
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
+
+QString WBashManager::pathBash() const
+{
+    Q_D(const WBashManager); return d->pathBash;
+}
+
+void WBashManager::setPathBash(const QString & path)
+{
+    Q_D(WBashManager);
+
+    if (d->pathBash == path) return;
+
+    d->pathBash = path;
+
+    emit pathBashChanged();
+}
 
 int WBashManager::maxJobs() const
 {

@@ -73,6 +73,8 @@ public: // Slots
     void onScriptFinished(const WBashScriptResult & result);
 
 public: // Variables
+    QString pathBash;
+
     QList<WBashScript *> scripts;
     WListId              ids;
 
