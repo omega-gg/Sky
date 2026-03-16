@@ -1827,6 +1827,28 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     else return result;
 }
 
+/* static */ void WControllerFile::setPermissionFiles(const QString     & path,
+                                                      const QStringList & filters,
+                                                      Permissions         permissions)
+{
+    QDirIterator it(path, filters, QDir::Files, QDirIterator::Subdirectories);
+
+    while (it.hasNext())
+    {
+        const QString & fileName = it.next();
+
+#ifdef QT_4
+        QFile::Permissions current = QFile::permissions(fileName);
+
+        QFile::setPermissions(fileName, current | QFile::Permissions((int) permissions));
+#else
+        QFileDevice::Permissions current = QFile::permissions(fileName);
+
+        QFile::setPermissions(fileName, current | QFileDevice::Permissions((int) permissions));
+#endif
+    }
+}
+
 /* static */ bool WControllerFile::deleteFile(const QString & fileName)
 {
     QtLockedFile file(fileName);

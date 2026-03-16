@@ -320,6 +320,9 @@ public: // Static functions
     static bool copyFile(const QString & fileName,
                          const QString & newName, Permissions permissions = Default);
 
+    static void setPermissionFiles(const QString     & path,
+                                   const QStringList & filters, Permissions permissions = Default);
+
     static bool deleteFile(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------
