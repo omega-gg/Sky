@@ -194,7 +194,11 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
         if (this->style == WDeclarativeTextSvg::Outline)
         {
+#ifdef QT_OLD
             int sizeOutline = styleSize * pixelSize / 200;
+#else
+            int sizeOutline = styleSize;
+#endif
 
             QString x = QString::number(sizeOutline);
             QString y = QString::number(pixelY + sizeOutline);
@@ -235,7 +239,11 @@ void WDeclarativeTextSvgPrivate::loadSvg()
         }
         else if (this->style == WDeclarativeTextSvg::Glow)
         {
+#ifdef QT_OLD
             int sizeOutline = styleSize * pixelSize / 100;
+#else
+            int sizeOutline = styleSize;
+#endif
 
             QString x = QString::number(sizeOutline);
             QString y = QString::number(pixelY + sizeOutline);
