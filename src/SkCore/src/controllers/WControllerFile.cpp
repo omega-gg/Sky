@@ -512,48 +512,6 @@ bool WControllerFilePrivate::isLoading() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QString WControllerFilePrivate::scanFile(const QString     & input,
-                                                      const QStringList & defines)
-{
-    QString content;
-
-    QFile file(input);
-
-    if (file.open(QIODevice::ReadOnly) == false)
-    {
-        return QString();
-    }
-
-    QTextStream stream(&file);
-
-    QString line = stream.readLine();
-
-    while (line.isNull() == false)
-    {
-        if (line.startsWith("//#"))
-        {
-            if (match(line.mid(3), defines))
-            {
-                writeLines(&stream, &content, &line, defines);
-            }
-            else skipLines(&stream, &content, &line, defines);
-
-            if (line.startsWith("//#END"))
-            {
-                line = stream.readLine();
-            }
-        }
-        else
-        {
-            content.append(line + '\n');
-
-            line = stream.readLine();
-        }
-    }
-
-    return content;
-}
-
 /* static */ bool WControllerFilePrivate::matchStar(const QString     & string,
                                                     const QStringList & defines, bool match)
 {
@@ -640,7 +598,8 @@ bool WControllerFilePrivate::isLoading() const
 
     while (line->startsWith("//#") == false)
     {
-        content->append(*line + '\n');
+        content->append(*line);
+        content->append('\n');
 
         *line = stream->readLine();
 
@@ -1922,11 +1881,56 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 //-------------------------------------------------------------------------------------------------
 // QML
 
-/* static */ bool WControllerFile::generateQml(const QString     & fileName,
-                                               const QString     & fileOutput,
-                                               const QStringList & defines)
+/* static */ QString WControllerFile::generateQml(const QString     & input,
+                                                  const QStringList & defines)
 {
-    QString content = WControllerFilePrivate::scanFile(fileName, defines);
+    QString content;
+
+    QFile file(input);
+
+    if (file.open(QIODevice::ReadOnly) == false)
+    {
+        return QString();
+    }
+
+    content.reserve(qMin(file.size(), qint64(INT_MAX)));
+
+    QTextStream stream(&file);
+
+    QString line = stream.readLine();
+
+    while (line.isNull() == false)
+    {
+        if (line.startsWith("//#"))
+        {
+            if (WControllerFilePrivate::match(line.mid(3), defines))
+            {
+                WControllerFilePrivate::writeLines(&stream, &content, &line, defines);
+            }
+            else WControllerFilePrivate::skipLines(&stream, &content, &line, defines);
+
+            if (line.startsWith("//#END"))
+            {
+                line = stream.readLine();
+            }
+        }
+        else
+        {
+            content.append(line);
+            content.append('\n');
+
+            line = stream.readLine();
+        }
+    }
+
+    return content;
+}
+
+/* static */ bool WControllerFile::writeQml(const QString     & fileName,
+                                            const QString     & fileOutput,
+                                            const QStringList & defines)
+{
+    QString content = generateQml(fileName, defines);
 
     if (content.isEmpty()) return false;
 

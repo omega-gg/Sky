@@ -74,8 +74,6 @@ public: // Static functions
                                                const QString            & message);
 #endif
 
-    static QString scanFile(const QString & input, const QStringList & defines);
-
     static bool matchStar(const QString & string, const QStringList & defines, bool match);
     static bool match    (const QString & string, const QStringList & defines);
 

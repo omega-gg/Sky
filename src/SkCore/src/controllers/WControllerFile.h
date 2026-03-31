@@ -341,9 +341,11 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // QML
 
-    static bool generateQml(const QString     & fileName,
-                            const QString     & fileOutput,
-                            const QStringList & defines = QStringList());
+    static QString generateQml(const QString & input, const QStringList & defines);
+
+    static bool writeQml(const QString     & fileName,
+                         const QString     & fileOutput,
+                         const QStringList & defines = QStringList());
 
     static QStringList qmlDefines();
 
