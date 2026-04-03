@@ -44,12 +44,6 @@ qt="qt6"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
-copyQml()
-{
-    cp "$Qt"/qml/$1/*.$2   $deploy/$1
-    cp "$Qt"/qml/$1/qmldir $deploy/$1
-}
-
 copyFolder()
 {
     find "$1" -type f -iname "$3" | while read -r file; do
@@ -62,6 +56,12 @@ copyFolder()
 
         cp "$file" "$target/"
     done
+}
+
+copyQml()
+{
+    copyFolder "$path"/$1 $deploy/$1 "*.$2"
+    copyFolder "$path"/$1 $deploy/$1 "qmldir"
 }
 
 copyMacOS()
