@@ -60,8 +60,8 @@ copyFolder()
 
 copyQml()
 {
-    copyFolder "$path"/$1 $deploy/$1 "*.$2"
-    copyFolder "$path"/$1 $deploy/$1 "qmldir"
+    copyFolder "$Qt"/qml/$1 $deploy/$1 "*.$2"
+    copyFolder "$Qt"/qml/$1 $deploy/$1 "qmldir"
 }
 
 copyMacOS()
