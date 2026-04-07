@@ -48,13 +48,13 @@ copyFolder()
 {
     find "$1" -type f -iname "$3" | while read -r file; do
 
-        path="${file#$1/}"
+        folder="${file#$1/}"
 
-        target="$2/$(dirname "$path")"
+        folder="$2/$(dirname "$folder")"
 
-        mkdir -p "$target"
+        mkdir -p "$folder"
 
-        cp "$file" "$target/"
+        cp "$file" "$folder/"
     done
 }
 
