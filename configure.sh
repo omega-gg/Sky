@@ -161,6 +161,14 @@ libtorrent="$external/libtorrent/$libtorrent_version"
 
 Boost="$external/Boost/$Boost_version"
 
+# NOTE windows: Ensure we use the proper find.
+if [ -x /usr/bin/find ]; then
+
+    find="/usr/bin/find"
+else
+    find="find"
+fi
+
 #--------------------------------------------------------------------------------------------------
 # Clean
 #--------------------------------------------------------------------------------------------------
@@ -396,7 +404,7 @@ elif [ $1 = "linux" ]; then
 
     if [ -x "$(command -v patchelf)" ]; then
 
-        find lib -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
+        $find lib -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
     else
         echo "patchelf is not installed"
     fi
