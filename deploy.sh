@@ -46,7 +46,7 @@ qt="qt6"
 
 copyFolder()
 {
-    find "$1" -type f -iname "$3" | while read -r file; do
+    $find "$1" -type f -iname "$3" | while read -r file; do
 
         folder="${file#$1/}"
 
@@ -202,6 +202,14 @@ else
     fi
 
     compiler="default"
+fi
+
+# NOTE windows: Ensure we use the proper find.
+if [ -x /usr/bin/find ]; then
+
+    find="/usr/bin/find"
+else
+    find="find"
 fi
 
 #--------------------------------------------------------------------------------------------------
