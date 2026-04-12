@@ -85,7 +85,7 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 
 void WVlcEnginePrivate::create()
 {
-#ifdef Q_OS_MACOS
+#if defind(Q_OS_MACOS) || defined(Q_OS_LINUX)
     qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
 #endif
 
@@ -162,17 +162,17 @@ void WVlcEnginePrivate::create()
         delete [] args;
     }
 
+    if (libvlc_errmsg())
+    {
+        qWarning("WVlcEnginePrivate::create: LibVLC error: %s", libvlc_errmsg());
+    }
+
 #ifdef Q_OS_LINUX
     if (instance == NULL)
     {
         qFatal("WVlcEnginePrivate::create: Cannot create VLC instance. Is VLC installed ?");
     }
 #endif
-
-    if (libvlc_errmsg())
-    {
-        qWarning("WVlcEnginePrivate::create: LibVLC error: %s", libvlc_errmsg());
-    }
 
 #if LIBVLC_VERSION_MAJOR > 3
     libvlc_dialog_cbs dialogs {};
