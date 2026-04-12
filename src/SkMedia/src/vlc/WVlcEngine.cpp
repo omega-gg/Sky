@@ -85,7 +85,7 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 
 void WVlcEnginePrivate::create()
 {
-#if defind(Q_OS_MACOS) || defined(Q_OS_LINUX)
+#if defined(Q_OS_MACOS) || defined(Q_OS_LINUX)
     qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
 #endif
 
