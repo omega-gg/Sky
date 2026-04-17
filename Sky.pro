@@ -68,3 +68,4 @@ OTHER_FILES += 3rdparty.sh \
                dist/changes/2.0.0.md \
                dist/changes/3.0.0.md \
                dist/changes/3.1.0.md \
+               dist/changes/3.2.0.md \
