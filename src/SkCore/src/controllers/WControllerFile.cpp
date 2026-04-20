@@ -1886,7 +1886,7 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 {
     QString content;
 
-    QFile file(input);
+    QFile file(filePath(input));
 
     if (file.open(QIODevice::ReadOnly) == false)
     {
