@@ -216,8 +216,23 @@ void WUnzipperPrivate::init() {}
     }
 }
 
+/* Q_INVOKABLE static */ QByteArray WUnzipper::extractFile(const QString & fileName,
+                                                           const QString & targetName)
+{
+    QuaZip zip(fileName);
+
+    if (zip.open(QuaZip::mdUnzip) == false)
+    {
+        qWarning("WUnzipper::extractFile: Cannot open zip file %s.", fileName.C_STR);
+
+        return QByteArray();
+    }
+
+    return WUnzipperPrivate::extractData(&zip, targetName);
+}
+
 /* Q_INVOKABLE static */ QByteArray WUnzipper::extractFile(QBuffer       * buffer,
-                                                           const QString & fileName)
+                                                           const QString & targetName)
 {
     QuaZip zip(buffer);
 
@@ -228,7 +243,7 @@ void WUnzipperPrivate::init() {}
         return QByteArray();
     }
 
-    return WUnzipperPrivate::extractData(&zip, fileName);
+    return WUnzipperPrivate::extractData(&zip, targetName);
 }
 
 //-------------------------------------------------------------------------------------------------

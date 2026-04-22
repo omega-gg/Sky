@@ -61,7 +61,8 @@ public: // Static functions
                                     const QString     & destination,
                                     const QStringList & fileNames = QStringList());
 
-    Q_INVOKABLE static QByteArray extractFile(QBuffer * buffer, const QString & fileName);
+    Q_INVOKABLE static QByteArray extractFile(const QString & fileName, const QString & targetName);
+    Q_INVOKABLE static QByteArray extractFile(QBuffer       * buffer,   const QString & targetName);
 
     Q_INVOKABLE static QStringList getFileNames(const QString & fileName);
     Q_INVOKABLE static QStringList getFileNames(QBuffer       * buffer);
