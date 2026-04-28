@@ -1,6 +1,6 @@
 //=================================================================================================
 /*
-    Copyright (C) 2015-2020 Sky kit authors. <http://omega.gg/Sky>
+    Copyright (C) 2015-2026 Sky kit authors. <http://omega.gg/Sky>
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 

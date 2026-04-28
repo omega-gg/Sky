@@ -83,7 +83,7 @@ You can deploy Sky with:
 
 ## License
 
-Copyright (C) 2015 - 2024 Sky kit authors | https://omega.gg/Sky
+Copyright (C) 2015-2026 Sky kit authors | https://omega.gg/Sky
 
 ### Authors
 
