@@ -11,6 +11,7 @@ SUBDIRS = $$PATH/3rdparty \
           $$PATH/Sky-pro \
           $$PATH/Sky-runtime-dev \
           $$PATH/MotionMonkey-dev \
+          $$PATH/turbopixel \
           $$PATH/backend \
           $$PATH/VLC \
           $$PATH/libtorrent \
