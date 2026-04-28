@@ -9,8 +9,8 @@ SUBDIRS = $$PATH/3rdparty \
           $$PATH/assets-pro \
           $$PATH/snap \
           $$PATH/Sky-pro \
-          $$PATH/Sky-runtime-dev \
           $$PATH/MotionMonkey-dev \
+          $$PATH/hypergonar \
           $$PATH/turbopixel \
           $$PATH/backend \
           $$PATH/VLC \
