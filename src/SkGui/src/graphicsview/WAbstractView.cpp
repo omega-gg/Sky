@@ -44,6 +44,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #else
     q->setFlags(Qt::Window | flags);
 #endif
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
