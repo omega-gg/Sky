@@ -48,13 +48,13 @@ DEFINES += QT_QTLOCKEDFILE_IMPORT
 
 DEFINES += SK_GUI_LIBRARY
 
-!ios:!android:contains(QT_MAJOR_VERSION, 6) {
+win32|macx:contains(QT_MAJOR_VERSION, 6) {
     DEFINES += QWK_CORE_LIBRARY QWK_QUICK_LIBRARY
 }
 
 #DEFINES += SK_SOFTWARE
 
-!ios:!android:contains(QT_MAJOR_VERSION, 6) {
+win32|macx:contains(QT_MAJOR_VERSION, 6) {
     DEFINES += SK_WINDOW_NATIVE
 }
 
@@ -72,7 +72,7 @@ include(src/media/media.pri)
 
 include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 
-!ios:!android:contains(QT_MAJOR_VERSION, 6) {
+win32|macx:contains(QT_MAJOR_VERSION, 6) {
     include(src/3rdparty/qwindowkit/qwindowkit.pri)
 }
 
@@ -96,7 +96,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
                    $$SK/include/$$QTX/QtQuick
 }
 
-!ios:!android:contains(QT_MAJOR_VERSION, 6) {
+win32|macx:contains(QT_MAJOR_VERSION, 6) {
     INCLUDEPATH += $$SK/include/SkGui/QWKCore \
                    $$SK/include/SkGui/QWKCore/private \
                    $$SK/include/SkGui/QWKQuick \
