@@ -121,8 +121,9 @@ public: // Functions
 #endif
 
 #ifdef SK_DESKTOP
-    QRect getGeometryDefault(const QRect & rect) const;
-    QRect getGeometry       (const QRect & rect) const;
+    QRect getGeometryDefault(const QRect & rect, int width, int height) const;
+
+    QRect getGeometry(const QRect & rect) const;
 #endif
 
     void setGeometryNormal(const QRect & rect);

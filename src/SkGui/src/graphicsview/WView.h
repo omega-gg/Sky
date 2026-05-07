@@ -480,7 +480,7 @@ protected: // Events
 
     /* virtual */ void closeEvent(QCloseEvent * event);
 
-//#ifdef SK_WIN_NATIVE
+//#ifdef SK_WINDOW_NATIVE
 // NOTE: We need these functions for binary compatibility.
 protected: // WAbstractView reimplementation
     /* virtual */ void onStateChanged(Qt::WindowState state);

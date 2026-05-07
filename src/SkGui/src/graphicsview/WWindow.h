@@ -385,9 +385,9 @@ public: // Interface
     Q_INVOKABLE void unregisterCursor(int shape);
 
 #ifdef Q_OS_WIN
-    Q_INVOKABLE void setWindowSnap    (bool enabled);
-    Q_INVOKABLE void setWindowMaximize(bool enabled);
-    Q_INVOKABLE void setWindowClip    (bool enabled);
+    // Q_INVOKABLE void setWindowSnap    (bool enabled);
+    // Q_INVOKABLE void setWindowMaximize(bool enabled);
+    // Q_INVOKABLE void setWindowClip    (bool enabled);
 #endif
 #else
     //---------------------------------------------------------------------------------------------

@@ -351,10 +351,12 @@ BaseWindow
 
         anchors.fill: parent
 
+//#!WINDOW_NATIVE
         anchors.leftMargin  : getMargin(borderLeft)
         anchors.rightMargin : getMargin(borderRight)
         anchors.topMargin   : getMargin(borderTop)
         anchors.bottomMargin: getMargin(borderBottom)
+//#END
 
         color: st.window_color
     }
@@ -369,6 +371,10 @@ BaseWindow
         size: (maximized == false && fullScreen == false) ? getBorderSize() : 0
 //#ELSE
         size: 0
+//#END
+
+//#WINDOW_NATIVE
+        visible: isTouchActive
 //#END
 
         color: (isTouchActive) ? st.border_colorFocus
@@ -396,6 +402,10 @@ BaseWindow
         size: (isTouchActive) ? st.window_resizerSizeTouch
                               : st.window_resizerSize
 
+//#WINDOW_NATIVE
+        visible: (isTouchActive && resizable && maximized == false && fullScreen == false)
+//#ELSE
         visible: (resizable && maximized == false && fullScreen == false)
+//#END
     }
 }

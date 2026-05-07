@@ -262,7 +262,12 @@ Item
 
     property int window_intervalTouch: 3000
 
-    property int window_borderSize     : border_size
+//#WINDOW_NATIVE
+    property int window_borderSize: 0
+//#ELSE
+    property int window_borderSize: border_size
+//#END
+
     property int window_borderSizeTouch: dp8
 
     property int window_resizerSize     : dp4

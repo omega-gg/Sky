@@ -33,19 +33,6 @@
     We mean it.
 */
 
-#ifdef SK_WIN_NATIVE
-// Qt includes
-#include <QMetaMethod>
-#ifdef QT_NEW
-#include <QTimer>
-#endif
-#endif
-
-#if defined(SK_WIN_NATIVE) && defined(QT_5) == false
-// Windows includes
-#include <qt_windows.h>
-#endif
-
 // Private includes
 #include <private/Sk_p>
 
@@ -56,84 +43,10 @@ class SK_GUI_EXPORT WAbstractViewPrivate : public WPrivate
 public:
     WAbstractViewPrivate(WAbstractView * p);
 
-#ifdef SK_WIN_NATIVE
-    /* virtual */ ~WAbstractViewPrivate();
-#endif
-
     void init(Qt::WindowFlags flags);
-
-#ifdef SK_WIN_NATIVE
-public: // Functions
-    void applyFullScreen  ();
-    void restoreFullScreen();
-
-    void setFlag(LONG flag, bool enabled) const;
-
-    bool isWindows10();
-
-public: // Static functions
-    static HICON getIcon(const QIcon & icon, int width, int height);
-
-public: // Static events
-    static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
-
-public: // Slots
-#ifdef QT_NEW
-    void onCreate();
-
-    void onMove();
-#endif
-
-    void onFocus();
-#endif
 
 public: // Variables
     Qt::WindowFlags flags;
-
-#ifdef SK_WIN_NATIVE
-    HWND id;
-    HWND handle;
-
-#ifdef QT_NEW
-    QWindow * viewport;
-#endif
-
-    int x;
-    int y;
-
-    int width;
-    int height;
-
-    int minimumWidth;
-    int minimumHeight;
-
-    int maximumWidth;
-    int maximumHeight;
-
-    QRect rect;
-
-#ifdef QT_NEW
-    QScreen * screen;
-#endif
-
-    bool  visible;
-    qreal opacity;
-
-    bool maximized;
-    bool fullScreen;
-
-    bool windowSnap;
-    bool windowMaximize;
-    bool windowClip;
-
-    int version;
-
-    QMetaMethod method;
-
-#ifdef QT_NEW
-    QTimer timer;
-#endif
-#endif
 
 protected:
     W_DECLARE_PUBLIC(WAbstractView)

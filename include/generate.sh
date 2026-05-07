@@ -5,11 +5,15 @@ includeGenerator="../deploy/includeGenerator"
 
 "$includeGenerator" ../../src/SkCore/src                              SkCore
 "$includeGenerator" ../../src/SkCore/src/3rdparty/qtsingleapplication SkCore
-"$includeGenerator" ../../src/SkGui/src                               SkGui
-"$includeGenerator" ../../src/SkGui/src/3rdparty/qtsingleapplication  SkGui
-"$includeGenerator" ../../src/SkMedia/src                             SkMedia
-"$includeGenerator" ../../src/SkBarcode/src                           SkBarcode
-"$includeGenerator" ../../src/SkMultimedia/src                        SkMultimedia
-"$includeGenerator" ../../src/SkWeb/src                               SkWeb
-"$includeGenerator" ../../src/SkTorrent/src                           SkTorrent
-"$includeGenerator" ../../src/SkBackend/src                           SkBackend
+
+"$includeGenerator" ../../src/SkGui/src                              SkGui
+"$includeGenerator" ../../src/SkGui/src/3rdparty/qtsingleapplication SkGui
+"$includeGenerator" ../../../src/SkGui/src/3rdparty/qwindowkit/core  SkGui/QWKCore
+"$includeGenerator" ../../../src/SkGui/src/3rdparty/qwindowkit/quick SkGui/QWKQuick
+
+"$includeGenerator" ../../src/SkMedia/src      SkMedia
+"$includeGenerator" ../../src/SkBarcode/src    SkBarcode
+"$includeGenerator" ../../src/SkMultimedia/src SkMultimedia
+"$includeGenerator" ../../src/SkWeb/src        SkWeb
+"$includeGenerator" ../../src/SkTorrent/src    SkTorrent
+"$includeGenerator" ../../src/SkBackend/src    SkBackend

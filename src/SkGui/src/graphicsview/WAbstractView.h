@@ -60,129 +60,15 @@ protected:
                   QWindow * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #endif
 
-#ifdef SK_WIN_NATIVE
 public: // Interface
-    Q_INVOKABLE void show();
-    Q_INVOKABLE void hide();
-
-    Q_INVOKABLE void showNormal    ();
-    Q_INVOKABLE void showMaximized ();
-    Q_INVOKABLE void showFullScreen();
-
-    Q_INVOKABLE void showMinimized();
-
-    Q_INVOKABLE void raise();
-    Q_INVOKABLE void lower();
-
-    Q_INVOKABLE bool close();
-
-#ifdef QT_4
-    Q_INVOKABLE void move(int x, int y);
-    Q_INVOKABLE void move(const QPoint & position);
-#else
-    Q_INVOKABLE void setPosition(int x, int y);
-    Q_INVOKABLE void setPosition(const QPoint & position);
-#endif
-
-    Q_INVOKABLE void resize(int width, int height);
-    Q_INVOKABLE void resize(const QSize & size);
-
-    Q_INVOKABLE void setGeometry(int x, int y, int width, int height);
-    Q_INVOKABLE void setGeometry(const QRect & rect);
-
-    Q_INVOKABLE void setMinimumSize(int width, int height);
-    Q_INVOKABLE void setMaximumSize(int width, int height);
-
-    Q_INVOKABLE void setMinimumSize(const QSize & size);
-    Q_INVOKABLE void setMaximumSize(const QSize & size);
-
-    Q_INVOKABLE void setMinimumWidth (int width);
-    Q_INVOKABLE void setMinimumHeight(int height);
-
-    Q_INVOKABLE void setMaximumWidth (int width);
-    Q_INVOKABLE void setMaximumHeight(int height);
-
-    Q_INVOKABLE void setVisible(bool visible);
-
-    Q_INVOKABLE void setFocus();
-
-#ifdef QT_4
-    Q_INVOKABLE void setWindowIcon (const QIcon   & icon);
-    Q_INVOKABLE void setWindowTitle(const QString & title);
-#else
-    Q_INVOKABLE void setIcon (const QIcon   & icon);
-    Q_INVOKABLE void setTitle(const QString & title);
-#endif
-#endif // SK_WIN_NATIVE
-
 #ifdef Q_OS_WIN
-    Q_INVOKABLE void setWindowSnap    (bool enabled);
-    Q_INVOKABLE void setWindowMaximize(bool enabled);
-    Q_INVOKABLE void setWindowClip    (bool enabled);
+    // Q_INVOKABLE void setWindowSnap    (bool enabled);
+    // Q_INVOKABLE void setWindowMaximize(bool enabled);
+    // Q_INVOKABLE void setWindowClip    (bool enabled);
 #endif
-
-#ifdef SK_WIN_NATIVE
-protected: // Events
-#ifdef QT_4
-    /* virtual */ bool winEvent(MSG * msg, long * result);
-#elif defined(QT_5)
-    /* virtual */ bool nativeEvent(const QByteArray & event, void * msg, long * result);
-#else
-    /* virtual */ bool nativeEvent(const QByteArray & event, void * msg, qintptr * result);
-#endif
-#endif // SK_WIN_NATIVE
-
-//#ifdef SK_WIN_NATIVE
-// NOTE: We need these functions for binary compatibility.
-protected: // Virtual functions
-    virtual void onStateChanged(Qt::WindowState state); // {}
-
-    virtual void onClose();
-//#endif
-
-#ifdef SK_WIN_NATIVE
-public: // Properties
-    WId winId() const;
-
-#ifdef QT_NEW
-    QScreen * screen() const;
-#endif
-
-    QRect geometry() const;
-
-    int x() const;
-    int y() const;
-
-    int width () const;
-    int height() const;
-
-    int minimumWidth () const;
-    int minimumHeight() const;
-
-    int maximumWidth () const;
-    int maximumHeight() const;
-
-#ifdef QT_4
-    qreal windowOpacity() const;
-    void  setWindowOpacity(qreal level);
-#else
-    qreal opacity() const;
-    void  setOpacity(qreal level);
-#endif
-#endif // SK_WIN_NATIVE
 
 private:
     W_DECLARE_PRIVATE(WAbstractView)
-
-#ifdef SK_WIN_NATIVE
-#ifdef QT_NEW
-    Q_PRIVATE_SLOT(d_func(), void onCreate())
-
-    Q_PRIVATE_SLOT(d_func(), void onMove())
-#endif
-
-    Q_PRIVATE_SLOT(d_func(), void onFocus())
-#endif // SK_WIN_NATIVE
 };
 
 #include <private/WAbstractView_p>

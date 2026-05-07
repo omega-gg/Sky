@@ -786,20 +786,20 @@ void WWindowPrivate::deleteItems()
 
 #ifdef Q_OS_WIN
 
-/* Q_INVOKABLE */ void WWindow::setWindowSnap(bool enabled)
-{
-    Q_D(WWindow); d->view->setWindowSnap(enabled);
-}
+// /* Q_INVOKABLE */ void WWindow::setWindowSnap(bool enabled)
+// {
+//     Q_D(WWindow); d->view->setWindowSnap(enabled);
+// }
 
-/* Q_INVOKABLE */ void WWindow::setWindowMaximize(bool enabled)
-{
-    Q_D(WWindow); d->view->setWindowMaximize(enabled);
-}
+// /* Q_INVOKABLE */ void WWindow::setWindowMaximize(bool enabled)
+// {
+//     Q_D(WWindow); d->view->setWindowMaximize(enabled);
+// }
 
-/* Q_INVOKABLE */ void WWindow::setWindowClip(bool enabled)
-{
-    Q_D(WWindow); d->view->setWindowClip(enabled);
-}
+// /* Q_INVOKABLE */ void WWindow::setWindowClip(bool enabled)
+// {
+//     Q_D(WWindow); d->view->setWindowClip(enabled);
+// }
 
 #endif // Q_OS_WIN
 

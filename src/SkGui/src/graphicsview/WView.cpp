@@ -39,6 +39,9 @@
 #ifdef Q_OS_IOS
 #include <qpa/qplatformwindow.h>
 #endif
+#ifdef SK_WINDOW_NATIVE
+#include <quickwindowagent.h>
+#endif
 
 #if defined(Q_OS_WIN) && defined(QT_6)
 // Windows includes
@@ -414,6 +417,15 @@ void WViewPrivate::init(QQuickItem * item)
 
     keyAccepted = false;
 
+#ifdef SK_WINDOW_NATIVE
+    //---------------------------------------------------------------------------------------------
+    // QuickWindowAgent
+
+    QWK::QuickWindowAgent * agent = new QWK::QuickWindowAgent(q);
+
+    agent->setup(q);
+#endif
+
     //---------------------------------------------------------------------------------------------
     // Scene
 
@@ -452,7 +464,7 @@ void WViewPrivate::init(QQuickItem * item)
         q->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifdef Q_OS_WIN
-        q->setWindowClip(true);
+        //q->setWindowClip(true);
 #endif
     }
 #else
@@ -504,11 +516,17 @@ void WViewPrivate::init(QQuickItem * item)
     //---------------------------------------------------------------------------------------------
     // ratio
 
+    int defaultScreen = sk->defaultScreen();
+
 #ifdef QT_4
     ratio      = 1.0;
     ratioPixel = 1.0;
 #else
-    screen = q->screen();
+    if (defaultScreen == -1)
+    {
+        screen = q->screen();
+    }
+    else screen = QGuiApplication::screens().at(defaultScreen);
 
     ratio      = WControllerView::screenRatio     (screen);
     ratioPixel = WControllerView::screenRatioPixel(screen);
@@ -526,7 +544,7 @@ void WViewPrivate::init(QQuickItem * item)
     q->WAbstractView::setMinimumSize(QSize(minimumWidth, minimumHeight));
 #endif
 
-    geometryNormal = wControllerView->availableGeometry(sk->defaultScreen());
+    geometryNormal = wControllerView->availableGeometry(defaultScreen);
 
     if (geometryNormal.isValid() == false)
     {
@@ -534,7 +552,20 @@ void WViewPrivate::init(QQuickItem * item)
     }
 
 #ifdef SK_DESKTOP
-    geometryNormal = getGeometryDefault(geometryNormal);
+#if defined(Q_OS_WIN) && defined(SK_WINDOW_NATIVE)
+    // NOTE QuickWindowAgent: Taking the default top bar into account for the default placement.
+
+    int dpi = qRound(screen->logicalDotsPerInch());
+
+    int margin = GetSystemMetricsForDpi(SM_CYCAPTION,      dpi) +
+                 GetSystemMetricsForDpi(SM_CYSIZEFRAME,    dpi) +
+                 GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi);
+
+    geometryNormal = getGeometryDefault(geometryNormal, sk->defaultWidth(),
+                                                        sk->defaultHeight() - margin);
+#else
+    geometryNormal = getGeometryDefault(geometryNormal, sk->defaultWidth(), sk->defaultHeight());
+#endif
 #endif
 
     q->setGeometry(geometryNormal);
@@ -582,9 +613,9 @@ void WViewPrivate::init(QQuickItem * item)
     QObject::connect(&fadeTimer, SIGNAL(timeout()), q, SLOT(onFadeTimeout()));
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
 
-#ifndef SK_WIN_NATIVE
+//#ifndef SK_WINDOW_NATIVE
     QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onBeforeClose()));
-#endif
+//#endif
 
 #if defined(Q_OS_MACOS) || defined(SK_MOBILE)
     QObject::connect(sk, SIGNAL(messageChanged()), q, SLOT(onMessageChanged()));
@@ -1146,11 +1177,8 @@ void WViewPrivate::setTouch(WDeclarativeMouseArea * area, int id)
 
 #ifdef SK_DESKTOP
 
-QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
+QRect WViewPrivate::getGeometryDefault(const QRect & rect, int width, int height) const
 {
-    int width  = sk->defaultWidth ();
-    int height = sk->defaultHeight();
-
     int ratio = sk->defaultMargins();
 
     int left;
@@ -1852,7 +1880,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     setMaximized (false);
 
 #ifdef SK_DESKTOP
-    setGeometry(d->getGeometryDefault(rect));
+    setGeometry(d->getGeometryDefault(rect, sk->defaultWidth(), sk->defaultHeight()));
 #else
     setGeometry(rect);
 #endif
@@ -1997,7 +2025,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     }
 
 #ifdef SK_DESKTOP
-    return d->getGeometryDefault(rect);
+    return d->getGeometryDefault(rect, sk->defaultWidth(), sk->defaultHeight());
 #else
     return rect;
 #endif
@@ -3286,7 +3314,7 @@ void WView::hoverLeave()
     close();
 }
 
-//#ifdef SK_WIN_NATIVE
+//#ifdef SK_WINDOW_NATIVE
 
 //-------------------------------------------------------------------------------------------------
 // WAbstractView reimplementation
@@ -3925,7 +3953,7 @@ void WView::setOpengl(bool enabled)
         setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
 #ifdef Q_OS_WIN
-        setWindowClip(false);
+        //setWindowClip(false);
 #endif
     }
     else
@@ -3935,7 +3963,7 @@ void WView::setOpengl(bool enabled)
         setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifdef Q_OS_WIN
-        setWindowClip(true);
+        //setWindowClip(true);
 #endif
     }
 
