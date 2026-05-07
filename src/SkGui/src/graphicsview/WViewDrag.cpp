@@ -58,9 +58,9 @@ public: // Variables
     bool dragEnabled;
     bool dragging;
 
-//#ifndef Q_OS_WIN
+#ifndef Q_OS_WIN
     QPoint dragLastPos;
-//#endif
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WViewDrag)
@@ -121,9 +121,9 @@ void WViewDragPrivate::clearDrag()
     {
         d->dragging = true;
 
-//#ifndef Q_OS_WIN
+#ifndef Q_OS_WIN
         d->dragLastPos = QPoint(-1, -1);
-//#endif
+#endif
     }
 }
 
@@ -157,7 +157,7 @@ void WViewDragPrivate::clearDrag()
         return;
     }
 
-/*#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN
     d->view->d_func()->setDragged(true);
 
     d->dragging = false;
@@ -166,7 +166,7 @@ void WViewDragPrivate::clearDrag()
 
     // FIXME Qt5.12.3: Touch drag seems to be broken, unless we double tap.
     PostMessage((HWND) d->view->winId(), WM_SYSCOMMAND, 0xf012, 0);
-#else*/
+#else
     QRect geometry = d->view->availableGeometry();
 
     QPoint pos = QCursor::pos();
@@ -218,7 +218,7 @@ void WViewDragPrivate::clearDrag()
     else d->view->d_func()->setDragged(true);
 
     d->dragLastPos = pos;
-//#endif
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
