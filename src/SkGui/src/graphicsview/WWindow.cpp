@@ -145,7 +145,7 @@ void WWindowPrivate::init()
 #endif
 
 #ifdef QT_4
-#ifdef SK_WIN_NATIVE
+#ifdef SK_WINDOW_NATIVE
     view = new WView(q, NULL);
 #elif defined(Q_OS_WIN)
     view = new WView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
@@ -402,7 +402,7 @@ void WWindowPrivate::deleteItems()
 /* explicit */ WWindow::WWindow(QWindow * parent)
 // NOTE: We need to new WViewport here to avoid a crash in 'setParentItem' from the
 //       WViewPrivate::init function.
-#ifdef SK_WIN_NATIVE
+#ifdef SK_WINDOW_NATIVE
     : WView(new WWindowPrivate(this), new WViewport, parent)
 #elif defined(Q_OS_WIN)
     : WView(new WWindowPrivate(this), new WViewport, parent,
