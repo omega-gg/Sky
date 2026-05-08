@@ -177,8 +177,6 @@ namespace QWK {
                 }
 
                 case DidExitFullScreen: {
-                    if (!screenRectCallback) return;
-
                     for (const auto &button : systemButtons()) {
                         button.hidden = !systemButtonVisible;
                     }
