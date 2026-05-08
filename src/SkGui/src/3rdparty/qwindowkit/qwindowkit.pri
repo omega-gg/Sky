@@ -45,7 +45,7 @@ win32:SOURCES += src/3rdparty/qwindowkit/core/qwindowkit_windows.cpp \
                  src/3rdparty/qwindowkit/quick/quickwindowagent_win.cpp \
 
 macx:SOURCES += src/3rdparty/qwindowkit/core/contexts/cocoawindowcontext.mm \
-                src/3rdparty/qwindowkit/core/quick/quickwindowagent_mac.cpp \
+                src/3rdparty/qwindowkit/quick/quickwindowagent_mac.cpp \
 
 unix:!macx:!android:SOURCES += src/3rdparty/qwindowkit/core/qwindowkit_linux.cpp \
                                src/3rdparty/qwindowkit/core/contexts/linuxwaylandcontext.cpp \
