@@ -2738,8 +2738,17 @@ void WView::hoverLeave()
 {
     QEvent::Type type = event->type();
 
+    if (type == QEvent::WindowStateChange)
+    {
+        if (d->minimized != (windowState() & Qt::WindowMinimized))
+        {
+            d->minimized = !(d->minimized);
+
+            emit minimizedChanged();
+        }
+    }
 #ifdef QT_6
-    if (type == QEvent::MouseButtonPress)
+    else if (type == QEvent::MouseButtonPress)
     {
         QMouseEvent * mouse = static_cast<QMouseEvent *> (event);
 
@@ -3260,14 +3269,12 @@ void WView::hoverLeave()
 
 #ifdef QT_4
     if (d->minimized != WAbstractView::isMinimized())
-#else
-    if (d->minimized != (windowState() & Qt::WindowMinimized))
-#endif
     {
         d->minimized = !(d->minimized);
 
         emit minimizedChanged();
     }
+#endif
 
     WAbstractView::focusInEvent(event);
 }
