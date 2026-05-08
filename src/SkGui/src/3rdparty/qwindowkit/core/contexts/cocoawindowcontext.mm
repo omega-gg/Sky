@@ -166,8 +166,8 @@ namespace QWK {
                 case WillExitFullScreen: {
                     auto nswindow = [nsview window];
                     nswindow.titleVisibility = NSWindowTitleHidden;
-                    if (!screenRectCallback || !systemButtonVisible)
-                        return;
+
+                    if (!screenRectCallback) return;
 
                     // The system buttons will stuck at their default positions when the
                     // exit-fullscreen animation is running, we need to hide them until the
@@ -179,12 +179,14 @@ namespace QWK {
                 }
 
                 case DidExitFullScreen: {
-                    if (!screenRectCallback || !systemButtonVisible)
-                        return;
+                    if (!screenRectCallback) return;
 
                     for (const auto &button : systemButtons()) {
-                        button.hidden = false;
+                        button.hidden = !systemButtonVisible;
                     }
+
+                    if (!systemButtonVisible) return;
+
                     updateSystemButtonRect();
                     break;
                 }
@@ -358,9 +360,12 @@ namespace QWK {
             nswindow.movableByWindowBackground = NO;
             nswindow.movable = NO; // This line causes the window in the wrong position when
                                    // become fullscreen.
-            [nswindow standardWindowButton:NSWindowCloseButton].hidden = NO;
-            [nswindow standardWindowButton:NSWindowMiniaturizeButton].hidden = NO;
-            [nswindow standardWindowButton:NSWindowZoomButton].hidden = NO;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                BOOL hidden = systemButtonVisible ? NO : YES;
+                [nswindow standardWindowButton:NSWindowCloseButton].hidden       = hidden;
+                [nswindow standardWindowButton:NSWindowMiniaturizeButton].hidden = hidden;
+                [nswindow standardWindowButton:NSWindowZoomButton].hidden        = hidden;
+            });
         }
 
         static void replaceImplementations() {

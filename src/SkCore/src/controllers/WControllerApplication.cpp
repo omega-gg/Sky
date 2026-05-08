@@ -283,22 +283,6 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
                                                                 const QString            &) {}
 #endif
 
-#if defined(SK_CONSOLE) == false && defined(Q_OS_MACOS)
-
-/* static */ bool WControllerApplicationPrivate::compareBundle(const CFStringRef bundle,
-                                                               const CFStringRef handler)
-{
-    if (handler == NULL) return false;
-
-    bool result = (CFStringCompare(bundle, handler, 0) == kCFCompareEqualTo);
-
-    CFRelease(handler);
-
-    return result;
-}
-
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -855,7 +839,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
         return false;
     }
 
-    if (WControllerApplicationPrivate::compareBundle(bundle, handler) == false)
+    if (CFStringCompare(bundle, handler, 0) != kCFCompareEqualTo)
     {
         CFRelease(handler);
         CFRelease(scheme);
@@ -870,21 +854,25 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     CFRelease(scheme);
 
-    bool result;
-
     if (id)
     {
         CFStringRef handler = LSCopyDefaultRoleHandlerForContentType(id, kLSRolesViewer);
 
-        result = WControllerApplicationPrivate::compareBundle(bundle, handler);
-
         CFRelease(id);
 
-        if (handler) CFRelease(handler);
-    }
-    else result = false;
+        if (handler)
+        {
+            bool result = (CFStringCompare(bundle, handler, 0) == kCFCompareEqualTo);
 
-    return result;
+            CFRelease(handler);
+
+            return result;
+        }
+
+        return false;
+    }
+
+    return false;
 #else
     return false;
 #endif

@@ -424,6 +424,11 @@ void WViewPrivate::init(QQuickItem * item)
     QWK::QuickWindowAgent * agent = new QWK::QuickWindowAgent(q);
 
     agent->setup(q);
+
+#ifdef Q_OS_MACOS
+    // NOTE macOS: We want to specify our own window buttons.
+    agent->setWindowAttribute("no-system-buttons", true);
+#endif
 #endif
 
     //---------------------------------------------------------------------------------------------
