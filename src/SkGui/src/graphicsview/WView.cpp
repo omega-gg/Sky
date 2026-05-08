@@ -2740,6 +2740,8 @@ void WView::hoverLeave()
 
     if (type == QEvent::WindowStateChange)
     {
+        Q_D(WView);
+
         if (d->minimized != (windowState() & Qt::WindowMinimized))
         {
             d->minimized = !(d->minimized);
