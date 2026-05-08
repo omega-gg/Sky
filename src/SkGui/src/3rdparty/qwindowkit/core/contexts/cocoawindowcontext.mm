@@ -167,8 +167,6 @@ namespace QWK {
                     auto nswindow = [nsview window];
                     nswindow.titleVisibility = NSWindowTitleHidden;
 
-                    if (!screenRectCallback) return;
-
                     // The system buttons will stuck at their default positions when the
                     // exit-fullscreen animation is running, we need to hide them until the
                     // animation finishes
@@ -185,7 +183,7 @@ namespace QWK {
                         button.hidden = !systemButtonVisible;
                     }
 
-                    if (!systemButtonVisible) return;
+                    if (!screenRectCallback || !systemButtonVisible) return
 
                     updateSystemButtonRect();
                     break;
