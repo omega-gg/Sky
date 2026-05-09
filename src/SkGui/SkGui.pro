@@ -103,11 +103,11 @@ win32|macx:contains(QT_MAJOR_VERSION, 6) {
                    $$SK/include/SkGui/QWKQuick/private
 }
 
+# Windows dependency for qwindowkit
+win32:LIBS += -lgdi32
+
 # Windows dependency for PostMessage
 win32-msvc*:LIBS += User32.lib
-
-# Windows dependency for qwindowkit
-win32-g++:LIBS += -lgdi32
 
 android {
     CONFIG(debug, debug|release) {
