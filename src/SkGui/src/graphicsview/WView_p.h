@@ -121,10 +121,10 @@ public: // Functions
 #endif
 
 #ifdef SK_DESKTOP
-    QRect getGeometryDefault(const QRect & rect) const;
+    QRect getGeometryDefault(const QRect & rect, int width, int height) const;
 
 #if defined(Q_OS_WIN) && defined(SK_WINDOW_NATIVE)
-    QRect getGeometryNative(const QRect & rect) const;
+    QRect getGeometryNative(const QRect & rect, int width, int height) const;
 #endif
 
     QRect getGeometry(const QRect & rect) const;

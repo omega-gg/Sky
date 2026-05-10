@@ -558,13 +558,15 @@ void WViewPrivate::init(QQuickItem * item)
 
 #ifdef SK_DESKTOP
 #if defined(Q_OS_WIN) && defined(SK_WINDOW_NATIVE)
+    int height = sk->defaultHeight();
+
     if (height == -1)
     {
-         geometryNormal = getGeometryDefault(geometryNormal);
+         geometryNormal = getGeometryDefault(geometryNormal, sk->defaultWidth(), height);
     }
-    else geometryNormal = getGeometryNative(geometryNormal);
+    else geometryNormal = getGeometryNative(geometryNormal, sk->defaultWidth(), height);
 #else
-    geometryNormal = getGeometryDefault(geometryNormal);
+    geometryNormal = getGeometryDefault(geometryNormal, sk->defaultWidth(), sk->defaultHeight());
 #endif
 #endif
 
@@ -1177,11 +1179,8 @@ void WViewPrivate::setTouch(WDeclarativeMouseArea * area, int id)
 
 #ifdef SK_DESKTOP
 
-QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
+QRect WViewPrivate::getGeometryDefault(const QRect & rect, int width, int height) const
 {
-    int width  = sk->defaultWidth ();
-    int height = sk->defaultHeight();
-
     int ratio = sk->defaultMargins();
 
     int left;
@@ -1237,10 +1236,8 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 
 #if defined(Q_OS_WIN) && defined(SK_WINDOW_NATIVE)
 
-QRect WViewPrivate::getGeometryNative(const QRect & rect) const
+QRect WViewPrivate::getGeometryNative(const QRect & rect, int width, int height) const
 {
-    int width  = sk->defaultWidth ();
-
     // NOTE QuickWindowAgent: Taking the hidden top bar into account for the default placement.
 
     int dpi = qRound(screen->logicalDotsPerInch());
@@ -1249,7 +1246,7 @@ QRect WViewPrivate::getGeometryNative(const QRect & rect) const
                  GetSystemMetricsForDpi(SM_CYSIZEFRAME,    dpi) +
                  GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi);
 
-    int height -= sk->defaultHeight() - margin;
+    height -= margin;
 
     int ratio = sk->defaultMargins();
 
@@ -1956,7 +1953,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     setMaximized (false);
 
 #ifdef SK_DESKTOP
-    setGeometry(d->getGeometryDefault(rect));
+    setGeometry(d->getGeometryDefault(rect, sk->defaultWidth(), sk->defaultHeight()));
 #else
     setGeometry(rect);
 #endif
@@ -2101,7 +2098,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     }
 
 #ifdef SK_DESKTOP
-    return d->getGeometryDefault(rect);
+    return d->getGeometryDefault(rect, sk->defaultWidth(), sk->defaultHeight());
 #else
     return rect;
 #endif
