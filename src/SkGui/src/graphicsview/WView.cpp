@@ -1300,7 +1300,7 @@ QRect WViewPrivate::getGeometryNative(const QRect & rect, int width, int height)
 
     int marginHalf = margin / 2;
 
-    return rect.adjusted(left, top + marginHalf, -right, -bottom + (margin - marginHalf));
+    return rect.adjusted(left, top + marginHalf, -right, -bottom + marginHalf);
 }
 
 #endif
