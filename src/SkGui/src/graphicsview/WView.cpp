@@ -558,15 +558,23 @@ void WViewPrivate::init(QQuickItem * item)
 
 #ifdef SK_DESKTOP
 #if defined(Q_OS_WIN) && defined(SK_WINDOW_NATIVE)
+    // NOTE QuickWindowAgent: Taking the hidden top bar into account for the default placement.
+
+    int dpi = qRound(screen->logicalDotsPerInch());
+
+    int margin = GetSystemMetricsForDpi(SM_CYCAPTION,      dpi) +
+                 GetSystemMetricsForDpi(SM_CYSIZEFRAME,    dpi) +
+                 GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi);
+
     int height = sk->defaultHeight();
 
     if (height == -1)
     {
-         geometryNormal = getGeometryDefault(geometryNormal, sk->defaultWidth(), height);
+         geometryNormal = getGeometryNative(geometryNormal, height, margin / 2);
     }
-    else geometryNormal = getGeometryNative(geometryNormal, sk->defaultWidth(), height);
+    else geometryNormal = getGeometryNative(geometryNormal, height - margin, margin / 2);
 #else
-    geometryNormal = getGeometryDefault(geometryNormal, sk->defaultWidth(), sk->defaultHeight());
+    geometryNormal = getGeometryDefault(geometryNormal);
 #endif
 #endif
 
@@ -1179,8 +1187,11 @@ void WViewPrivate::setTouch(WDeclarativeMouseArea * area, int id)
 
 #ifdef SK_DESKTOP
 
-QRect WViewPrivate::getGeometryDefault(const QRect & rect, int width, int height) const
+QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 {
+    int width  = sk->defaultWidth ();
+    int height = sk->defaultHeight();
+
     int ratio = sk->defaultMargins();
 
     int left;
@@ -1236,17 +1247,9 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect, int width, int height
 
 #if defined(Q_OS_WIN) && defined(SK_WINDOW_NATIVE)
 
-QRect WViewPrivate::getGeometryNative(const QRect & rect, int width, int height) const
+QRect WViewPrivate::getGeometryNative(const QRect & rect, int height, int padding) const
 {
-    // NOTE QuickWindowAgent: Taking the hidden top bar into account for the default placement.
-
-    int dpi = qRound(screen->logicalDotsPerInch());
-
-    int margin = GetSystemMetricsForDpi(SM_CYCAPTION,      dpi) +
-                 GetSystemMetricsForDpi(SM_CYSIZEFRAME,    dpi) +
-                 GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi);
-
-    height -= margin;
+    int width = sk->defaultWidth();
 
     int ratio = sk->defaultMargins();
 
@@ -1298,9 +1301,7 @@ QRect WViewPrivate::getGeometryNative(const QRect & rect, int width, int height)
         }
     }
 
-    int marginHalf = margin / 2;
-
-    return rect.adjusted(left, top + marginHalf, -right, -bottom + marginHalf);
+    return rect.adjusted(left, top + padding, -right, -bottom + padding);
 }
 
 #endif
@@ -1953,7 +1954,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     setMaximized (false);
 
 #ifdef SK_DESKTOP
-    setGeometry(d->getGeometryDefault(rect, sk->defaultWidth(), sk->defaultHeight()));
+    setGeometry(d->getGeometryDefault(rect));
 #else
     setGeometry(rect);
 #endif
@@ -2098,7 +2099,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     }
 
 #ifdef SK_DESKTOP
-    return d->getGeometryDefault(rect, sk->defaultWidth(), sk->defaultHeight());
+    return d->getGeometryDefault(rect);
 #else
     return rect;
 #endif
