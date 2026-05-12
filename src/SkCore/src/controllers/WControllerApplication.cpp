@@ -874,6 +874,8 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     return false;
 #else
+    Q_UNUSED(type);
+
     return false;
 #endif
 }
