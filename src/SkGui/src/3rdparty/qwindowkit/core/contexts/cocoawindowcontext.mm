@@ -37,7 +37,6 @@ public:
 
     virtual ~QWK_NSWindowDelegate() = default;
     virtual void windowEvent(NSEventType eventType) = 0;
-    virtual void enforceButtonHidden() = 0;
 };
 
 //
@@ -133,12 +132,12 @@ public:
 - (instancetype)initWithProxy:(QWK::NSWindowProxy*)proxy;
 @end
 
-// KVO observer attached to each standard window button's `hidden` property.
-// AppKit re-shows the traffic-light buttons after sheets/file panels close;
-// we use this to detect that and re-hide them.
+// AppKit re-shows the traffic-light buttons after panels close, so we use this to detect that and
+// re-hide them.
 @interface QWK_NSButtonObserver : NSObject
 - (instancetype)initWithProxy:(QWK::NSWindowProxy *)proxy;
-- (void)attachToButtons:(NSArray<NSButton *> *)buttons;
+
+- (void)attach:(NSArray<NSButton *> *)buttons;
 - (void)detach;
 @end
 
@@ -168,7 +167,6 @@ namespace QWK {
         }
 
         ~NSWindowProxy() override {
-            [buttonObserver detach];
             [buttonObserver release];
 
             [nsview removeObserver:observer forKeyPath:@"window"];
@@ -181,20 +179,21 @@ namespace QWK {
                 case WillExitFullScreen: {
                     auto nswindow = [nsview window];
                     nswindow.titleVisibility = NSWindowTitleHidden;
+                    if (!screenRectCallback || !systemButtonVisible)
+                        return;
 
                     // The system buttons will stuck at their default positions when the
                     // exit-fullscreen animation is running, we need to hide them until the
                     // animation finishes
-                    setButtonsHidden(true);
+                    setButtonsVisible(false);
                     break;
                 }
 
                 case DidExitFullScreen: {
-                    setButtonsHidden(!systemButtonVisible);
-
-                    if (!screenRectCallback || !systemButtonVisible) {
+                    if (!screenRectCallback || !systemButtonVisible)
                         return;
-                    }
+
+                    setButtonsVisible(systemButtonVisible);
 
                     updateSystemButtonRect();
                     break;
@@ -219,15 +218,10 @@ namespace QWK {
             }
         }
 
-        // Called by QWK_NSButtonObserver when AppKit toggles a button's hidden state.
-        void enforceButtonHidden() override {
-            setButtonsHidden(!systemButtonVisible);
-        }
-
         // System buttons visibility
         void setSystemButtonVisible(bool visible) {
             systemButtonVisible = visible;
-            setButtonsHidden(!visible);
+            setButtonsVisible(visible);
 
             if (!screenRectCallback || !visible) {
                 return;
@@ -301,17 +295,19 @@ namespace QWK {
             return {closeBtn, minimizeBtn, zoomBtn};
         }
 
-        // Writes `hidden` on all three buttons, suppressing the KVO callback so
-        // we don't recurse from our own writes.
-        void setButtonsHidden(bool hidden) {
-            suppressKVO = true;
-            for (NSButton *btn : systemButtons()) {
-                if (btn) btn.hidden = hidden;
+        void setButtonsVisible(bool visible) {
+            checkButton = false;
+
+            for (NSButton * button : systemButtons()) {
+                button.hidden = !visible;
             }
-            suppressKVO = false;
+
+            checkButton = true;
         }
 
-        bool isKVOSuppressed() const { return suppressKVO; }
+        bool hasButtonVisible() const { return systemButtonVisible; }
+
+        bool hasCheckButton() const { return checkButton; }
 
         inline int titleBarHeight() const {
             auto nswindow = [nsview window];
@@ -384,16 +380,17 @@ namespace QWK {
             nswindow.movableByWindowBackground = NO;
             nswindow.movable = NO; // This line causes the window in the wrong position when
                                    // become fullscreen.
+
             NSWindowProxy *self_ = this;
             dispatch_async(dispatch_get_main_queue(), ^{
-                self_->setButtonsHidden(!self_->systemButtonVisible);
-                // Attach KVO so we get notified when AppKit reshows them
-                // (e.g. after a sheet or NSOpenPanel/NSSavePanel closes).
-                NSMutableArray<NSButton *> *arr = [NSMutableArray arrayWithCapacity:3];
-                for (NSButton *btn : self_->systemButtons()) {
-                    if (btn) [arr addObject:btn];
+                NSMutableArray<NSButton *> *array = [NSMutableArray arrayWithCapacity:3];
+                for (NSButton *button : self_->systemButtons()) {
+                    button.hidden = !self_->systemButtonVisible;
+                    [array addObject:button];
                 }
-                [self_->buttonObserver attachToButtons:arr];
+
+                // Attach observer to get notified when AppKit reshows buttons.
+                [self_->buttonObserver attach:array];
             });
         }
 
@@ -538,7 +535,7 @@ namespace QWK {
         QWK_NSButtonObserver* buttonObserver = nil;
 
         bool systemButtonVisible = true;
-        bool suppressKVO = false;
+        bool checkButton = true;
         ScreenRectCallback screenRectCallback;
 
         static inline QWK_NSWindowObserver *windowObserver = nil;
@@ -867,8 +864,8 @@ namespace QWK {
 @end
 
 @implementation QWK_NSButtonObserver {
-    QWK::NSWindowProxy *_proxy;            // Weak reference
-    NSMutableArray<NSButton *> *_buttons;  // Strong refs to currently-observed buttons
+    QWK::NSWindowProxy *_proxy;
+    NSMutableArray<NSButton *> *_buttons;
 }
 
 - (instancetype)initWithProxy:(QWK::NSWindowProxy *)proxy {
@@ -885,40 +882,28 @@ namespace QWK {
     [super dealloc];
 }
 
-- (void)attachToButtons:(NSArray<NSButton *> *)buttons {
-    [self detach];
-    for (NSButton *btn in buttons) {
-        [btn addObserver:self
-              forKeyPath:@"hidden"
-                 options:NSKeyValueObservingOptionNew
-                 context:nil];
-        [_buttons addObject:btn];
-    }
-}
-
 - (void)detach {
-    for (NSButton *btn in _buttons) {
-        @try {
-            [btn removeObserver:self forKeyPath:@"hidden"];
-        } @catch (NSException *) {
-        }
+    for (NSButton *button in _buttons) {
+        [button removeObserver:self forKeyPath:@"hidden"];
     }
     [_buttons removeAllObjects];
+}
+
+- (void)attach:(NSArray<NSButton *> *)buttons {
+    [self detach];
+    for (NSButton *button in buttons) {
+        [button addObserver:self forKeyPath:@"hidden" options:0 context:nil];
+        [_buttons addObject:button];
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context {
-    if (!_proxy || ![keyPath isEqualToString:@"hidden"]) return;
-    if (_proxy->isKVOSuppressed()) return;
+    if (!_proxy || !_proxy->hasCheckButton()) return;
 
-    // AppKit toggled the button's hidden state (typically after a sheet or
-    // file panel closes). Defer the re-assert so we don't fight AppKit mid-update.
-    QWK::NSWindowProxy *proxy = _proxy;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        proxy->enforceButtonHidden();
-    });
+    _proxy->setButtonsVisible(_proxy->hasButtonVisible());
 }
 
 @end
