@@ -103,8 +103,11 @@ win32|macx:contains(QT_MAJOR_VERSION, 6) {
                    $$SK/include/SkGui/QWKQuick/private
 }
 
-# Windows dependency for qwindowkit
+# Windows dependencies for qwindowkit
+
 win32:LIBS += -lgdi32
+
+win32-msvc*:LIBS += Shell32.lib
 
 # Windows dependency for PostMessage
 win32-msvc*:LIBS += User32.lib
