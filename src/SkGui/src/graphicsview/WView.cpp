@@ -2811,12 +2811,36 @@ void WView::hoverLeave()
     {
         Q_D(WView);
 
-        if (d->minimized != (windowState() & Qt::WindowMinimized))
+        Qt::WindowState state = windowState();
+
+        bool minimized = (state & Qt::WindowMinimized);
+
+        if (d->minimized != minimized)
         {
-            d->minimized = !(d->minimized);
+            d->minimized = minimized;
 
             emit minimizedChanged();
         }
+
+        bool maximized = (state & Qt::WindowMaximized);
+
+        if (d->maximized != maximized)
+        {
+            d->maximized = maximized;
+
+            emit maximizedChanged();
+        }
+
+        bool fullScreen = (state & Qt::WindowFullScreen);
+
+        if (d->fullScreen != fullScreen)
+        {
+            d->fullScreen = fullScreen;
+
+            emit fullScreenChanged();
+        }
+
+        emit stateChanged(state);
     }
 #ifdef QT_6
     else if (type == QEvent::MouseButtonPress)
@@ -3396,47 +3420,6 @@ void WView::hoverLeave()
 
     close();
 }
-
-//#ifdef SK_WINDOW_NATIVE
-
-//-------------------------------------------------------------------------------------------------
-// WAbstractView reimplementation
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WView::onStateChanged(Qt::WindowState state)
-{
-    if (state == Qt::WindowMaximized)
-    {
-        Q_D(WView);
-
-        if (d->maximized == false)
-        {
-            d->maximized = true;
-
-            emit maximizedChanged();
-        }
-    }
-    else
-    {
-        Q_D(WView);
-
-        if (d->maximized)
-        {
-            d->maximized = false;
-
-            emit maximizedChanged();
-        }
-    }
-
-    emit stateChanged(state);
-}
-
-/* virtual */ void WView::onClose()
-{
-    close();
-}
-
-//#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

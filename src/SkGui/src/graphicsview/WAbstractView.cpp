@@ -76,19 +76,4 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     Q_D(WAbstractView); d->init(flags);
 }
 
-//#ifdef SK_WINDOW_NATIVE
-
-//-------------------------------------------------------------------------------------------------
-// Protected virtual functions
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WAbstractView::onStateChanged(Qt::WindowState) {}
-
-/* virtual */ void WAbstractView::onClose()
-{
-    close();
-}
-
-//#endif
-
 #endif // SK_NO_ABSTRACTVIEW

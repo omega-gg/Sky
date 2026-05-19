@@ -67,14 +67,6 @@ public: // Interface
     // Q_INVOKABLE void setWindowClip    (bool enabled);
 #endif
 
-//#ifdef SK_WINDOW_NATIVE
-// NOTE: We need these functions for binary compatibility.
-protected: // Virtual functions
-    virtual void onStateChanged(Qt::WindowState state); // {}
-
-    virtual void onClose();
-//#endif
-
 private:
     W_DECLARE_PRIVATE(WAbstractView)
 };
