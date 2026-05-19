@@ -2239,7 +2239,10 @@ namespace QWK {
             // So we shift the clientRect accordingly. This only applies when the window is not
             // maximized or full-screen.
             if (isWin11OrGreater() && max == false && full == false) {
-                clientRect->top += getWindowFrameBorderThickness(hWnd);
+                int size = getWindowFrameBorderThickness(hWnd);
+
+                clientRect->top += size;
+                clientRect->bottom += size;
             }
         }
         else {
