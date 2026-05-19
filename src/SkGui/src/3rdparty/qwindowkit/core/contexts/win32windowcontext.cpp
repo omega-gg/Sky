@@ -2198,6 +2198,10 @@ namespace QWK {
                 DynamicApis::instance().pDwmFlush();
             }
         });
+
+        bool max;
+        bool full;
+
         if (isSystemBorderEnabled()) {
             // Store the original top margin before the default window procedure applies the
             // default frame.
@@ -2215,6 +2219,7 @@ namespace QWK {
                 *result = originalResult;
                 return true;
             }
+
             // Re-apply the original top from before the size of the default frame was
             // applied, and the whole top frame (the title bar and the top border) is gone
             // now. For the top frame, we only has 2 choices: (1) remove the top frame
@@ -2224,10 +2229,24 @@ namespace QWK {
             // set, so here we can only remove the top frame entirely and use some special
             // technique to bring the top border back.
             clientRect->top = originalTop;
+
+            max = isMaximized(hWnd);
+            full = isFullScreen(hWnd);
+
+            // On Windows 11, DWM draws a visible frame border at the top of every thick-frame
+            // window (DWMWA_VISIBLE_FRAME_BORDER_THICKNESS, typically 1 physical pixel). That
+            // border ends up painted on top of the client area, covering the top of the content.
+            // So we shift the clientRect accordingly. This only applies when the window is not
+            // maximized or full-screen.
+            if (isWin11OrGreater() && max == false && full == false) {
+                clientRect->top += getWindowFrameBorderThickness(hWnd);
+            }
+        }
+        else {
+            max = isMaximized(hWnd);
+            full = isFullScreen(hWnd);
         }
 
-        const bool max = isMaximized(hWnd);
-        const bool full = isFullScreen(hWnd);
         // We don't need this correction when we're fullscreen. We will
         // have the WS_POPUP size, so we don't have to worry about
         // borders, and the default frame will be fine.

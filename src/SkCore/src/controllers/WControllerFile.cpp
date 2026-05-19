@@ -76,6 +76,8 @@ static const int CONTROLLERFILE_LOG_MAX      = 10000;
 
 static const int CONTROLLERFILE_WATCHER_INTERVAL = 1000; // 1 seconds
 
+static const QString CONTROLLERFILE_SKY = "^(sky|skz)$";
+
 static const QString CONTROLLERFILE_IMAGE = "^(png|jpg|jpeg|bmp|svg|tga|webp)$";
 
 static const QString CONTROLLERFILE_FILTER
@@ -1641,6 +1643,13 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 //-------------------------------------------------------------------------------------------------
 // Urls
 
+/* Q_INVOKABLE static */ bool WControllerFile::urlIsSky(const QString & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsSky(extension);
+}
+
 /* Q_INVOKABLE static */ bool WControllerFile::urlIsImage(const QString & url)
 {
     if (url.startsWith("image:", Qt::CaseInsensitive)) return true;
@@ -1648,6 +1657,11 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
     return extensionIsImage(extension);
+}
+
+/* Q_INVOKABLE static */ bool WControllerFile::extensionIsSky(const QString & extension)
+{
+    return (extension.indexOf(WRegExp(CONTROLLERFILE_SKY)) != -1);
 }
 
 /* Q_INVOKABLE static */ bool WControllerFile::extensionIsImage(const QString & extension)

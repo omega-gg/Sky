@@ -358,11 +358,6 @@ BaseWindow
         anchors.bottomMargin: getMargin(borderBottom)
 //#END
 
-//#WINDOW_NATIVE:WINDOWS
-        // FIXME qwindowkit: There seems to be a one pixel overlap in normal window mode.
-        anchors.topMargin: (maximized == false && fullScreen == false) ? st.dp1 : 0
-//#END
-
         color: st.window_color
     }
 
