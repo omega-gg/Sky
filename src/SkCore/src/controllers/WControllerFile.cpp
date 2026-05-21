@@ -1520,6 +1520,8 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
                                                               const QString & url)
 {
 #ifdef QT_6
+    if (QDir::isAbsolutePath(url)) return url;
+
     QQmlContext * context = QQmlEngine::contextForObject(object);
 
     if (context)
