@@ -40,9 +40,33 @@
 // Sk includes
 #include <WControllerApplication>
 
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+#ifdef Q_OS_UNIX
+
+//=================================================================================================
+// WBashProcess
+//=================================================================================================
+
+void WBashProcess::WBashProcess()
+{
+#if defined(Q_OS_UNIX) && defined(QT_NEW)
+    // NOTE unix: Run bash in its own session so it becomes a process-group leader (pgid == pid).
+    //            This lets terminate kill the whole tree via killpg, like taskkill /T does on
+    //            Windows.
+    process.setChildProcessModifier([]() { setsid(); });
+#endif
+}
+
+#ifdef QT_OLD
+
+void WBashProcess::setupChildProcess() { setsid(); }
+
+#endif
+
+#endif // Q_OS_UNIX
+
+//=================================================================================================
+// WBashScriptPrivate
+//=================================================================================================
 
 WBashScriptPrivate::WBashScriptPrivate(WBashScript * p) : WPrivate(p) {}
 
@@ -56,13 +80,6 @@ WBashScriptPrivate::WBashScriptPrivate(WBashScript * p) : WPrivate(p) {}
 void WBashScriptPrivate::init()
 {
     running = false;
-
-#if defined(Q_OS_UNIX) && defined(QT_NEW)
-    // NOTE unix: Run bash in its own session so it becomes a process-group leader (pgid == pid).
-    //            This lets terminate kill the whole tree via killpg, like taskkill /T does on
-    //            Windows.
-    process.setChildProcessModifier([]() { setsid(); });
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -188,9 +205,9 @@ void WBashScriptPrivate::onOutputError()
 #endif
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBashScript
+//=================================================================================================
 
 /* explicit */ WBashScript::WBashScript(QObject * parent)
     : QObject(parent), WPrivatable(new WBashScriptPrivate(this))

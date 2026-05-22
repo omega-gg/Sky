@@ -41,6 +41,29 @@
 
 #ifndef SK_NO_BASHSCRIPT
 
+#ifdef Q_OS_UNIX
+
+//-------------------------------------------------------------------------------------------------
+// WBashProcess
+//-------------------------------------------------------------------------------------------------
+
+class SK_CORE_EXPORT WBashProcess : public QProcess
+{
+public:
+    WBashProcess();
+
+#ifdef QT_OLD
+protected:
+    void setupChildProcess();
+#endif
+};
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+// WBashScriptPrivate
+//-------------------------------------------------------------------------------------------------
+
 class SK_CORE_EXPORT WBashScriptPrivate : public WPrivate
 {
 public:
@@ -62,7 +85,11 @@ public: // Slots
     void onOutputError();
 
 public: // Variables
+#ifdef Q_OS_UNIX
+    WBashProcess process;
+#else
     QProcess process;
+#endif
 
     bool running;
 
