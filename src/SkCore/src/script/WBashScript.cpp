@@ -48,7 +48,7 @@
 
 WBashProcess::WBashProcess()
 {
-#if defined(Q_OS_UNIX) && defined(QT_NEW)
+#if defined(Q_OS_UNIX) && defined(QT_6)
     // NOTE unix: Run bash in its own session so it becomes a process-group leader (pgid == pid).
     //            This lets terminate kill the whole tree via killpg, like taskkill /T does on
     //            Windows.
