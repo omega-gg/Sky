@@ -29,6 +29,9 @@
 #include <QFileInfo>
 #ifdef Q_OS_WIN
 #include <QDir>
+#elif defined(Q_OS_UNIX) && defined(QT_NEW)
+#include <unistd.h>
+#include <signal.h>
 #endif
 #ifdef QT_OLD
 #include <QDebug>
@@ -53,6 +56,13 @@ WBashScriptPrivate::WBashScriptPrivate(WBashScript * p) : WPrivate(p) {}
 void WBashScriptPrivate::init()
 {
     running = false;
+
+#if defined(Q_OS_UNIX) && defined(QT_NEW)
+    // NOTE unix: Run bash in its own session so it becomes a process-group leader (pgid == pid).
+    //            This lets terminate kill the whole tree via killpg, like taskkill /T does on
+    //            Windows.
+    process.setChildProcessModifier([]() { setsid(); });
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -75,8 +85,17 @@ void WBashScriptPrivate::terminate()
 
     if (id > 0)
     {
-        // NOTE windows: This is useful for killing child processes.
+        // NOTE windows: We can't terminate processes easily so we taskkill right away.
         QProcess::execute("taskkill", { "/PID", QString::number(id), "/T", "/F" });
+    }
+    else process.terminate();
+#elif defined(Q_OS_UNIX) && defined(QT_NEW)
+    qint64 id = process.processId();
+
+    if (id > 0)
+    {
+        // NOTE unix: Terminate bash and all its child processes.
+        killpg(static_cast<pid_t> (id), SIGTERM);
     }
     else process.terminate();
 #else
@@ -87,7 +106,15 @@ void WBashScriptPrivate::terminate()
     {
         if (process.waitForFinished(2000) == false)
         {
+#if defined(Q_OS_UNIX) && defined(QT_NEW)
+            if (id > 0)
+            {
+                killpg(static_cast<pid_t> (id), SIGKILL);
+            }
+            else process.kill();
+#else
             process.kill();
+#endif
 
             process.waitForFinished(1000);
         }
