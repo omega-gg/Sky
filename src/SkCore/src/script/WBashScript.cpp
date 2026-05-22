@@ -46,7 +46,7 @@
 // WBashProcess
 //=================================================================================================
 
-void WBashProcess::WBashProcess()
+WBashProcess::WBashProcess()
 {
 #if defined(Q_OS_UNIX) && defined(QT_NEW)
     // NOTE unix: Run bash in its own session so it becomes a process-group leader (pgid == pid).
@@ -57,9 +57,7 @@ void WBashProcess::WBashProcess()
 }
 
 #ifdef QT_OLD
-
 void WBashProcess::setupChildProcess() { setsid(); }
-
 #endif
 
 #endif // Q_OS_UNIX
