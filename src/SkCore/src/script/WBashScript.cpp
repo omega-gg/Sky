@@ -52,7 +52,7 @@ void WBashProcess::WBashProcess()
     // NOTE unix: Run bash in its own session so it becomes a process-group leader (pgid == pid).
     //            This lets terminate kill the whole tree via killpg, like taskkill /T does on
     //            Windows.
-    process.setChildProcessModifier([]() { setsid(); });
+    setChildProcessModifier([]() { setsid(); });
 #endif
 }
 
