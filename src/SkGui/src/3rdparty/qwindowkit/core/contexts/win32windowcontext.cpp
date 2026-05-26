@@ -1193,7 +1193,7 @@ namespace QWK {
             effectBugWorkaround();
             return true;
         }
-        
+
         if (key == QStringLiteral("dwm-border-color")) {
             if (!isWin11OrGreater()) {
                 return false;
@@ -2199,8 +2199,8 @@ namespace QWK {
             }
         });
 
-        bool max;
-        bool full;
+        bool max = isMaximized(hWnd);
+        bool full = isFullScreen(hWnd);
 
         if (isSystemBorderEnabled()) {
             // Store the original top margin before the default window procedure applies the
@@ -2230,24 +2230,17 @@ namespace QWK {
             // technique to bring the top border back.
             clientRect->top = originalTop;
 
-            max = isMaximized(hWnd);
-            full = isFullScreen(hWnd);
-
-            // On Windows 11, DWM draws a visible frame border at the top of every thick-frame
+            // On Windows 10+, DWM draws a visible frame border at the top of every thick-frame
             // window (DWMWA_VISIBLE_FRAME_BORDER_THICKNESS, typically 1 physical pixel). That
             // border ends up painted on top of the client area, covering the top of the content.
             // So we shift the clientRect accordingly. This only applies when the window is not
             // maximized or full-screen.
-            if (isWin11OrGreater() && max == false && full == false) {
+            if (!max && !full) {
                 int size = getWindowFrameBorderThickness(hWnd);
 
                 clientRect->top += size;
                 clientRect->bottom += size;
             }
-        }
-        else {
-            max = isMaximized(hWnd);
-            full = isFullScreen(hWnd);
         }
 
         // We don't need this correction when we're fullscreen. We will
