@@ -2230,12 +2230,12 @@ namespace QWK {
             // technique to bring the top border back.
             clientRect->top = originalTop;
 
-            // On Windows 10+, DWM draws a visible frame border at the top of every thick-frame
+            // On Windows 11, DWM draws a visible frame border at the top of every thick-frame
             // window (DWMWA_VISIBLE_FRAME_BORDER_THICKNESS, typically 1 physical pixel). That
             // border ends up painted on top of the client area, covering the top of the content.
             // So we shift the clientRect accordingly. This only applies when the window is not
             // maximized or full-screen.
-            if (!max && !full) {
+            if (isWin11OrGreater() && !max && !full) {
                 int size = getWindowFrameBorderThickness(hWnd);
 
                 clientRect->top += size;
