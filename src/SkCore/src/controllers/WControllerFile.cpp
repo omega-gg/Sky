@@ -76,7 +76,9 @@ static const int CONTROLLERFILE_LOG_MAX      = 10000;
 
 static const int CONTROLLERFILE_WATCHER_INTERVAL = 1000; // 1 seconds
 
-static const QString CONTROLLERFILE_SKY = "^(sky|skz)$";
+static const QString CONTROLLERFILE_SKY = "^(sky|skz|zip)$";
+
+static const QString CONTROLLERFILE_SKZ = "^(skz|zip)$";
 
 static const QString CONTROLLERFILE_IMAGE = "^(png|jpg|jpeg|bmp|svg|tga|webp)$";
 
@@ -1652,6 +1654,13 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return extensionIsSky(extension);
 }
 
+/* Q_INVOKABLE static */ bool WControllerFile::urlIsSkz(const QString & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsSkz(extension);
+}
+
 /* Q_INVOKABLE static */ bool WControllerFile::urlIsImage(const QString & url)
 {
     if (url.startsWith("image:", Qt::CaseInsensitive)) return true;
@@ -1664,6 +1673,11 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 /* Q_INVOKABLE static */ bool WControllerFile::extensionIsSky(const QString & extension)
 {
     return (extension.indexOf(WRegExp(CONTROLLERFILE_SKY)) != -1);
+}
+
+/* Q_INVOKABLE static */ bool WControllerFile::extensionIsSkz(const QString & extension)
+{
+    return (extension.indexOf(WRegExp(CONTROLLERFILE_SKZ)) != -1);
 }
 
 /* Q_INVOKABLE static */ bool WControllerFile::extensionIsImage(const QString & extension)

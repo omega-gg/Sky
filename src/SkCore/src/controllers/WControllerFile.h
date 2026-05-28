@@ -299,10 +299,12 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // Urls
 
-    Q_INVOKABLE static bool urlIsSky  (const QString & url); // .sky or .skz
+    Q_INVOKABLE static bool urlIsSky  (const QString & url); // .sky, .skz or .zip
+    Q_INVOKABLE static bool urlIsSkz  (const QString & url); // .skz or .zip
     Q_INVOKABLE static bool urlIsImage(const QString & url);
 
     Q_INVOKABLE static bool extensionIsSky  (const QString & extension);
+    Q_INVOKABLE static bool extensionIsSkz  (const QString & extension);
     Q_INVOKABLE static bool extensionIsImage(const QString & extension);
 
     //---------------------------------------------------------------------------------------------
