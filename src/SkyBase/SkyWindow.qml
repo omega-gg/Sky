@@ -351,10 +351,9 @@ BaseWindow
 
         anchors.fill: parent
 
-//#WINDOW_NATIVE:WINDOWS
-        // FIXME qwindowkit/windows: The top border is covering one pixel at the top.
-        anchors.topMargin: (maximized || fullScreen) ? 0 : st.dp1
-//#ELSE
+        // FIXME qwindowkit: On Windows 10, the top border is covering one pixel.
+
+//#!WINDOW_NATIVE
         anchors.leftMargin  : getMargin(borderLeft)
         anchors.rightMargin : getMargin(borderRight)
         anchors.topMargin   : getMargin(borderTop)
@@ -368,11 +367,7 @@ BaseWindow
     {
         id: borders
 
-//#WINDOW_NATIVE:WINDOWS
-        anchors.fill: content
-//#ELSE
         anchors.fill: parent
-//#END
 
 //#DESKTOP
         size: (maximized == false && fullScreen == false) ? getBorderSize() : 0
