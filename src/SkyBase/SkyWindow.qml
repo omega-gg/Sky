@@ -351,7 +351,8 @@ BaseWindow
 
         anchors.fill: parent
 
-//#WINDOW_NATIVE
+//#WINDOW_NATIVE:WINDOWS
+        // FIXME qwindowkit/windows: The top border is covering one pixel at the top.
         anchors.topMargin: (maximized || fullScreen) ? 0 : st.dp1
 //#ELSE
         anchors.leftMargin  : getMargin(borderLeft)
@@ -367,7 +368,7 @@ BaseWindow
     {
         id: borders
 
-//#WINDOW_NATIVE
+//#WINDOW_NATIVE:WINDOWS
         anchors.fill: content
 //#ELSE
         anchors.fill: parent
