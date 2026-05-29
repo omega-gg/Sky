@@ -351,7 +351,9 @@ BaseWindow
 
         anchors.fill: parent
 
-//#!WINDOW_NATIVE
+//#WINDOW_NATIVE
+        anchors.topMargin: (maximized || fullScreen) ? 0 : st.dp1
+//#ELSE
         anchors.leftMargin  : getMargin(borderLeft)
         anchors.rightMargin : getMargin(borderRight)
         anchors.topMargin   : getMargin(borderTop)
@@ -365,7 +367,11 @@ BaseWindow
     {
         id: borders
 
+//#WINDOW_NATIVE
+        anchors.fill: content
+//#ELSE
         anchors.fill: parent
+//#END
 
 //#DESKTOP
         size: (maximized == false && fullScreen == false) ? getBorderSize() : 0
