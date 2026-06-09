@@ -114,6 +114,7 @@ copyAndroidQt()
         cp "$1/lib/lib$QtX"Core5Compat_*.so $deploy
         cp "$1/lib/lib$QtX"QmlMeta_*.so     $deploy
         cp "$1/lib/lib$QtX"Positioning_*.so $deploy
+        cp "$1/lib/lib$QtX"ShaderTools_*.so $deploy
         cp "$1/lib/lib$QtX"Web*_*.so        $deploy
     fi
 
@@ -140,15 +141,13 @@ copyAndroidQt()
         cp "$1"/plugins/webview/lib*.so $deploy/webview
     fi
 
-    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "*.so"
-    copyFolder "$1"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-    copyFolder "$1"/qml/QtMultimedia $deploy/QtMultimedia "*.so"
-    copyFolder "$1"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
+    copyAndroidQml $QtQuick     "$1"
+    copyAndroidQml QtMultimedia "$1"
 
     if [ $qt = "qt6" ]; then
 
         copyAndroidQml QtQml/WorkerScript "$1"
+        copyAndroidQml QtQuick3D          "$1"
 
         copyAndroidQml QtWebView    "$1"
         copyAndroidQml QtWebChannel "$1"
@@ -157,8 +156,8 @@ copyAndroidQt()
 
 copyAndroidQml()
 {
-    cp "$2"/qml/$1/*.so   $deploy/$1
-    cp "$2"/qml/$1/qmldir $deploy/$1
+    copyFolder "$2"/qml/$1 $deploy/$1 "*.so"
+    copyFolder "$2"/qml/$1 $deploy/$1 "qmldir"
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -372,6 +371,7 @@ else
         mkdir -p $deploy/multimedia
 
         mkdir -p $deploy/QtQml/WorkerScript
+        mkdir -p $deploy/QtQuick3D
 
         if [ $compiler != "mingw" ]; then
 
@@ -430,6 +430,7 @@ else
             cp "$Qt/bin/$QtX"Concurrent.dll  $deploy
             cp "$Qt/bin/$QtX"Core5Compat.dll $deploy
             cp "$Qt/bin/$QtX"QmlMeta.dll     $deploy
+            cp "$Qt/bin/$QtX"ShaderTools.dll $deploy
 
             if [ $compiler != "mingw" ]; then
 
@@ -465,15 +466,13 @@ else
             fi
         fi
 
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dll"
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.dll"
-        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
+        copyQml $QtQuick     dll
+        copyQml QtMultimedia dll
 
         if [ $qt = "qt6" ]; then
 
             copyQml QtQml/WorkerScript dll
+            copyQml QtQuick3D          dll
 
             if [ $compiler != "mingw" ]; then
 
@@ -510,6 +509,7 @@ else
             copyMacOS QtCore5Compat
             copyMacOS QtQmlMeta
             copyMacOS QtPositioning
+            copyMacOS QtShaderTools
             copyMacOS QtWebView
             copyMacOS QtWebViewQuick
             copyMacOS QtWebChannel
@@ -559,15 +559,13 @@ else
             cp "$Qt"/plugins/webview/libqtwebview*.dylib $deploy/webview
         fi
 
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.dylib"
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.dylib"
-        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
+        copyQml $QtQuick     dylib
+        copyQml QtMultimedia dylib
 
         if [ $qt = "qt6" ]; then
 
             copyQml QtQml/WorkerScript dylib
+            copyQml QtQuick3D          dylib
 
             copyQml QtWebView    dylib
             copyQml QtWebEngine  dylib
@@ -618,6 +616,7 @@ else
             copyiOS QtConcurrent
             copyiOS QtCore5Compat
             copyiOS QtQmlMeta
+            copyiOS QtShaderTools
 
             if [ -f "$Qt"/lib/QtQmlModels.framework/QtQmlModels ]; then
 
@@ -651,6 +650,9 @@ else
 
             cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.a $deploy/QtQml/WorkerScript
             cp "$Qt"/qml/QtQml/WorkerScript/qmldir                  $deploy/QtQml/WorkerScript
+
+            cp "$Qt"/qml/QtQuick3D/libqquick3dplugin.a $deploy/QtQuick3D
+            cp "$Qt"/qml/QtQuick3D/qmldir              $deploy/QtQuick3D
         fi
 
     elif [ $1 = "linux" ]; then
@@ -712,6 +714,7 @@ else
             cp "$Qt/lib/lib$QtX"Core5Compat.so.$qx $deploy
             cp "$Qt/lib/lib$QtX"QmlMeta.so.$qx     $deploy
             cp "$Qt/lib/lib$QtX"Positioning.so.$qx $deploy
+            cp "$Qt/lib/lib$QtX"ShaderTools.so.$qx $deploy
             cp "$Qt/lib/lib$QtX"Web*.so.$qx        $deploy
         fi
 
@@ -745,15 +748,13 @@ else
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so $deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so $deploy/xcbglintegrations
 
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "*.so"
-        copyFolder "$Qt"/qml/$QtQuick $deploy/$QtQuick "qmldir"
-
-        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "*.so"
-        copyFolder "$Qt"/qml/QtMultimedia $deploy/QtMultimedia "qmldir"
+        copyQml $QtQuick     so
+        copyQml QtMultimedia so
 
         if [ $qt = "qt6" ]; then
 
             copyQml QtQml/WorkerScript so
+            copyQml QtQuick3D          so
 
             copyQml QtWebView    so
             copyQml QtWebEngine  so
