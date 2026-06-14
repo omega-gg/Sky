@@ -775,9 +775,9 @@ void WControllerFilePrivate::onLog(const QString & message)
         log.remove(0, length - maxLog);
     }
 
-    emit q->logChanged(message);
-
     logBuffer.append(string);
+
+    emit q->logChanged(message);
 
     if (timerLog.isActive() == false)
     {
