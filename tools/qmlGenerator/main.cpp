@@ -347,7 +347,7 @@ int main(int argc, char *argv[])
         defines.append(string);
     }
 
-    qDebug("\nGENERATING");
+    qDebug("GENERATING");
 
     generate(input + '/', output + '/');
 
