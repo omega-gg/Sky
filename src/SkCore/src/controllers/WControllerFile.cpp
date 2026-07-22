@@ -1413,6 +1413,17 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerFile::fileName(const QString & fileName)
+{
+    int index = fileName.lastIndexOf('/');
+
+    if (index == -1)
+    {
+         return fileName;
+    }
+    else return fileName.mid(index + 1);
+}
+
 /* Q_INVOKABLE static */ QString WControllerFile::fileBaseName(const QString & fileName)
 {
     int index = fileName.lastIndexOf('/');
