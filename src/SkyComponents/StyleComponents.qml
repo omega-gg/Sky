@@ -247,6 +247,8 @@ Style
     property int buttonPush_padding: dp8
     property int buttonPush_spacing: dp6
 
+    property int buttonPush_radius: dp8
+
     property color buttonPush_colorA: "#dcdcdc"
     property color buttonPush_colorB: buttonPush_colorA
 

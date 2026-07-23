@@ -31,11 +31,7 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    property int radius: height / 3.75
-//#ELSE
-    property int radius: background.height / 3.75
-//#END
+    property int radius: st.buttonPush_radius
 
     property int borderSize     : st.border_size
     property int borderSizeFocus: st.border_sizeFocus
