@@ -28,6 +28,7 @@
 #include <QImageReader>
 #include <QPainter>
 #include <QPixmap>
+#include <QBuffer>
 
 // Sk includes
 #include <WControllerFile>
@@ -392,7 +393,8 @@ public: // Static functions
     static WPixmapCacheData * loadImage(const QString & path, const QSize & size,
                                                               const QSize & area);
 
-    static QPixmap getPixmap(WPixmapCacheStore * store, const QString & path);
+    static QPixmap getPixmap(WPixmapCacheStore * store, const QString & path,
+                                                        const QSize   & size);
 
 public: // Variables
     WPixmapCacheData * data;
@@ -844,7 +846,7 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
                                                                const QSize   & size,
                                                                const QSize   & area)
 {
-    QPixmap pixmap = getPixmap(pixmapStore(), path);
+    QPixmap pixmap = getPixmap(pixmapStore(), path, size);
 
     if (pixmap.isNull())
     {
@@ -871,7 +873,8 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
 }
 
 /* static */ QPixmap WPixmapCachePrivate::getPixmap(WPixmapCacheStore * store,
-                                                    const QString     & path)
+                                                    const QString     & path,
+                                                    const QSize       & size)
 {
     QString source = path;
 
@@ -883,9 +886,25 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
 
         if (bytes.isEmpty()) return QPixmap();
 
-        QImage image = QImage::fromData(bytes);
+        QBuffer buffer(&bytes);
 
-        return QPixmap::fromImage(image);
+        buffer.open(QIODevice::ReadOnly);
+
+        QImageReader reader(&buffer);
+
+#ifdef W_SMOOTH
+        if (source.startsWith("data:image/svg", Qt::CaseInsensitive))
+        {
+            QSize sizeScaled = WPixmapCache::getSize(reader.size(), size);
+
+            if (sizeScaled.isEmpty() == false)
+            {
+                reader.setScaledSize(sizeScaled);
+            }
+        }
+#endif
+
+        return QPixmap::fromImageReader(&reader);
     }
     else return store->hash.value(source);
 }
@@ -1073,7 +1092,7 @@ void WPixmapCache::clear(QObject * receiver)
 
     if (path.startsWith("image://"))
     {
-        QPixmap pixmap = WPixmapCachePrivate::getPixmap(store, path);
+        QPixmap pixmap = WPixmapCachePrivate::getPixmap(store, path, size);
 
         if (pixmap.isNull())
         {
