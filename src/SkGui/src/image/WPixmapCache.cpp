@@ -860,7 +860,7 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
     data->size = size;
     data->area = area;
 
-    data->pixmap = WPixmapCache::getPixmapScaled(pixmap, size);
+    data->pixmap = WPixmapCache::getPixmapArea(pixmap, size, area);
 
     data->pixmapSize = getPixmapSize(pixmap);
 
@@ -1081,7 +1081,7 @@ void WPixmapCache::clear(QObject * receiver)
 
             return pixmap;
         }
-        else return WPixmapCache::getPixmapScaled(pixmap, size);
+        else return WPixmapCache::getPixmapArea(pixmap, size, area);
     }
     else if (cache == false)
     {
@@ -1372,6 +1372,43 @@ void WPixmapCache::clear(QObject * receiver)
          return pixmap;
     }
     else return pixmap.scaled(sizeScaled, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+}
+
+/* static */ QPixmap WPixmapCache::getPixmapArea(const QPixmap & pixmap, const QSize & size,
+                                                                         const QSize & area)
+{
+    if (area.width() > 0 || area.height() > 0)
+    {
+        QSize sizeArea = getArea(size, area);
+
+        int width  = sizeArea.width ();
+        int height = sizeArea.height();
+
+        int marginX = (width  - size.width ()) / 2;
+        int marginY = (height - size.height()) / 2;
+
+        if (marginX > 0 && marginY > 0)
+        {
+            QPixmap front = getPixmapScaled(pixmap, QSize(width  - marginX * 2,
+                                                          height - marginY * 2));
+
+            QPixmap content(sizeArea);
+
+            content.fill(Qt::transparent);
+
+            QPainter painter(&content);
+
+            // NOTE: We need to update margins according to the new size.
+            marginX = (width  - front.width ()) / 2;
+            marginY = (height - front.height()) / 2;
+
+            painter.drawPixmap(marginX, marginY, front);
+
+            return content;
+        }
+    }
+
+    return getPixmapScaled(pixmap, size);
 }
 
 //-------------------------------------------------------------------------------------------------

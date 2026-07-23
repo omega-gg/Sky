@@ -102,6 +102,7 @@ public: // Static functions
     //static void applySize(QImageReader * reader, const QSize & size);
 
     static QPixmap getPixmapScaled(const QPixmap & pixmap, const QSize & size);
+    static QPixmap getPixmapArea  (const QPixmap & pixmap, const QSize & size, const QSize & area);
 
     static bool readImage(QImage * image, const QString & path, const QSize & size,
                                                                 const QSize & area);
