@@ -33,6 +33,10 @@ Item
 
     property int handleSize: getHandleSize()
 
+//#QT_6
+    property int radius: 0
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -51,9 +55,15 @@ Item
     property color colorHandleHoverA: st.scrollBar_colorHandleHoverA
     property color colorHandleHoverB: st.scrollBar_colorHandleHoverB
 
+//#QT_OLD
+    // NOTE: A Rectangle gradient can only be vertical so we filter an image instead.
     property ImageFilterColor filterHandle     : st.scrollBar_filterHorizontalHandle
     property ImageFilterColor filterHandleHover: st.scrollBar_filterHorizontalHandleHover
     property ImageFilterColor filterHandlePress: st.scrollBar_filterHorizontalHandlePress
+//#ELSE
+    property color colorHandlePressA: st.scrollBar_colorHandlePressA
+    property color colorHandlePressB: st.scrollBar_colorHandlePressB
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Private
@@ -89,7 +99,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // Style
 
+//#QT_OLD
     property alias filterDefault: background.filter
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -230,6 +242,7 @@ Item
             if (visible) model.scroll(-steps * 3);
         }
 
+//#QT_OLD
         SkyImage
         {
             id: background
@@ -242,6 +255,24 @@ Item
 
             filter: st.scrollBar_filterHorizontalDefault
         }
+//#ELSE
+        Rectangle
+        {
+            id: background
+
+            anchors.fill: parent
+
+            radius: scrollBar.radius
+
+            gradient: Gradient
+            {
+                orientation: Gradient.Horizontal
+
+                GradientStop { position: 0.0; color: colorA }
+                GradientStop { position: 1.0; color: colorB }
+            }
+        }
+//#END
 
         SkyMouseArea
         {
@@ -268,6 +299,7 @@ Item
 
             onYChanged: if (drag.active) position = y
 
+//#QT_OLD
             SkyImage
             {
                 anchors.fill: parent
@@ -283,11 +315,53 @@ Item
                     else                         return filterHandle;
                 }
             }
+//#ELSE
+            Rectangle
+            {
+                anchors.fill: parent
+
+                radius: scrollBar.radius
+
+                gradient: Gradient
+                {
+                    orientation: Gradient.Horizontal
+
+                    GradientStop
+                    {
+                        position: 0.0
+
+                        color:
+                        {
+                            if      (handle.pressed)     return colorHandlePressA;
+                            else if (handle.hoverActive) return colorHandleHoverA;
+                            else                         return colorHandleA;
+                        }
+                    }
+
+                    GradientStop
+                    {
+                        position: 1.0
+
+                        color:
+                        {
+                            if      (handle.pressed)     return colorHandlePressB;
+                            else if (handle.hoverActive) return colorHandleHoverB;
+                            else                         return colorHandleB;
+                        }
+                    }
+                }
+            }
+//#END
         }
 
         BorderHorizontal
         {
             anchors.bottom: handle.top
+
+//#!QT_OLD
+            // NOTE: A rounded handle does not want a border on its edges.
+            visible: (scrollBar.radius == 0)
+//#END
 
             color: colorBorder
         }
@@ -295,6 +369,10 @@ Item
         BorderHorizontal
         {
             anchors.top: handle.bottom
+
+//#!QT_OLD
+            visible: (scrollBar.radius == 0)
+//#END
 
             color: colorBorder
         }
