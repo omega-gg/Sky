@@ -74,6 +74,9 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias background      : background
+    property alias backgroundHandle: backgroundHandle
+
     property alias handle: handle
 
     //---------------------------------------------------------------------------------------------
@@ -302,6 +305,8 @@ Item
 //#QT_OLD
             SkyImage
             {
+                id: backgroundHandle
+
                 anchors.fill: parent
 
                 sourceSize: st.size16x16
@@ -318,6 +323,8 @@ Item
 //#ELSE
             Rectangle
             {
+                id: backgroundHandle
+
                 anchors.fill: parent
 
                 radius: scrollBar.radius
@@ -358,9 +365,8 @@ Item
         {
             anchors.bottom: handle.top
 
-//#!QT_OLD
-            // NOTE: A rounded handle does not want a border on its edges.
-            visible: (scrollBar.radius == 0)
+//#QT_6
+            visible: border.visible
 //#END
 
             color: colorBorder
@@ -370,8 +376,8 @@ Item
         {
             anchors.top: handle.bottom
 
-//#!QT_OLD
-            visible: (scrollBar.radius == 0)
+//#QT_6
+            visible: border.visible
 //#END
 
             color: colorBorder
@@ -381,6 +387,11 @@ Item
     BorderVertical
     {
         id: border
+
+//#QT_6
+        // NOTE: A rounded handle does not want a border on its edges.
+        visible: (scrollBar.radius == 0)
+//#END
 
         color: colorBorder
     }
