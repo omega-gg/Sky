@@ -25,6 +25,8 @@ import Sky     1.0
 
 Item
 {
+    id: sliderVolume
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -87,7 +89,7 @@ Item
         anchors.left : buttonMinimum.right
         anchors.right: buttonMaximum.left
 
-        anchors.margins: margins
+        anchors.margins: sliderVolume.margins
 
         anchors.verticalCenter: parent.verticalCenter
 

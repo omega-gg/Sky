@@ -293,8 +293,8 @@ Item
         anchors.left : buttonLeft.right
         anchors.right: buttonRight.left
 
-        anchors.leftMargin : -st.dp24
-        anchors.rightMargin: -st.dp24
+        anchors.leftMargin : -st.dp20
+        anchors.rightMargin: -st.dp20
 
         anchors.verticalCenter: parent.verticalCenter
 

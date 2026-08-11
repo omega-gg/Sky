@@ -82,6 +82,10 @@ BaseSlider
 
     handle: itemHandle
 
+    // NOTE: The handle covers the ends of the bar, so it travels its own margin past the item.
+    handleMinimum: -marginsHandle
+    handleMaximum: width - handle.width + marginsHandle
+
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
@@ -92,7 +96,8 @@ BaseSlider
 
         anchors.fill: parent
 
-        anchors.margins: margins
+        anchors.topMargin   : margins
+        anchors.bottomMargin: margins
 
         radius: slider.radius
 
@@ -118,9 +123,10 @@ BaseSlider
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        anchors.margins: margins
+        anchors.topMargin   : margins
+        anchors.bottomMargin: margins
 
-        width: handle.x + handleBackground.width - margins
+        width: handle.x + handleBackground.width
 
         radius: slider.radius
 

@@ -782,7 +782,7 @@ Style
     property int sliderVolume_width : dp128
     property int sliderVolume_height: dp32
 
-    property int sliderVolume_margins: dp4
+    property int sliderVolume_margins: dp10
 //#END
 
 //#SliderStream
