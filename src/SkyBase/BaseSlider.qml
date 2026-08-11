@@ -133,6 +133,16 @@ SkyMouseArea
     }
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pApplyHandle()
+    {
+        if (width <= 0 || handle.pressed) return;
+
+        handle.x = position;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
@@ -142,12 +152,8 @@ SkyMouseArea
 
         handleMaximum: width - handle.width
 
-        onPositionChanged:
-        {
-            if (width > 0 && handle.pressed == false)
-            {
-                handle.x = position;
-            }
-        }
+        onPositionChanged: pApplyHandle()
+
+        onHandleRangeChanged: pApplyHandle()
     }
 }
