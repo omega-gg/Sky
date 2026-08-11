@@ -137,8 +137,6 @@ SkyMouseArea
 
     function pApplyHandle()
     {
-        // NOTE: A range with no room yet parks the handle on its minimum, and the value follows
-        //       it back through the handle position.
         if (width <= 0 || handleMaximum <= handleMinimum || handle.pressed) return;
 
         handle.x = position;
