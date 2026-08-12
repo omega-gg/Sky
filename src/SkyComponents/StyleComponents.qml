@@ -459,7 +459,7 @@ Style
 
     property int labelRound_height: dp32
 
-    property int labelRound_padding: dp8
+    property int labelRound_padding: buttonPush_padding
     property int labelRound_spacing: buttonPush_spacing
 
     property color labelRound_colorA: buttonPush_colorHoverA

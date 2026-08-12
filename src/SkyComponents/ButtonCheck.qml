@@ -85,8 +85,6 @@ SkyMouseArea
 
     onClicked: pToggleChecked()
 
-    onWidthChanged: pUpdatePosition()
-
     onCheckedChanged: if (pUpdate) pUpdatePosition()
 
     //---------------------------------------------------------------------------------------------
@@ -207,6 +205,9 @@ SkyMouseArea
 
         drag.minimumX: 0
         drag.maximumX: parent.width - width
+
+        // NOTE: The position should be updated from here to take maximumX into account.
+        drag.onMaximumXChanged: pUpdatePosition()
 
 //#QT_NEW
         drag.threshold: 0
