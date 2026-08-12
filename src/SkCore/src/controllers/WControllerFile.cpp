@@ -1699,7 +1699,7 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 //-------------------------------------------------------------------------------------------------
 // Files
 
-/* static */ bool WControllerFile::tryUnlock(const QtLockedFile & file, int timeout)
+/* Q_INVOKABLE static */ bool WControllerFile::tryUnlock(const QtLockedFile & file, int timeout)
 {
     QTimer timer;
 
@@ -1714,7 +1714,7 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     else return true;
 }
 
-/* static */ QByteArray WControllerFile::readFile(const QString & fileName)
+/* Q_INVOKABLE static */ QByteArray WControllerFile::readFile(const QString & fileName)
 {
     QtLockedFile file(fileName);
 
@@ -1735,7 +1735,8 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return file.readAll();
 }
 
-/* static */ bool WControllerFile::writeFile(const QString & fileName, const QByteArray & data)
+/* Q_INVOKABLE static */ bool WControllerFile::writeFile(const QString    & fileName,
+                                                         const QByteArray & data)
 {
     QtLockedFile file(fileName);
 
@@ -1758,7 +1759,8 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return true;
 }
 
-/* static */ bool WControllerFile::appendFile(const QString & fileName, const QByteArray & data)
+/* Q_INVOKABLE static */ bool WControllerFile::appendFile(const QString    & fileName,
+                                                          const QByteArray & data)
 {
     QtLockedFile file(fileName);
 
@@ -1781,7 +1783,8 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return true;
 }
 
-/* static */ bool WControllerFile::renameFile(const QString & oldPath, const QString & newPath)
+/* Q_INVOKABLE static */ bool WControllerFile::renameFile(const QString & oldPath,
+                                                          const QString & newPath)
 {
     QtLockedFile file(oldPath);
 
@@ -1795,8 +1798,9 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return file.rename(newPath);
 }
 
-/* static */ bool WControllerFile::copyFile(const QString & fileName, const QString & newName,
-                                            Permissions permissions)
+/* Q_INVOKABLE static */ bool WControllerFile::copyFile(const QString & fileName,
+                                                        const QString & newName,
+                                                        Permissions permissions)
 {
     QtLockedFile file(newName);
 
@@ -1827,9 +1831,9 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     else return result;
 }
 
-/* static */ void WControllerFile::setPermissionFiles(const QString     & path,
-                                                      const QStringList & filters,
-                                                      Permissions         permissions)
+/* Q_INVOKABLE static */ void WControllerFile::setPermissionFiles(const QString     & path,
+                                                                  const QStringList & filters,
+                                                                  Permissions permissions)
 {
     QDirIterator it(path, filters, QDir::Files, QDirIterator::Subdirectories);
 
@@ -1849,7 +1853,7 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     }
 }
 
-/* static */ bool WControllerFile::deleteFile(const QString & fileName)
+/* Q_INVOKABLE static */ bool WControllerFile::deleteFile(const QString & fileName)
 {
     QtLockedFile file(fileName);
 
@@ -1866,22 +1870,23 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 //-------------------------------------------------------------------------------------------------
 // Folders
 
-/* static */ bool WControllerFile::createFolder(const QString & path)
+/* Q_INVOKABLE static */ bool WControllerFile::createFolder(const QString & path)
 {
     return QDir().mkdir(path);
 }
 
-/* static */ bool WControllerFile::createPath(const QString & path)
+/* Q_INVOKABLE static */ bool WControllerFile::createPath(const QString & path)
 {
     return QDir().mkpath(path);
 }
 
-/* static */ bool WControllerFile::moveFolder(const QString & oldPath, const QString & newPath)
+/* Q_INVOKABLE static */ bool WControllerFile::moveFolder(const QString & oldPath,
+                                                          const QString & newPath)
 {
     return QDir().rename(oldPath, newPath);
 }
 
-/* static */ bool WControllerFile::deleteFolder(const QString & path, bool recursive)
+/* Q_INVOKABLE static */ bool WControllerFile::deleteFolder(const QString & path, bool recursive)
 {
      QDir dir(path);
 
@@ -1892,7 +1897,8 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
      return dir.rmdir(dir.absolutePath());
 }
 
-/* static */ bool WControllerFile::deleteFolderContent(const QString & path, bool recursive)
+/* Q_INVOKABLE static */ bool WControllerFile::deleteFolderContent(const QString & path,
+                                                                   bool recursive)
 {
     QDir dir(path);
 
@@ -1905,7 +1911,8 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QFileInfoList WControllerFile::recursiveEntryInfoList(const QString & path)
+/* Q_INVOKABLE static */
+QFileInfoList WControllerFile::recursiveEntryInfoList(const QString & path)
 {
      QDir dir(path);
 
@@ -1922,8 +1929,8 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 //-------------------------------------------------------------------------------------------------
 // QML
 
-/* static */ QString WControllerFile::generateQml(const QString     & input,
-                                                  const QStringList & defines)
+/* Q_INVOKABLE static */ QString WControllerFile::generateQml(const QString     & input,
+                                                              const QStringList & defines)
 {
     QString content;
 
@@ -1967,9 +1974,9 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return content;
 }
 
-/* static */ bool WControllerFile::writeQml(const QString     & fileName,
-                                            const QString     & fileOutput,
-                                            const QStringList & defines)
+/* Q_INVOKABLE static */ bool WControllerFile::writeQml(const QString     & fileName,
+                                                        const QString     & fileOutput,
+                                                        const QStringList & defines)
 {
     QString content = generateQml(fileName, defines);
 
@@ -1984,7 +1991,7 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return true;
 }
 
-/* static */ QStringList WControllerFile::qmlDefines()
+/* Q_INVOKABLE static */ QStringList WControllerFile::qmlDefines()
 {
     QStringList list;
 

@@ -312,48 +312,51 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // Files
 
-    static bool tryUnlock(const QtLP_Private::QtLockedFile & file,
-                          int                                timeout = 10000); // 10 seconds
+    // NOTE: The timeout is 10 seconds.
+    Q_INVOKABLE static bool tryUnlock(const QtLP_Private::QtLockedFile & file,
+                                      int                                timeout = 10000);
 
-    static QByteArray readFile(const QString & fileName);
+    Q_INVOKABLE static QByteArray readFile(const QString & fileName);
 
-    static bool writeFile(const QString & fileName, const QByteArray & data);
+    Q_INVOKABLE static bool writeFile(const QString & fileName, const QByteArray & data);
 
-    static bool appendFile(const QString & fileName, const QByteArray & data);
+    Q_INVOKABLE static bool appendFile(const QString & fileName, const QByteArray & data);
 
-    static bool renameFile(const QString & oldPath, const QString & newPath);
+    Q_INVOKABLE static bool renameFile(const QString & oldPath, const QString & newPath);
 
-    static bool copyFile(const QString & fileName,
-                         const QString & newName, Permissions permissions = Default);
+    Q_INVOKABLE static bool copyFile(const QString & fileName,
+                                     const QString & newName,
+                                     Permissions permissions = Default);
 
-    static void setPermissionFiles(const QString     & path,
-                                   const QStringList & filters, Permissions permissions = Default);
+    Q_INVOKABLE static void setPermissionFiles(const QString     & path,
+                                               const QStringList & filters,
+                                               Permissions permissions = Default);
 
-    static bool deleteFile(const QString & fileName);
+    Q_INVOKABLE static bool deleteFile(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------
     // Folders
 
-    static bool createFolder(const QString & path);
-    static bool createPath  (const QString & path);
+    Q_INVOKABLE static bool createFolder(const QString & path);
+    Q_INVOKABLE static bool createPath  (const QString & path);
 
-    static bool moveFolder(const QString & oldPath, const QString & newPath);
+    Q_INVOKABLE static bool moveFolder(const QString & oldPath, const QString & newPath);
 
-    static bool deleteFolder       (const QString & path, bool recursive = true);
-    static bool deleteFolderContent(const QString & path, bool recursive = true);
+    Q_INVOKABLE static bool deleteFolder       (const QString & path, bool recursive = true);
+    Q_INVOKABLE static bool deleteFolderContent(const QString & path, bool recursive = true);
 
-    static QFileInfoList recursiveEntryInfoList(const QString & path);
+    Q_INVOKABLE static QFileInfoList recursiveEntryInfoList(const QString & path);
 
     //---------------------------------------------------------------------------------------------
     // QML
 
-    static QString generateQml(const QString & input, const QStringList & defines);
+    Q_INVOKABLE static QString generateQml(const QString & input, const QStringList & defines);
 
-    static bool writeQml(const QString     & fileName,
-                         const QString     & fileOutput,
-                         const QStringList & defines = QStringList());
+    Q_INVOKABLE static bool writeQml(const QString     & fileName,
+                                     const QString     & fileOutput,
+                                     const QStringList & defines = QStringList());
 
-    static QStringList qmlDefines();
+    Q_INVOKABLE static QStringList qmlDefines();
 
 signals:
     void logChanged(const QString & message);
