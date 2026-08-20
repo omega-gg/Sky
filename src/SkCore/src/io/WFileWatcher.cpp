@@ -627,6 +627,8 @@ bool WFileWatcherPrivate::checkChange(int & fileCount)
 
     for (int i = 0; i < fileWatchs.count(); i++)
     {
+        if (fileWatchs.at(i).isChecked()) continue;
+
         if (fileWatchs[i].checkChange(fileCount))
         {
             const WFileWatch & watch = fileWatchs.at(i);
@@ -645,6 +647,8 @@ bool WFileWatcherPrivate::checkChange(int & fileCount)
 
     for (int i = 0; i < folderWatchs.count(); i++)
     {
+        if (folderWatchs.at(i).isChecked()) continue;
+
         if (folderWatchs[i].checkChange(fileCount))
         {
             const WFolderWatch & watch = folderWatchs.at(i);
