@@ -136,7 +136,9 @@ void WBashManagerPrivate::onScriptFinished(const WBashScriptResult & result)
 
     if (d->jobs.count() == d->maxJobs)
     {
-        d->scripts.append(script);
+        int id = d->ids.generateId();
+
+        d->scripts.insert(d->ids.indexOf(id), script);
 
         WBashManagerPrivateJob job;
 
@@ -147,7 +149,7 @@ void WBashManagerPrivate::onScriptFinished(const WBashScriptResult & result)
 
         d->pending.append(job);
 
-        return WBashManagerResult(d->ids.generateId(), true);
+        return WBashManagerResult(id, true);
     }
 
     WBashScriptResult bash = script->run(fileName, arguments, true);
@@ -162,11 +164,13 @@ void WBashManagerPrivate::onScriptFinished(const WBashScriptResult & result)
     connect(script, SIGNAL(finished      (const WBashScriptResult &)),
             this,   SLOT(onScriptFinished(const WBashScriptResult &)));
 
-    d->scripts.append(script);
+    int id = d->ids.generateId();
+
+    d->scripts.insert(d->ids.indexOf(id), script);
 
     d->jobs.append(script);
 
-    WBashManagerResult result(d->ids.generateId());
+    WBashManagerResult result(id);
 
     result.bash = bash;
 
