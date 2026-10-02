@@ -987,6 +987,11 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     return textIsIp(removeUrlPrefix(string));
 }
 
+/* Q_INVOKABLE static */ bool WControllerNetwork::urlIsDataImage(const QString & string)
+{
+    return string.startsWith("image://data:image");
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::urlName(const QUrl & url)

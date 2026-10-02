@@ -34,6 +34,7 @@
 #include <QScreen>
 #endif
 #include <QImageReader>
+#include <QBuffer>
 #include <QDrag>
 #include <QMimeData>
 #ifdef Q_OS_IOS
@@ -2653,7 +2654,21 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 {
     QPixmap pixmap;
 
-    if (size.isValid())
+    if (WControllerNetwork::urlIsDataImage(url))
+    {
+        QByteArray bytes = WControllerNetwork::extractUrlDataImage(url);
+
+        QBuffer buffer(&bytes);
+
+        buffer.open(QIODevice::ReadOnly);
+
+        QImageReader reader(&buffer);
+
+        if (size.isValid()) reader.setScaledSize(size);
+
+        pixmap = QPixmap::fromImageReader(&reader);
+    }
+    else if (size.isValid())
     {
         QImageReader reader(WControllerFile::toLocalFile(url));
 

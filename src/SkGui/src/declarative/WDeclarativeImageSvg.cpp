@@ -165,7 +165,7 @@ void WDeclarativeImageSvgPrivate::loadUrl()
         file->deleteLater();
     }
 
-    if (url.startsWith("image://data:image"))
+    if (WControllerNetwork::urlIsDataImage(url))
     {
         applyData(url);
 

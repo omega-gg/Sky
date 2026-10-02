@@ -108,6 +108,8 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsHttp(const QString & string);
     Q_INVOKABLE static bool urlIsIp  (const QString & string);
 
+    Q_INVOKABLE static bool urlIsDataImage(const QString & string);
+
     Q_INVOKABLE static QString urlName (const QUrl & url);
     Q_INVOKABLE static QString urlTitle(const QUrl & url);
 
