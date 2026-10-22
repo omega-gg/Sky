@@ -227,6 +227,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
 
+    Q_PROPERTY(qreal frameRate READ frameRate NOTIFY frameRateChanged)
+
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
     Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
@@ -372,6 +374,8 @@ public: // Interface
 
     Q_INVOKABLE void updateFrame();
 
+    Q_INVOKABLE void nextFrame();
+
     Q_INVOKABLE QImage getFrame    () const;
     Q_INVOKABLE QImage getFrameGray() const;
 
@@ -489,6 +493,8 @@ protected: // Functions
 
     void setProgress(qreal progress);
 
+    void setFrameRate(qreal frameRate);
+
     void setOutputActive (Output  output);
     void setQualityActive(Quality quality);
 
@@ -557,6 +563,8 @@ protected: // Virtual functions
 
     virtual void backendUpdateFrame(); // {}
 
+    virtual void backendNextFrame(); // {}
+
     virtual QImage backendGetFrame    () const; // {}
     virtual QImage backendGetFrameGray() const; // {}
 
@@ -595,6 +603,8 @@ signals:
     void durationChanged   ();
 
     void progressChanged();
+
+    void frameRateChanged();
 
     void speedChanged();
 
@@ -670,6 +680,8 @@ public: // Properties
     int duration   () const;
 
     qreal progress() const;
+
+    qreal frameRate() const;
 
     qreal speed() const;
     void  setSpeed(qreal speed);

@@ -87,6 +87,8 @@ void WAbstractBackendPrivate::init()
 
     progress = 0.0;
 
+    frameRate = 0.0;
+
     speed = 1.0;
 
     volume = 1.0;
@@ -323,6 +325,11 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent
 /* Q_INVOKABLE */ void WAbstractBackend::updateFrame()
 {
     backendUpdateFrame();
+}
+
+/* Q_INVOKABLE */ void WAbstractBackend::nextFrame()
+{
+    backendNextFrame();
 }
 
 /* Q_INVOKABLE */ QImage WAbstractBackend::getFrame() const
@@ -816,6 +823,8 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
     setVbml(false);
     setLive(false);
 
+    setFrameRate(0.0);
+
     setSubtitles(QList<WSubtitle>());
 
     //---------------------------------------------------------------------------------------------
@@ -1214,6 +1223,17 @@ void WAbstractBackend::setProgress(qreal progress)
     emit progressChanged();
 }
 
+void WAbstractBackend::setFrameRate(qreal frameRate)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->frameRate == frameRate) return;
+
+    d->frameRate = frameRate;
+
+    emit frameRateChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WAbstractBackend::setOutputActive(Output output)
@@ -1472,6 +1492,11 @@ void WAbstractBackend::endOutputRemove() const
     qWarning("WAbstractBackend::backendUpdateFrame: Not supported.");
 }
 
+/* virtual */ void WAbstractBackend::backendNextFrame()
+{
+    qWarning("WAbstractBackend::backendNextFrame: Not supported.");
+}
+
 /* virtual */ QImage WAbstractBackend::backendGetFrame() const
 {
     qWarning("WAbstractBackend::backendGetFrame: Not supported.");
@@ -1645,6 +1670,11 @@ int WAbstractBackend::duration() const
 qreal WAbstractBackend::progress() const
 {
     Q_D(const WAbstractBackend); return d->progress;
+}
+
+qreal WAbstractBackend::frameRate() const
+{
+    Q_D(const WAbstractBackend); return d->frameRate;
 }
 
 //-------------------------------------------------------------------------------------------------

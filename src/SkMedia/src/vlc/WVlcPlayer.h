@@ -105,6 +105,8 @@ public: // Interface
 
     Q_INVOKABLE void seek(int msec);
 
+    Q_INVOKABLE void nextFrame();
+
     Q_INVOKABLE void setSpeed(qreal speed);
 
     Q_INVOKABLE void setVolume(int percent);
@@ -183,13 +185,16 @@ public: // Variables
 class WVlcTracksEvent : public QEvent
 {
 public:
-    WVlcTracksEvent(const QList<WBackendTrack> & tracks, int trackVideo, int trackAudio)
+    WVlcTracksEvent(const QList<WBackendTrack> & tracks, int trackVideo, int trackAudio,
+                    qreal frameRate)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventTracks))
     {
         this->tracks = tracks;
 
         this->trackVideo = trackVideo;
         this->trackAudio = trackAudio;
+
+        this->frameRate = frameRate;
     }
 
 public: // Variables
@@ -197,6 +202,8 @@ public: // Variables
 
     int trackVideo;
     int trackAudio;
+
+    qreal frameRate;
 };
 
 //-------------------------------------------------------------------------------------------------

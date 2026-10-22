@@ -109,6 +109,7 @@ public: // Enums
         EventPause,
         EventStop,
         EventSeek,   // WVlcPlayerEvent int
+        EventNextFrame,
         EventSpeed,  // WVlcPlayerEvent qreal
         EventVolume, // WVlcPlayerEvent int
         EventVideo,  // WVlcPlayerEvent int
@@ -147,6 +148,8 @@ public: // Functions
     void stop ();
 
     void seek(int msec);
+
+    void nextFrame();
 
     void setSpeed(float speed);
 

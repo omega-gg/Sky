@@ -1369,6 +1369,13 @@ WPlayer::WPlayer(WPlayerPrivate * p, QObject * parent)
     }
 }
 
+/* Q_INVOKABLE */ void WPlayer::nextFrame()
+{
+    Q_D(WPlayer);
+
+    if (d->backend) d->backend->nextFrame();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WPlayer::setPreviousTrack()
@@ -1633,6 +1640,8 @@ void WPlayer::updateFrame()
     connect(backend, SIGNAL(durationChanged   ()), this, SIGNAL(durationChanged   ()));
 
     connect(backend, SIGNAL(progressChanged()), this, SIGNAL(progressChanged()));
+
+    connect(backend, SIGNAL(frameRateChanged()), this, SIGNAL(frameRateChanged()));
 
     connect(backend, SIGNAL(speedChanged()), this, SIGNAL(speedChanged()));
 
@@ -2253,6 +2262,17 @@ qreal WPlayer::progress() const
     if (d->backend)
     {
          return d->backend->progress();
+    }
+    else return 0.0;
+}
+
+qreal WPlayer::frameRate() const
+{
+    Q_D(const WPlayer);
+
+    if (d->backend)
+    {
+        return d->backend->frameRate();
     }
     else return 0.0;
 }

@@ -80,6 +80,8 @@ public: // Variable
 
     qreal progress;
 
+    qreal frameRate;
+
     qreal speed;
 
     qreal volume;

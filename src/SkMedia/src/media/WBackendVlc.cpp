@@ -81,22 +81,23 @@
 //-------------------------------------------------------------------------------------------------
 // RGB
 
-#define RED_MARGIN    178
+#define RED_MARGIN    200
 #define GREEN_MARGIN  135
-#define BLUE_MARGIN   224
-#define RED_OFFSET   1501
+#define BLUE_MARGIN   236
+#define RED_OFFSET   1454
 #define GREEN_OFFSET  135
-#define BLUE_OFFSET   818
+#define BLUE_OFFSET   762
 
 //-------------------------------------------------------------------------------------------------
 // YUV pixel conversions
 
 #define SHIFT 20
 
-#define U_GREEN_COEF ((int) (-0.391 * (1 << SHIFT) / 1.164))
-#define U_BLUE_COEF  ((int) ( 2.018 * (1 << SHIFT) / 1.164))
-#define V_RED_COEF   ((int) ( 1.596 * (1 << SHIFT) / 1.164))
-#define V_GREEN_COEF ((int) (-0.813 * (1 << SHIFT) / 1.164))
+// NOTE: These are the BT.709 coefficients of the video shader, the table scales Y.
+#define U_GREEN_COEF ((int) (-0.213249 * (1 << SHIFT) / 1.164384))
+#define U_BLUE_COEF  ((int) ( 2.112402 * (1 << SHIFT) / 1.164384))
+#define V_RED_COEF   ((int) ( 1.792741 * (1 << SHIFT) / 1.164384))
+#define V_GREEN_COEF ((int) (-0.532909 * (1 << SHIFT) / 1.164384))
 
 #define W_CONVERT_YUV_PIXEL                             \
 \
@@ -116,6 +117,68 @@
     *bits++ = yBase[RED_OFFSET   - ((V_RED_COEF                    * 128) >> SHIFT) + r] | \
               yBase[GREEN_OFFSET - (((U_GREEN_COEF + V_GREEN_COEF) * 128) >> SHIFT) + g] | \
               yBase[BLUE_OFFSET  - ((U_BLUE_COEF                   * 128) >> SHIFT) + b];  \
+
+//-------------------------------------------------------------------------------------------------
+// SSE2
+
+#ifdef CAN_COMPILE_SSE2
+
+// NOTE: This is the SSE2_YUV_MUL of mmxRgb.h with the BT.709 coefficients of the video shader,
+//       VLC has BT.601 ones.
+#undef SSE2_YUV_MUL
+
+#define SSE2_YUV_MUL "                                                      \n\
+# convert the chroma part                                                   \n\
+punpcklbw %%xmm4, %%xmm0        # scatter 8 Cb    00 u3 00 u2 00 u1 00 u0   \n\
+punpcklbw %%xmm4, %%xmm1        # scatter 8 Cr    00 v3 00 v2 00 v1 00 v0   \n\
+movl      $0x00800080, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # Set xmm5 to     0080 0080 ... 0080 0080   \n\
+psubsw    %%xmm5, %%xmm0        # Cb -= 128                                 \n\
+psubsw    %%xmm5, %%xmm1        # Cr -= 128                                 \n\
+psllw     $3, %%xmm0            # Promote precision                         \n\
+psllw     $3, %%xmm1            # Promote precision                         \n\
+movdqa    %%xmm0, %%xmm2        # Copy 8 Cb       00 u3 00 u2 00 u1 00 u0   \n\
+movdqa    %%xmm1, %%xmm3        # Copy 8 Cr       00 v3 00 v2 00 v1 00 v0   \n\
+movl      $0xf92df92d, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # Set xmm5 to     f92d f92d ... f92d f92d   \n\
+pmulhw    %%xmm5, %%xmm2        # Mul Cb with green coeff -> Cb green       \n\
+movl      $0xeef2eef2, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # Set xmm5 to     eef2 eef2 ... eef2 eef2   \n\
+pmulhw    %%xmm5, %%xmm3        # Mul Cr with green coeff -> Cr green       \n\
+movl      $0x43994399, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # Set xmm5 to     4399 4399 ... 4399 4399   \n\
+pmulhw    %%xmm5, %%xmm0        # Mul Cb -> Cblue 00 b3 00 b2 00 b1 00 b0   \n\
+movl      $0x395e395e, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # Set xmm5 to     395e 395e ... 395e 395e   \n\
+pmulhw    %%xmm5, %%xmm1        # Mul Cr -> Cred  00 r3 00 r2 00 r1 00 r0   \n\
+paddsw    %%xmm3, %%xmm2        # Cb green + Cr green -> Cgreen             \n\
+                                                                            \n\
+# convert the luma part                                                     \n\
+movl      $0x10101010, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # Set xmm5 to   1010 1010 ... 1010 1010     \n\
+psubusb   %%xmm5, %%xmm6        # Y -= 16                                   \n\
+movdqa    %%xmm6, %%xmm7        # Copy 16 Y       Y7 Y6 Y5 Y4 Y3 Y2 Y1 Y0   \n\
+movl      $0x00ff00ff, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # set xmm5 to     00ff 00ff ... 00ff 00ff   \n\
+pand      %%xmm5, %%xmm6        # get Y even      00 Y6 00 Y4 00 Y2 00 Y0   \n\
+psrlw     $8, %%xmm7            # get Y odd       00 Y7 00 Y5 00 Y3 00 Y1   \n\
+psllw     $3, %%xmm6            # Promote precision                         \n\
+psllw     $3, %%xmm7            # Promote precision                         \n\
+movl      $0x253f253f, %%eax    #                                           \n\
+movd      %%eax, %%xmm5         #                                           \n\
+pshufd    $0, %%xmm5, %%xmm5    # set xmm5 to     253f 253f ... 253f 253f   \n\
+pmulhw    %%xmm5, %%xmm6        # Mul 8 Y even    00 y6 00 y4 00 y2 00 y0   \n\
+pmulhw    %%xmm5, %%xmm7        # Mul 8 Y odd     00 y7 00 y5 00 y3 00 y1   \n\
+"
+
+#endif
 
 #ifndef SK_NO_QML
 
@@ -770,9 +833,10 @@ void WBackendVlcPrivate::populateTableRgb()
 {
     uchar gamma[256];
 
+    // NOTE: Video range goes full, black 16 and white 235 becoming 0 and 255 as the video shader.
     for (int i = 0; i < 256; i++)
     {
-        gamma[i] = i;
+        gamma[i] = qBound(0, qRound((i - 16) * 255.0 / 219), 255);
     }
 
     for (int i = 0; i < RED_MARGIN; i++)
@@ -790,7 +854,7 @@ void WBackendVlcPrivate::populateTableRgb()
     for (int i = 0; i < BLUE_MARGIN; i++)
     {
         tableRgb[BLUE_OFFSET - BLUE_MARGIN + i] = qRgb(0, 0, gamma[0]);
-        tableRgb[BLUE_OFFSET + BLUE_MARGIN + i] = qRgb(0, 0, gamma[255]);
+        tableRgb[BLUE_OFFSET + 256         + i] = qRgb(0, 0, gamma[255]);
     }
 
     for (int i = 0; i < 256; i++)
@@ -1078,10 +1142,11 @@ void WBackendVlcPrivate::convertFrameNeon()
     // NEON constants for YUV to RGB conversion
     uint8x8_t all_yfac = vdup_n_u8  (298 >> 2);
     uint8x8_t t_yfac   = vdup_n_u8  (16);
-    int16x4_t g_ufac   = vdup_n_s16 (101 >> 2);
-    int16x4_t b_ufac   = vdup_n_s16 (519 >> 2);
-    int16x4_t r_vfac   = vdup_n_s16 (411 >> 2);
-    int16x4_t g_vfac   = vdup_n_s16 (211 >> 2);
+    // NOTE: These are the BT.709 coefficients of the video shader.
+    int16x4_t g_ufac   = vdup_n_s16 (55  >> 2);
+    int16x4_t b_ufac   = vdup_n_s16 (541 >> 2);
+    int16x4_t r_vfac   = vdup_n_s16 (459 >> 2);
+    int16x4_t g_vfac   = vdup_n_s16 (136 >> 2);
     int16x8_t addfac   = vdupq_n_s16(128);
 
     // Process each row of the image
@@ -2418,6 +2483,25 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 #endif
 }
 
+/* virtual */ void WBackendVlc::backendNextFrame()
+{
+    Q_D(WBackendVlc);
+
+    d->player->nextFrame();
+
+    qreal frameRate = this->frameRate();
+
+    if (frameRate == 0.0) return;
+
+    int msec = currentTime() + qRound(1000 / frameRate);
+
+    int duration = this->duration();
+
+    if (duration > 0) msec = qMin(msec, duration);
+
+    setCurrentTime(msec);
+}
+
 /* virtual */ QImage WBackendVlc::backendGetFrame() const
 {
     Q_D(const WBackendVlc);
@@ -2670,6 +2754,8 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
         WVlcTracksEvent * eventTracks = static_cast<WVlcTracksEvent *> (event);
 
         applyTracks(eventTracks->tracks, eventTracks->trackVideo, eventTracks->trackAudio);
+
+        setFrameRate(eventTracks->frameRate);
 
         return true;
     }

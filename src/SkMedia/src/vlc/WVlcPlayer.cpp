@@ -593,6 +593,11 @@ void WVlcPlayerPrivate::seek(int msec)
 #endif
 }
 
+void WVlcPlayerPrivate::nextFrame()
+{
+    libvlc_media_player_next_frame(player);
+}
+
 void WVlcPlayerPrivate::setSpeed(float speed)
 {
     if (this->speed == speed) return;
@@ -771,6 +776,8 @@ void WVlcPlayerPrivate::applyPlay()
 
     // NOTE: When the playback started the media tracks should be retrievable.
 
+    qreal frameRate = 0.0;
+
 #if LIBVLC_VERSION_MAJOR < 4
     libvlc_media_track_t ** tracks;
 
@@ -802,6 +809,13 @@ void WVlcPlayerPrivate::applyPlay()
             {
                 trackId    = id;
                 trackVideo = id;
+
+                libvlc_video_track_t * video = track->video;
+
+                if (video->i_frame_rate_den)
+                {
+                    frameRate = (qreal) video->i_frame_rate_num / video->i_frame_rate_den;
+                }
             }
 
             backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackVideo,
@@ -858,6 +872,11 @@ void WVlcPlayerPrivate::applyPlay()
 
             trackWidth  = video->i_width;
             trackHeight = video->i_height;
+
+            if (video->i_frame_rate_den)
+            {
+                frameRate = (qreal) video->i_frame_rate_num / video->i_frame_rate_den;
+            }
         }
 
         backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackVideo, track->psz_language));
@@ -883,7 +902,8 @@ void WVlcPlayerPrivate::applyPlay()
     libvlc_media_tracklist_delete(audios);
 #endif
 
-    WVlcTracksEvent * eventTracks = new WVlcTracksEvent(backendTracks, trackVideo, trackAudio);
+    WVlcTracksEvent * eventTracks = new WVlcTracksEvent(backendTracks, trackVideo, trackAudio,
+                                                        frameRate);
 
     QCoreApplication::postEvent(backend, eventTracks);
 }
@@ -1368,6 +1388,21 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                                                                  msec));
 }
 
+/* Q_INVOKABLE */ void WVlcPlayer::nextFrame()
+{
+    Q_D(WVlcPlayer);
+
+    if (d->thread == NULL)
+    {
+        d->nextFrame();
+
+        return;
+    }
+
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WVlcPlayerPrivate::EventNextFrame)));
+}
+
 /* Q_INVOKABLE */ void WVlcPlayer::setSpeed(qreal speed)
 {
     Q_D(WVlcPlayer);
@@ -1590,6 +1625,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
         d->seek(eventPlayer->value.toInt());
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventNextFrame))
+    {
+        d->nextFrame();
 
         return true;
     }

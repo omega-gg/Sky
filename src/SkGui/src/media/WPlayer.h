@@ -99,6 +99,8 @@ class SK_GUI_EXPORT WPlayer : public QObject, public WPlaylistWatcher, public WP
 
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
 
+    Q_PROPERTY(qreal frameRate READ frameRate NOTIFY frameRateChanged)
+
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
     Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
@@ -221,6 +223,8 @@ public: // Interface
 
     Q_INVOKABLE void seek(int msec);
 
+    Q_INVOKABLE void nextFrame();
+
     Q_INVOKABLE void setPreviousTrack();
     Q_INVOKABLE void setNextTrack    ();
 
@@ -303,6 +307,8 @@ signals:
     void durationChanged   ();
 
     void progressChanged();
+
+    void frameRateChanged();
 
     void speedChanged();
 
@@ -410,6 +416,8 @@ public: // Properties
     int duration   () const;
 
     qreal progress() const;
+
+    qreal frameRate() const;
 
     qreal speed() const;
     void  setSpeed(qreal speed);

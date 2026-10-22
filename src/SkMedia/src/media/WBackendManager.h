@@ -97,6 +97,8 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendUpdateFrame();
 
+    /* virtual */ void backendNextFrame();
+
     /* virtual */ QImage backendGetFrame    () const;
     /* virtual */ QImage backendGetFrameGray() const;
 
@@ -127,6 +129,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onCurrentTime())
     Q_PRIVATE_SLOT(d_func(), void onDuration   ())
     Q_PRIVATE_SLOT(d_func(), void onProgress   ())
+    Q_PRIVATE_SLOT(d_func(), void onFrameRate  ())
     Q_PRIVATE_SLOT(d_func(), void onOutput     ())
     Q_PRIVATE_SLOT(d_func(), void onQuality    ())
     Q_PRIVATE_SLOT(d_func(), void onVideos     ())

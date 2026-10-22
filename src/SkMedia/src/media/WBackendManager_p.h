@@ -130,6 +130,7 @@ public: // Slots
     void onCurrentTime();
     void onDuration   ();
     void onProgress   ();
+    void onFrameRate  ();
     void onOutput     ();
     void onQuality    ();
     void onVideos     ();

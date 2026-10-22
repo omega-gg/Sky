@@ -95,6 +95,8 @@ void WDeclarativePlayerPrivate::init()
 
     QObject::connect(player, SIGNAL(progressChanged()), q, SIGNAL(progressChanged()));
 
+    QObject::connect(player, SIGNAL(frameRateChanged()), q, SIGNAL(frameRateChanged()));
+
     QObject::connect(player, SIGNAL(speedChanged()), q, SIGNAL(speedChanged()));
 
     QObject::connect(player, SIGNAL(volumeChanged()), q, SIGNAL(volumeChanged()));
@@ -265,6 +267,13 @@ WDeclarativePlayer::WDeclarativePlayer(WDeclarativePlayerPrivate * p, QQuickItem
     d->player->seek(msec);
 }
 
+/* Q_INVOKABLE */ void WDeclarativePlayer::nextFrame()
+{
+    Q_D(WDeclarativePlayer);
+
+    d->player->nextFrame();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WDeclarativePlayer::setPreviousTrack()
@@ -299,6 +308,8 @@ void WDeclarativePlayer::updateFrame()
 #endif
 
     update();
+
+    emit frameUpdated();
 }
 
 /* Q_INVOKABLE */ QImage WDeclarativePlayer::getFrame() const
@@ -869,6 +880,13 @@ qreal WDeclarativePlayer::progress() const
     Q_D(const WDeclarativePlayer);
 
     return d->player->progress();
+}
+
+qreal WDeclarativePlayer::frameRate() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    return d->player->frameRate();
 }
 
 //-------------------------------------------------------------------------------------------------

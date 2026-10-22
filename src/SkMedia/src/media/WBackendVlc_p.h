@@ -310,7 +310,7 @@ public: // Variables
 
     WVlcPlayer * player;
 
-    uint32_t tableRgb[1935];
+    uint32_t tableRgb[1910];
 
     int width;
     int height;

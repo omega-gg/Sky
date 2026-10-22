@@ -92,6 +92,8 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendUpdateFrame();
 
+    /* virtual */ void backendNextFrame();
+
     /* virtual */ QImage backendGetFrame    () const;
     /* virtual */ QImage backendGetFrameGray() const;
 

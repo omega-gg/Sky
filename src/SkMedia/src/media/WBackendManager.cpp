@@ -670,6 +670,8 @@ void WBackendManagerPrivate::connectBackend()
 
     q->setProgress(p->progress);
 
+    q->setFrameRate(p->frameRate);
+
     q->setOutputActive(p->outputActive);
 
     q->setQualityActive(p->qualityActive);
@@ -684,6 +686,7 @@ void WBackendManagerPrivate::connectBackend()
     QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onCurrentTime()));
     QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration   ()));
     QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress   ()));
+    QObject::connect(backend, SIGNAL(frameRateChanged    ()), q, SLOT(onFrameRate  ()));
     QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
     QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
     QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
@@ -1076,6 +1079,13 @@ void WBackendManagerPrivate::onProgress()
     Q_Q(WBackendManager);
 
     q->setProgress(backend->progress());
+}
+
+void WBackendManagerPrivate::onFrameRate()
+{
+    Q_Q(WBackendManager);
+
+    q->setFrameRate(backend->frameRate());
 }
 
 void WBackendManagerPrivate::onOutput()
@@ -1603,6 +1613,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     if (d->freeze) return;
 
     d->backend->updateFrame();
+}
+
+/* virtual */ void WBackendManager::backendNextFrame()
+{
+    Q_D(WBackendManager);
+
+    d->backend->nextFrame();
 }
 
 /* virtual */ QImage WBackendManager::backendGetFrame() const
