@@ -307,6 +307,10 @@ protected: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
+#endif
+
 signals:
     void loaded();
     void ended ();
@@ -558,6 +562,10 @@ private:
     W_DECLARE_PRIVATE(WDeclarativePlayer)
 
     Q_PRIVATE_SLOT(d_func(), void onFillMode())
+
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+    Q_PRIVATE_SLOT(d_func(), void onSwapped())
+#endif
 };
 
 #include <private/WDeclarativePlayer_p>

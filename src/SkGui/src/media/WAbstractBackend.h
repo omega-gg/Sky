@@ -163,6 +163,9 @@ public: // Interface
 public: // Abstract interface
     virtual void setTextures(WBackendTexture * textures) = 0;
 
+public: // Virtual interface
+    virtual void setAdjust(const WBackendAdjust & adjust); // {}
+
 private: // Variables
     QSGGeometry _geometry;
 
@@ -912,11 +915,22 @@ struct WBackendFrame
     WBackendFrame()
     {
         state = WAbstractBackend::FrameDefault;
+
+        swapTime   = 0;
+        swapPeriod = 0;
     }
 
     WBackendTexture textures[3];
 
     WAbstractBackend::FrameState state;
+
+    // NOTE: The adjust the node applies, for a backend that does not adjust its frames itself.
+    WBackendAdjust adjust;
+
+    // NOTE: The last regular swap of the window and its period in nanoseconds, 0 when unknown,
+    //       for a backend that times its frames on the swaps.
+    qint64 swapTime;
+    qint64 swapPeriod;
 };
 
 #endif

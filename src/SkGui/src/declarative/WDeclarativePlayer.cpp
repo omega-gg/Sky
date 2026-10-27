@@ -29,8 +29,30 @@
 #include <QStyleOptionGraphicsItem>
 #endif
 
+// Qt includes
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#include <QQuickWindow>
+#include <QDeadlineTimer>
+#endif
+#if defined(QT_6) && defined(SK_SOFTWARE) == false
+#include <QSGImageNode>
+#endif
+
 // Sk includes
 #include <WPlayer>
+
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+// NOTE: A swap period goes from 4 to 50 milliseconds (250 to 20 Hz). Without a regular swap for
+//       100 milliseconds the period starts over (in nanoseconds).
+static const qint64 PLAYER_SWAP_MINIMUM =   4000000;
+static const qint64 PLAYER_SWAP_MAXIMUM =  50000000;
+static const qint64 PLAYER_SWAP_RESET   = 100000000;
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -45,6 +67,61 @@ WDeclarativePlayerPrivate::WDeclarativePlayerPrivate(WDeclarativePlayer * p)
 
 //-------------------------------------------------------------------------------------------------
 
+#if defined(QT_6) && defined(SK_SOFTWARE) == false
+
+// NOTE: The software renderer can't run the video shader: the frame goes as an RGB image.
+QSGNode * WDeclarativePlayerPrivate::updateSoftware(QSGNode * oldNode)
+{
+    Q_Q(WDeclarativePlayer);
+
+    WAbstractBackend::FrameState state = frame.state;
+
+    if (state == WAbstractBackend::FrameClear)
+    {
+        if (oldNode) delete oldNode;
+
+        return NULL;
+    }
+
+    if (state == WAbstractBackend::FrameDefault && oldNode == NULL) return NULL;
+
+    WAbstractBackend * backend = q->backend();
+
+    QQuickWindow * window = q->window();
+
+    QSGImageNode * node;
+
+    if (oldNode)
+    {
+         node = static_cast<QSGImageNode *> (oldNode);
+    }
+    else node = window->createImageNode();
+
+    if (state != WAbstractBackend::FrameDefault)
+    {
+        frame.state = WAbstractBackend::FrameDefault;
+
+        backend->updateFrame();
+
+        QImage image = backend->getFrame();
+
+        if (image.isNull() == false)
+        {
+            node->setTexture(window->createTextureFromImage(image));
+
+            node->setOwnsTexture(true);
+        }
+    }
+
+    node->setRect(backend->getRect());
+
+    return node;
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 void WDeclarativePlayerPrivate::init()
 {
     Q_Q(WDeclarativePlayer);
@@ -55,6 +132,10 @@ void WDeclarativePlayerPrivate::init()
 
 #ifdef QT_NEW
     frameUpdate = false;
+#endif
+
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+    swapLast = 0;
 #endif
 
 #ifdef QT_4
@@ -172,6 +253,42 @@ void WDeclarativePlayerPrivate::onFillMode()
 
     q->update();
 }
+
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+
+// NOTE: A swap a whole number of periods after the previous one is regular: it sets the swap
+//       time and refines the period. A swap after an idle window is off the refresh, we skip it.
+void WDeclarativePlayerPrivate::onSwapped()
+{
+    qint64 time = QDeadlineTimer::current(Qt::PreciseTimer).deadlineNSecs();
+
+    qint64 delta = time - swapLast;
+
+    swapLast = time;
+
+    qint64 period = swapPeriod.loadRelaxed();
+
+    if (period == 0 || time - swapTime.loadRelaxed() > PLAYER_SWAP_RESET)
+    {
+        if (delta < PLAYER_SWAP_MINIMUM || delta > PLAYER_SWAP_MAXIMUM) return;
+
+        swapTime  .storeRelaxed(time);
+        swapPeriod.storeRelaxed(delta);
+
+        return;
+    }
+
+    qint64 count = qRound64(double(delta) / period);
+
+    qint64 error = delta - count * period;
+
+    if (count < 1 || qAbs(error) > period / 8) return;
+
+    swapTime  .storeRelaxed(time);
+    swapPeriod.storeRelaxed(period + error / (count * 16));
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
@@ -303,6 +420,11 @@ void WDeclarativePlayer::updateFrame()
 {
 #ifdef QT_NEW
     Q_D(WDeclarativePlayer);
+
+#ifndef SK_SOFTWARE
+    d->frame.swapTime   = d->swapTime  .loadRelaxed();
+    d->frame.swapPeriod = d->swapPeriod.loadRelaxed();
+#endif
 
     backend()->synchronize(&d->frame);
 #endif
@@ -509,6 +631,13 @@ void WDeclarativePlayer::updateFrame()
 {
     Q_D(WDeclarativePlayer);
 
+#ifdef QT_6
+    if (window()->rendererInterface()->graphicsApi() == QSGRendererInterface::Software)
+    {
+        return d->updateSoftware(oldNode);
+    }
+#endif
+
     WAbstractBackend::FrameState state = d->frame.state;
 
     if (state == WAbstractBackend::FrameDefault)
@@ -542,6 +671,8 @@ void WDeclarativePlayer::updateFrame()
 
         node->setTextures(d->frame.textures);
 
+        node->setAdjust(d->frame.adjust);
+
         d->frameUpdate = false;
 
         node->setRect(backend->getRect());
@@ -560,6 +691,8 @@ void WDeclarativePlayer::updateFrame()
 
             node->setTextures(d->frame.textures);
 
+            node->setAdjust(d->frame.adjust);
+
             if (d->frameUpdate)
             {
                 d->frameUpdate = false;
@@ -574,6 +707,8 @@ void WDeclarativePlayer::updateFrame()
             node = backend->createNode();
 
             node->setTextures(d->frame.textures);
+
+            node->setAdjust(d->frame.adjust);
 
             d->frameUpdate = false;
 
@@ -634,6 +769,30 @@ void WDeclarativePlayer::updateFrame()
 #endif
 #endif
 }
+
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+
+// NOTE: The swaps of the window, so a backend can time its frames on them (see onSwapped). The
+//       base item disconnects the previous window.
+/* virtual */ void WDeclarativePlayer::itemChange(ItemChange change, const ItemChangeData & value)
+{
+    WDeclarativeItem::itemChange(change, value);
+
+    if (change != ItemSceneChange) return;
+
+    Q_D(WDeclarativePlayer);
+
+    d->swapTime  .storeRelaxed(0);
+    d->swapPeriod.storeRelaxed(0);
+
+    QQuickWindow * window = value.window;
+
+    if (window == NULL) return;
+
+    connect(window, SIGNAL(frameSwapped()), this, SLOT(onSwapped()), Qt::DirectConnection);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

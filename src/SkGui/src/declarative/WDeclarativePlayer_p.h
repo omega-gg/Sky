@@ -56,8 +56,17 @@ public:
 
     void init();
 
+#if defined(QT_6) && defined(SK_SOFTWARE) == false
+public: // Functions
+    QSGNode * updateSoftware(QSGNode * oldNode);
+#endif
+
 public: // Slots
     void onFillMode();
+
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+    void onSwapped();
+#endif
 
 public: // Variables
     WPlayer * player;
@@ -66,6 +75,14 @@ public: // Variables
     WBackendFrame frame;
 
     bool frameUpdate;
+#endif
+
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+    // NOTE: The swaps of the window, written on its render thread.
+    QAtomicInteger<qint64> swapTime;
+    QAtomicInteger<qint64> swapPeriod;
+
+    qint64 swapLast;
 #endif
 
 protected:

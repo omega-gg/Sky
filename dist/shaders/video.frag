@@ -12,13 +12,17 @@ layout(std140, binding = 0) uniform buf
 {
     mat4 matrix;
     mat4 matrixColor;
+    mat4 matrixAdjust;
     float opacity;
+    float gamma;
 };
 
 void main() {
-    vec4 color = vec4(texture(y, vector).r,
-                      texture(u, vector).r,
-                      texture(v, vector).r, 1.0);
-					  
+    vec4 color = matrixAdjust * vec4(texture(y, vector).r,
+                                     texture(u, vector).r,
+                                     texture(v, vector).r, 1.0);
+
+    if (gamma != 1.0) color.x = pow(clamp(color.x, 0.0, 1.0), gamma);
+
     fragColor = matrixColor * color * opacity;
 }

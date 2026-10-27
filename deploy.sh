@@ -22,6 +22,8 @@ SSL_versionC="3.5.3"
 VLC3_version="3.0.24"
 VLC4_version="4.0.0"
 
+FFmpeg_version="9.0.2"
+
 libtorrent_version="2.0.11"
 
 Boost_version="1.86.0"
@@ -36,7 +38,7 @@ MinGW_version="13.1.0"
 
 compiler_win="mingw"
 
-vlc="vlc3"
+player="ffmpeg"
 
 qt="qt6"
 
@@ -252,12 +254,22 @@ else
     SSL="$external/OpenSSL/$SSL_versionC"
 fi
 
-if [ $vlc = "vlc3" ]; then
+# NOTE: The player engine is FFmpeg or VLC, never both. FFmpeg is for Qt 6.
+if [ $player = "ffmpeg" -a $qt = "qt6" ]; then
 
-    VLC="$external/VLC/$VLC3_version"
+    engine="ffmpeg"
 else
-    VLC="$external/VLC/$VLC4_version"
+    engine="vlc"
 fi
+
+if [ $player = "vlc4" ]; then
+
+    VLC="$external/VLC/$VLC4_version"
+else
+    VLC="$external/VLC/$VLC3_version"
+fi
+
+FFmpeg="$external/FFmpeg/$FFmpeg_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
 
@@ -804,7 +816,11 @@ fi
 # VLC
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ]; then
+if [ $engine = "ffmpeg" ]; then
+
+    echo "SKIPPING VLC: the engine is FFmpeg"
+
+elif [ $os = "windows" ]; then
 
     echo "COPYING VLC"
 
@@ -900,6 +916,35 @@ elif [ $1 = "android" ]; then
     copyAndroid "$VLC" $vlc
 
     cp "$VLC"/*.jar $vlc
+fi
+
+#--------------------------------------------------------------------------------------------------
+# FFmpeg
+#--------------------------------------------------------------------------------------------------
+
+# NOTE: Our libraries are named sk-avcodec and so on, they load beside Qt Multimedia's FFmpeg.
+if [ $engine = "ffmpeg" ]; then
+
+    echo "COPYING FFmpeg"
+
+    if [ $os = "windows" ]; then
+
+        cp "$FFmpeg"/bin/sk-*.dll $deploy
+
+    elif [ $1 = "macOS" -o $1 = "linux" ]; then
+
+        cp -P "$FFmpeg"/lib/libsk-* $deploy
+
+    elif [ $1 = "iOS" ]; then
+
+        cp -r "$FFmpeg"/lib/*.xcframework $deploy
+
+    elif [ $1 = "android" ]; then
+
+        mkdir $deploy/ffmpeg
+
+        copyAndroid "$FFmpeg" $deploy/ffmpeg
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------

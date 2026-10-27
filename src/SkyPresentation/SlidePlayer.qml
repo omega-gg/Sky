@@ -78,7 +78,11 @@ Player
 
     anchors.fill: parent
 
+//#VLC
     backend: BackendVlc {}
+//#ELSE
+    backend: BackendFfmpeg {}
+//#END
 
     volume: (fade == false || (slides && pVolume)) ? volumeActive
                                                    : volumeBase

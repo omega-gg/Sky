@@ -529,12 +529,18 @@ void WTorrentThread::onFile(WTorrent * torrent, const QString & fileName, qint64
     started = false;
     seeking = false;
 
+#ifdef SK_VLC
     // NOTE VLC: We get the wrong duration when skipping data on avi files.
     if (WControllerNetwork::extractUrlExtension(fileName).toLower() == "avi")
     {
          skip = -1;
     }
     else skip = 0;
+#else
+    // NOTE FFmpeg: The demuxer reads the index at the end of a file (MP4, MKV), it gets the real
+    //              data, so nothing is skipped.
+    skip = -1;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

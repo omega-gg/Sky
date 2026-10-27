@@ -39,17 +39,11 @@
 #endif
 #include <QMutex>
 #include <QMetaMethod>
-#if defined(QT_NEW) && defined(SK_NO_QML) == false
-#include <QSGMaterial>
-#endif
-#ifdef QT_6
-#include <QOpenGLFunctions>
-#endif
 
 // Sk includes
 #include <WVlcPlayer>
-#if defined(QT_6) && defined(SK_NO_QML) == false
-#include <WTextureVideo>
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
+#include <WBackendYuv>
 #endif
 
 // Private includes
@@ -58,9 +52,6 @@
 #ifndef SK_NO_BACKENDVLC
 
 // Forward declarations
-#ifdef QT_NEW
-class QOpenGLFunctions;
-#endif
 class WMediaReply;
 
 //-------------------------------------------------------------------------------------------------
@@ -103,117 +94,6 @@ struct WBackendVlcTexture
     uchar * bits;
 };
 
-#if defined(QT_NEW) && defined(SK_NO_QML) == false
-
-//-------------------------------------------------------------------------------------------------
-// WBackendVlcShader
-//-------------------------------------------------------------------------------------------------
-
-class SK_MEDIA_EXPORT WBackendVlcShader : public QSGMaterialShader
-{
-#ifdef QT_6
-public:
-    WBackendVlcShader();
-#endif
-
-#ifdef QT_5
-public: // QSGMaterialShader implementation
-    /* virtual */ char const * const * attributeNames() const;
-#endif
-
-public: // QSGMaterialShader reimplementation
-#ifdef QT_5
-    /* virtual */ void updateState(const RenderState & state, QSGMaterial * newMaterial,
-                                                              QSGMaterial * oldMaterial);
-#else
-    /* virtual */ bool updateUniformData(RenderState & state, QSGMaterial * newMaterial,
-                                         QSGMaterial * oldMaterial);
-
-    /* virtual */ void updateSampledImage(RenderState & state, int binding, QSGTexture ** texture,
-                                          QSGMaterial * newMaterial, QSGMaterial * oldMaterial);
-#endif
-
-#ifdef QT_5
-protected: // QSGMaterialShader reimplementation
-    /* virtual */ void initialize();
-
-    /* virtual */ const char * vertexShader  () const;
-    /* virtual */ const char * fragmentShader() const;
-#endif
-
-public: // Properties
-#ifdef QT_5
-    int idPosition;
-    int idOpacity;
-    int idColor;
-
-    int idY;
-    int idU;
-    int idV;
-#else
-    bool isNew;
-#endif
-};
-
-//-------------------------------------------------------------------------------------------------
-// WBackendVlcMaterial
-//-------------------------------------------------------------------------------------------------
-
-class SK_MEDIA_EXPORT WBackendVlcMaterial : public QSGMaterial
-{
-public:
-    WBackendVlcMaterial();
-
-    /* virtual */ ~WBackendVlcMaterial();
-
-#ifdef QT_5
-public: // Functions
-    void updateTextures();
-#endif
-
-public: // QSGMaterial implementation
-    /* virtual */ QSGMaterialType * type() const;
-
-#ifdef QT_5
-    /* virtual */ QSGMaterialShader * createShader() const;
-#else
-    /* virtual */
-    QSGMaterialShader * createShader(QSGRendererInterface::RenderMode renderMode) const;
-#endif
-
-public: // Properties
-#ifdef QT_5
-    QOpenGLFunctions * gl;
-#endif
-
-    WBackendTexture * textures;
-
-#ifdef QT_5
-    GLuint ids[3];
-#else
-    WTextureVideo data[3];
-#endif
-
-    bool update;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WBackendVlcNode
-//-------------------------------------------------------------------------------------------------
-
-class SK_MEDIA_EXPORT WBackendVlcNode : public WBackendNode
-{
-public:
-    WBackendVlcNode();
-
-public: // WBackendNode reimplementation
-    /* virtual */ void setTextures(WBackendTexture * textures);
-
-public: // Properties
-    WBackendVlcMaterial material;
-};
-
-#endif
 
 //-------------------------------------------------------------------------------------------------
 // WBackendVlcPrivate

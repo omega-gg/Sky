@@ -30,11 +30,12 @@
 #include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WControllerMedia>
+#ifdef SK_VLC
 #include <WBackendVlc>
+#else
+#include <WBackendFfmpeg>
+#endif
 #include <WAbstractHook>
-
-// Private includes
-#include <private/WBackendVlc_p>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -73,7 +74,12 @@ void WBackendManagerPrivate::init()
 
     WBackendManagerItem item;
 
+    // NOTE: The engine is chosen at build time, FFmpeg or VLC.
+#ifdef SK_VLC
     backend = new WBackendVlc(q);
+#else
+    backend = new WBackendFfmpeg(q);
+#endif
 
     item.backend = backend;
     item.hook    = NULL;
@@ -1198,6 +1204,31 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBackendManager::setProxy(const QString & host,
+                                                 int             port, const QString & password)
+{
+    Q_D(WBackendManager);
+
+#ifdef SK_VLC
+    static_cast<WBackendVlc *> (d->backend)->setProxy(host, port, password);
+#else
+    static_cast<WBackendFfmpeg *> (d->backend)->setProxy(host, port, password);
+#endif
+}
+
+/* Q_INVOKABLE */ void WBackendManager::clearProxy()
+{
+    Q_D(WBackendManager);
+
+#ifdef SK_VLC
+    static_cast<WBackendVlc *> (d->backend)->clearProxy();
+#else
+    static_cast<WBackendFfmpeg *> (d->backend)->clearProxy();
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
@@ -1214,7 +1245,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
 /* virtual */ WBackendNode * WBackendManager::backendCreateNode() const
 {
-    return new WBackendVlcNode;
+    Q_D(const WBackendManager);
+
+    return d->backend->createNode();
 }
 
 #endif

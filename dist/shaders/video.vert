@@ -9,7 +9,9 @@ layout(std140, binding = 0) uniform buf
 {
     mat4 matrix;
     mat4 matrixColor;
+    mat4 matrixAdjust;
     float opacity;
+    float gamma;
 };
 
 void main() 

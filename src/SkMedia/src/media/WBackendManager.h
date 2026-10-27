@@ -49,6 +49,11 @@ public: // Interface
 
     Q_INVOKABLE int getStart() const;
 
+    Q_INVOKABLE void setProxy(const QString & host,
+                              int             port, const QString & password = QString());
+
+    Q_INVOKABLE void clearProxy();
+
 protected: // Virtual functions
     virtual WAbstractHook * createHook(WAbstractBackend * backend); // {}
 

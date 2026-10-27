@@ -39,6 +39,9 @@
 #include <QStringList>
 #endif
 
+// C++ includes
+#include <cstdarg>
+
 // Sk includes
 #ifdef QT_NEW
 #include <WList>
@@ -174,7 +177,7 @@ public:
     void init(const QStringList & options);
 
 public: // Functions
-#ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_VLC
     void createEngine();
 #endif
 
@@ -220,6 +223,11 @@ public: // Functions
     const WPrivateMediaSlice * getSlice(WPrivateMediaSource * source,
                                         WAbstractBackend::SourceMode mode, int currentTime);
 
+#ifdef CONTROLLERMEDIA_FFMPEG
+public: // Static functions
+    static void onLog(void * data, int level, const char * format, va_list args);
+#endif
+
 public: // Slots
     void onLoaded(WRemoteData * data);
 
@@ -232,7 +240,7 @@ public: // Variables
     QThread * thread;
 #endif
 
-#ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_VLC
     WVlcEngine * engine;
 
     QStringList options;

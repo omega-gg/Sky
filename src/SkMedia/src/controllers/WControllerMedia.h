@@ -35,10 +35,19 @@
 #include <WSubtitle>
 
 // Defines
+// NOTE: The player engine is FFmpeg or VLC, chosen at build time.
+#ifndef SK_NO_PLAYER
+#ifdef SK_VLC
+#define CONTROLLERMEDIA_VLC
+#else
+#define CONTROLLERMEDIA_FFMPEG
+#endif
+#endif
+
 // NOTE mac: VLC seems to be prefer being run on the main thread, in particular for bonjour
 //           chromecast discovery. We can still uncomment this to enable threading for testing.
 // NOTE VLC: libvlc_new seems to freeze the UI when it's started from the main thread.
-#ifndef Q_OS_MAC
+#if defined(CONTROLLERMEDIA_VLC) && defined(Q_OS_MAC) == false
 #define CONTROLLERMEDIA_THREAD
 #endif
 
@@ -49,13 +58,13 @@ class WControllerMediaPrivate;
 class WAbstractLoader;
 class WYamlNodeBase;
 class WYamlNode;
-#ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_VLC
 class WVlcEngine;
 class WVlcPlayer;
 #endif
 
 #ifdef QT_6
-#ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_VLC
 Q_MOC_INCLUDE("WVlcEngine")
 #endif
 Q_MOC_INCLUDE("WAbstractLoader")
@@ -283,8 +292,10 @@ class SK_MEDIA_EXPORT WControllerMedia : public WController
 
     Q_PROPERTY(WAbstractLoader * loader READ loader WRITE setLoader NOTIFY loaderChanged)
 
-#ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_VLC
     Q_PROPERTY(QString versionVlc READ versionVlc CONSTANT)
+#elif defined(CONTROLLERMEDIA_FFMPEG)
+    Q_PROPERTY(QString versionFfmpeg READ versionFfmpeg CONSTANT)
 #endif
 
 private:
@@ -294,9 +305,11 @@ public: // Initialize
     virtual void initController(const QStringList & options = QStringList());
 
 public: // Interface
-#ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_VLC
     Q_INVOKABLE WVlcPlayer * createVlcPlayer();
+#endif
 
+#ifndef SK_NO_PLAYER
     Q_INVOKABLE void startLog();
 #endif
 
@@ -324,8 +337,10 @@ public: // Properties
     WAbstractLoader * loader() const;
     void              setLoader(WAbstractLoader * loader);
 
-#ifndef SK_NO_PLAYER
+#ifdef CONTROLLERMEDIA_VLC
     static QString versionVlc();
+#elif defined(CONTROLLERMEDIA_FFMPEG)
+    static QString versionFfmpeg();
 #endif
 
 private:

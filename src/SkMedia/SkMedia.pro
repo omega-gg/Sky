@@ -44,7 +44,12 @@ unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 include(../Sk.pri)
 include(src/controllers/controllers.pri)
 include(src/media/media.pri)
-include(src/vlc/vlc.pri)
+
+contains(DEFINES, SK_VLC) {
+    include(src/vlc/vlc.pri)
+} else {
+    include(src/ffmpeg/ffmpeg.pri)
+}
 
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
@@ -84,11 +89,27 @@ win32:greaterThan(QT_MAJOR_VERSION, 4) {
     LIBS += -lopengl32
 }
 
-win32:LIBS += -L$$SK/lib -llibvlc
+# NOTE: Our FFmpeg libraries are named sk-avcodec and so on, beside Qt Multimedia's FFmpeg. On
+#       iOS the application links the frameworks.
+contains(DEFINES, SK_VLC) {
+    win32:LIBS += -L$$SK/lib -llibvlc
 
-unix:!ios:!android:LIBS += -L$$SK/lib -lvlc
+    unix:!ios:!android:LIBS += -L$$SK/lib -lvlc
 
-android:LIBS += -L$$SK/lib/$$ABI -lvlc
+    android:LIBS += -L$$SK/lib/$$ABI -lvlc
+} else {
+    QT += multimedia
+
+    INCLUDEPATH += $$SK/include/ffmpeg
+
+    FFMPEG = -lsk-avformat -lsk-avcodec -lsk-avfilter -lsk-avutil -lsk-swscale -lsk-swresample
+
+    win32:LIBS += -L$$SK/lib $$FFMPEG
+
+    unix:!ios:!android:LIBS += -L$$SK/lib $$FFMPEG
+
+    android:LIBS += -L$$SK/lib/$$ABI $$FFMPEG
+}
 
 macx {
 CONFIG(debug, debug|release) {
