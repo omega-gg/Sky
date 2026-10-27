@@ -36,7 +36,7 @@ MinGW_version="13.1.0"
 #--------------------------------------------------------------------------------------------------
 # environment
 
-compiler_win="msvc"
+compiler_win="mingw"
 
 player="ffmpeg"
 
