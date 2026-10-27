@@ -40,7 +40,9 @@
 #endif
 
 // C++ includes
+#ifdef CONTROLLERMEDIA_FFMPEG
 #include <cstdarg>
+#endif
 
 // Sk includes
 #ifdef QT_NEW

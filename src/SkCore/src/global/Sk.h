@@ -134,7 +134,6 @@ W_DECLARE_PRIVATE_COPY(Class)    \
 #define SK_NO_TORRENTENGINE
 #endif
 
-// NOTE: The player engine is FFmpeg, or VLC with SK_VLC.
 #ifdef SK_VLC
 #define SK_NO_BACKENDFFMPEG
 #define SK_NO_FFMPEGPLAYER

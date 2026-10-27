@@ -52,8 +52,7 @@ ios {
     DEFINES += SK_DESKTOP
 }
 
-# NOTE: The player engine is FFmpeg, or VLC with SK_VLC: when configure.sh installed VLC, and
-#       always before Qt 6. Never both.
+# NOTE: The player engine is either FFmpeg (default on Qt 6) or VLC.
 lessThan(QT_MAJOR_VERSION, 6)|exists($$SK/include/vlc) {
     DEFINES += SK_VLC
 }

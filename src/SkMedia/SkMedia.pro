@@ -92,17 +92,24 @@ win32:greaterThan(QT_MAJOR_VERSION, 4) {
 # NOTE: Our FFmpeg libraries are named sk-avcodec and so on, beside Qt Multimedia's FFmpeg. On
 #       iOS the application links the frameworks.
 contains(DEFINES, SK_VLC) {
+
     win32:LIBS += -L$$SK/lib -llibvlc
 
     unix:!ios:!android:LIBS += -L$$SK/lib -lvlc
 
     android:LIBS += -L$$SK/lib/$$ABI -lvlc
 } else {
+
     QT += multimedia
 
     INCLUDEPATH += $$SK/include/ffmpeg
 
-    FFMPEG = -lsk-avformat -lsk-avcodec -lsk-avfilter -lsk-avutil -lsk-swscale -lsk-swresample
+    FFMPEG = -lsk-avformat \
+             -lsk-avcodec \
+             -lsk-avfilter \
+             -lsk-avutil \
+             -lsk-swscale \
+             -lsk-swresample
 
     win32:LIBS += -L$$SK/lib $$FFMPEG
 

@@ -292,10 +292,10 @@ class SK_MEDIA_EXPORT WControllerMedia : public WController
 
     Q_PROPERTY(WAbstractLoader * loader READ loader WRITE setLoader NOTIFY loaderChanged)
 
-#ifdef CONTROLLERMEDIA_VLC
-    Q_PROPERTY(QString versionVlc READ versionVlc CONSTANT)
-#elif defined(CONTROLLERMEDIA_FFMPEG)
+#ifdef CONTROLLERMEDIA_FFMPEG
     Q_PROPERTY(QString versionFfmpeg READ versionFfmpeg CONSTANT)
+#elif defined(CONTROLLERMEDIA_VLC)
+    Q_PROPERTY(QString versionVlc READ versionVlc CONSTANT)
 #endif
 
 private:
@@ -337,10 +337,10 @@ public: // Properties
     WAbstractLoader * loader() const;
     void              setLoader(WAbstractLoader * loader);
 
-#ifdef CONTROLLERMEDIA_VLC
-    static QString versionVlc();
-#elif defined(CONTROLLERMEDIA_FFMPEG)
+#ifdef CONTROLLERMEDIA_FFMPEG
     static QString versionFfmpeg();
+#elif defined(CONTROLLERMEDIA_VLC)
+    static QString versionVlc();
 #endif
 
 private:

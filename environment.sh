@@ -10,7 +10,7 @@ thirdparty="../3rdparty"
 #--------------------------------------------------------------------------------------------------
 # environment
 
-compiler_win="mingw"
+compiler_win="msvc"
 
 qt="qt6"
 

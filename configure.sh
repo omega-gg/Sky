@@ -13,10 +13,10 @@ Qt4_version="4.8.7"
 Qt5_version="5.15.2"
 Qt6_version="6.10.1"
 
+FFmpeg_version="9.0.2"
+
 VLC3_version="3.0.24"
 VLC4_version="4.0.0"
-
-FFmpeg_version="9.0.2"
 
 libtorrent_version="2.0.11"
 
@@ -30,7 +30,7 @@ MinGW_version="13.1.0"
 #--------------------------------------------------------------------------------------------------
 # environment
 
-compiler_win="mingw"
+compiler_win="msvc"
 
 qt="qt6"
 
@@ -152,7 +152,6 @@ fi
 
 zlib="$external/zlib"
 
-# NOTE: The player engine is FFmpeg or VLC, never both. FFmpeg is for Qt 6.
 if [ $player = "ffmpeg" -a $qt = "qt6" ]; then
 
     engine="ffmpeg"
@@ -206,14 +205,14 @@ rm -rf include/Qt4
 rm -rf include/Qt5
 
 #----------------------------------------------------------------------------------------------
-# VLC
-
-rm -rf include/vlc
-
-#----------------------------------------------------------------------------------------------
 # FFmpeg
 
 rm -rf include/ffmpeg
+
+#----------------------------------------------------------------------------------------------
+# VLC
+
+rm -rf include/vlc
 
 #----------------------------------------------------------------------------------------------
 # libtorrent
@@ -381,12 +380,54 @@ if [ $compiler = "mingw" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
+# FFmpeg
+#--------------------------------------------------------------------------------------------------
+
+if [ $engine = "ffmpeg" ]; then
+
+    echo "COPYING FFmpeg"
+
+    mkdir -p include/ffmpeg
+
+    cp -r "$FFmpeg"/include/* include/ffmpeg
+
+    if [ $os = "windows" ]; then
+
+        cp "$FFmpeg"/lib/sk-*.lib      lib
+        cp "$FFmpeg"/lib/libsk-*.dll.a lib
+
+    elif [ $1 = "macOS" -o $1 = "linux" ]; then
+
+        # NOTE: -P keeps the links.
+        cp -P "$FFmpeg"/lib/libsk-* lib
+
+    elif [ $1 = "iOS" ]; then
+
+        if [ $mobile = "simulator" ]; then
+
+            slice="ios-x86_64-simulator"
+        else
+            slice="ios-arm64"
+        fi
+
+        for path in "$FFmpeg"/lib/*.xcframework; do
+
+            cp -r "$path"/$slice/*.framework lib
+        done
+
+    elif [ $1 = "android" ]; then
+
+        copyAndroid "$FFmpeg" lib
+    fi
+fi
+
+#--------------------------------------------------------------------------------------------------
 # VLC
 #--------------------------------------------------------------------------------------------------
 
 if [ $engine = "ffmpeg" ]; then
 
-    echo "SKIPPING VLC: the engine is FFmpeg"
+    echo "SKIPPING VLC"
 
 elif [ $os = "windows" ]; then
 
@@ -450,50 +491,6 @@ elif [ $1 = "android" ]; then
     cp -r "$VLC"/include/vlc include
 
     copyAndroid "$VLC" lib
-fi
-
-#--------------------------------------------------------------------------------------------------
-# FFmpeg
-#--------------------------------------------------------------------------------------------------
-
-# NOTE: Our libraries are named sk-avcodec and so on, beside Qt Multimedia's FFmpeg.
-if [ $engine = "ffmpeg" ]; then
-
-    echo "COPYING FFmpeg"
-
-    mkdir -p include/ffmpeg
-
-    cp -r "$FFmpeg"/include/* include/ffmpeg
-
-    if [ $os = "windows" ]; then
-
-        cp "$FFmpeg"/lib/sk-*.lib      lib
-        cp "$FFmpeg"/lib/libsk-*.dll.a lib
-
-    elif [ $1 = "macOS" -o $1 = "linux" ]; then
-
-        # NOTE: The versioned names the libraries link to each other by, and the plain ones the
-        #       linker looks for.
-        cp -P "$FFmpeg"/lib/libsk-* lib
-
-    elif [ $1 = "iOS" ]; then
-
-        if [ $mobile = "simulator" ]; then
-
-            slice="ios-x86_64-simulator"
-        else
-            slice="ios-arm64"
-        fi
-
-        for path in "$FFmpeg"/lib/*.xcframework; do
-
-            cp -r "$path"/$slice/*.framework lib
-        done
-
-    elif [ $1 = "android" ]; then
-
-        copyAndroid "$FFmpeg" lib
-    fi
 fi
 
 #--------------------------------------------------------------------------------------------------

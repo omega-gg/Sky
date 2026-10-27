@@ -29,16 +29,16 @@
 #include <QThread>
 #endif
 
-#ifdef CONTROLLERMEDIA_VLC
-// VLC includes
-// FIXME VLC 3: Apparently this needs to be included manually.
-#include <vlc/libvlc_version.h>
-#elif defined(CONTROLLERMEDIA_FFMPEG)
+#ifdef CONTROLLERMEDIA_FFMPEG
 // FFmpeg includes
 extern "C"
 {
 #include <libavutil/avutil.h>
 }
+#elif defined(CONTROLLERMEDIA_VLC)
+// VLC includes
+// FIXME VLC 3: Apparently this needs to be included manually.
+#include <vlc/libvlc_version.h>
 #endif
 
 // Sk includes
@@ -1565,14 +1565,14 @@ void WControllerMediaPrivate::init(const QStringList &)
     Q_Q(WControllerMedia);
 #endif
 
-#ifdef CONTROLLERMEDIA_VLC
-    engine = NULL;
-
-    this->options = options;
-#elif defined(CONTROLLERMEDIA_FFMPEG)
+#ifdef CONTROLLERMEDIA_FFMPEG
     // NOTE: The player reports its own errors, FFmpeg's are mostly the ones of a source we cut,
     //       as a probe or a connection we close. startLog shows them.
     av_log_set_level(AV_LOG_FATAL);
+#elif defined(CONTROLLERMEDIA_VLC)
+    engine = NULL;
+
+    this->options = options;
 #endif
 
     loader = NULL;
@@ -2970,7 +2970,16 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-#ifdef CONTROLLERMEDIA_VLC
+#ifdef CONTROLLERMEDIA_FFMPEG
+
+/* Q_INVOKABLE */ void WControllerMedia::startLog()
+{
+    av_log_set_level(AV_LOG_ERROR);
+
+    av_log_set_callback(WControllerMediaPrivate::onLog);
+}
+
+#elif defined(CONTROLLERMEDIA_VLC)
 
 /* Q_INVOKABLE */ WVlcPlayer * WControllerMedia::createVlcPlayer()
 {
@@ -2992,15 +3001,6 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
     d->createEngine();
 
     d->engine->startLog();
-}
-
-#elif defined(CONTROLLERMEDIA_FFMPEG)
-
-/* Q_INVOKABLE */ void WControllerMedia::startLog()
-{
-    av_log_set_level(AV_LOG_ERROR);
-
-    av_log_set_callback(WControllerMediaPrivate::onLog);
 }
 
 #endif
@@ -3245,20 +3245,20 @@ void WControllerMedia::setLoader(WAbstractLoader * loader)
     emit loaderChanged();
 }
 
-#ifdef CONTROLLERMEDIA_VLC
+#ifdef CONTROLLERMEDIA_FFMPEG
+
+/* static */ QString WControllerMedia::versionFfmpeg()
+{
+    return av_version_info();
+}
+
+#elif defined(CONTROLLERMEDIA_VLC)
 
 /* static */ QString WControllerMedia::versionVlc()
 {
     return QString("%1.%2.%3").arg(LIBVLC_VERSION_MAJOR)
                               .arg(LIBVLC_VERSION_MINOR)
                               .arg(LIBVLC_VERSION_REVISION);
-}
-
-#elif defined(CONTROLLERMEDIA_FFMPEG)
-
-/* static */ QString WControllerMedia::versionFfmpeg()
-{
-    return av_version_info();
 }
 
 #endif

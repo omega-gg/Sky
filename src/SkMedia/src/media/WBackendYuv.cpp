@@ -223,8 +223,17 @@ WBackendYuvShader::WBackendYuvShader()
 
         material->updateAdjust = false;
 
-        memcpy(data + 128, &(material->matrixAdjust), 64);
-        memcpy(data + 196, &(material->gamma),        4);
+        // NOTE: Without a gamma, the color matrix goes into the adjust one, so the shader does a
+        //       single product, as without adjust.
+        if (material->gamma == 1.0f)
+        {
+            QMatrix4x4 adjust = matrix * material->matrixAdjust;
+
+            memcpy(data + 128, &adjust, 64);
+        }
+        else memcpy(data + 128, &(material->matrixAdjust), 64);
+
+        memcpy(data + 196, &(material->gamma), 4);
 
         update = true;
     }

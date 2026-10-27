@@ -18,11 +18,17 @@ layout(std140, binding = 0) uniform buf
 };
 
 void main() {
+    // NOTE: Without a gamma, matrixAdjust holds matrixColor as well.
     vec4 color = matrixAdjust * vec4(texture(y, vector).r,
                                      texture(u, vector).r,
                                      texture(v, vector).r, 1.0);
 
-    if (gamma != 1.0) color.x = pow(clamp(color.x, 0.0, 1.0), gamma);
+    if (gamma != 1.0)
+    {
+        color.x = pow(clamp(color.x, 0.0, 1.0), gamma);
 
-    fragColor = matrixColor * color * opacity;
+        color = matrixColor * color;
+    }
+
+    fragColor = color * opacity;
 }

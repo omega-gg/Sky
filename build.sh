@@ -45,7 +45,7 @@ SDK_version_minimum="24"
 #--------------------------------------------------------------------------------------------------
 # environment
 
-compiler_win="mingw"
+compiler_win="msvc"
 
 qt="qt6"
 

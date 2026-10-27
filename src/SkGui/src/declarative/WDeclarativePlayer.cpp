@@ -93,7 +93,7 @@ QSGNode * WDeclarativePlayerPrivate::updateSoftware(QSGNode * oldNode)
 
     if (oldNode)
     {
-         node = static_cast<QSGImageNode *> (oldNode);
+        node = static_cast<QSGImageNode *> (oldNode);
     }
     else node = window->createImageNode();
 
@@ -278,7 +278,7 @@ void WDeclarativePlayerPrivate::onSwapped()
         return;
     }
 
-    qint64 count = qRound64(double(delta) / period);
+    qint64 count = (delta + period / 2) / period;
 
     qint64 error = delta - count * period;
 

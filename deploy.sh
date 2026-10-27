@@ -19,10 +19,10 @@ SSL_versionA="1.0.2u"
 SSL_versionB="1.1.1w"
 SSL_versionC="3.5.3"
 
+FFmpeg_version="9.0.2"
+
 VLC3_version="3.0.24"
 VLC4_version="4.0.0"
-
-FFmpeg_version="9.0.2"
 
 libtorrent_version="2.0.11"
 
@@ -36,7 +36,7 @@ MinGW_version="13.1.0"
 #--------------------------------------------------------------------------------------------------
 # environment
 
-compiler_win="mingw"
+compiler_win="msvc"
 
 player="ffmpeg"
 
@@ -254,7 +254,6 @@ else
     SSL="$external/OpenSSL/$SSL_versionC"
 fi
 
-# NOTE: The player engine is FFmpeg or VLC, never both. FFmpeg is for Qt 6.
 if [ $player = "ffmpeg" -a $qt = "qt6" ]; then
 
     engine="ffmpeg"
@@ -813,12 +812,41 @@ elif [ $1 = "android" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
+# FFmpeg
+#--------------------------------------------------------------------------------------------------
+
+# NOTE: Our libraries are named sk-avcodec and so on, they load beside Qt Multimedia's FFmpeg.
+if [ $engine = "ffmpeg" ]; then
+
+    echo "COPYING FFmpeg"
+
+    if [ $os = "windows" ]; then
+
+        cp "$FFmpeg"/bin/sk-*.dll $deploy
+
+    elif [ $1 = "macOS" -o $1 = "linux" ]; then
+
+        cp -P "$FFmpeg"/lib/libsk-* $deploy
+
+    elif [ $1 = "iOS" ]; then
+
+        cp -r "$FFmpeg"/lib/*.xcframework $deploy
+
+    elif [ $1 = "android" ]; then
+
+        mkdir $deploy/ffmpeg
+
+        copyAndroid "$FFmpeg" $deploy/ffmpeg
+    fi
+fi
+
+#--------------------------------------------------------------------------------------------------
 # VLC
 #--------------------------------------------------------------------------------------------------
 
 if [ $engine = "ffmpeg" ]; then
 
-    echo "SKIPPING VLC: the engine is FFmpeg"
+    echo "SKIPPING VLC"
 
 elif [ $os = "windows" ]; then
 
@@ -916,35 +944,6 @@ elif [ $1 = "android" ]; then
     copyAndroid "$VLC" $vlc
 
     cp "$VLC"/*.jar $vlc
-fi
-
-#--------------------------------------------------------------------------------------------------
-# FFmpeg
-#--------------------------------------------------------------------------------------------------
-
-# NOTE: Our libraries are named sk-avcodec and so on, they load beside Qt Multimedia's FFmpeg.
-if [ $engine = "ffmpeg" ]; then
-
-    echo "COPYING FFmpeg"
-
-    if [ $os = "windows" ]; then
-
-        cp "$FFmpeg"/bin/sk-*.dll $deploy
-
-    elif [ $1 = "macOS" -o $1 = "linux" ]; then
-
-        cp -P "$FFmpeg"/lib/libsk-* $deploy
-
-    elif [ $1 = "iOS" ]; then
-
-        cp -r "$FFmpeg"/lib/*.xcframework $deploy
-
-    elif [ $1 = "android" ]; then
-
-        mkdir $deploy/ffmpeg
-
-        copyAndroid "$FFmpeg" $deploy/ffmpeg
-    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
