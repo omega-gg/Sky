@@ -211,7 +211,7 @@ public: // Static functions
 
     static qint64 getTimestamp(const WFfmpegBase & base, int msec);
 
-    static int getStream(AVFormatContext * format, int type, int id, int related);
+    static int getStream(AVFormatContext * format, int type, int id, int related, int quality);
 
     static QString getName(AVStream * stream, int index);
 
@@ -295,6 +295,11 @@ public: // Variables
     int    slotFrame;
 
     QString proxy;
+
+    int quality;
+
+    // NOTE: The last source opened is a variant list.
+    bool hasVariants;
 
     int idVideo;
     int idAudio;

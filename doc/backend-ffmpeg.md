@@ -204,6 +204,10 @@ Where it differs:
   `WBackendManager` forwards them to its backend, for both engines.
 - **Live:** a source without a length is live from its first time; `playAt` then plays from
   the live point instead of seeking.
+- **Variant lists:** an HLS master playlist has a program per variant. Its video is the one
+  closest to the quality, as VLC's `preferred-resolution`: the highest under it, otherwise the
+  lowest, the highest for the default quality. The audio comes from the same variant. A quality
+  change clears the tracks picked on such a source, so the new variant is not overridden.
 - **Hardware decoding:** d3d11va on Windows, VideoToolbox on Apple, VA-API on Linux, the
   MediaCodec decoders on Android (`h264_mediacodec` and so on, after `av_jni_set_java_vm`).
   Any of them falls back to software on its first frame.
@@ -302,5 +306,5 @@ keyframe.
   the scene graph as is, which removes the copy from the GPU, the main cost at 4K. HDR to SDR
   tone mapping in that shader. VideoToolbox to Metal would work the same way on Apple.
 - **Chromecast:** VLC's renderer discovery and casting have no FFmpeg counterpart yet.
-- **Parity:** embedded subtitle tracks, adaptive HLS/DASH quality switching, a packet cache for
-  backward seeks on a stream.
+- **Parity:** embedded subtitle tracks, HLS/DASH variant switching on the bandwidth, a packet
+  cache for backward seeks on a stream.

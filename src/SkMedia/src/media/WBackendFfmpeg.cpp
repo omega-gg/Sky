@@ -815,6 +815,14 @@ WBackendFfmpeg::WBackendFfmpeg(QObject * parent)
         setQualityActive(d->closestQuality);
     }
 
+    // NOTE: The default quality has no height, so it gives 0: the highest. The tracks of a variant
+    //       list follow the quality, we forget the ones picked.
+    if (d->player->setQuality(qualityToString(quality).toInt()))
+    {
+        d->trackVideo = -1;
+        d->trackAudio = -1;
+    }
+
     d->restart();
 }
 

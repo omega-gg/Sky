@@ -93,6 +93,10 @@ public: // Interface
     void setProxy(const QString & host, const QString & password = QString());
     void clearProxy();
 
+    // NOTE: The video height of a variant list, 0 for the highest. Returns true when the source
+    //       is a variant list.
+    bool setQuality(int height);
+
     // NOTE: Returns false when these tracks are picked already.
     bool setTracks(int idVideo, int idAudio);
 

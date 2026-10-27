@@ -969,6 +969,10 @@ void WFfmpegPlayerPrivate::init()
     slotTime  = 0;
     slotFrame = 0;
 
+    quality = 0;
+
+    hasVariants = false;
+
     idVideo = -1;
     idAudio = -1;
 
@@ -1753,19 +1757,24 @@ bool WFfmpegPlayerPrivate::open(WFfmpegInput * input)
 
     mutex.lock();
 
+    // NOTE: A variant list (HLS) has a program per variant.
+    if (input->video) hasVariants = (format->nb_programs > 1);
+
     int idVideo = this->idVideo;
     int idAudio = this->idAudio;
+
+    int quality = this->quality;
 
     mutex.unlock();
 
     if (input->video)
     {
-        indexVideo = getStream(format, AVMEDIA_TYPE_VIDEO, idVideo, -1);
+        indexVideo = getStream(format, AVMEDIA_TYPE_VIDEO, idVideo, -1, quality);
     }
 
     if (input->audio)
     {
-        indexAudio = getStream(format, AVMEDIA_TYPE_AUDIO, idAudio, indexVideo);
+        indexAudio = getStream(format, AVMEDIA_TYPE_AUDIO, idAudio, indexVideo, 0);
     }
 
     if (indexVideo < 0 && indexAudio < 0) return false;
@@ -2525,7 +2534,7 @@ qint64 WFfmpegPlayerPrivate::getWait(int time, qint64 * slot) const
 // NOTE: The stream of the track picked when it is one of that type, otherwise the best one. A
 //       cover picture is not a video track.
 /* static */ int WFfmpegPlayerPrivate::getStream(AVFormatContext * format, int type, int id,
-                                                 int related)
+                                                 int related, int quality)
 {
     if (id >= 0 && id < (int) format->nb_streams)
     {
@@ -2539,7 +2548,40 @@ qint64 WFfmpegPlayerPrivate::getWait(int time, qint64 * slot) const
         }
     }
 
-    return av_find_best_stream(format, (AVMediaType) type, -1, related, NULL, 0);
+    if (type != AVMEDIA_TYPE_VIDEO || format->nb_programs <= 1)
+    {
+        return av_find_best_stream(format, (AVMediaType) type, -1, related, NULL, 0);
+    }
+
+    // NOTE: The video of a variant list is the one closest to the quality, as VLC's
+    //       preferred-resolution.
+    int index = -1;
+    int best  =  0;
+
+    for (unsigned int i = 0; i < format->nb_streams; i++)
+    {
+        AVCodecParameters * parameters = format->streams[i]->codecpar;
+
+        if (parameters->codec_type != AVMEDIA_TYPE_VIDEO) continue;
+
+        int height = parameters->height;
+
+        int score;
+
+        // NOTE: Under the quality the highest wins, above it the lowest.
+        if (quality == 0 || height <= quality)
+        {
+            score = height;
+        }
+        else score = -height;
+
+        if (index != -1 && score <= best) continue;
+
+        index = i;
+        best  = score;
+    }
+
+    return index;
 }
 
 // NOTE: The name of a track is its title, otherwise its language, as VLC's.
@@ -2645,6 +2687,8 @@ void WFfmpegPlayer::setSource(const QString & url, const QString & audio, const 
     if (d->url != url || d->urlAudio != audio)
     {
         QMutexLocker locker(&d->mutex);
+
+        d->hasVariants = false;
 
         d->idVideo = -1;
         d->idAudio = -1;
@@ -2779,6 +2823,24 @@ void WFfmpegPlayer::clearProxy()
     QMutexLocker locker(&d->mutex);
 
     d->proxy = QString();
+}
+
+// NOTE: It applies from the next start on. The tracks of a variant list follow the quality, so
+//       they are cleared and it returns true.
+bool WFfmpegPlayer::setQuality(int height)
+{
+    Q_D(WFfmpegPlayer);
+
+    QMutexLocker locker(&d->mutex);
+
+    d->quality = height;
+
+    if (d->hasVariants == false) return false;
+
+    d->idVideo = -1;
+    d->idAudio = -1;
+
+    return true;
 }
 
 // NOTE: The ids are stream indexes, -1 for the best stream. It applies from the next start on.
