@@ -69,10 +69,10 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetFillMode(FillMode fillMode);
 
-    /* virtual */ void backendSetAdjust(const WBackendAdjust & adjust);
-
     /* virtual */ void backendSetVideo(int index);
     /* virtual */ void backendSetAudio(int index);
+
+    /* virtual */ void backendSetAdjust(const WBackendAdjust & adjust);
 
     /* virtual */ void backendSetSize(const QSizeF & size);
 

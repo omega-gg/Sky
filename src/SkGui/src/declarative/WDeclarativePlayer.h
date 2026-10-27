@@ -307,7 +307,7 @@ protected: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 #endif
 
@@ -563,7 +563,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onFillMode())
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
     Q_PRIVATE_SLOT(d_func(), void onSwapped())
 #endif
 };

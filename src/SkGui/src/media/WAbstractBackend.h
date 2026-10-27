@@ -916,8 +916,10 @@ struct WBackendFrame
     {
         state = WAbstractBackend::FrameDefault;
 
+#ifndef SK_NO_BACKENDFFMPEG
         swapTime   = 0;
         swapPeriod = 0;
+#endif
     }
 
     WBackendTexture textures[3];
@@ -927,10 +929,12 @@ struct WBackendFrame
     // NOTE: The adjust the node applies, for a backend that does not adjust its frames itself.
     WBackendAdjust adjust;
 
+#ifndef SK_NO_BACKENDFFMPEG
     // NOTE: The last regular swap of the window and its period in nanoseconds, 0 when unknown,
     //       for a backend that times its frames on the swaps.
     qint64 swapTime;
     qint64 swapPeriod;
+#endif
 };
 
 #endif

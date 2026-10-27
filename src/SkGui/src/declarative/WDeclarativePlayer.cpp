@@ -30,18 +30,18 @@
 #endif
 
 // Qt includes
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
-#include <QQuickWindow>
-#include <QDeadlineTimer>
-#endif
 #if defined(QT_6) && defined(SK_SOFTWARE) == false
+#include <QQuickWindow>
 #include <QSGImageNode>
+#endif
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
+#include <QDeadlineTimer>
 #endif
 
 // Sk includes
 #include <WPlayer>
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -134,7 +134,7 @@ void WDeclarativePlayerPrivate::init()
     frameUpdate = false;
 #endif
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
     swapLast = 0;
 #endif
 
@@ -254,7 +254,7 @@ void WDeclarativePlayerPrivate::onFillMode()
     q->update();
 }
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
 
 // NOTE: A swap a whole number of periods after the previous one is regular: it sets the swap
 //       time and refines the period. A swap after an idle window is off the refresh, we skip it.
@@ -421,7 +421,7 @@ void WDeclarativePlayer::updateFrame()
 #ifdef QT_NEW
     Q_D(WDeclarativePlayer);
 
-#ifndef SK_SOFTWARE
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
     d->frame.swapTime   = d->swapTime  .loadRelaxed();
     d->frame.swapPeriod = d->swapPeriod.loadRelaxed();
 #endif
@@ -770,7 +770,7 @@ void WDeclarativePlayer::updateFrame()
 #endif
 }
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
 
 // NOTE: The swaps of the window, so a backend can time its frames on them (see onSwapped). The
 //       base item disconnects the previous window.

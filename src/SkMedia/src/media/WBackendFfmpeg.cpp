@@ -834,15 +834,7 @@ WBackendFfmpeg::WBackendFfmpeg(QObject * parent)
     d->updateTargetRect();
 }
 
-// NOTE: The node adjusts the frames, the current one is sent again so a paused video shows it.
-/* virtual */ void WBackendFfmpeg::backendSetAdjust(const WBackendAdjust &)
-{
-    Q_D(WBackendFfmpeg);
-
-    if (d->started == false) return;
-
-    d->onFrameUpdated();
-}
+//-------------------------------------------------------------------------------------------------
 
 // NOTE: A track is a stream of the source: it plays again from the current time with that stream,
 //       its last frame stays on screen meanwhile.
@@ -860,6 +852,18 @@ WBackendFfmpeg::WBackendFfmpeg(QObject * parent)
     Q_D(WBackendFfmpeg);
 
     if (d->player->setTracks(trackVideo(), id) && id != d->streamAudio) d->restart();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+// NOTE: The node adjusts the frames, the current one is sent again so a paused video shows it.
+/* virtual */ void WBackendFfmpeg::backendSetAdjust(const WBackendAdjust &)
+{
+    Q_D(WBackendFfmpeg);
+
+    if (d->started == false) return;
+
+    d->onFrameUpdated();
 }
 
 //-------------------------------------------------------------------------------------------------

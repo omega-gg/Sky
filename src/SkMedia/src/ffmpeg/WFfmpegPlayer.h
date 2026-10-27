@@ -42,6 +42,10 @@ typedef void (*WFfmpegUnlock)(void * data);
 
 class WFfmpegPlayerPrivate;
 
+//-------------------------------------------------------------------------------------------------
+// WFfmpegPlayer
+//-------------------------------------------------------------------------------------------------
+
 class SK_MEDIA_EXPORT WFfmpegPlayer : public QObject, public WPrivatable
 {
     Q_OBJECT
@@ -86,7 +90,7 @@ public: // Interface
 
     void setOutput(WAbstractBackend::Output output);
 
-    void setProxy(const QString & host, const QString & password);
+    void setProxy(const QString & host, const QString & password = QString());
     void clearProxy();
 
     // NOTE: Returns false when these tracks are picked already.

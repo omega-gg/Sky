@@ -64,7 +64,7 @@ public: // Functions
 public: // Slots
     void onFillMode();
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
     void onSwapped();
 #endif
 
@@ -77,7 +77,7 @@ public: // Variables
     bool frameUpdate;
 #endif
 
-#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
+#if defined(SK_NO_BACKENDFFMPEG) == false && defined(SK_SOFTWARE) == false
     // NOTE: The swaps of the window, written on its render thread.
     QAtomicInteger<qint64> swapTime;
     QAtomicInteger<qint64> swapPeriod;
