@@ -155,6 +155,8 @@ BasePlayerBrowser
         iconWidth : buttonPlay.iconWidth
         iconHeight: buttonPlay.iconHeight
 
+        radius: buttonPlay.radius
+
         borderSize: buttonPlay.borderSize
 
         visible: (playerTab == tab) ? player.hasPreviousTrack
@@ -191,6 +193,8 @@ BasePlayerBrowser
         iconWidth : buttonPlay.iconWidth
         iconHeight: buttonPlay.iconHeight
 
+        radius: buttonPlay.radius
+
         borderSize: buttonPlay.borderSize
 
         visible: (playerTab == tab) ? player.hasNextTrack
@@ -222,6 +226,12 @@ BasePlayerBrowser
 
         iconWidth : Math.round(width / 2.3)
         iconHeight: iconWidth
+
+//#QT_4
+        radius: height / 3.75
+//#ELSE
+        radius: background.height / 3.75
+//#END
 
         borderSize: st.border_sizeFocus
 
