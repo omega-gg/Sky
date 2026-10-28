@@ -844,106 +844,105 @@ fi
 # VLC
 #--------------------------------------------------------------------------------------------------
 
-if [ $engine = "ffmpeg" ]; then
+if [ $engine = "vlc" ]; then
 
-    echo "SKIPPING VLC"
+    if [ $os = "windows" ]; then
 
-elif [ $os = "windows" ]; then
+        echo "COPYING VLC"
 
-    echo "COPYING VLC"
+        mkdir $deploy/plugins
 
-    mkdir $deploy/plugins
+        cp -r "$VLC"/plugins/access             $deploy/plugins
+        cp -r "$VLC"/plugins/audio_filter       $deploy/plugins
+        cp -r "$VLC"/plugins/audio_mixer        $deploy/plugins
+        cp -r "$VLC"/plugins/audio_output       $deploy/plugins
+        cp -r "$VLC"/plugins/codec              $deploy/plugins
+        cp -r "$VLC"/plugins/control            $deploy/plugins
+        cp -r "$VLC"/plugins/demux              $deploy/plugins
+        cp -r "$VLC"/plugins/misc               $deploy/plugins
+        cp -r "$VLC"/plugins/packetizer         $deploy/plugins
+        cp -r "$VLC"/plugins/services_discovery $deploy/plugins
+        cp -r "$VLC"/plugins/stream_filter      $deploy/plugins
+        cp -r "$VLC"/plugins/stream_out         $deploy/plugins
+        cp -r "$VLC"/plugins/video_chroma       $deploy/plugins
+        cp -r "$VLC"/plugins/video_filter       $deploy/plugins
+        cp -r "$VLC"/plugins/video_output       $deploy/plugins
 
-    cp -r "$VLC"/plugins/access             $deploy/plugins
-    cp -r "$VLC"/plugins/audio_filter       $deploy/plugins
-    cp -r "$VLC"/plugins/audio_mixer        $deploy/plugins
-    cp -r "$VLC"/plugins/audio_output       $deploy/plugins
-    cp -r "$VLC"/plugins/codec              $deploy/plugins
-    cp -r "$VLC"/plugins/control            $deploy/plugins
-    cp -r "$VLC"/plugins/demux              $deploy/plugins
-    cp -r "$VLC"/plugins/misc               $deploy/plugins
-    cp -r "$VLC"/plugins/packetizer         $deploy/plugins
-    cp -r "$VLC"/plugins/services_discovery $deploy/plugins
-    cp -r "$VLC"/plugins/stream_filter      $deploy/plugins
-    cp -r "$VLC"/plugins/stream_out         $deploy/plugins
-    cp -r "$VLC"/plugins/video_chroma       $deploy/plugins
-    cp -r "$VLC"/plugins/video_filter       $deploy/plugins
-    cp -r "$VLC"/plugins/video_output       $deploy/plugins
+        cp "$VLC"/libvlc*.dll $deploy
 
-    cp "$VLC"/libvlc*.dll $deploy
+    elif [ $1 = "macOS" ]; then
 
-elif [ $1 = "macOS" ]; then
+        echo "COPYING VLC"
 
-    echo "COPYING VLC"
+        mkdir -p $deploy/plugins
 
-    mkdir -p $deploy/plugins
+        cp -r "$VLC"/plugins/*.dylib $deploy/plugins
 
-    cp -r "$VLC"/plugins/*.dylib $deploy/plugins
+        cp "$VLC"/plugins/plugins.dat $deploy/plugins
 
-    cp "$VLC"/plugins/plugins.dat $deploy/plugins
+        cp "$VLC"/lib/libvlc.5.dylib     $deploy/libvlc.dylib
+        cp "$VLC"/lib/libvlccore.9.dylib $deploy/libvlccore.dylib
 
-    cp "$VLC"/lib/libvlc.5.dylib     $deploy/libvlc.dylib
-    cp "$VLC"/lib/libvlccore.9.dylib $deploy/libvlccore.dylib
+    elif [ $1 = "linux" ]; then
 
-elif [ $1 = "linux" ]; then
+        echo "COPYING VLC"
 
-    echo "COPYING VLC"
+        mkdir -p $deploy/vlc/plugins
 
-    mkdir -p $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/access             $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/audio_filter       $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/audio_mixer        $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/audio_output       $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/codec              $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/control            $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/demux              $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/misc               $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/packetizer         $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/services_discovery $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/stream_filter      $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/stream_out         $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/video_chroma       $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/video_filter       $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/plugins/video_output       $deploy/vlc/plugins
 
-    cp -r "$VLC"/vlc/plugins/access             $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/audio_filter       $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/audio_mixer        $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/audio_output       $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/codec              $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/control            $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/demux              $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/misc               $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/packetizer         $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/services_discovery $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/stream_filter      $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/stream_out         $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/video_chroma       $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/video_filter       $deploy/vlc/plugins
-    cp -r "$VLC"/vlc/plugins/video_output       $deploy/vlc/plugins
+        cp "$VLC"/vlc/plugins/plugins.dat $deploy/vlc/plugins
 
-    cp "$VLC"/vlc/plugins/plugins.dat $deploy/vlc/plugins
+        cp -r "$VLC"/vlc/lib*.so* $deploy/vlc
 
-    cp -r "$VLC"/vlc/lib*.so* $deploy/vlc
+        cp "$VLC"/libvlc*.so* $deploy
 
-    cp "$VLC"/libvlc*.so* $deploy
+        if [ -f "$VLC"/libidn.so* ]; then
 
-    if [ -f "$VLC"/libidn.so* ]; then
+            cp "$VLC"/libidn.so* $deploy
+        fi
 
-        cp "$VLC"/libidn.so* $deploy
+        #----------------------------------------------------------------------------------------------
+        # NOTE: Patching VLC libraries rpath for standalone packages.
+
+        if [ -x "$(command -v patchelf)" ]; then
+
+            $find $deploy -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
+
+            $find $deploy/vlc -maxdepth 1 -name lib*.so* -exec patchelf --set-rpath '$ORIGIN/../' {} \;
+
+            $find $deploy/vlc/plugins -name lib*.so* -exec patchelf --set-rpath \
+                                      '$ORIGIN/../../:$ORIGIN/../../../' {} \;
+        else
+            echo "patchelf is not installed"
+        fi
+
+    elif [ $1 = "android" ]; then
+
+        echo "COPYING VLC"
+
+        vlc="$deploy/vlc"
+
+        mkdir $vlc
+
+        copyAndroid "$VLC" $vlc
+
+        cp "$VLC"/*.jar $vlc
     fi
-
-    #----------------------------------------------------------------------------------------------
-    # NOTE: Patching VLC libraries rpath for standalone packages.
-
-    if [ -x "$(command -v patchelf)" ]; then
-
-        $find $deploy -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
-
-        $find $deploy/vlc -maxdepth 1 -name lib*.so* -exec patchelf --set-rpath '$ORIGIN/../' {} \;
-
-        $find $deploy/vlc/plugins -name lib*.so* -exec patchelf --set-rpath \
-                                  '$ORIGIN/../../:$ORIGIN/../../../' {} \;
-    else
-        echo "patchelf is not installed"
-    fi
-
-elif [ $1 = "android" ]; then
-
-    echo "COPYING VLC"
-
-    vlc="$deploy/vlc"
-
-    mkdir $vlc
-
-    copyAndroid "$VLC" $vlc
-
-    cp "$VLC"/*.jar $vlc
 fi
 
 #--------------------------------------------------------------------------------------------------

@@ -425,72 +425,71 @@ fi
 # VLC
 #--------------------------------------------------------------------------------------------------
 
-if [ $engine = "ffmpeg" ]; then
+if [ $engine = "vlc" ]; then
 
-    echo "SKIPPING VLC"
+    if [ $os = "windows" ]; then
 
-elif [ $os = "windows" ]; then
+        echo "COPYING VLC"
 
-    echo "COPYING VLC"
+        cp -r "$VLC"/sdk/include/vlc include
 
-    cp -r "$VLC"/sdk/include/vlc include
+        cp "$VLC"/sdk/lib/libvlc* lib
 
-    cp "$VLC"/sdk/lib/libvlc* lib
+    elif [ $1 = "macOS" ]; then
 
-elif [ $1 = "macOS" ]; then
-
-    echo "COPYING VLC"
-
-    cp -r "$VLC"/include/vlc include
-
-    cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
-    cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
-
-elif [ $1 = "linux" ]; then
-
-    echo "COPYING VLC"
-
-    # NOTE: Sometimes we're using libvlc-dev from the system.
-    if [ -d "$VLC"/include ]; then
+        echo "COPYING VLC"
 
         cp -r "$VLC"/include/vlc include
+
+        cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
+        cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
+
+    elif [ $1 = "linux" ]; then
+
+        echo "COPYING VLC"
+
+        # NOTE: Sometimes we're using libvlc-dev from the system.
+        if [ -d "$VLC"/include ]; then
+
+            cp -r "$VLC"/include/vlc include
+        fi
+
+        cp "$VLC"/libvlc.so.5     lib/libvlc.so
+        cp "$VLC"/libvlccore.so.9 lib/libvlccore.so
+
+        cp "$VLC"/lib*.so* lib
+
+        #----------------------------------------------------------------------------------------------
+        # NOTE: Patching VLC libraries rpath for standalone packages.
+
+        if [ -x "$(command -v patchelf)" ]; then
+
+            $find lib -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
+        else
+            echo "patchelf is not installed"
+        fi
+
+    elif [ $1 = "iOS" ]; then
+
+        echo "COPYING VLC"
+
+        cp -r "$VLC"/include/vlc include
+
+        if [ $mobile = "simulator" ]; then
+
+            cp -r "$VLC"/ios-simulator/*.framework lib
+        else
+            cp -r "$VLC"/ios/*.framework lib
+        fi
+
+    elif [ $1 = "android" ]; then
+
+        echo "COPYING VLC"
+
+        cp -r "$VLC"/include/vlc include
+
+        copyAndroid "$VLC" lib
     fi
-
-    cp "$VLC"/libvlc.so.5     lib/libvlc.so
-    cp "$VLC"/libvlccore.so.9 lib/libvlccore.so
-
-    cp "$VLC"/lib*.so* lib
-
-    #----------------------------------------------------------------------------------------------
-    # NOTE: Patching VLC libraries rpath for standalone packages.
-
-    if [ -x "$(command -v patchelf)" ]; then
-
-        $find lib -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
-    else
-        echo "patchelf is not installed"
-    fi
-
-elif [ $1 = "iOS" ]; then
-
-    echo "COPYING VLC"
-
-    cp -r "$VLC"/include/vlc include
-
-    if [ $mobile = "simulator" ]; then
-
-        cp -r "$VLC"/ios-simulator/*.framework lib
-    else
-        cp -r "$VLC"/ios/*.framework lib
-    fi
-
-elif [ $1 = "android" ]; then
-
-    echo "COPYING VLC"
-
-    cp -r "$VLC"/include/vlc include
-
-    copyAndroid "$VLC" lib
 fi
 
 #--------------------------------------------------------------------------------------------------

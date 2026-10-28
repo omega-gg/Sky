@@ -99,7 +99,9 @@ static const int FFMPEGPLAYER_AUDIO_TIME = 100;
 static const AVHWDeviceType FFMPEGPLAYER_DEVICE = AV_HWDEVICE_TYPE_D3D11VA;
 #elif defined(Q_OS_MACOS) || defined(Q_OS_IOS)
 static const AVHWDeviceType FFMPEGPLAYER_DEVICE = AV_HWDEVICE_TYPE_VIDEOTOOLBOX;
-#elif defined(Q_OS_ANDROID) == false
+#elif defined(Q_OS_ANDROID)
+static const AVHWDeviceType FFMPEGPLAYER_DEVICE = AV_HWDEVICE_TYPE_NONE;
+#else
 static const AVHWDeviceType FFMPEGPLAYER_DEVICE = AV_HWDEVICE_TYPE_VAAPI;
 #endif
 
