@@ -338,7 +338,11 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
     QCoreApplication::sendEvent(this, &event);
 }
 
+#ifdef QT_6
 /* Q_INVOKABLE */ void WDeclarativeMouseArea::click(Qt::MouseButton button)
+#else
+/* Q_INVOKABLE */ void WDeclarativeMouseArea::click(Qt::MouseButton)
+#endif
 {
 #ifdef QT_6
     if (isVisible() == false)
