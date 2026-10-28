@@ -135,7 +135,7 @@ It owns the decoding, so it could also serve without a QML player.
   with where it can (`QQuickWindow::graphicsApi`): with the Vulkan renderer, on Windows and
   Linux, the decoder is Vulkan's. With two APIs on the same GPU, a 4K frame's copy to memory
   took 16 to 18 ms instead of 4 to 7. A renderer without video decoding falls back to the
-  platform's device. AV1 goes to FFmpeg's own AV1
+  platform's device, as a console build does (`SK_NO_QML`). AV1 goes to FFmpeg's own AV1
   decoder on the GPU, since dav1d is software only. When the GPU can't decode a stream, its
   first frame fails, and the player decodes it in software from the last seek.
 - **Frames:** hardware frames come down as NV12 or P010, and `sws_scale` writes I420 straight

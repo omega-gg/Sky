@@ -34,7 +34,9 @@
 #include <QAudioDevice>
 #include <QAudioSink>
 #include <QDeadlineTimer>
+#ifndef SK_NO_QML
 #include <QQuickWindow>
+#endif
 #ifdef Q_OS_ANDROID
 #include <QJniEnvironment>
 #endif
@@ -158,7 +160,7 @@ static AVPixelFormat getFormat(AVCodecContext * context, const AVPixelFormat * f
 //       APIs on the same GPU, the copies to memory wait about twice as long.
 static AVHWDeviceType getDevice()
 {
-#if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
+#if defined(SK_NO_QML) == false && (defined(Q_OS_WIN) || defined(Q_OS_LINUX))
     if (QQuickWindow::graphicsApi() == QSGRendererInterface::Vulkan)
     {
         return AV_HWDEVICE_TYPE_VULKAN;
