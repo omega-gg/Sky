@@ -46,6 +46,8 @@ class SK_GUI_EXPORT WTextureVideoPrivate : public WPrivate
 public:
     WTextureVideoPrivate(WTextureVideo * p);
 
+    /* virtual */ ~WTextureVideoPrivate();
+
     void init();
 
 public: // Variables

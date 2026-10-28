@@ -80,7 +80,8 @@ It owns the decoding, so it could also serve without a QML player.
   are full.
   - **`OutputMedia`:** the video, plus the audio from the separate audio URL (the input slave of
     VLC) when there is one, otherwise from the file itself. The audio URL can be any audio file
-    FFmpeg reads, local or over https.
+    FFmpeg reads, local or over https. An audio URL that fails to open is closed, and the video
+    plays alone.
   - **`OutputVideo`:** the video alone, and the audio is never read.
   - **`OutputAudio`:** the audio alone.
 - **Decode thread:** decodes up to 3 frames ahead and copies them from the GPU, so a slow
@@ -169,7 +170,9 @@ It owns the decoding, so it could also serve without a QML player.
 - **Volume:** VLC's curve.
 - **Output:** as VLC, another output plays the source again from the current time, here with
   its last frame on screen meanwhile. turbopixel's `LayerPlayer` reads the audio once its sound
-  goes on, until the next video, so turning the sound off is the volume alone.
+  goes on, until the next video, so turning the sound off is the volume alone. The audio output
+  loads the audio alone (`getMode` gives `SourceAudio`), so switching to or from it loads the
+  sources again, as VLC does; otherwise a source started in audio stayed black in video.
 - **Logs:** FFmpeg logs its fatal errors only. The player reports its own, FFmpeg's are mostly
   the ones of a source we cut, as a probe interrupted (dav1d complaining of a cut packet) or a
   TLS connection we close.
@@ -210,7 +213,10 @@ Where it differs:
   change clears the tracks picked on such a source, so the new variant is not overridden.
 - **Hardware decoding:** d3d11va on Windows, VideoToolbox on Apple, VA-API on Linux, the
   MediaCodec decoders on Android (`h264_mediacodec` and so on, after `av_jni_set_java_vm`).
-  Any of them falls back to software on its first frame.
+  Any of them falls back to software on its first frame. The decoding device stays from a source
+  to the next one: a switch between two YouTube videos went from about 60 ms of device release,
+  creation and first frame to 15 ms on D3D11, and the Vulkan device takes 300 ms to create. A
+  fallback to software releases it, so a device broken by a GPU reset is not kept.
 - **VLC's source options** (`demux=avformat` from the VBML backends) are ignored: FFmpeg always
   demuxes with avformat.
 
@@ -227,6 +233,9 @@ MSL), so OpenGL, Vulkan, D3D11, D3D12 and Metal all render it.
 - **Software rendering:** Qt's software renderer can't run the shader, so when the window's
   graphics API is Software, `WDeclarativePlayer` shows the backend's RGB frame (`getFrame`)
   through an image node, for both engines.
+- **Textures:** each new source gets a new node, and `WTextureVideo` releases its `QRhiTexture`
+  with it. It used to keep them, about 4 MB per 1080p source with either engine on Qt 6: 90
+  switches between two videos took the process from 330 MB to 815 MB.
 
 ### WBackendManager
 
@@ -245,12 +254,17 @@ The player uses Qt Multimedia for the audio output only (`QMediaDevices`, `QAudi
   with any backend: with `QT_MEDIA_BACKEND=windows`, Qt loads its Media Foundation plugin and
   no FFmpeg of its own. Not set for now: the camera and barcode scanner would run on that
   backend, which is still to check.
-- **MMCSS warnings (known Qt bug):** after 32 starts of an audio output in one process, a seek,
-  a new source or a restart each, the log shows `AvSetMmThreadCharacteristics failed ... too
-  many threads`. Qt 6.10 registers each sink's worker thread with MMCSS and never releases it
-  (QTBUG-151655); Windows takes 32 per process. The audio still plays, without the audio thread
-  priority. Fixed in Qt 6.12.1 (not 6.12.0, nor 6.10 or 6.11). Seeks can't avoid it in 6.10:
-  dropping the queued audio takes `stop` or `reset`, and both start a new worker thread.
+- **Stopping a sink (Qt 6):** `QAudioSink` starts a new stream with its own worker thread at
+  each `start`. `stop`, which the sink's destructor calls, lets the stream drain in the
+  background, and the stream is never freed: it keeps about 0.2 MB in Qt 6.10 (0.09 MB in
+  6.11.0), its worker thread and that thread's MMCSS registration (QTBUG-151655). Windows takes
+  32 registrations per process: past 32 seeks or source changes, the log showed
+  `AvSetMmThreadCharacteristics failed ... too many threads` and the audio lost its thread
+  priority. The player calls `reset` instead, which drops what the sink holds and frees the
+  stream at once. Over 200 source changes with audio, memory stays flat (11 MB more before)
+  and no warning shows (68 before). The previous source's audio no longer plays on after a
+  change. A seek is silent until the new position is ready, 20 to 130 ms depending on the
+  keyframes, where the previous position's audio used to fill that time.
 
 ## Torrent
 

@@ -92,6 +92,8 @@ void WBackendFfmpegPrivate::init()
 
     loop = false;
 
+    currentMode = WAbstractBackend::SourceDefault;
+
     closestOutput  = WAbstractBackend::OutputNone;
     closestQuality = WAbstractBackend::QualityDefault;
 
@@ -144,7 +146,9 @@ void WBackendFfmpegPrivate::loadSources(bool play)
 
     Q_Q(WBackendFfmpeg);
 
-    reply = wControllerMedia->getMedia(source, q, q->getMode());
+    currentMode = q->getMode();
+
+    reply = wControllerMedia->getMedia(source, q, currentMode);
 
     if (reply == NULL) return;
 
@@ -645,6 +649,9 @@ WBackendFfmpeg::WBackendFfmpeg(QObject * parent)
 
     d->clearMedia();
 
+    // NOTE: A reply given here was loaded for our current mode (see WBackendManager).
+    if (reply) d->currentMode = getMode();
+
     if (url.isEmpty())
     {
         d->clearPlayer();
@@ -783,6 +790,15 @@ WBackendFfmpeg::WBackendFfmpeg(QObject * parent)
     Q_D(WBackendFfmpeg);
 
     if (d->currentMedia.isEmpty()) return;
+
+    // NOTE: The audio output loads the audio alone (see getMode), so a source loaded for another
+    //       mode is loaded again, as VLC's.
+    if (d->currentMode != getMode())
+    {
+        d->reload();
+
+        return;
+    }
 
     output = d->getOutput(output);
 

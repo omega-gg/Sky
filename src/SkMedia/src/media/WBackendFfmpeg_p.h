@@ -195,6 +195,9 @@ public: // Variables
     QString currentMedia;
     QString currentAudio;
 
+    // NOTE: The source mode the sources were loaded with (see getMode).
+    WAbstractBackend::SourceMode currentMode;
+
     WAbstractBackend::Output  closestOutput;
     WAbstractBackend::Quality closestQuality;
 

@@ -38,6 +38,12 @@
 
 WTextureVideoPrivate::WTextureVideoPrivate(WTextureVideo * p) : WPrivate(p) {}
 
+// NOTE: The texture goes with its node, and a new source gets a new node.
+/* virtual */ WTextureVideoPrivate::~WTextureVideoPrivate()
+{
+    if (texture) delete texture;
+}
+
 void WTextureVideoPrivate::init()
 {
     Q_Q(WTextureVideo);

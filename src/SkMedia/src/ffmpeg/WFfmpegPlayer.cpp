@@ -455,9 +455,11 @@ WFfmpegAudio::WFfmpegAudio(WFfmpegPlayerPrivate * d, const QAudioDevice & device
     sink.setBufferSize(format.bytesForDuration(FFMPEGPLAYER_AUDIO_BUFFER * 1000));
 }
 
+// NOTE Qt6: stop() lets the sink drain in the background, and keeps some memory each time.
+//           reset() drops what it holds and frees it.
 WFfmpegAudio::~WFfmpegAudio()
 {
-    sink.stop();
+    sink.reset();
 
     avfilter_graph_free(&graph);
 
@@ -806,7 +808,7 @@ void WFfmpegAudio::clear()
 
     if (io == NULL) return;
 
-    sink.stop();
+    sink.reset();
 
     io = NULL;
 }
@@ -895,6 +897,8 @@ WFfmpegPlayerPrivate::WFfmpegPlayerPrivate(WFfmpegPlayer * p) : WPrivate(p) {}
 /* virtual */ WFfmpegPlayerPrivate::~WFfmpegPlayerPrivate()
 {
     clear();
+
+    av_buffer_unref(&device);
 
     av_frame_free(&frameDecoded);
     av_frame_free(&frameSoftware);
@@ -1112,8 +1116,6 @@ void WFfmpegPlayerPrivate::clear()
     avcodec_free_context(&codecVideo);
     avcodec_free_context(&codecAudio);
 
-    av_buffer_unref(&device);
-
     sws_freeContext(scale);
 
     scale = NULL;
@@ -1200,6 +1202,9 @@ void WFfmpegPlayerPrivate::runRead(WFfmpegInput * input)
         {
             qWarning("WFfmpegPlayerPrivate::runRead: Cannot open the audio.");
         }
+
+        // NOTE: An audio source that failed has no format, whatever step it failed at.
+        closeInput(input);
 
         mutex.lock();
     }
@@ -1901,8 +1906,6 @@ bool WFfmpegPlayerPrivate::openVideo(bool hardware)
 {
     avcodec_free_context(&codecVideo);
 
-    av_buffer_unref(&device);
-
     formatHardware = AV_PIX_FMT_NONE;
 
     decoded = false;
@@ -1943,19 +1946,33 @@ bool WFfmpegPlayerPrivate::openVideo(bool hardware)
         // NOTE: The renderer's device first, then the platform's.
         AVHWDeviceType types[2] = { getDevice(), FFMPEGPLAYER_DEVICE };
 
-        for (int i = 0; i < 2 && device == NULL; i++)
+        for (int i = 0; i < 2; i++)
         {
-            AVPixelFormat format = getHardware(decoderHardware, types[i]);
+            AVHWDeviceType type = types[i];
 
-            if (format == AV_PIX_FMT_NONE
-                ||
-                av_hwdevice_ctx_create(&device, types[i], NULL, NULL, 0) < 0) continue;
+            AVPixelFormat format = getHardware(decoderHardware, type);
+
+            if (format == AV_PIX_FMT_NONE) continue;
+
+            // NOTE: The device stays from a source to the next one, creating and releasing it is
+            //       slow.
+            if (device && ((AVHWDeviceContext *) device->data)->type != type)
+            {
+                av_buffer_unref(&device);
+            }
+
+            if (device == NULL && av_hwdevice_ctx_create(&device, type, NULL, NULL, 0) < 0)
+            {
+                continue;
+            }
 
             formatHardware = format;
 
             decoder = decoderHardware;
 
             accelerated = true;
+
+            break;
         }
     }
 #endif
@@ -1970,7 +1987,7 @@ bool WFfmpegPlayerPrivate::openVideo(bool hardware)
 
     codecVideo->opaque = this;
 
-    if (device)
+    if (formatHardware != AV_PIX_FMT_NONE)
     {
         codecVideo->hw_device_ctx = av_buffer_ref(device);
 
@@ -2043,6 +2060,8 @@ void WFfmpegPlayerPrivate::applyReady()
     foreach (WFfmpegInput * input, inputs)
     {
         AVFormatContext * format = input->format;
+
+        if (format == NULL) continue;
 
         for (unsigned int i = 0; i < format->nb_streams; i++)
         {
@@ -2197,6 +2216,9 @@ AVFrame * WFfmpegPlayerPrivate::decodeFrame()
 bool WFfmpegPlayerPrivate::applySoftware()
 {
     if (accelerated == false || decoded) return true;
+
+    // NOTE: The device may be the one failing, after a GPU reset, the next source gets a new one.
+    av_buffer_unref(&device);
 
     if (openVideo(false) == false) return false;
 
