@@ -1876,10 +1876,12 @@ bool WFfmpegPlayerPrivate::openFormat(WFfmpegInput * input)
     else url = input->url.toUtf8();
 
     // NOTE: We open the source ourselves, to keep in memory one that can't seek. A source that
-    //       only its demuxer opens, as RTSP, goes the usual way.
+    //       only its demuxer opens, as RTSP, has no protocol here and goes the usual way.
     AVIOInterruptCB callback = { interrupt, this };
 
-    if (avio_open2(&(input->io), url.constData(), AVIO_FLAG_READ, &callback, &options) >= 0)
+    int result = avio_open2(&(input->io), url.constData(), AVIO_FLAG_READ, &callback, &options);
+
+    if (result >= 0)
     {
         if ((input->io->seekable & AVIO_SEEKABLE_NORMAL) == 0)
         {
@@ -1892,8 +1894,16 @@ bool WFfmpegPlayerPrivate::openFormat(WFfmpegInput * input)
 
         input->format->flags |= AVFMT_FLAG_CUSTOM_IO;
     }
+    // NOTE: Any other failure is the source's own: opening it again would go without the options
+    //       avio_open2 took, as the proxy.
+    else if (result != AVERROR_PROTOCOL_NOT_FOUND)
+    {
+        av_dict_free(&options);
 
-    int result = avformat_open_input(&(input->format), url.constData(), NULL, &options);
+        return false;
+    }
+
+    result = avformat_open_input(&(input->format), url.constData(), NULL, &options);
 
     av_dict_free(&options);
 

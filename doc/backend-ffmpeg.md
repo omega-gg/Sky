@@ -204,7 +204,12 @@ Where it differs:
 - **Picture adjust:** `backendSetAdjust` leaves the frames as they are and the node adjusts
   them (see WBackendYuv). The current frame is sent again so a paused video shows it.
 - **Proxy:** `setProxy` and `clearProxy`, as VLC's, through FFmpeg's `http_proxy` option.
-  `WBackendManager` forwards them to its backend, for both engines.
+  `WBackendManager` forwards them to its backend, for both engines. A password goes as the
+  proxy's Basic authentication, after its challenge. The player opens a source with
+  `avio_open2`, which takes the options it uses, and goes through the demuxer only when FFmpeg
+  has no protocol for it (`AVERROR_PROTOCOL_NOT_FOUND`, as RTSP), its options untouched. Any
+  other failure fails the source at once: opened again, it would go without the options taken,
+  and a source the proxy refuses played without the proxy.
 - **Live:** a source without a length is live from its first time; `playAt` then plays from
   the live point instead of seeking.
 - **Variant lists:** an HLS master playlist has a program per variant. Its video is the one
