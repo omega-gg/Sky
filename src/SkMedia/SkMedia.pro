@@ -89,8 +89,6 @@ win32:greaterThan(QT_MAJOR_VERSION, 4) {
     LIBS += -lopengl32
 }
 
-# NOTE: Our FFmpeg libraries are named sk-avcodec and so on, beside Qt Multimedia's FFmpeg. On
-#       iOS the application links the frameworks.
 contains(DEFINES, SK_VLC) {
 
     win32:LIBS += -L$$SK/lib -llibvlc
@@ -99,6 +97,8 @@ contains(DEFINES, SK_VLC) {
 
     android:LIBS += -L$$SK/lib/$$ABI -lvlc
 } else {
+    # NOTE: Our FFmpeg libraries are prefixed with sk beside Qt Multimedia's FFmpeg. On iOS the
+    #       application links the frameworks.
 
     QT += multimedia
 

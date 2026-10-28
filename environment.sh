@@ -14,7 +14,6 @@ compiler_win="mingw"
 
 qt="qt6"
 
-# NOTE: The player engine: ffmpeg, or VLC with vlc3 | vlc4. FFmpeg is for Qt 6.
 player="ffmpeg"
 
 mobile="simulator"
