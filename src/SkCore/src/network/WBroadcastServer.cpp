@@ -29,6 +29,7 @@
 #include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QUdpSocket>
 #include <QHostInfo>
 #include <QNetworkInterface>
 
@@ -476,9 +477,11 @@ void WBroadcastServerPrivate::setConnected(bool connected)
 
 /* Q_INVOKABLE static */ QString WBroadcastServer::source(int port, const QString & prefix)
 {
-    QTcpSocket socket;
+    // NOTE: A UDP request sends nothing, the system only picks the route to Google DNS and the
+    //       local address it leaves from. A TCP request waits for an answer (30 seconds timeout
+    //       for a VPN / firewall).
+    QUdpSocket socket;
 
-    // NOTE: Connecting to Google DNS.
     socket.connectToHost("8.8.8.8", 53);
 
     socket.waitForConnected();
