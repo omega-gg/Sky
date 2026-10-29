@@ -291,6 +291,9 @@ void WControllerApplicationPrivate::onAboutToQuit()
 {
     Q_Q(WControllerApplication);
 
+    // NOTE: Quitting while we wait for the actions below must not come back here.
+    QObject::disconnect(qApp, SIGNAL(aboutToQuit()), q, SLOT(onAboutToQuit()));
+
     quitting = true;
 
     emit q->aboutToQuit();
