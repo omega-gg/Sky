@@ -193,6 +193,8 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     if [ $compiler = "mingw" ]; then
 
         MinGW="$external/MinGW/$MinGW_version/bin"
+    else
+        MSVC="$external/MSVC"
     fi
 else
     if [ $1 = "iOS" -o $1 = "android" ]; then
@@ -401,6 +403,8 @@ else
             cp "$MinGW"/libgcc_s_*-1.dll    $deploy
             cp "$MinGW"/libstdc++-6.dll     $deploy
             cp "$MinGW"/libwinpthread-1.dll $deploy
+        else
+            cp "$MSVC"/*.dll $deploy
         fi
 
         if [ $qt = "qt5" ]; then

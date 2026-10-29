@@ -107,16 +107,6 @@ static const AVHWDeviceType FFMPEGPLAYER_DEVICE = AV_HWDEVICE_TYPE_NONE;
 static const AVHWDeviceType FFMPEGPLAYER_DEVICE = AV_HWDEVICE_TYPE_VAAPI;
 #endif
 
-// NOTE: The GPU filter bringing a frame of more than 8 bits to 8 before its copy to memory
-//       (see applyDepth).
-#ifdef Q_OS_WIN
-static const char * FFMPEGPLAYER_DEPTH = "scale_d3d11=format=nv12";
-#elif defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
-static const char * FFMPEGPLAYER_DEPTH = "scale_vaapi=format=nv12";
-#else
-static const char * FFMPEGPLAYER_DEPTH = NULL;
-#endif
-
 static const AVRational FFMPEGPLAYER_MSEC = { 1, 1000 };
 
 // NOTE: The chunk a source in memory is read with.
@@ -154,6 +144,17 @@ static AVPixelFormat getFormat(AVCodecContext * context, const AVPixelFormat * f
     return AV_PIX_FMT_NONE;
 }
 
+// NOTE: The GPU filter bringing a frame of more than 8 bits to 8 before its copy to memory, for
+//       the device of the frame (see applyDepth). Without one, the frame is copied as it is.
+static const char * getDepth(AVHWDeviceType type)
+{
+    if (type == AV_HWDEVICE_TYPE_D3D11VA) return "scale_d3d11=format=nv12";
+    if (type == AV_HWDEVICE_TYPE_D3D12VA) return "scale_d3d12=format=nv12";
+    if (type == AV_HWDEVICE_TYPE_VAAPI)   return "scale_vaapi=format=nv12";
+
+    return NULL;
+}
+
 #ifndef Q_OS_ANDROID
 
 // NOTE: The decoding device of the graphics API Qt renders with, none when it has none: with two
@@ -161,10 +162,18 @@ static AVPixelFormat getFormat(AVCodecContext * context, const AVPixelFormat * f
 static AVHWDeviceType getDevice()
 {
 #if defined(SK_NO_QML) == false && (defined(Q_OS_WIN) || defined(Q_OS_LINUX))
-    if (QQuickWindow::graphicsApi() == QSGRendererInterface::Vulkan)
+    QSGRendererInterface::GraphicsApi api = QQuickWindow::graphicsApi();
+
+    if (api == QSGRendererInterface::Vulkan)
     {
         return AV_HWDEVICE_TYPE_VULKAN;
     }
+#ifdef Q_OS_WIN
+    if (api == QSGRendererInterface::Direct3D12)
+    {
+        return AV_HWDEVICE_TYPE_D3D12VA;
+    }
+#endif
 #endif
 
     return AV_HWDEVICE_TYPE_NONE;
@@ -2401,13 +2410,12 @@ int WFfmpegPlayerPrivate::getTimeNext(AVFrame * frame, qint64 timestamp) const
 //       bits anyway. Without the filter, the frame is copied as it is.
 AVFrame * WFfmpegPlayerPrivate::applyDepth(AVFrame * frame)
 {
-    if (FFMPEGPLAYER_DEPTH == NULL) return frame;
-
     AVHWFramesContext * context
         = reinterpret_cast<AVHWFramesContext *> (frame->hw_frames_ctx->data);
 
-    // NOTE: The filter is the platform device's, a Vulkan frame is copied as it is.
-    if (context->device_ctx->type != FFMPEGPLAYER_DEVICE
+    const char * filter = getDepth(context->device_ctx->type);
+
+    if (filter == NULL
         ||
         av_pix_fmt_desc_get(context->sw_format)->comp[0].depth <= 8) return frame;
 
@@ -2416,7 +2424,7 @@ AVFrame * WFfmpegPlayerPrivate::applyDepth(AVFrame * frame)
     {
         graphFrames = context;
 
-        createDepth(frame);
+        createDepth(frame, filter);
     }
 
     if (graph == NULL
@@ -2428,7 +2436,7 @@ AVFrame * WFfmpegPlayerPrivate::applyDepth(AVFrame * frame)
     return frameDepth;
 }
 
-void WFfmpegPlayerPrivate::createDepth(AVFrame * frame)
+void WFfmpegPlayerPrivate::createDepth(AVFrame * frame, const char * filter)
 {
     avfilter_graph_free(&graph);
 
@@ -2467,7 +2475,7 @@ void WFfmpegPlayerPrivate::createDepth(AVFrame * frame)
         inputs->name       = av_strdup("out");
         inputs->filter_ctx = filterOut;
 
-        if (avfilter_graph_parse_ptr(graph, FFMPEGPLAYER_DEPTH, &inputs, &outputs, NULL) >= 0
+        if (avfilter_graph_parse_ptr(graph, filter, &inputs, &outputs, NULL) >= 0
             &&
             avfilter_graph_config(graph, NULL) >= 0)
         {

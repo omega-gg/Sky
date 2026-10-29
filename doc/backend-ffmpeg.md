@@ -133,20 +133,27 @@ It owns the decoding, so it could also serve without a QML player.
   lands on the next frame in either direction.
 - **Decoding:** hardware first (d3d11va, VideoToolbox, vaapi), on the graphics API Qt renders
   with where it can (`QQuickWindow::graphicsApi`): with the Vulkan renderer, on Windows and
-  Linux, the decoder is Vulkan's. With two APIs on the same GPU, a 4K frame's copy to memory
-  took 16 to 18 ms instead of 4 to 7. A renderer without video decoding falls back to the
-  platform's device, as a console build does (`SK_NO_QML`). AV1 goes to FFmpeg's own AV1
-  decoder on the GPU, since dav1d is software only. When the GPU can't decode a stream, its
-  first frame fails, and the player decodes it in software from the last seek.
+  Linux, the decoder is Vulkan's, and with the D3D12 renderer (Qt's MSVC kit only) it's
+  d3d12va. With two APIs on the same GPU, a 4K frame's copy to memory took 16 to 18 ms instead
+  of 4 to 7. Under D3D12, d3d12va plays 4K60 HDR on less than half the CPU of d3d11va under
+  D3D11 (43 to 46% against 111 to 119%, over 60 s), with the same picture and as many frames.
+  D3D11 stays the default: D3D12's presentation stalls in about one run in four, whatever the
+  decoder (frames and swaps 60 to 70 ms apart for seconds, or at half rate for a whole run).
+  A renderer without video decoding falls back to the platform's device, as a console build
+  does (`SK_NO_QML`).
+  AV1 goes to FFmpeg's own AV1 decoder on the GPU, since dav1d is software only. When the GPU
+  can't decode a stream, its first frame fails, and the player decodes it in software from the
+  last seek.
 - **Frames:** hardware frames come down as NV12 or P010, and `sws_scale` writes I420 straight
   into the backend's planes. Full range frames are brought to the video range of the shader.
-- **10-bit frames:** they go to 8 bits on the GPU before their copy to memory (`applyDepth`):
-  `scale_d3d11` on Windows (our FFmpeg patches it, see its implementation.md), `scale_vaapi` on
-  Linux (untested yet). A 4K 10-bit frame is 25 MB, and its copy alone took longer than a frame
-  lasts at 60 fps; at 8 bits it's half. The shader shows 8 bits anyway, so the picture is the
-  same. Without the filter, or when it fails, the frame is copied as it is. Vulkan frames are
-  copied as they are too: their 10-bit copy is fast enough (10 ms for 4K). Apple (VideoToolbox
-  can output 8 bits itself) is still to do.
+- **10-bit frames:** they go to 8 bits on the GPU before their copy to memory (`applyDepth`),
+  through the filter of the frame's device: `scale_d3d11` for d3d11va (our FFmpeg patches it,
+  see its implementation.md), `scale_d3d12` for d3d12va (patched too: unpatched, its HDR
+  frames come back empty, green), `scale_vaapi` on Linux (untested yet). A 4K 10-bit frame is
+  25 MB, and its copy alone took longer than a frame lasts at 60 fps; at 8 bits it's half. The
+  shader shows 8 bits anyway, so the picture is the same. Without the filter, or when it fails,
+  the frame is copied as it is. Vulkan frames are copied as they are too: their 10-bit copy is
+  fast enough (10 ms for 4K). Apple (VideoToolbox can output 8 bits itself) is still to do.
 - **Playback:** frames are paced on their timestamps against a clock.
   - **With audio:** the audio leads. What we hear is the end of the decoded audio, minus what
     waits in the device and in the player, each millisecond of it being `speed` milliseconds of

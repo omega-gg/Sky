@@ -184,7 +184,7 @@ public: // Functions
 
     AVFrame * applyDepth(AVFrame * frame);
 
-    void createDepth(AVFrame * frame);
+    void createDepth(AVFrame * frame, const char * filter);
 
     void applySeek(int msec);
 
