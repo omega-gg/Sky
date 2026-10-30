@@ -1565,11 +1565,7 @@ void WControllerMediaPrivate::init(const QStringList &)
     Q_Q(WControllerMedia);
 #endif
 
-#ifdef CONTROLLERMEDIA_FFMPEG
-    // NOTE: The player reports its own errors, FFmpeg's are mostly the ones of a source we cut,
-    //       as a probe or a connection we close. startLog shows them.
-    av_log_set_level(AV_LOG_FATAL);
-#elif defined(CONTROLLERMEDIA_VLC)
+#ifdef CONTROLLERMEDIA_VLC
     engine = NULL;
 
     this->options = options;
@@ -2559,13 +2555,9 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
 
     QString text = QString("[ffmpeg] %1").arg(QString(message).trimmed());
 
-    // NOTE: Calling qDebug manually on mobile, as for VLC. The file logging is invoked from the
-    //       message handler.
-#if defined(Q_OS_IOS) || defined(Q_OS_ANDROID)
+    // NOTE: Unlike libVLC, FFmpeg prints nothing once we set our callback. The message handler
+    //       writes both the console and the file log.
     qDebug("%s", text.C_UTF);
-#else
-    wControllerFile->writeLog(text);
-#endif
 }
 
 #endif
@@ -2970,16 +2962,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-#ifdef CONTROLLERMEDIA_FFMPEG
-
-/* Q_INVOKABLE */ void WControllerMedia::startLog()
-{
-    av_log_set_level(AV_LOG_ERROR);
-
-    av_log_set_callback(WControllerMediaPrivate::onLog);
-}
-
-#elif defined(CONTROLLERMEDIA_VLC)
+#ifdef CONTROLLERMEDIA_VLC
 
 /* Q_INVOKABLE */ WVlcPlayer * WControllerMedia::createVlcPlayer()
 {
@@ -3224,6 +3207,20 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
     }
     else return url;
 }
+
+#ifdef CONTROLLERMEDIA_FFMPEG
+
+/* Q_INVOKABLE static */ void WControllerMedia::startLog()
+{
+    av_log_set_callback(WControllerMediaPrivate::onLog);
+}
+
+/* Q_INVOKABLE static */ void WControllerMedia::setLogVerbosity(int verbosity)
+{
+    av_log_set_level(verbosity);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

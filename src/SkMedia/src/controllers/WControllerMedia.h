@@ -307,9 +307,7 @@ public: // Initialize
 public: // Interface
 #ifdef CONTROLLERMEDIA_VLC
     Q_INVOKABLE WVlcPlayer * createVlcPlayer();
-#endif
 
-#ifndef SK_NO_PLAYER
     Q_INVOKABLE void startLog();
 #endif
 
@@ -329,6 +327,12 @@ public: // Interface
 
 public: // Static functions
     Q_INVOKABLE static QString generateSource(const QString & url);
+
+#ifdef CONTROLLERMEDIA_FFMPEG
+    Q_INVOKABLE static void startLog();
+
+    Q_INVOKABLE static void setLogVerbosity(int verbosity);
+#endif
 
 signals:
     void loaderChanged();

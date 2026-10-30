@@ -4043,6 +4043,7 @@ void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters 
     parameters->add("cookies",    query.cookies);
     parameters->add("skipError",  query.skipError);
 
+    parameters->add("maxHost", query.maxHost);
     parameters->add("delay",   query.delay);
     parameters->add("timeout", query.timeout);
 }
@@ -4072,6 +4073,7 @@ void WBackendUniversalPrivate::applyQueryResults(WBackendUniversalParameters * p
     query->cookies    = parameters->value("cookies")   ->toBool();
     query->skipError  = parameters->value("skipError") ->toBool();
 
+    query->maxHost = parameters->value("maxHost")->toInt();
     query->delay   = parameters->value("delay")  ->toInt();
     query->timeout = parameters->value("timeout")->toInt();
 }
@@ -4512,6 +4514,10 @@ WBackendNetQuery WBackendUniversalPrivate::getQuery(const QVariant & value) cons
 
     query.cookies   = hash.value("cookies")  .toBool();
     query.skipError = hash.value("skipError").toBool();
+
+    variant = getVariant(&hash, "maxHost");
+
+    if (variant) query.maxHost = variant->toInt();
 
     query.delay = hash.value("delay").toInt();
 

@@ -528,11 +528,13 @@ void WViewPrivate::init(QQuickItem * item)
     ratio      = 1.0;
     ratioPixel = 1.0;
 #else
-    if (defaultScreen == -1)
+    QList<QScreen *> screens = QGuiApplication::screens();
+
+    if (defaultScreen < 0 || defaultScreen >= screens.count())
     {
         screen = q->screen();
     }
-    else screen = QGuiApplication::screens().at(defaultScreen);
+    else screen = screens.at(defaultScreen);
 
     ratio      = WControllerView::screenRatio     (screen);
     ratioPixel = WControllerView::screenRatioPixel(screen);
