@@ -72,7 +72,7 @@ public: // Variables
 
     int maxJobs;
 
-    QHash<QString, QTime> delays;
+    QHash<QString, qint64> delays;
 
     QTimer timer;
 

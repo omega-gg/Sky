@@ -25,7 +25,7 @@
 #ifndef SK_NO_CONTROLLERDOWNLOAD
 
 // Qt includes
-#include <QTime>
+#include <QDateTime>
 
 // Sk includes
 #include <WLoaderNetwork>
@@ -325,7 +325,7 @@ void WControllerDownloadPrivate::processJobs()
 
             if (delay)
             {
-                qDebug("Delayed %s %d", url.C_STR, delay);
+                //qDebug("Delayed %s %d", url.C_STR, delay);
 
                 if (interval == 0 || delay < interval)
                 {
@@ -379,36 +379,21 @@ bool WControllerDownloadPrivate::checkJobs(const QString & host, int maxHost) co
 
 int WControllerDownloadPrivate::checkDelay(WRemoteData * data, const QString & host)
 {
-    if (delays.contains(host) == false)
-    {
-        int delay = data->_parameters.delay;
+    int delay = data->_parameters.delay;
 
-        if (delay)
-        {
-            QTime time = QTime::currentTime().addMSecs(delay);
+    // NOTE: We only space the requests that ask for it.
+    if (delay == 0) return 0;
 
-            delays.insert(host, time);
-        }
+    qint64 time = QDateTime::currentMSecsSinceEpoch();
 
-        return 0;
-    }
-
-    QTime time = QTime::currentTime();
-
-    QTime timeDelay = delays.value(host);
+    qint64 timeDelay = delays.value(host);
 
     if (time < timeDelay)
     {
-        return time.msecsTo(timeDelay);
+        return timeDelay - time;
     }
 
-    int delay = data->_parameters.delay;
-
-    if (delay)
-    {
-         delays.insert(host, time.addMSecs(delay));
-    }
-    else delays.remove(host);
+    delays.insert(host, time + delay);
 
     return 0;
 }
