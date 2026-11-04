@@ -108,9 +108,7 @@ int WRegExp::lastIndexIn(const QString & string, int from) const
 {
     Q_D(const WRegExp);
 
-    const_cast<WRegExpPrivate *> (d)->match = match(string, from);
-
-    return d->match.lastCapturedIndex();
+    return string.lastIndexOf(*this, from, &(const_cast<WRegExpPrivate *> (d)->match));
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -60,7 +60,7 @@ public: // Interface
 
     int indexIn(const QString & string, int from = 0) const;
 
-    int lastIndexIn(const QString & string, int from = 0) const;
+    int lastIndexIn(const QString & string, int from = -1) const;
 
     QString cap(int index) const;
 
