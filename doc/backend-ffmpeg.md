@@ -210,6 +210,9 @@ Where it differs:
   change never loops.
 - **Picture adjust:** `backendSetAdjust` leaves the frames as they are and the node adjusts
   them (see WBackendYuv). The current frame is sent again so a paused video shows it.
+- **Source headers:** the options of a source are VLC's, except `header=<name>: <value>`, which
+  goes to FFmpeg's `headers` option. A backend reads the cookies of a response as `cookie` in
+  `EXTRACT_SOURCE`, when its query sets `cookies`. TikTok's streams require both.
 - **Proxy:** `setProxy` and `clearProxy`, as VLC's, through FFmpeg's `http_proxy` option.
   `WBackendManager` forwards them to its backend, for both engines. A password goes as the
   proxy's Basic authentication, after its challenge. The player opens a source with
