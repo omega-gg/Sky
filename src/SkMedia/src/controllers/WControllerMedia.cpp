@@ -25,7 +25,6 @@
 #ifndef SK_NO_CONTROLLERMEDIA
 
 // Qt includes
-#include <QNetworkReply>
 #include <QNetworkCookie>
 #ifdef CONTROLLERMEDIA_THREAD
 #include <QThread>
