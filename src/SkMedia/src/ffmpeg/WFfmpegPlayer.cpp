@@ -1863,11 +1863,18 @@ bool WFfmpegPlayerPrivate::openFormat(WFfmpegInput * input)
 
     QByteArray proxy = this->proxy.toUtf8();
 
+    QByteArray header = this->header;
+
     mutex.unlock();
 
     if (proxy.isEmpty() == false)
     {
         av_dict_set(&options, "http_proxy", proxy.constData(), 0);
+    }
+
+    if (header.isEmpty() == false)
+    {
+        av_dict_set(&options, "headers", header.constData(), 0);
     }
 
 #ifdef Q_OS_LINUX
@@ -2717,9 +2724,9 @@ void WFfmpegPlayer::setBackend(WAbstractBackend * backend, WFfmpegSetup  setup,
     d->unlock = unlock;
 }
 
-// NOTE: The options are VLC's, we don't use them.
-void WFfmpegPlayer::setSource(const QString & url, const QString & audio, const QStringList &,
-                              bool loop)
+// NOTE: The options are VLC's, we only use the 'header=' ones.
+void WFfmpegPlayer::setSource(const QString & url, const QString     & audio,
+                                                   const QStringList & options, bool loop)
 {
     Q_D(WFfmpegPlayer);
 
@@ -2742,6 +2749,19 @@ void WFfmpegPlayer::setSource(const QString & url, const QString & audio, const 
     d->urlAudio = audio;
 
     d->loop = loop;
+
+    QByteArray header;
+
+    foreach (const QString & option, options)
+    {
+        if (option.startsWith("header=") == false) continue;
+
+        header += option.mid(7).toUtf8() + "\r\n";
+    }
+
+    QMutexLocker locker(&d->mutex);
+
+    d->header = header;
 }
 
 void WFfmpegPlayer::play(int at)

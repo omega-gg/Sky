@@ -121,6 +121,8 @@ public: // Variables
     QString header;
     QString body;
 
+    QString cookie;
+
     bool clearItems;
     bool cookies;
     bool skipError;

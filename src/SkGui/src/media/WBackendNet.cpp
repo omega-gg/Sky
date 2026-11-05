@@ -165,6 +165,8 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
     header = other.header;
     body   = other.body;
 
+    cookie = other.cookie;
+
     clearItems = other.clearItems;
     cookies    = other.cookies;
     skipError  = other.skipError;

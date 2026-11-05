@@ -4094,6 +4094,8 @@ void WBackendUniversalPrivate::applySourceParameters(WBackendUniversalParameters
 
     applyQueryParameters(parameters, query);
 
+    parameters->add("cookie", query.cookie);
+
     parameters->add("valid", reply.valid);
 
     parameters->add("medias");

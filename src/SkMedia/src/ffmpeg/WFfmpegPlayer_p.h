@@ -296,6 +296,8 @@ public: // Variables
 
     QString proxy;
 
+    QByteArray header;
+
     int quality;
 
     // NOTE: The last source opened is a variant list.

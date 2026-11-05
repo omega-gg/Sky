@@ -25,6 +25,8 @@
 #ifndef SK_NO_CONTROLLERMEDIA
 
 // Qt includes
+#include <QNetworkReply>
+#include <QNetworkCookie>
 #ifdef CONTROLLERMEDIA_THREAD
 #include <QThread>
 #endif
@@ -2613,6 +2615,25 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
     else
     {
         Q_Q(WControllerMedia);
+
+        if (backendQuery->cookies)
+        {
+            QNetworkReply * networkReply = data->networkReply();
+
+            if (networkReply)
+            {
+                QVariant cookies = networkReply->header(QNetworkRequest::SetCookieHeader);
+
+                QList<QNetworkCookie> list = qvariant_cast<QList<QNetworkCookie> > (cookies);
+
+                foreach (const QNetworkCookie & cookie, list)
+                {
+                    backendQuery->cookie += cookie.toRawForm(QNetworkCookie::NameAndValueOnly)
+                                            +
+                                            "; ";
+                }
+            }
+        }
 
         QIODevice * reply = data->takeReply(NULL);
 
