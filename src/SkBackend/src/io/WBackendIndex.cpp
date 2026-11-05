@@ -166,7 +166,7 @@ QList<WBackendIndexItem> WBackendIndexQuery::extractItems(const WYamlReader & re
 
         item.version = values.at(2);
 
-        item.validate = values.at(3);
+        item.validate = WRegExp(values.at(3));
 
         items.append(item);
     }
@@ -644,13 +644,9 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 {
     Q_D(const WBackendIndex);
 
-    WRegExp regExp;
-
     foreach (const WBackendIndexItem & item, d->data.backends)
     {
-        regExp.setPattern(item.validate);
-
-        if (url.indexOf(regExp) != -1)
+        if (url.indexOf(item.validate) != -1)
         {
             return item.id;
         }

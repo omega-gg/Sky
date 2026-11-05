@@ -36,6 +36,9 @@
 // Qt includes
 #include <QMetaMethod>
 
+// Sk includes
+#include <WRegExp>
+
 // Private includes
 #include <private/WBackendLoader_p>
 
@@ -55,7 +58,7 @@ struct WBackendIndexItem
 
     QString version;
 
-    QString validate;
+    WRegExp validate;
 };
 
 //=================================================================================================
