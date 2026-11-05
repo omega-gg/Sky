@@ -27,6 +27,7 @@
 // Qt includes
 #include <QThread>
 #include <QDir>
+#include <QFile>
 #ifdef QT_NEW
 #include <QUrlQuery>
 #endif
@@ -60,7 +61,7 @@ void WControllerPlaylist_patch(QString & data, const QString & api);
 // Static variables
 
 static const QString CONTROLLERPLAYLIST_VIDEO = "^(mp4|webm|ogv|mkv|avi|wmv|mov|flv|3gp|m3u8)$";
-static const QString CONTROLLERPLAYLIST_AUDIO = "^(mp3|ogg|mka|wav|wma|flac)$";
+static const QString CONTROLLERPLAYLIST_AUDIO = "^(mp3|m4a|ogg|mka|wav|wma|flac)$";
 
 static const QString CONTROLLERPLAYLIST_MARKUP = "^(vbml|html|xml|json)$";
 
@@ -79,7 +80,7 @@ static const QString CONTROLLERPLAYLIST_VBML = "^(vbml)$";
 static const QString CONTROLLERPLAYLIST_FILTER_FILE
     =
     "Medias (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
-            "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
+            "*.mp3 *.m4a *.ogg *.mka *.wav *.wma *.flac "
 #ifdef SK_NO_TORRENT
             "*.vbml *.html *.xml *.json "
 #else
@@ -332,7 +333,9 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     if (string.isEmpty() == false
         &&
         // NOTE: The origin has to be different than the current URL.
-        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
+        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string)
+        &&
+        WControllerPlaylist::vbmlSourceIsLocal(reader.extractString("source"), baseUrl) == false)
     {
         origin = string;
     }
@@ -812,6 +815,33 @@ void WControllerPlaylistData::applyFolder(const QString & url)
     }
 
     title = dir.dirName();
+
+    if (files.isEmpty()) return;
+
+    // NOTE: A VBML with the name of a media describes it, so the track goes through the VBML.
+    QHash<QString, int> names;
+
+    for (int i = 0; i < medias.count(); i++)
+    {
+        names.insert(WControllerNetwork::removeFileExtension(medias.at(i).url), i);
+    }
+
+    QMutableListIterator<WControllerPlaylistSource> iterator(files);
+
+    while (iterator.hasNext())
+    {
+        const QString & url = iterator.next().url;
+
+        if (WControllerPlaylist::urlIsVbmlFile(url) == false) continue;
+
+        int index = names.value(WControllerNetwork::removeFileExtension(url), -1);
+
+        if (index == -1) continue;
+
+        medias[index].url = url;
+
+        iterator.remove();
+    }
 }
 
 void WControllerPlaylistData::applyFile(const QByteArray & array, const QString & url)
@@ -6564,7 +6594,32 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     {
         return baseUrl + url;
     }
+    // NOTE: A media file name is next to the VBML. We keep this to media extensions, otherwise a
+    //       host name as 'youtube.com' would be taken for a file.
+    else if (url.contains('.')
+             &&
+             url.contains('/') == false
+             &&
+             url.contains(':') == false
+             &&
+             baseUrl.contains("://")
+             &&
+             extensionIsMedia(WControllerNetwork::extractUrlExtension(url)))
+    {
+        return baseUrl + '/' + url;
+    }
     else return url;
+}
+
+// NOTE: A file we have takes over the origin, which is where we go when that file is gone.
+/* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlSourceIsLocal(const QString & url,
+                                                                     const QString & baseUrl)
+{
+    QString source = vbmlSource(url, baseUrl);
+
+    return (WControllerNetwork::urlIsFile(source)
+            &&
+            QFile::exists(WControllerFile::filePath(source)));
 }
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlSourceSeed(const QString & url,

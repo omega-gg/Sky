@@ -46,6 +46,7 @@
 
 // Forward declarations
 class QThread;
+struct AVDictionary;
 struct AVFormatContext;
 struct AVIOContext;
 struct AVStream;
@@ -204,6 +205,12 @@ public: // Functions
 
 public: // Static functions
     static int interrupt(void * data);
+
+    static AVDictionary * getOptions(const QByteArray & proxy, const QByteArray & header);
+
+    static QByteArray getHeader(const QStringList & options);
+
+    static QString getProxy(const QString & host, const QString & password);
 
     static WFfmpegBase getBase(AVStream * stream);
 

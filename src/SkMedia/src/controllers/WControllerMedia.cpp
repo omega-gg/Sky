@@ -373,12 +373,16 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     vbml = true;
 
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
+
     QString string = reader.extractString("origin");
 
     if (string.isEmpty() == false
         &&
         // NOTE: The origin has to be different than the current URL.
-        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
+        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string)
+        &&
+        WControllerPlaylist::vbmlSourceIsLocal(reader.extractString("source"), baseUrl) == false)
     {
         origin = string;
 
@@ -394,8 +398,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
         return;
     }
-
-    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
 
     type = WTrack::typeFromString(reader.extractString("type"));
 

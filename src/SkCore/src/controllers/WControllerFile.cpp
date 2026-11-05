@@ -1585,6 +1585,16 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
 #endif
 }
 
+/* Q_INVOKABLE static */ QString WControllerFile::pathDownloads()
+{
+#ifdef QT_4
+    // NOTE Qt4: There's no downloads location.
+    return QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+#endif
+}
+
 /* Q_INVOKABLE static */ QString WControllerFile::pathPictures()
 {
 #ifdef QT_4
