@@ -805,9 +805,10 @@ void WControllerPlaylistData::applyFolder(const QString & url)
 {
     QDir dir(WControllerFile::filePath(url));
 
+    // NOTE: Folders and files share a single list, sorted by name and ignoring case.
     QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files  | QDir::AllDirs
                                                                 | QDir::System | QDir::Hidden,
-                                           QDir::Name | QDir::Type);
+                                           QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
 
     foreach (const QFileInfo & info, list)
     {
