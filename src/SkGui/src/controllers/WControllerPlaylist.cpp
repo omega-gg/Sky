@@ -824,11 +824,9 @@ void WControllerPlaylistData::applyFolder(const QString & url)
         names.insert(WControllerNetwork::removeFileExtension(medias.at(i).url), i);
     }
 
-    QMutableListIterator<WControllerPlaylistSource> iterator(files);
-
-    while (iterator.hasNext())
+    for (int i = 0; i < files.count(); i++)
     {
-        const QString & url = iterator.next().url;
+        const QString & url = files.at(i).url;
 
         if (WControllerPlaylist::urlIsVbmlFile(url) == false) continue;
 
@@ -838,7 +836,10 @@ void WControllerPlaylistData::applyFolder(const QString & url)
 
         medias[index].url = url;
 
-        iterator.remove();
+        // NOTE: The next file takes this index.
+        files.removeAt(i);
+
+        i--;
     }
 }
 
@@ -6592,13 +6593,8 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     {
         return baseUrl + url;
     }
-    // NOTE: A media file name is next to the VBML. We keep this to media extensions, otherwise a
-    //       host name as 'youtube.com' would be taken for a file.
-    else if (url.contains('.')
-             &&
-             url.contains('/') == false
-             &&
-             url.contains(':') == false
+    // NOTE: A local media file name is next to the VBML unlike a host name.
+    else if (url.contains('.') && url.contains('/') == false && url.contains(':') == false
              &&
              baseUrl.contains("://")
              &&

@@ -88,7 +88,7 @@ struct WTorrentItem
 
     int current;
 
-    // NOTE: The pieces of the file we have, in any order.
+    // NOTE: The count of pieces we have.
     int done;
 
     bool finished;
@@ -142,7 +142,7 @@ struct WTorrentData
 
     int fileCount;
 
-    // NOTE: The handle is only valid once the torrent is added, an item can come before that.
+    // NOTE: The handle is only valid once the torrent is added.
     TorrentInfo info;
 
     torrent_handle handle;

@@ -3132,8 +3132,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64    sizeMax,
                 {
                     item->done++;
 
-                    // NOTE: The pieces come in any order, the buffer is how much of the file we
-                    //       have.
                     qint64 buffer = item->size * item->done / (end - item->begin);
 
                     QCoreApplication::postEvent(item->torrent,
