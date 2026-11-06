@@ -88,7 +88,7 @@ struct WTorrentItem
 
     int current;
 
-    // NOTE: The count of pieces we have.
+    // NOTE: The count of pieces.
     int done;
 
     bool finished;
