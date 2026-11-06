@@ -382,7 +382,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         // NOTE: The origin has to be different than the current URL.
         WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string)
         &&
-        WControllerPlaylist::vbmlSourceIsLocal(reader.extractString("source"), baseUrl) == false)
+        WControllerPlaylist::vbmlSourceResolves(reader.extractString("source"), baseUrl) == false)
     {
         origin = string;
 

@@ -335,7 +335,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
         // NOTE: The origin has to be different than the current URL.
         WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string)
         &&
-        WControllerPlaylist::vbmlSourceIsLocal(reader.extractString("source"), baseUrl) == false)
+        WControllerPlaylist::vbmlSourceResolves(reader.extractString("source"), baseUrl) == false)
     {
         origin = string;
     }
@@ -6612,14 +6612,16 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     else return url;
 }
 
-// NOTE: A file we have takes over the origin, which is where we go when that file is gone.
-/* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlSourceIsLocal(const QString & url,
-                                                                     const QString & baseUrl)
+// NOTE: The source comes first, the origin is the fallback when it's empty or a file that's gone.
+/* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlSourceResolves(const QString & url,
+                                                                      const QString & baseUrl)
 {
+    if (url.isEmpty()) return false;
+
     QString source = vbmlSource(url, baseUrl);
 
-    return (WControllerNetwork::urlIsFile(source)
-            &&
+    return (WControllerNetwork::urlIsFile(source) == false
+            ||
             QFile::exists(WControllerFile::filePath(source)));
 }
 

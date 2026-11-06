@@ -427,7 +427,7 @@ public: // Static functions
 
     Q_INVOKABLE static QString vbmlSource(const QString & url, const QString & baseUrl);
 
-    Q_INVOKABLE static bool vbmlSourceIsLocal(const QString & url, const QString & baseUrl);
+    Q_INVOKABLE static bool vbmlSourceResolves(const QString & url, const QString & baseUrl);
 
     Q_INVOKABLE static QString vbmlSourceSeed(const QString & url, const QString & seed,
                                                                    const QString & baseUrl);
