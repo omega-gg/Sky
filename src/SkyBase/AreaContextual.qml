@@ -35,6 +35,9 @@ Item
 
     /* read */ property variant currentPanel: null
 
+    // NOTE: The item the current panel comes from. A loader panel names its content 'item'.
+    /* read */ property variant currentItem: (currentPanel) ? pLastParent : null
+
     /* read */ property variant parentContextual: null
 
     //---------------------------------------------------------------------------------------------

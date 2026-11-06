@@ -54,6 +54,22 @@ BaseList
     delegate: ComponentContextual {}
 
     //---------------------------------------------------------------------------------------------
+    // Connections
+    //---------------------------------------------------------------------------------------------
+
+    // NOTE: The selection is in the page. Its index matches the list as long as no item is hidden.
+    Connections
+    {
+        target: currentPage
+
+        /* QML_CONNECTION */ function onSelectedIdChanged()
+        {
+            // NOTE: We follow the keys, a page sets its selection before the panel has its size.
+            if (activeFocus) scrollToItem(currentPage.selectedIndex);
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
