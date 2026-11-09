@@ -1842,23 +1842,6 @@ bool WFfmpegPlayerPrivate::openFormat(WFfmpegInput * input)
     input->format->interrupt_callback.callback = interrupt;
     input->format->interrupt_callback.opaque   = this;
 
-    AVDictionary * options = NULL;
-
-    // NOTE: A source without byte ranges can't resume, so it does not reconnect: at the end of
-    //       a stream without length FFmpeg would take it for a cut.
-    av_dict_set(&options, "reconnect",                  "1", 0);
-    av_dict_set(&options, "reconnect_on_network_error", "1", 0);
-    av_dict_set(&options, "reconnect_delay_max",        "8", 0);
-
-    // NOTE: Seeks reuse the connection instead of opening a new one.
-    av_dict_set(&options, "multiple_requests", "1", 0);
-
-    // NOTE: A server as YouTube's serves a long request at about twice the playback speed, and
-    //       requests of 10 MB at full speed.
-    av_dict_set(&options, "request_size", "10485760", 0);
-
-    av_dict_set(&options, "rw_timeout", "20000000", 0);
-
     mutex.lock();
 
     QByteArray proxy = this->proxy.toUtf8();
@@ -1867,25 +1850,7 @@ bool WFfmpegPlayerPrivate::openFormat(WFfmpegInput * input)
 
     mutex.unlock();
 
-    if (proxy.isEmpty() == false)
-    {
-        av_dict_set(&options, "http_proxy", proxy.constData(), 0);
-    }
-
-    if (header.isEmpty() == false)
-    {
-        av_dict_set(&options, "headers", header.constData(), 0);
-    }
-
-#ifdef Q_OS_LINUX
-    // NOTE: FFmpeg verifies the certificates, mbedTLS takes the system's ones in a file.
-    static const QByteArray certificates = getCertificates();
-
-    if (certificates.isEmpty() == false)
-    {
-        av_dict_set(&options, "ca_file", certificates.constData(), 0);
-    }
-#endif
+    AVDictionary * options = getOptions(proxy, header);
 
     QByteArray url;
 
@@ -2554,6 +2519,74 @@ qint64 WFfmpegPlayerPrivate::getWait(int time, qint64 * slot) const
 
 //-------------------------------------------------------------------------------------------------
 
+/* static */ AVDictionary * WFfmpegPlayerPrivate::getOptions(const QByteArray & proxy,
+                                                             const QByteArray & header)
+{
+    AVDictionary * options = NULL;
+
+    // NOTE: A source without byte ranges can't resume, so it does not reconnect: at the end of
+    //       a stream without length FFmpeg would take it for a cut.
+    av_dict_set(&options, "reconnect",                  "1", 0);
+    av_dict_set(&options, "reconnect_on_network_error", "1", 0);
+    av_dict_set(&options, "reconnect_delay_max",        "8", 0);
+
+    // NOTE: Seeks reuse the connection instead of opening a new one.
+    av_dict_set(&options, "multiple_requests", "1", 0);
+
+    // NOTE: A server as YouTube's serves a long request at about twice the playback speed, and
+    //       requests of 10 MB at full speed.
+    av_dict_set(&options, "request_size", "10485760", 0);
+
+    av_dict_set(&options, "rw_timeout", "20000000", 0);
+
+    if (proxy.isEmpty() == false)
+    {
+        av_dict_set(&options, "http_proxy", proxy.constData(), 0);
+    }
+
+    if (header.isEmpty() == false)
+    {
+        av_dict_set(&options, "headers", header.constData(), 0);
+    }
+
+#ifdef Q_OS_LINUX
+    // NOTE: FFmpeg verifies the certificates, mbedTLS takes the system's ones in a file.
+    static const QByteArray certificates = getCertificates();
+
+    if (certificates.isEmpty() == false)
+    {
+        av_dict_set(&options, "ca_file", certificates.constData(), 0);
+    }
+#endif
+
+    return options;
+}
+
+/* static */ QByteArray WFfmpegPlayerPrivate::getHeader(const QStringList & options)
+{
+    QByteArray header;
+
+    foreach (const QString & option, options)
+    {
+        if (option.startsWith("header=") == false) continue;
+
+        header += option.mid(7).toUtf8() + "\r\n";
+    }
+
+    return header;
+}
+
+/* static */ QString WFfmpegPlayerPrivate::getProxy(const QString & host, const QString & password)
+{
+    if (password.isEmpty())
+    {
+         return "http://" + host;
+    }
+    else return "http://:" + password + '@' + host;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* static */ WFfmpegBase WFfmpegPlayerPrivate::getBase(AVStream * stream)
 {
     WFfmpegBase base;
@@ -2750,14 +2783,7 @@ void WFfmpegPlayer::setSource(const QString & url, const QString     & audio,
 
     d->loop = loop;
 
-    QByteArray header;
-
-    foreach (const QString & option, options)
-    {
-        if (option.startsWith("header=") == false) continue;
-
-        header += option.mid(7).toUtf8() + "\r\n";
-    }
+    QByteArray header = WFfmpegPlayerPrivate::getHeader(options);
 
     QMutexLocker locker(&d->mutex);
 
@@ -2873,11 +2899,7 @@ void WFfmpegPlayer::setProxy(const QString & host, const QString & password)
 
     QMutexLocker locker(&d->mutex);
 
-    if (password.isEmpty())
-    {
-         d->proxy = "http://" + host;
-    }
-    else d->proxy = "http://:" + password + '@' + host;
+    d->proxy = WFfmpegPlayerPrivate::getProxy(host, password);
 }
 
 void WFfmpegPlayer::clearProxy()
