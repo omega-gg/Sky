@@ -592,6 +592,9 @@ void WDeclarativeContextualPage::setValues(const QVariantList & values)
 
         QSizeF iconSize = map.value("iconSize").toSizeF();
 
+        bool visible = map.value("visible", true).toBool();
+        bool enabled = map.value("enabled", true).toBool();
+
         //-----------------------------------------------------------------------------------------
 
         WDeclarativeContextualPage::ItemType type;
@@ -610,9 +613,9 @@ void WDeclarativeContextualPage::setValues(const QVariantList & values)
 
         if (id.isValid())
         {
-             addItem(type, id.toInt(), title, icon, iconSize);
+             addItem(type, id.toInt(), title, icon, iconSize, visible, enabled);
         }
-        else addItem(type, -1, title, icon, iconSize);
+        else addItem(type, -1, title, icon, iconSize, visible, enabled);
     }
 
     emit valuesChanged(d->values);
