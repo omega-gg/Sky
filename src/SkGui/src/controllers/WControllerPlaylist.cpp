@@ -60,7 +60,7 @@ void WControllerPlaylist_patch(QString & data, const QString & api);
 // Static variables
 
 static const QString CONTROLLERPLAYLIST_VIDEO = "^(mp4|webm|ogv|mkv|avi|wmv|mov|flv|3gp|m3u8)$";
-static const QString CONTROLLERPLAYLIST_AUDIO = "^(mp3|ogg|mka|wav|wma|flac)$";
+static const QString CONTROLLERPLAYLIST_AUDIO = "^(mp3|m4a|ogg|mka|wav|wma|flac)$";
 
 static const QString CONTROLLERPLAYLIST_MARKUP = "^(vbml|html|xml|json)$";
 
@@ -79,7 +79,7 @@ static const QString CONTROLLERPLAYLIST_VBML = "^(vbml)$";
 static const QString CONTROLLERPLAYLIST_FILTER_FILE
     =
     "Medias (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
-            "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
+            "*.mp3 *.m4a *.ogg *.mka *.wav *.wma *.flac "
 #ifdef SK_NO_TORRENT
             "*.vbml *.html *.xml *.json "
 #else
@@ -802,9 +802,10 @@ void WControllerPlaylistData::applyFolder(const QString & url)
 {
     QDir dir(WControllerFile::filePath(url));
 
+    // NOTE: Folders and files share a single list, sorted by name and ignoring case.
     QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files  | QDir::AllDirs
                                                                 | QDir::System | QDir::Hidden,
-                                           QDir::Name | QDir::Type);
+                                           QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
 
     foreach (const QFileInfo & info, list)
     {
@@ -812,6 +813,34 @@ void WControllerPlaylistData::applyFolder(const QString & url)
     }
 
     title = dir.dirName();
+
+    if (files.isEmpty()) return;
+
+    // NOTE: A VBML with the name of a media describes it, so the track goes through the VBML.
+    QHash<QString, int> names;
+
+    for (int i = 0; i < medias.count(); i++)
+    {
+        names.insert(WControllerNetwork::removeFileExtension(medias.at(i).url), i);
+    }
+
+    for (int i = 0; i < files.count(); i++)
+    {
+        const QString & url = files.at(i).url;
+
+        if (WControllerPlaylist::urlIsVbmlFile(url) == false) continue;
+
+        int index = names.value(WControllerNetwork::removeFileExtension(url), -1);
+
+        if (index == -1) continue;
+
+        medias[index].url = url;
+
+        // NOTE: The next file takes this index.
+        files.removeAt(i);
+
+        i--;
+    }
 }
 
 void WControllerPlaylistData::applyFile(const QByteArray & array, const QString & url)
@@ -6563,6 +6592,13 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     if (url.startsWith('/'))
     {
         return baseUrl + url;
+    }
+    // NOTE: A file name is next to the VBML.
+    else if (url.contains('.') && url.contains('/') == false && url.contains(':') == false
+             &&
+             baseUrl.contains("://"))
+    {
+        return baseUrl + '/' + url;
     }
     else return url;
 }
