@@ -88,6 +88,9 @@ struct WTorrentItem
 
     int current;
 
+    // NOTE: The pieces we have between begin and end.
+    int done;
+
     bool finished;
 };
 
@@ -138,6 +141,9 @@ struct WTorrentData
     QString path;
 
     int fileCount;
+
+    // NOTE: The handle is only valid once the torrent is added.
+    TorrentInfo info;
 
     torrent_handle handle;
     uintptr_t      hash;
