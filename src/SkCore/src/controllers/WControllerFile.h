@@ -255,6 +255,11 @@ public: // Static functions
     // NOTE: Returns the file name without the suffix.
     Q_INVOKABLE static QString fileBaseName(const QString & fileName);
 
+    // NOTE: Returns a valid file name from a text, like a title. '#', '?' and '%' are removed
+    //       because they would be taken for a part of the URL once the file is a source. The name
+    //       is empty when the text has no valid character.
+    Q_INVOKABLE static QString fileNameValid(const QString & text);
+
     Q_INVOKABLE static QString currentPath   (const QString & fileName);
     Q_INVOKABLE static QString currentFileUrl(const QString & fileName);
 
@@ -280,6 +285,7 @@ public: // Static functions
     Q_INVOKABLE static QString pathWritable ();
     Q_INVOKABLE static QString pathDesktop  ();
     Q_INVOKABLE static QString pathDocuments();
+    Q_INVOKABLE static QString pathDownloads();
     Q_INVOKABLE static QString pathPictures ();
     Q_INVOKABLE static QString pathTemp     ();
 

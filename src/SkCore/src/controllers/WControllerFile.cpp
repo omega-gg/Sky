@@ -76,6 +76,8 @@ static const int CONTROLLERFILE_LOG_MAX      = 10000;
 
 static const int CONTROLLERFILE_WATCHER_INTERVAL = 1000; // 1 seconds
 
+static const int CONTROLLERFILE_NAME_MAX = 100;
+
 static const QString CONTROLLERFILE_SKY = "^(sky|skz|zip)$";
 
 static const QString CONTROLLERFILE_SKZ = "^(skz|zip)$";
@@ -1438,6 +1440,53 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return name.left(name.indexOf('.'));
 }
 
+/* Q_INVOKABLE static */ QString WControllerFile::fileNameValid(const QString & text)
+{
+    static const QString invalid = "<>:\"/\\|?*#%";
+
+    QString name;
+
+    foreach (const QChar & character, text.simplified())
+    {
+        if (character.unicode() < 32 || invalid.contains(character)) continue;
+
+        name.append(character);
+    }
+
+    name = name.left(CONTROLLERFILE_NAME_MAX);
+
+    if (name.isEmpty() == false && name.at(name.length() - 1).isHighSurrogate())
+    {
+        name.chop(1);
+    }
+
+    while (name.endsWith('.') || name.endsWith(' '))
+    {
+        name.chop(1);
+    }
+
+    while (name.startsWith('.') || name.startsWith(' '))
+    {
+        name.remove(0, 1);
+    }
+
+    if (name.isEmpty()) return name;
+
+    // NOTE: Windows reserves these names, whatever the extension is.
+    QString base = name.section('.', 0, 0).trimmed().toUpper();
+
+    if (base == "CON" || base == "PRN" || base == "AUX" || base == "NUL"
+        ||
+        (base.length() == 4 && (base.startsWith("COM") || base.startsWith("LPT"))
+         &&
+         base.at(3).isDigit()))
+    {
+        name.prepend('_');
+    }
+
+    return name;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerFile::currentPath(const QString & fileName)
@@ -1582,6 +1631,16 @@ WControllerFileReply * WControllerFile::copyFolders(const QString & path,
     return QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
 #else
     return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#endif
+}
+
+/* Q_INVOKABLE static */ QString WControllerFile::pathDownloads()
+{
+#ifdef QT_4
+    // NOTE Qt4: There's no downloads location.
+    return QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 #endif
 }
 
