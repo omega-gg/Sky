@@ -225,6 +225,10 @@ public: // Functions
     const WPrivateMediaSlice * getSlice(WPrivateMediaSource * source,
                                         WAbstractBackend::SourceMode mode, int currentTime);
 
+#ifndef SK_NO_MEDIADOWNLOAD
+    QString getDownloadPath(const QString & folder, const QString & title) const;
+#endif
+
 #ifdef CONTROLLERMEDIA_FFMPEG
 public: // Static functions
     static void onLog(void * data, int level, const char * format, va_list args);
@@ -236,6 +240,10 @@ public: // Slots
     void onSourceLoaded(QIODevice * device, const WBackendNetSource & source);
 
     void onUrl(QIODevice * device, const WControllerMediaData & data);
+
+#ifndef SK_NO_MEDIADOWNLOAD
+    void onAboutToQuit();
+#endif
 
 public: // Variables
 #ifdef CONTROLLERMEDIA_THREAD
@@ -261,6 +269,16 @@ public: // Variables
 
     QMetaMethod methodVbml;
     QMetaMethod methodM3u;
+
+#ifndef SK_NO_MEDIADOWNLOAD
+    QList<WAbstractDownloadHook *> downloadHooks;
+
+    // NOTE: The downloads that are still running.
+    QList<WMediaDownload *> downloads;
+
+    QString downloadProxy;
+    QString downloadPassword;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WControllerMedia)

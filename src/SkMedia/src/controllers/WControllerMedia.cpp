@@ -55,6 +55,10 @@ extern "C"
 #include <WVlcEngine>
 #include <WVlcPlayer>
 #endif
+#ifndef SK_NO_MEDIADOWNLOAD
+#include <WMediaDownload>
+#include <WFfmpegDownload>
+#endif
 
 W_INIT_CONTROLLER(WControllerMedia)
 
@@ -277,6 +281,22 @@ QList<WSubtitle> WMediaReply::subtitles() const
 QStringList WMediaReply::options() const
 {
     return _options;
+}
+
+bool WMediaReply::canDownload() const
+{
+#ifdef SK_NO_MEDIADOWNLOAD
+    return false;
+#else
+    if (_timeB != -1 || _typeSource > WTrack::Track) return false;
+
+    foreach (const QString & media, _medias)
+    {
+        if (WControllerNetwork::urlIsFile(media)) return false;
+    }
+
+    return true;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1562,7 +1582,7 @@ void WControllerMediaPrivate::init(const QStringList & options)
 void WControllerMediaPrivate::init(const QStringList &)
 #endif
 {
-#ifdef CONTROLLERMEDIA_THREAD
+#if defined(SK_NO_MEDIADOWNLOAD) == false || defined(CONTROLLERMEDIA_THREAD)
     Q_Q(WControllerMedia);
 #endif
 
@@ -1582,6 +1602,11 @@ void WControllerMediaPrivate::init(const QStringList &)
                                                   "int,int,int,int,int)"));
 
     methodM3u = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
+
+#ifndef SK_NO_MEDIADOWNLOAD
+    // NOTE: The threads have to remove their files before the application goes.
+    QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onAboutToQuit()));
+#endif
 
 #ifdef CONTROLLERMEDIA_THREAD
     thread = new QThread(q);
@@ -2537,6 +2562,40 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
     return NULL;
 }
 
+#ifndef SK_NO_MEDIADOWNLOAD
+
+QString WControllerMediaPrivate::getDownloadPath(const QString & folder,
+                                                 const QString & title) const
+{
+    QString name = WControllerFile::fileNameValid(title);
+
+    if (name.isEmpty()) name = "Track";
+
+    QString base = folder + '/' + name;
+
+    QString path = base;
+
+    int index = 2;
+
+    while (true)
+    {
+        bool taken = QFile::exists(path + ".vbml");
+
+        foreach (const WMediaDownload * download, downloads)
+        {
+            if (download->d_func()->path == path) taken = true;
+        }
+
+        if (taken == false) return path;
+
+        path = base + " (" + QString::number(index) + ')';
+
+        index++;
+    }
+}
+
+#endif
+
 #ifdef CONTROLLERMEDIA_FFMPEG
 
 //-------------------------------------------------------------------------------------------------
@@ -2954,6 +3013,23 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
     delete media;
 }
 
+#ifndef SK_NO_MEDIADOWNLOAD
+
+void WControllerMediaPrivate::onAboutToQuit()
+{
+    Q_Q(WControllerMedia);
+
+    foreach (WMediaDownload * download, downloads)
+    {
+        download->abort();
+    }
+
+    // NOTE: Each thread aborts and waits to remove its files.
+    qDeleteAll(q->findChildren<WFfmpegDownload *>());
+}
+
+#endif
+
 //=================================================================================================
 // WControllerMedia
 //=================================================================================================
@@ -3195,6 +3271,114 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
     d->sources.clear();
 }
+
+#ifndef SK_NO_MEDIADOWNLOAD
+
+/* Q_INVOKABLE */
+WMediaDownload * WControllerMedia::startDownload(WMediaReply               * reply,
+                                                 const QVariantMap         & track,
+                                                 WAbstractBackend::Quality   quality,
+                                                 bool                        audio,
+                                                 const QString             & folder,
+                                                 QObject                   * parent)
+{
+    Q_D(WControllerMedia);
+
+    if (reply == NULL) return NULL;
+
+    QString urlAudio = reply->_audios.value(quality);
+
+    QStringList urls;
+
+    if (audio == false)
+    {
+        urls.append(reply->_medias.value(quality));
+    }
+
+    if (urlAudio.isEmpty() == false)
+    {
+        urls.append(urlAudio);
+    }
+
+    if (urls.isEmpty() || urls.first().isEmpty()) return NULL;
+
+    QString path;
+
+    if (folder.isEmpty()) path = WControllerFile::pathDownloads();
+    else                  path = folder;
+
+    WControllerFile::createPath(path);
+
+    path = d->getDownloadPath(path, track.value("title").toString());
+
+    if (parent == NULL) parent = this;
+
+    WMediaDownload * download = new WMediaDownload(track, path, reply->_options, parent);
+
+    d->downloads.append(download);
+
+    WMediaDownloadPrivate * p = download->d_func();
+
+    const QString & url = urls.first();
+
+    foreach (WAbstractDownloadHook * hook, d->downloadHooks)
+    {
+        if (hook->check(url) == false) continue;
+
+        p->hook = hook;
+
+        hook->load(download, url);
+
+        return download;
+    }
+
+    p->start(urls, true);
+
+    return download;
+}
+
+/* Q_INVOKABLE */ void WControllerMedia::registerDownloadHook(WAbstractDownloadHook * hook)
+{
+    Q_D(WControllerMedia);
+
+    if (hook == NULL || d->downloadHooks.contains(hook)) return;
+
+    d->downloadHooks.append(hook);
+}
+
+/* Q_INVOKABLE */ void WControllerMedia::unregisterDownloadHook(WAbstractDownloadHook * hook)
+{
+    Q_D(WControllerMedia);
+
+    d->downloadHooks.removeOne(hook);
+}
+
+/* Q_INVOKABLE */ void WControllerMedia::unregisterDownloadHooks()
+{
+    Q_D(WControllerMedia);
+
+    d->downloadHooks.clear();
+}
+
+/* Q_INVOKABLE */ void WControllerMedia::setDownloadProxy(const QString & host,
+                                                          int             port,
+                                                          const QString & password)
+{
+    Q_D(WControllerMedia);
+
+    d->downloadProxy    = host + ':' + QString::number(port);
+    d->downloadPassword = password;
+}
+
+/* Q_INVOKABLE */ void WControllerMedia::clearDownloadProxy()
+{
+    Q_D(WControllerMedia);
+
+    d->downloadProxy    = QString();
+    d->downloadPassword = QString();
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Static functions

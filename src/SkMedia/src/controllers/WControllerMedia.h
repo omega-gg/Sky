@@ -62,12 +62,19 @@ class WYamlNode;
 class WVlcEngine;
 class WVlcPlayer;
 #endif
+#ifndef SK_NO_MEDIADOWNLOAD
+class WMediaDownload;
+class WAbstractDownloadHook;
+#endif
 
 #ifdef QT_6
 #ifdef CONTROLLERMEDIA_VLC
 Q_MOC_INCLUDE("WVlcEngine")
 #endif
 Q_MOC_INCLUDE("WAbstractLoader")
+#ifndef SK_NO_MEDIADOWNLOAD
+Q_MOC_INCLUDE("WMediaDownload")
+#endif
 #endif
 
 // Defines
@@ -127,6 +134,9 @@ public: // Properties
     QList<WSubtitle> subtitles() const;
 
     QStringList options() const;
+
+    // NOTE: Only a plain track can be saved (no live, channel, slice or file).
+    bool canDownload() const;
 
     bool isLoaded() const;
 
@@ -325,6 +335,28 @@ public: // Interface
     Q_INVOKABLE void clearMedia (const QString & url);
     Q_INVOKABLE void clearMedias();
 
+#ifndef SK_NO_MEDIADOWNLOAD
+    // NOTE: The file goes in the folder, or the downloads folder when it's empty, with a VBML next
+    //       to it. This returns NULL when the reply has no link for this quality.
+    Q_INVOKABLE WMediaDownload * startDownload(WMediaReply               * reply,
+                                               const QVariantMap         & track,
+                                               WAbstractBackend::Quality   quality,
+                                               bool                        audio,
+                                               const QString             & folder = QString(),
+                                               QObject                   * parent = NULL);
+
+    // NOTE: A hook gets the urls it checks, like torrents. The first hook that checks a url gets
+    //       it, the others are ignored.
+    Q_INVOKABLE void registerDownloadHook  (WAbstractDownloadHook * hook);
+    Q_INVOKABLE void unregisterDownloadHook(WAbstractDownloadHook * hook);
+    Q_INVOKABLE void unregisterDownloadHooks();
+
+    Q_INVOKABLE void setDownloadProxy(const QString & host,
+                                      int             port, const QString & password = QString());
+
+    Q_INVOKABLE void clearDownloadProxy();
+#endif
+
 public: // Static functions
     Q_INVOKABLE static QString generateSource(const QString & url);
 
@@ -357,7 +389,14 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onUrl(QIODevice *, const WControllerMediaData &))
 
+#ifndef SK_NO_MEDIADOWNLOAD
+    Q_PRIVATE_SLOT(d_func(), void onAboutToQuit())
+#endif
+
     friend class WMediaReply;
+#ifndef SK_NO_MEDIADOWNLOAD
+    friend class WMediaDownloadPrivate;
+#endif
 };
 
 #include <private/WControllerMedia_p>
