@@ -42,7 +42,6 @@ ScrollArea
     // ListContextual
 
     property alias currentPage: list.currentPage
-    property alias currentId  : list.currentId
 
     //---------------------------------------------------------------------------------------------
     // Settings
