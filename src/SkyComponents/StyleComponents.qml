@@ -30,7 +30,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // Logo
 
-    property real logoRatio: 8.0
+    property real logoRatio: 6.0
 
     property color logo_colorA: "#c8c8c8"
     property color logo_colorB: logo_colorA
