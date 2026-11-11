@@ -131,9 +131,11 @@ test or a thumbnail, has to wait for the picture rather than trust the time.
   with its plugins) but not `libtorrent-rasterbar.dylib` nor `libboost_system.dylib`, although
   it rewrites both to `@loader_path`: a build that was not deployed does not start until they
   are copied in by hand.
-- **The shaders.** `content/generate.sh` only copied `shaders` for `all` and `deploy`, on every
-  platform, so a build after a fresh `configure.sh` rendered no video at all, just
-  `Empty shader passed to graphics pipeline`. It copies them for every Qt 6 build now.
+- **The shaders come with `all`.** `configure.sh` empties `bin`, and only
+  `generate.sh <platform> all` (or `deploy`) fills it back with the content, the shaders
+  included. A plain `build.sh <platform>` after a configure leaves `bin/shaders` missing and
+  the video never draws, with `Empty shader passed to graphics pipeline` on every frame. Run
+  `build.sh <platform> all` once after a configure, as it is meant to be.
 - **Do not re-sign the bundle.** `codesign --force` on it breaks Rosetta's AOT cache for
   libvlccore and the application then fails to start with
   `rosetta error: Attachment of code signature supplement failed`.
