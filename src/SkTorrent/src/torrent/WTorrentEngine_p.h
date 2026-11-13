@@ -33,6 +33,8 @@
 // FIXME libtorrent: We have to include winsock2 before libtorrent includes.
 #include <winsock2.h>
 #endif
+// NOTE libtorrent: This matches our webtorrent=off build.
+#define TORRENT_USE_RTC 0
 #include <libtorrent/session.hpp>
 
 // Sk includes
