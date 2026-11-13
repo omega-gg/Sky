@@ -537,7 +537,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
     while (loader.ready == false)
     {
-        // NOTE: A window that is hidden or covered stops rendering, and the grab never completes.
+        // NOTE: A window that is hidden or covered stops rendering.
         if (deadline.hasExpired()) return QPixmap();
 
         QCoreApplication::processEvents();
