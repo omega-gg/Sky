@@ -40,6 +40,7 @@
     #endif
 #include <QQuickItem>
 #include <QQuickItemGrabResult>
+#include <QDeadlineTimer>
 #endif
 #ifdef QT_OLD
 #include <QDesktopWidget>
@@ -55,6 +56,13 @@
 #include "WControllerView_p.h"
 
 W_INIT_CONTROLLER(WControllerView)
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+#ifdef QT_NEW
+static const int CONTROLLERVIEW_SHOT_TIMEOUT = 3000;
+#endif
 
 //=================================================================================================
 // WControllerViewWriteImages
@@ -525,8 +533,13 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
     connect(grab.data(), SIGNAL(ready()), &loader, SLOT(onReady()));
 
+    QDeadlineTimer deadline(CONTROLLERVIEW_SHOT_TIMEOUT);
+
     while (loader.ready == false)
     {
+        // NOTE: A window that is hidden or covered stops rendering, and the grab never completes.
+        if (deadline.hasExpired()) return QPixmap();
+
         QCoreApplication::processEvents();
     }
 #endif
