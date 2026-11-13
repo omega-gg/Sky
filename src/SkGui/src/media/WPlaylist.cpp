@@ -799,9 +799,21 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 #ifndef SK_NO_TORRENT
     // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
     //        is not responding well.
+#ifdef Q_OS_MACOS
+    if (p->state == WTrack::Default
+        ||
+        // NOTE macOS: Reading a local track can trigger an access prompt.
+        (source.startsWith("file://") == false
+         &&
+         WControllerPlaylist::urlIsTorrent(source) == false))
+#else
     if (p->state == WTrack::Default
         ||
         WControllerPlaylist::urlIsTorrent(source) == false)
+#endif
+#elif defined(Q_OS_MACOS)
+    // NOTE macOS: Reading a local track can trigger an access prompt.
+    if (p->state == WTrack::Default || source.startsWith("file://") == false)
 #endif
     {
         WControllerPlaylistPrivate * pController = wControllerPlaylist->d_func();

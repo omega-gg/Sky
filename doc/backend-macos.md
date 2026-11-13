@@ -146,12 +146,14 @@ test or a thumbnail, has to wait for the picture rather than trust the time.
 
 Two bugs that are not about the engines, found by running the benchmark over and over:
 
-- **An abort on exit.** Sky-runtime never deleted its application object, so Qt released the
-  main thread storage from the static destructors, after the font cache and the QML animation
-  timer were already gone: `QThreadStorage: entry 3 destroyed before end of thread`, then
-  `entry 2`, on every run. Nothing in that is specific to macOS, only measured there. On macOS that warning goes to the unified
-  logger, which is torn down by then as well, and the process aborts in `free_tiny_botch` about
-  one exit in four. `main` deletes the application after `exec()` now: no warning, no abort.
+- **An abort on exit, still open.** The Sky applications never delete their application
+  object, so Qt releases the main thread storage from the static destructors, after the font
+  cache and the QML animation timer are already gone: `QThreadStorage: entry 3 destroyed before
+  end of thread`, then `entry 2`, on every run. Nothing in that is specific to macOS, only
+  measured there. On macOS that warning goes to the unified logger, which is torn down by then
+  as well, and the process aborts in `free_tiny_botch` about one exit in four, after `Done`.
+  Deleting the application at the end of `main` removes both, tested in Sky-runtime; holding it
+  in a `QScopedPointer` covers the early returns too.
 - **A grab of a hidden window hangs.** `takeItemShot` waits for `grabToImage` in a
   `processEvents()` loop, and a window that is covered or minimized does not render, so the
   grab never completes and the loop spins at 100% CPU forever; asking the window for 200 more
