@@ -343,6 +343,34 @@ Style
     property int buttonPianoWindow_width: dp40
 //#END
 
+//#ButtonWindowMac
+    //---------------------------------------------------------------------------------------------
+    // ButtonWindowMac
+
+    property int buttonWindowMac_width : dp14
+    property int buttonWindowMac_height: dp16
+
+    property int buttonWindowMac_size: dp12
+
+    property color buttonWindowMac_colorClose     : "#ff5f57"
+    property color buttonWindowMac_colorClosePress: "#c1544c"
+
+    property color buttonWindowMac_colorIconify     : "#febc2f"
+    property color buttonWindowMac_colorIconifyPress: "#c3933c"
+
+    property color buttonWindowMac_colorMaximize     : "#29c840"
+    property color buttonWindowMac_colorMaximizePress: "#349842"
+
+    property color buttonWindowMac_colorDisable: buttonPush_colorPressA
+//#END
+
+//#ButtonsWindowMac
+    //---------------------------------------------------------------------------------------------
+    // ButtonsWindowMac
+
+    property int buttonsWindowMac_spacing: dp6
+//#END
+
 //#ButtonPianoReset
     //---------------------------------------------------------------------------------------------
     // ButtonPianoReset
@@ -1127,6 +1155,12 @@ Style
     property url icon12x12_minimize: icon_minimize
 //#END
 
+//#icons_mac:ButtonsWindowMac
+    property url icon_macClose   : "icons/mac-close.svg"
+    property url icon_macIconify : "icons/mac-minimize.svg"
+    property url icon_macMaximize: "icons/mac-maximize.svg"
+//#END
+
 //#icons_close:BarWindow:ButtonsWindow:ButtonsItem:LabelLoadingButton:LineEditBoxClear:TabsBrowser
     property url icon_close: "icons/times.svg"
 
@@ -1426,6 +1460,15 @@ Style
         buttonPushOverlay_colorPressB = buttonPush_colorHighlightHoverB;
 
         buttonPushOverlay_filterIcon = icon2_filter;
+//#END
+
+//#ButtonWindowMac
+        //-----------------------------------------------------------------------------------------
+        // ButtonWindowMac
+
+        buttonWindowMac_colorClosePress    = "#c1544c";
+        buttonWindowMac_colorIconifyPress  = "#c3933c";
+        buttonWindowMac_colorMaximizePress = "#349842";
 //#END
 
 //#ButtonCheck
@@ -1738,6 +1781,16 @@ Style
         buttonPushOverlay_filterIcon = button_filterIconA;
 //#END
 
+//#ButtonWindowMac
+        //-----------------------------------------------------------------------------------------
+        // ButtonWindowMac
+
+        // NOTE macOS: A pressed button gets lighter in dark mode.
+        buttonWindowMac_colorClosePress    = "#fc978f";
+        buttonWindowMac_colorIconifyPress  = "#ffe674";
+        buttonWindowMac_colorMaximizePress = "#6def81";
+//#END
+
 //#ButtonCheck
         //-----------------------------------------------------------------------------------------
         // ButtonCheck
@@ -2046,6 +2099,15 @@ Style
         buttonPushOverlay_colorPressB = buttonPush_colorCheckB;
 
         buttonPushOverlay_filterIcon = button_filterIconA;
+//#END
+
+//#ButtonWindowMac
+        //-----------------------------------------------------------------------------------------
+        // ButtonWindowMac
+
+        buttonWindowMac_colorClosePress    = "#c1544c";
+        buttonWindowMac_colorIconifyPress  = "#c3933c";
+        buttonWindowMac_colorMaximizePress = "#349842";
 //#END
 
 //#ButtonCheck
