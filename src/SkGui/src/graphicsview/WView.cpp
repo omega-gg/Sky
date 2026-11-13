@@ -1601,25 +1601,11 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
 
 QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
 {
-    QRectF rect = item->childrenRect();
+    // NOTE: A clipped item can't be hovered beyond its geometry.
+    if (item->clip()) return item->boundingRect();
 
-    if (item->clip())
-    {
-        // NOTE: The rectangle position should always be 0, otherwise it fails when a ListView has a
-        //        negative content origin.
-        rect.setX(0);
-        rect.setY(0);
-
-        qreal width  = item->width ();
-        qreal height = item->height();
-
-        // NOTE: The children rectangle should not be larger than the parent. Otherwise it creates
-        //       conflict when deciding which item to hover.
-        if (rect.width () > width)  rect.setWidth (width);
-        if (rect.height() > height) rect.setHeight(height);
-    }
-
-    return rect;
+    // NOTE: An item can be hovered in its geometry and its children's which can go beyond it.
+    return item->boundingRect().united(item->childrenRect());
 }
 
 #endif
