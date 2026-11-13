@@ -51,7 +51,7 @@ jobs:
       sh environment.sh qt5
       sh build.sh macOS all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-macOS-qt5
 
@@ -63,7 +63,7 @@ jobs:
       sh environment.sh qt6
       sh build.sh macOS all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-macOS-qt6
 
@@ -79,7 +79,7 @@ jobs:
       sh environment.sh qt5
       sh build.sh iOS all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-iOS-qt5
 
@@ -91,7 +91,7 @@ jobs:
       sh environment.sh qt6
       sh build.sh iOS all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-iOS-qt6
 
@@ -112,7 +112,7 @@ jobs:
                                      sh environment.sh qt5;
                                      sh build.sh linux all;
                                      cd deploy;
-                                     zip -rq ../Sky.zip *"
+                                     zip -rqy ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-linux32-qt5
 
@@ -124,7 +124,7 @@ jobs:
       sh environment.sh qt5
       sh build.sh linux all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-linux64-qt5
 
@@ -138,7 +138,7 @@ jobs:
       sh environment.sh qt6
       sh build.sh linux all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-linux64-qt6
 
@@ -154,7 +154,7 @@ jobs:
       sh environment.sh qt5
       sh build.sh android all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-android-qt5
 
@@ -166,6 +166,6 @@ jobs:
       sh environment.sh qt6
       sh build.sh android all
       cd deploy
-      zip -rq ../Sky.zip *
+      zip -rqy ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-android-qt6

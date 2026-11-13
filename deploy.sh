@@ -24,9 +24,7 @@ FFmpeg_version="9.0.2"
 VLC3_version="3.0.24"
 VLC4_version="4.0.0"
 
-libtorrent_version="2.0.11"
-
-Boost_version="1.86.0"
+libtorrent_version="2.1.2"
 
 #--------------------------------------------------------------------------------------------------
 # Windows
@@ -273,8 +271,6 @@ fi
 FFmpeg="$external/FFmpeg/$FFmpeg_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
-
-Boost="$external/Boost/$Boost_version"
 
 # NOTE windows: Ensure we use the proper find.
 if [ -x /usr/bin/find ]; then
@@ -880,12 +876,10 @@ if [ $engine = "vlc" ]; then
 
         mkdir -p $deploy/plugins
 
-        cp -r "$VLC"/plugins/*.dylib $deploy/plugins
+        cp -r "$VLC"/plugins/* $deploy/plugins
 
-        cp "$VLC"/plugins/plugins.dat $deploy/plugins
-
-        cp "$VLC"/lib/libvlc.5.dylib     $deploy/libvlc.dylib
-        cp "$VLC"/lib/libvlccore.9.dylib $deploy/libvlccore.dylib
+        cp "$VLC"/lib/libvlc.*.dylib     $deploy/libvlc.dylib
+        cp "$VLC"/lib/libvlccore.*.dylib $deploy/libvlccore.dylib
 
     elif [ $1 = "linux" ]; then
 
@@ -969,8 +963,9 @@ elif [ $1 = "linux" ]; then
 
     echo "COPYING libtorrent"
 
-    # NOTE: We make sure the deployed library will be resolved by the binary.
-    cp "$libtorrent"/libtorrent-rasterbar.so $deploy/libtorrent-rasterbar.so.$libtorrent_version
+    # NOTE: libtorrent patch version is always set to 0.
+    cp "$libtorrent"/libtorrent-rasterbar.so \
+       $deploy/libtorrent-rasterbar.so.${libtorrent_version%.*}.0
 
 elif [ $1 = "android" ]; then
 
@@ -979,24 +974,6 @@ elif [ $1 = "android" ]; then
     mkdir $deploy/libtorrent
 
     copyAndroid "$libtorrent" $deploy/libtorrent
-fi
-
-#--------------------------------------------------------------------------------------------------
-# Boost
-#--------------------------------------------------------------------------------------------------
-
-if [ $1 = "macOS" ]; then
-
-    echo "COPYING Boost"
-
-    cp "$Boost"/libboost*.dylib $deploy
-
-elif [ $1 = "linux" ]; then
-
-    echo "COPYING Boost"
-
-    # NOTE: We make sure the deployed library will be resolved by the binary.
-    cp "$Boost"/libboost_system.so $deploy/libboost_system.so.$Boost_version
 fi
 
 #--------------------------------------------------------------------------------------------------

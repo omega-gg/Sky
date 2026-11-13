@@ -79,17 +79,14 @@ android {
 
 win32:LIBS += -lmswsock -lws2_32
 
-win32:LIBS += -L$$SK/lib -ltorrent \
-              -L$$SK/lib -lboost_system
+win32:LIBS += -L$$SK/lib -ltorrent
 
 # Boost dependencies
 win32-msvc*:LIBS += Advapi32.lib Iphlpapi.lib
 
-macx:LIBS += -L$$SK/lib -ltorrent-rasterbar \
-             -L$$SK/lib -lboost_system
+macx:LIBS += -L$$SK/lib -ltorrent-rasterbar
 
-unix:!macx:!ios:!android:LIBS += -L$$SK/lib -ltorrent-rasterbar \
-                            -L$$SK/lib -lboost_system
+unix:!macx:!ios:!android:LIBS += -L$$SK/lib -ltorrent-rasterbar
 
 android:LIBS += -L$$SK/lib/$$ABI -ltorrent-rasterbar \
                 -L$$SK/lib/$$ABI -ltry_signal

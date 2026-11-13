@@ -18,7 +18,7 @@ FFmpeg_version="9.0.2"
 VLC3_version="3.0.24"
 VLC4_version="4.0.0"
 
-libtorrent_version="2.0.11"
+libtorrent_version="2.1.2"
 
 Boost_version="1.86.0"
 
@@ -441,8 +441,8 @@ if [ $engine = "vlc" ]; then
 
         cp -r "$VLC"/include/vlc include
 
-        cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
-        cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
+        cp "$VLC"/lib/libvlc.*.dylib     lib/libvlc.dylib
+        cp "$VLC"/lib/libvlccore.*.dylib lib/libvlccore.dylib
 
     elif [ $1 = "linux" ]; then
 
@@ -523,11 +523,4 @@ if [ $1 != "iOS" ]; then
     mkdir -p $path
 
     cp -r "$Boost"/Boost/* $path
-
-    if [ $1 = "android" ]; then
-
-        copyAndroid "$Boost" lib
-    else
-        cp "$Boost"/*boost*.* lib
-    fi
 fi
