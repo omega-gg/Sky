@@ -3,9 +3,9 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
-#if defined(__APPLE__) || defined(__ANDROID__)
-// FIXME macOS/android/zlib: We need this header to avoid the following error: implicit declaration
-//                           of function 'lseek' is invalid in C99.
+#ifndef _WIN32
+// FIXME zlib: We need this header to avoid the following error: implicit declaration of function
+//             'lseek' is invalid in C99.
 #include <unistd.h>
 #endif
 

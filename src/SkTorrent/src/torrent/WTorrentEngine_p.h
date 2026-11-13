@@ -55,6 +55,10 @@ using namespace libtorrent;
 #ifdef LIBTORRENT_ABI_1
 typedef boost::shared_ptr<const torrent_info> TorrentInfo;
 typedef boost::shared_ptr<torrent_info>       TorrentInfoPointer;
+
+typedef int file_index_t;
+typedef int piece_index_t;
+typedef int download_priority_t;
 #else
 typedef std::shared_ptr<const torrent_info> TorrentInfo;
 typedef std::shared_ptr<torrent_info>       TorrentInfoPointer;

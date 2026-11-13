@@ -27,6 +27,9 @@ contains(QT_MAJOR_VERSION, 4) {
 
 DEFINES += SK_TORRENT_LIBRARY
 
+# libtorrent: This matches our webtorrent=off build.
+DEFINES += TORRENT_USE_RTC=0
+
 win32-msvc* {
     # libtorrent: This fixes the winsock2 and std::min errors.
     DEFINES += WIN32_LEAN_AND_MEAN NOMINMAX

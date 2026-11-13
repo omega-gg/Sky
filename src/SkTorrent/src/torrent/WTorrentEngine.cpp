@@ -239,10 +239,12 @@ void WTorrentEnginePrivate::createSession()
 
     //pack.set_int(settings_pack::use_disk_cache_pool, false);
 
+#if LIBTORRENT_VERSION_NUM < 20000
     // NOTE: These are important to avoid issues when redirecting data to a third party, like
     //       avoiding glitchy frames on a video player.
     pack.set_int(settings_pack::cache_size,   0);
     pack.set_int(settings_pack::cache_expiry, 0);
+#endif
 
     //pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
 
@@ -622,7 +624,7 @@ WTorrentData * WTorrentEnginePrivate::createTorrent(TorrentInfoPointer info,
 #ifdef LIBTORRENT_ABI_1
     data->files = std::vector<int>(fileCount, 0);
 #else
-    data->files = std::vector<download_priority_t>(fileCount, 0);
+    data->files = std::vector<download_priority_t>(fileCount, download_priority_t(0));
 #endif
 
     datas.append(data);
@@ -638,8 +640,7 @@ WTorrentData * WTorrentEnginePrivate::createTorrent(TorrentInfoPointer info,
                    add_torrent_params::flag_auto_managed     |
                    add_torrent_params::flag_apply_ip_filter;
 #else
-    params.flags = torrent_flags::pinned           |
-                   torrent_flags::update_subscribe |
+    params.flags = torrent_flags::update_subscribe |
                    torrent_flags::auto_managed     |
                    torrent_flags::apply_ip_filter;
 #endif
@@ -750,11 +751,13 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 
         paths.append(fileName);
 
-        size = storage.file_size(index);
+        file_index_t file(index);
 
-        peer_request request = info->map_file(index, 0, 0);
+        size = storage.file_size(file);
 
-        begin = request.piece;
+        peer_request request = info->map_file(file, 0, 0);
+
+        begin = (int) request.piece;
 
         int length = (request.start + size - 1) / info->piece_length();
 
@@ -865,11 +868,13 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
         paths.append(fileName);
 
-        size = storage.file_size(index);
+        file_index_t file(index);
 
-        peer_request request = info->map_file(index, 0, 0);
+        size = storage.file_size(file);
 
-        begin = request.piece;
+        peer_request request = info->map_file(file, 0, 0);
+
+        begin = (int) request.piece;
 
         sizePiece = info->piece_length();
 
@@ -1014,7 +1019,11 @@ void WTorrentEnginePrivate::addItem(const torrent_handle & handle, WTorrentItem 
 
     if (item->mode == WTorrent::Sequential)
     {
+#ifdef LIBTORRENT_ABI_1
         handle.set_sequential_download(true);
+#else
+        handle.set_flags(torrent_flags::sequential_download);
+#endif
     }
 }
 
@@ -1032,7 +1041,7 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
 
     while (priority && current < stream->end)
     {
-        handle.set_piece_deadline(current, deadline);
+        handle.set_piece_deadline(piece_index_t(current), deadline);
 
         deadline += TORRENTENGINE_PRIORITY_INTERVAL;
 
@@ -1224,7 +1233,7 @@ void WTorrentEnginePrivate::updatePriority(const torrent_handle & handle,
     {
         if (pieces->at(current) == false)
         {
-            handle.set_piece_deadline(current, deadline);
+            handle.set_piece_deadline(piece_index_t(current), deadline);
 
             deadline += TORRENTENGINE_PRIORITY_INTERVAL;
 
@@ -1713,9 +1722,9 @@ void WTorrentEnginePrivate::selectFile(WTorrentItem * item) const
 
     if (index == -1)
     {
-        std::fill(files.begin(), files.end(), 1);
+        std::fill(files.begin(), files.end(), download_priority_t(1));
     }
-    else files[item->index] = 1;
+    else files[item->index] = download_priority_t(1);
 
     // FIXME libtorrent: Sometimes we have to pause and resume torrents.
     if (data->items.count() == 1)
@@ -1748,7 +1757,7 @@ void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
         std::vector<download_priority_t> & files = data->files;
 #endif
 
-        std::fill(files.begin(), files.end(), 0);
+        std::fill(files.begin(), files.end(), download_priority_t(0));
 
         updateFiles(data);
     }
@@ -1765,7 +1774,7 @@ void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
         std::vector<download_priority_t> & files = data->files;
 #endif
 
-        files[index] = 0;
+        files[index] = download_priority_t(0);
 
         data->handle.prioritize_files(files);
     }
@@ -1789,7 +1798,7 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data) const
 
         if (index == -1)
         {
-            std::fill(files.begin(), files.end(), 1);
+            std::fill(files.begin(), files.end(), download_priority_t(1));
 
             data->handle.prioritize_files(files);
 
@@ -1797,7 +1806,7 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data) const
         }
         else if (item->finished == false)
         {
-            files[index] = 1;
+            files[index] = download_priority_t(1);
         }
     }
 
@@ -1826,14 +1835,14 @@ void WTorrentEnginePrivate::renameFile(const torrent_handle & handle, WTorrentIt
         {
             qDebug("TORRENT RENAME ALL %d %s", i, paths.at(i).C_STR);
 
-            handle.rename_file(i, paths.at(i).toStdString());
+            handle.rename_file(file_index_t(i), paths.at(i).toStdString());
         }
     }
     else
     {
         qDebug("TORRENT RENAME FILE %d %s", item->index, fileName.C_STR);
 
-        handle.rename_file(item->index, fileName.toStdString());
+        handle.rename_file(file_index_t(item->index), fileName.toStdString());
     }
 }
 
@@ -1841,7 +1850,7 @@ void WTorrentEnginePrivate::renameFile(const torrent_handle & handle, WTorrentIt
 
 QString WTorrentEnginePrivate::extractFileName(const file_storage & storage, int index) const
 {
-    QString fileName = QString::fromStdString(storage.file_path(index));
+    QString fileName = QString::fromStdString(storage.file_path(file_index_t(index)));
 
     QString extension = WControllerNetwork::extractUrlExtension(fileName);
 
@@ -1988,11 +1997,18 @@ void WTorrentEnginePrivate::events()
 
             QCoreApplication::postEvent(q, new WTorrentEngineProgress(list));
         }
-        else if (type == torrent_added_alert::alert_type)
+        else if (type == add_torrent_alert::alert_type)
         {
-            Q_Q(WTorrentEngine);
+            add_torrent_alert * event = alert_cast<add_torrent_alert>(alert);
 
-            torrent_added_alert * event = alert_cast<torrent_added_alert>(alert);
+            if (event->error)
+            {
+                i++;
+
+                continue;
+            }
+
+            Q_Q(WTorrentEngine);
 
             QVariant variant;
 
@@ -2016,7 +2032,7 @@ void WTorrentEnginePrivate::events()
             block_finished_alert * event = alert_cast<block_finished_alert>(alert);
 
             QCoreApplication::postEvent(q, new WTorrentEngineBlock(W_ID(event->handle),
-                                                                   event->piece_index,
+                                                                   (int) event->piece_index,
                                                                    event->block_index));
 
         }
@@ -2725,8 +2741,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64    sizeMax,
                            add_torrent_params::flag_auto_managed     |
                            add_torrent_params::flag_apply_ip_filter;
 #else
-            params.flags = torrent_flags::pinned           |
-                           torrent_flags::update_subscribe |
+            params.flags = torrent_flags::update_subscribe |
                            torrent_flags::auto_managed     |
                            torrent_flags::apply_ip_filter;
 #endif
