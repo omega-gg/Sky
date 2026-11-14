@@ -20,6 +20,12 @@
 */
 //=================================================================================================
 
+// NOTE: The SSE2 conversion is x86 assembly, ARM uses NEON. A macOS universal build compiles
+//       each file for both with the same defines.
+#ifdef __ARM_NEON
+#undef CAN_COMPILE_SSE2
+#endif
+
 #include "WBackendVlc.h"
 
 #ifndef SK_NO_BACKENDVLC

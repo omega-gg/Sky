@@ -96,10 +96,49 @@ one, but that is a single run: measure it again before relying on it.
 An M1 does decode VP9 in hardware, and YouTube offers VP9 beside AV1. Preferring it on Apple
 hardware older than an M3 is worth a measurement: it is the only way to reach the GPU there.
 
-**A VLC build is untested on arm64.** `CAN_COMPILE_SSE2` is still defined for every slice, and
-in `WBackendVlc` it selects the SSE2 frame conversion ahead of the NEON one, so the arm64 slice
-of a VLC build will most likely not compile. The FFmpeg build does not include that code, and
-clang accepts the `-msse` flag in a universal compile.
+**VLC on arm64.** `SkMedia.pro` defines `CAN_COMPILE_SSE2` for every slice, and that frame
+conversion is x86 assembly: `WBackendVlc.cpp` drops it when `__ARM_NEON` is defined, so the
+arm64 slice takes the NEON one. clang accepts `-msse` in a universal compile but rejects it for
+an arm64 only target: an arm64 only build, or a Linux aarch64 one, needs `SkMedia.pro` to pass
+it on x86 only. The FFmpeg build does not include that code.
+
+## Native arm64, FFmpeg against libVLC
+
+The same comparison with both engines native, from the universal `deploy/sky.app` of each
+(2026-11-14, Metal). The source is a YouTube 4K60 HDR video played from 2:22 for 20 s; both
+engines get its AV1 10 bits streams and decode them in software. A stall is a 250 ms sample
+where the reported time did not move.
+
+| 4K60 HDR, AV1 10 bits (`itag=701`), 2 runs | FFmpeg | VLC 3.0.24 |
+|---|---|---|
+| Source to first frame | 1102 / 935 ms | 1269 / 1461 ms |
+| Seek to 2:22 | 579 / 571 ms | 961 / 929 ms |
+| Playback rate | 1.000 / 0.989 | 1.000 / 1.002 |
+| Stalls | 0 / 0 | 2 / 2 |
+| CPU | 346 / 367% | 369 / 364% |
+| Peak RSS | 733 / 749 MB | 881 / 876 MB |
+
+| 1080p60 HDR, AV1 10 bits (`itag=699`) | FFmpeg | VLC 3.0.24 |
+|---|---|---|
+| Source to first frame | 771 ms | 1059 ms |
+| Seek to 2:22 | 358 ms | 620 ms |
+| Playback rate | 1.000 | 0.997 |
+| Stalls | 0 | 3 |
+| CPU | 109% | 101% |
+| Peak RSS | 305 MB | 412 MB |
+
+Both engines hold real time natively, 4K60 included, where under Rosetta both fell a little
+behind. FFmpeg opens a source faster, seeks in about 60% of the time and holds a sixth to a
+quarter less memory; the CPU is the same within the spread. VLC's stalls may only be its 250 ms
+time updates and not a visible stutter. Both save a frame at the real size and draw the same
+picture, and every VLC run exited, none wedged.
+
+**The 10 bits frames do not go to 8 on the GPU on Apple.** `applyDepth` has no filter for
+VideoToolbox. On an M1 it does not matter for AV1: VideoToolbox fails its setup
+(`Failed setup for format videotoolbox_vld`), the frames are decoded in software and the CPU
+conversion to I420 brings them to 8 bits in the same pass. It would matter for the hardware
+frames of an M3 or later on AV1, or of VP9 Profile 2 on any Apple Silicon: they would come down
+as P010, at their full size.
 
 ## Pictures
 
