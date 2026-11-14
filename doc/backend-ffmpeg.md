@@ -153,7 +153,8 @@ It owns the decoding, so it could also serve without a QML player.
   25 MB, and its copy alone took longer than a frame lasts at 60 fps; at 8 bits it's half. The
   shader shows 8 bits anyway, so the picture is the same. Without the filter, or when it fails,
   the frame is copied as it is. Vulkan frames are copied as they are too: their 10-bit copy is
-  fast enough (10 ms for 4K). Apple (VideoToolbox can output 8 bits itself) is still to do.
+  fast enough (10 ms for 4K). VideoToolbox needs no filter: it decodes to the format of its
+  frames, so `get_format` gives it NV12 ones for those streams (`applyFrames`).
 - **Playback:** frames are paced on their timestamps against a clock.
   - **With audio:** the audio leads. What we hear is the end of the decoded audio, minus what
     waits in the device and in the player, each millisecond of it being `speed` milliseconds of

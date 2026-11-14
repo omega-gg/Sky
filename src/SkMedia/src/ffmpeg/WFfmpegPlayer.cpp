@@ -123,6 +123,34 @@ static const qint64 FFMPEGPLAYER_SWAP = 100000000;
 //-------------------------------------------------------------------------------------------------
 // Static functions
 
+#if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
+
+// NOTE Apple: VideoToolbox decodes to the format of its frames, so a stream of more than 8 bits
+//       comes out in 8 with no filter (see applyDepth). Failing that, it makes its own frames.
+static void applyFrames(AVCodecContext * context)
+{
+    if (av_pix_fmt_desc_get(context->sw_pix_fmt)->comp[0].depth <= 8) return;
+
+    AVBufferRef * frames;
+
+    if (avcodec_get_hw_frames_parameters(context, context->hw_device_ctx,
+                                         AV_PIX_FMT_VIDEOTOOLBOX, &frames) < 0) return;
+
+    reinterpret_cast<AVHWFramesContext *> (frames->data)->sw_format = AV_PIX_FMT_NV12;
+
+    if (av_hwframe_ctx_init(frames) < 0)
+    {
+        av_buffer_unref(&frames);
+
+        return;
+    }
+
+    // NOTE: FFmpeg releases the previous frames before calling get_format.
+    context->hw_frames_ctx = frames;
+}
+
+#endif
+
 // NOTE: The hardware format when the decoder offers it, otherwise the first software one. A
 //       decoder with no software format fails, and we decode in software (see applySoftware).
 static AVPixelFormat getFormat(AVCodecContext * context, const AVPixelFormat * formats)
@@ -131,7 +159,13 @@ static AVPixelFormat getFormat(AVCodecContext * context, const AVPixelFormat * f
 
     for (const AVPixelFormat * format = formats; *format != AV_PIX_FMT_NONE; format++)
     {
-        if (*format == d->formatHardware) return *format;
+        if (*format != d->formatHardware) continue;
+
+#if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
+        applyFrames(context);
+#endif
+
+        return *format;
     }
 
     for (const AVPixelFormat * format = formats; *format != AV_PIX_FMT_NONE; format++)

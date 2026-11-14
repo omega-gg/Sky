@@ -133,12 +133,21 @@ quarter less memory; the CPU is the same within the spread. VLC's stalls may onl
 time updates and not a visible stutter. Both save a frame at the real size and draw the same
 picture, and every VLC run exited, none wedged.
 
-**The 10 bits frames do not go to 8 on the GPU on Apple.** `applyDepth` has no filter for
-VideoToolbox. On an M1 it does not matter for AV1: VideoToolbox fails its setup
+**VideoToolbox decodes 10 bits streams to 8.** It writes the format of the frames it is given,
+so `get_format` hands it NV12 frames for a stream of more than 8 bits (`applyFrames`) instead of
+the P010 it picks itself, and the copy from the GPU is half the size, with no filter. A 4K60
+HEVC Main10 file decoded on the M1 (FFmpeg, arm64, 3 runs each):
+
+| 4K60 HEVC Main10, VideoToolbox | P010 | NV12 |
+|---|---|---|
+| CPU | 84% | **38%** |
+| Peak RSS | 387 to 433 MB | 352 to 365 MB |
+| Playback rate | 1.000 to 1.007 | 0.987 to 1.006 |
+
+The picture is the same. AV1 does not get there on an M1: VideoToolbox fails its setup
 (`Failed setup for format videotoolbox_vld`), the frames are decoded in software and the CPU
-conversion to I420 brings them to 8 bits in the same pass. It would matter for the hardware
-frames of an M3 or later on AV1, or of VP9 Profile 2 on any Apple Silicon: they would come down
-as P010, at their full size.
+conversion to I420 brings them to 8 bits in the same pass, as before. An M3 or later decodes
+AV1 on the GPU, through the same path.
 
 ## Pictures
 
