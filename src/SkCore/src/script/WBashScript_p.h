@@ -76,6 +76,10 @@ public:
 public: // Functions
     void applyRunning(bool running);
 
+#if defined(Q_OS_WIN) && defined(QT_NEW)
+    void applyJob();
+#endif
+
     void terminate();
 
 public: // Slots
@@ -97,6 +101,10 @@ public: // Variables
 
 #ifdef Q_OS_WIN
     QString environment;
+#endif
+
+#if defined(Q_OS_WIN) && defined(QT_NEW)
+    Qt::HANDLE job;
 #endif
 
     QString output;

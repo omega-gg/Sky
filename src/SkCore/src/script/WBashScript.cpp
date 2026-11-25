@@ -40,6 +40,11 @@
 // Sk includes
 #include <WControllerApplication>
 
+// Windows includes
+#if defined(Q_OS_WIN) && defined(QT_NEW)
+#include <qt_windows.h>
+#endif
+
 #ifdef Q_OS_UNIX
 
 //=================================================================================================
@@ -70,14 +75,20 @@ WBashScriptPrivate::WBashScriptPrivate(WBashScript * p) : WPrivate(p) {}
 
 /* virtual */ WBashScriptPrivate::~WBashScriptPrivate()
 {
-    if (running == false) return;
+    if (running) terminate();
 
-    terminate();
+#if defined(Q_OS_WIN) && defined(QT_NEW)
+    if (job) CloseHandle(job);
+#endif
 }
 
 void WBashScriptPrivate::init()
 {
     running = false;
+
+#if defined(Q_OS_WIN) && defined(QT_NEW)
+    job = NULL;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -93,15 +104,45 @@ void WBashScriptPrivate::applyRunning(bool running)
     emit q->runningChanged();
 }
 
+#if defined(Q_OS_WIN) && defined(QT_NEW)
+
+void WBashScriptPrivate::applyJob()
+{
+    // NOTE windows: Git bash starts its commands through the msys runtime, from processes that do
+    //               not stay their parents, so taskkill /T misses them. A job holds every process
+    //               started under it whatever its parent, so ending the job ends them all, like
+    //               killpg does on unix.
+    if (job == NULL)
+    {
+        job = CreateJobObject(NULL, NULL);
+
+        if (job == NULL) return;
+
+        JOBOBJECT_EXTENDED_LIMIT_INFORMATION info = {};
+
+        info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+
+        SetInformationJobObject(job, JobObjectExtendedLimitInformation, &info, sizeof(info));
+    }
+
+    HANDLE handle = OpenProcess(PROCESS_SET_QUOTA | PROCESS_TERMINATE, FALSE,
+                                process.processId());
+
+    if (handle == NULL) return;
+
+    AssignProcessToJobObject(job, handle);
+
+    CloseHandle(handle);
+}
+
+#endif
+
 void WBashScriptPrivate::terminate()
 {
 #if defined(Q_OS_WIN) && defined(QT_NEW)
-    qint64 id = process.processId();
-
-    if (id > 0)
+    if (job)
     {
-        // NOTE windows: We can't terminate processes easily so we taskkill right away.
-        QProcess::execute("taskkill", { "/PID", QString::number(id), "/T", "/F" });
+        TerminateJobObject(job, 1);
     }
     else process.terminate();
 #elif defined(Q_OS_UNIX) && defined(QT_NEW)
@@ -289,6 +330,10 @@ void WBashScriptPrivate::onOutputError()
         d->process.start(d->pathBash, list);
 #else
         d->process.start();
+
+#ifdef Q_OS_WIN
+        d->applyJob();
+#endif
 #endif
 
         d->applyRunning(true);
@@ -301,6 +346,10 @@ void WBashScriptPrivate::onOutputError()
         d->process.start(d->pathBash, list);
 #else
         d->process.start();
+
+#ifdef Q_OS_WIN
+        d->applyJob();
+#endif
 #endif
 
         d->applyRunning(true);
